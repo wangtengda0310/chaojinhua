@@ -1,0 +1,179 @@
+package com.igame.work.user.dao;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import com.google.common.collect.Maps;
+import com.igame.core.db.AbsDao;
+import com.igame.core.log.ExceptionLog;
+import com.igame.dto.IDFactory;
+import com.igame.dto.IDSeq;
+import com.igame.work.monster.dto.Monster;
+import com.igame.work.user.dto.Player;
+import com.igame.work.user.dto.Tes;
+import com.igame.work.user.handler.ServerListHandler;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCursor;
+
+public class PlayerDAO extends AbsDao {
+
+	@Override
+	public String getTableName() {
+		return "players";
+	}
+	
+    private static final PlayerDAO domain = new PlayerDAO();
+
+    public static final PlayerDAO ins() {
+        return domain;
+    }
+    
+    /**
+     * 获取角色对象
+     * @param serverId
+     * @param userId
+     * @return
+     */
+    public Player getPlayerByUserId(int serverId,long userId){
+    	Player p = getDatastore(serverId).find(Player.class, "userId", userId).get();
+    	return p;
+    }
+    
+    public Player getPlayerByPlayerId(int serverId,long playerId){
+    	Player p = getDatastore(serverId).find(Player.class, "playerId", playerId).get();
+    	return p;
+    }
+    
+    public Player getPlayerByPlayerNickName(int serverId,String nickname){
+    	Player p = getDatastore(serverId).find(Player.class, "nickname", nickname).get();
+    	return p;
+    }
+    
+    public Map<Integer,Player> getAllUser(long userId){
+    	Map<Integer,Player> all = Maps.newHashMap();
+    	
+    	for(Integer serverId :ServerListHandler.servers.keySet()){
+    		Player p = null;
+    		try{
+    			p = getDatastore(serverId).find(Player.class, "userId", userId).get();
+    		} catch (Exception e){
+    			ExceptionLog.error("PlayerDAO.getAllUser ERROR,serverId:" + serverId+",userId:" + userId);
+    		}
+    		if(p != null){
+    			all.put(serverId, p);
+    		}
+    	}
+    	
+    	return all;
+    }
+    
+    /**
+     * 默认创建一个新玩家
+     * @param serverId
+     * @param player
+     * @return
+     */
+    public Player savePlayer(int serverId, Player player){
+		getDatastore(serverId).save(player);
+    	return player;
+    }
+    
+    public List<Player> getALLPlayer(int serverId){
+    	return getDatastore(serverId).find(Player.class).asList();
+    }
+    
+    /**
+     * 更新玩家
+     * @param player
+     */
+    public void updatePlayer(Player player,boolean loginOutTime){
+    	Datastore ds = getDatastore(player.getSeverId());
+    	UpdateOperations<Player> up = ds.createUpdateOperations(Player.class)
+    		.set("nickname", player.getNickname())
+    		.set("playerLevel", player.getPlayerLevel())
+    		.set("exp", player.getExp())
+    		.set("vip", player.getVip())
+    		.set("bagSpace", player.getBagSpace())
+    		.set("physical", player.getPhysical())
+    		.set("gold", player.getGold())
+    		.set("diamond", player.getDiamond())
+    		.set("teams", player.getTeams())
+    		.set("battleSpace", player.getBattleSpace())
+    		.set("lastCheckpointId", player.getLastCheckpointId())
+    		.set("checkPoint", player.getCheckPoint() == null ? "" : player.getCheckPoint())
+    		.set("timeResCheck", player.getTimeResCheck())
+    		.set("xinMo", player.getXinMo())
+    		.set("xinMoMinuts", player.getXinMoMinuts())
+    		.set("tangSuo", player.getTangSuo())
+    		.set("tongRes", player.getTongRes())
+    		.set("tongAdd", player.getTongAdd())
+    		.set("sao", player.getSao())
+    		.set("xing", player.getXing())
+    		.set("resMintues", player.getResMintues())
+    		.set("phBuyCount", player.getPhBuyCount())
+    		.set("xinBuyCount", player.getXinBuyCount())
+    		.set("goldBuyCount", player.getGoldBuyCount())
+    		.set("meetM", player.getMeetM())
+    		.set("draw", player.getDraw())
+    		.set("countMap", player.getCountMap())
+    		.set("towerId", player.getTowerId())
+    		.set("oreCount", player.getOreCount())
+    		.set("wuMap", player.getWuMap())
+    		.set("wuZheng", player.getWuZheng())
+    		.set("wuGods", player.getWuGods())
+    		.set("wuNai", player.getWuNai())
+    		.set("wuEffect", player.getWuEffect())
+    		.set("wuReset", player.getWuReset())
+    		.set("wuScore", player.getWuScore())
+    		.set("fateData", player.getFateData())
+			.set("doujiScore", player.getDoujiScore())
+			.set("qiyuanScore", player.getQiyuanScore())
+			.set("buluoScore", player.getBuluoScore())
+			.set("yuanzhengScore", player.getYuanzhengScore())
+			.set("xuanshangScore", player.getXuanshangScore())
+			.set("unlockHead", player.getUnlockHead())
+			.set("unlockFrame", player.getUnlockFrame())
+			.set("playerFrameId", player.getPlayerFrameId())
+			.set("playerHeadId", player.getPlayerHeadId())
+			.set("ballisticCount", player.getBallisticCount())
+			.set("isBanStrangers", player.getIsBanStrangers())
+			.set("lastMessageBoard", player.getLastMessageBoard())
+			.set("curTeam", player.getCurTeam())
+			.set("totalMoney", player.getTotalMoney())
+			.set("vipPrivileges", player.getVipPrivileges())
+			.set("round", player.getRound())
+			.set("areaCount", player.getAreaCount())
+			.set("playerCount", player.getPlayerCount())
+			.set("playerTop", player.getPlayerTop())
+			.set("fightValue", player.getFightValue())
+    		;
+    	if(loginOutTime){
+    		up.set("loginoutTime", new Date())
+    			.set("loginTime", player.getLoginTime());
+    	}
+    	if(player.getTonghua() != null){
+    		up.set("tonghua", player.getTonghua());
+    	}
+    	
+    	ds.update(player, up);
+    }
+    
+    
+
+    public void updatePlayerTest(Player player,int severId){
+    	Datastore ds = getDatastore(severId);
+    	UpdateOperations<Player> up = ds.createUpdateOperations(Player.class);
+    	up.set("wuMap", player.getWuMap());
+    	ds.update(player, up);
+    }
+    
+    
+
+}
