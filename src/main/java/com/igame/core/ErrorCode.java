@@ -48,21 +48,9 @@ public class ErrorCode {
 	public static final int MSG_FAILED = 1019;//消息发送失败
 
 	public static final int SAO_NOT_ENOUGH = 1020;//扫荡券不足
-	
-	public static final int TEAM_NOT = 2001;//Team编号非法
-	
-	public static final int INDEX_NOT = 2002;//位置index非法
-	
+
 	public static final int MONSTER_NOT = 2003;//玩家没有此怪物
-	
-	public static final int MONSTER_EXIT_INDEX = 2004;//此位置上已有怪物，要换怪物请先下阵
-	
-	public static final int MONSTER_NOTEXIT_INDEX = 2005;//此位置上无怪物可下阵
-	
-	public static final int INDEX_NOT_UNLOCK = 2006;//此位置未解锁
-	
-	public static final int LAST_ONE_UP = 2007;//至少一个上阵
-	
+
 	public static final int LEVEL_MAX = 2008;//已达最大等级
 	
 	public static final int LEVEL_NOT_PLAYER = 2009;//不能超过人物等级

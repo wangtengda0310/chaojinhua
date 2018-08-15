@@ -264,8 +264,6 @@ public class MProtrol {
 	
 	public static final int XINGMO_END = 3231;//结束心魔关卡战斗
 	
-	public static final int JINGJI_ZHENG = 3235;//竞技场防守阵容上阵下阵怪物
-	
 	public static final int AREA_COUNT = 3236;//推送竞技场已用挑战次数
 	
 	public static final int AREA_INFO = 3237;//获取竞技场信息

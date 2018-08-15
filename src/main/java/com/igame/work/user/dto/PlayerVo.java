@@ -87,8 +87,6 @@ public class PlayerVo extends BasicVO {
 
     protected int wuReset;//当前已使用重置次数
 
-    protected String defendTeam = "-1,-1,-1,-1,-1";//防守阵容
-    
     protected int areaCount = 0;// //今日竞技场已用挑战次数
 
     protected Set<Integer> unlockHead = Sets.newHashSet();    //已解锁头像
@@ -349,14 +347,6 @@ public class PlayerVo extends BasicVO {
 
     public void setWuReset(int wuReset) {
         this.wuReset = wuReset;
-    }
-
-    public String getDefendTeam() {
-        return defendTeam;
-    }
-
-    public void setDefendTeam(String defendTeam) {
-        this.defendTeam = defendTeam;
     }
 
     public Set<Integer> getUnlockHead() {
