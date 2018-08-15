@@ -261,6 +261,12 @@
             <scope>system</scope>
             <systemPath>${libdir}\SFS2X_API_Java.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.9.0.Final</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
