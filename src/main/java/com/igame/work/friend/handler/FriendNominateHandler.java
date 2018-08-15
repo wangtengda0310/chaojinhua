@@ -4,7 +4,6 @@ import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
-import com.igame.util.GameMath;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.PlayerCacheDto;
@@ -12,10 +11,8 @@ import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author xym
@@ -43,75 +40,25 @@ public class FriendNominateHandler extends BaseHandler{
 
         //搜索好友的优先级：离线24小时以内，等级差10级以内的优先抽取推荐
         int playerLevel = player.getPlayerLevel();
-        List<Friend> curFriends = player.getFriends().getCurFriends();
+        Set<Long> curFriends = player.getFriends().getCurFriends().stream()
+                .map(Friend::getPlayerId)
+                .collect(Collectors.toSet());
         List<Friend> nomFriends = new ArrayList<>();
 
 
         List<PlayerCacheDto> players = PlayerCacheService.ins().getPlayers(player.getSeverId());
-        List<PlayerCacheDto> one = new ArrayList<>();   //第一优先级
-        List<PlayerCacheDto> two = new ArrayList<>();   //第二优先级
-        List<PlayerCacheDto> three = new ArrayList<>();   //第三优先级
 
-        for (PlayerCacheDto playerCacheDto : players) {
-
-            //如果是当前玩家,跳出本次循环
-            if (playerCacheDto.getPlayerId() == player.getPlayerId())
-                continue;
-
-            //如果是当前玩家的好友，跳出本次循环
-            boolean isFriend = false;
-            for (Friend curFriend : curFriends) {
-                if (playerCacheDto.getPlayerId() == curFriend.getPlayerId()){
-                    isFriend = true;
-                    break;
-                }
-            }
-            if (isFriend)
-                continue;
-
-            Date lastLoginOutDate = playerCacheDto.getLastLoginOutDate();
-
-            int playerLevel1 = playerCacheDto.getPlayerLevel();
-            if (new Date().getTime() - lastLoginOutDate.getTime() <= 24*60*60*1000){
-                if (Math.abs(playerLevel - playerLevel1) <= 10){
-                    one.add(playerCacheDto);
-                }
-                two.add(playerCacheDto);
-            }
-            three.add(playerCacheDto);
-        }
-
-        //随机十个
-        if (one.size() > 10){
-            //随机并添加新的好友
-            random(nomFriends, one);
-        }/*else if (two.size() > 10){
-            //随机并添加新的好友
-            random(nomFriends, two);
-
-        }else if (three.size() > 10){
-            //随机并添加新的好友
-            random(nomFriends, three);
-        }*/else {
-            for (PlayerCacheDto cacheDto : three) {
-                nomFriends.add(new Friend(cacheDto));
-            }
-        }
+        long now = new Date().getTime();
+        players.stream()
+                .filter(playerCacheDto->playerCacheDto.getPlayerId() != player.getPlayerId())
+                .filter(playerCacheDto->!curFriends.contains(playerCacheDto.getPlayerId()))
+                .filter(playerCacheDto->now - playerCacheDto.getLastLoginOutDate().getTime() <= 24*60*60*1000
+                        || Math.abs(playerLevel - playerCacheDto.getPlayerLevel()) <= 10)
+                .limit(10)
+                .forEach(playerCacheDto->nomFriends.add(new Friend(playerCacheDto)));
 
         vo.addData("nomFriends",nomFriends);
         sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_NOMINATE),vo,user);
     }
 
-    private void random(List<Friend> nomFriends, List<PlayerCacheDto> pool) {
-
-        ok:
-        while (true){
-            int i = new Random().nextInt(pool.size());
-            PlayerCacheDto playerCacheDto = pool.get(i);
-            nomFriends.add(new Friend(playerCacheDto));
-            pool.remove(i);
-            if (nomFriends.size() >= 10)
-                break ok;
-        }
-    }
 }
