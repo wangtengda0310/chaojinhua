@@ -49,6 +49,8 @@ public class ErrorCode {
 
 	public static final int SAO_NOT_ENOUGH = 1020;//扫荡券不足
 
+	public static final int TEAM_NOT = 2001;//Team编号非法
+
 	public static final int MONSTER_NOT = 2003;//玩家没有此怪物
 
 	public static final int LEVEL_MAX = 2008;//已达最大等级

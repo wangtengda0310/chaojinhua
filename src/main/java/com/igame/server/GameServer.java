@@ -4,7 +4,6 @@ import com.igame.core.MProtrol;
 import com.igame.core.db.DBManager;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
-import com.igame.util.MyUtil;
 import com.igame.util.SystemService;
 import com.igame.work.chat.handler.*;
 import com.igame.work.chat.service.PublicMessageService;
@@ -102,7 +101,9 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MONSTER_CHANGE), MonsterChangeHandler.class);//怪物互换
 		
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ITEM_EQ), MonsterEquipHandler.class);//文章装备
-		
+
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ITEM_EQ_ALL), MonsterEquipDownAllHandler.class);//一键下文章
+
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ITEM_HE), ItemHeChengHandler.class);//装备合成
 		
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ITEM_HE_ALL), ItemHeChengAllHandler.class);//一键合成

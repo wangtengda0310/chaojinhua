@@ -92,7 +92,9 @@ public class MProtrol {
 	public static final int ITEM_HE = 2012;//装备合成
 	
 	public static final int ITEM_HE_ALL = 2013;//一键合成
-	
+
+	public static final int ITEM_EQ_ALL = 2059;//一键下纹章
+
 	public static final int MONSTER_REF = 2014;//怪物数据获取
 
 	public static final int ITEM_SALE = 2015;//道具出售
@@ -184,7 +186,7 @@ public class MProtrol {
 	public static final int DRAW_GET= 2057;//造物台造物
 	
 	public static final int TONGHUA_ENTER_FIGHT= 2058;//进入同化怪物关卡
-	
+	// 2059 在前面用到了 一键下纹章
 	public static final int CHECK_UNLOCK= 2070;//关卡解锁
 	
 	public static final int CD_DOWN= 2071;//倒计时开始
