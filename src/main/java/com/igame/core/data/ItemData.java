@@ -1,21 +1,20 @@
 package com.igame.core.data; 
 
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.google.common.collect.Maps;
+import com.igame.core.data.template.ItemTemplate;
+import com.igame.work.item.dto.Item;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.google.common.collect.Maps;
-import com.igame.core.data.template.ItemTemplate;
-import com.igame.work.item.dto.Item;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 
@@ -85,20 +84,20 @@ public class ItemData
 	 * @return
 	 */
 	public List<Item> getByEquip(Collection<Item> items, int rtype,String effects){
-		
-		List<Item> ls = items.stream().filter(e->
+		Comparator<Item> itemComparator;
+		if(rtype == 1){
+			itemComparator = (h1, h2) -> getTemplate(h2.getItemId()).getItenRarity() - getTemplate(h1.getItemId()).getItenRarity() == 0 ? getTemplate(h2.getItemId()).getSale() - getTemplate(h1.getItemId()).getSale() : getTemplate(h2.getItemId()).getItenRarity() - getTemplate(h1.getItemId()).getItenRarity();
+		}else{
+			itemComparator = (h1, h2) -> getTemplate(h1.getItemId()).getItenRarity() - getTemplate(h2.getItemId()).getItenRarity() == 0 ? getTemplate(h1.getItemId()).getSale() - getTemplate(h2.getItemId()).getSale() : getTemplate(h1.getItemId()).getItenRarity() - getTemplate(h2.getItemId()).getItenRarity();
+		}
+
+		return items.stream().filter(e->
 				e.getUsableCount(-1) >= 3
 						&& getTemplate(e.getItemId()) != null
 						&& getTemplate(e.getItemId()).getItemType() == 1
 						&& effects.contains(String.valueOf(getTemplate(e.getItemId()).getEffect())))
+				.sorted(itemComparator)
 				.collect(Collectors.toList());
-
-		if(rtype == 1){
-			ls.sort((h1, h2) -> getTemplate(h2.getItemId()).getItenRarity() - getTemplate(h1.getItemId()).getItenRarity() == 0 ? getTemplate(h1.getItemId()).getEffect() - getTemplate(h2.getItemId()).getEffect() : getTemplate(h2.getItemId()).getItenRarity() - getTemplate(h1.getItemId()).getItenRarity());
-		}else{
-			ls.sort((h1, h2) -> getTemplate(h1.getItemId()).getItenRarity() - getTemplate(h2.getItemId()).getItenRarity() == 0 ? getTemplate(h1.getItemId()).getEffect() - getTemplate(h2.getItemId()).getEffect() : getTemplate(h1.getItemId()).getItenRarity() - getTemplate(h2.getItemId()).getItenRarity());
-		}
-		return ls;
 	}
 }
 
