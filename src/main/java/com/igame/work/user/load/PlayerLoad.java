@@ -170,6 +170,8 @@ public class PlayerLoad {
 
 		if (player.getTurntable() != null && TurntableService.ins().needRealod(player.getTurntable().getLastUpdate()))
 			TurntableService.ins().reloadTurntable(player);
+
+		player.getPlayerCount().checkDate();
     }
     
     /**

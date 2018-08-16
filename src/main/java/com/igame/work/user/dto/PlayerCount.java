@@ -7,6 +7,8 @@ import com.igame.core.data.template.CheckPointTemplate;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 
@@ -37,6 +39,7 @@ public class PlayerCount {
 
 	private int friendExplore = 0;	//好友探索可加速次数
 
+	private String recordDate;
 
 
 	public Map<Integer, Integer> getBossCheckPoint() {
@@ -134,6 +137,14 @@ public class PlayerCount {
 		return count;
 	}
 
+	public String getRecordDate() {
+		return recordDate;
+	}
+
+	public void setRecordDate(String recordDate) {
+		this.recordDate = recordDate;
+	}
+
 	public PlayerCount transVo(){
 
 		for (Map.Entry<Integer, Integer> entry : bossCheckPoint.entrySet()) {
@@ -159,5 +170,13 @@ public class PlayerCount {
 		}
 
 		return this;
+	}
+
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	/**根据时间检查计数是否需要更新*/
+	public void checkDate() {
+		if(!sdf.format(new Date()).equals(recordDate)) {
+			friendPhy = 20;
+		}
 	}
 }
