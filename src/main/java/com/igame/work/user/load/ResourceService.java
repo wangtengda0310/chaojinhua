@@ -1,14 +1,14 @@
 package com.igame.work.user.load;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.data.DataManager;
-import com.igame.core.data.template.*;
+import com.igame.core.data.template.DrawLevelTemplate;
+import com.igame.core.data.template.GodsdataTemplate;
+import com.igame.core.data.template.ItemTemplate;
+import com.igame.core.data.template.MonsterTemplate;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.IDFactory;
 import com.igame.dto.RetVO;
@@ -21,8 +21,6 @@ import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.quest.service.QuestService;
-import com.igame.work.shop.ShopConstants;
-import com.igame.work.shop.dto.MysticalShop;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.HeadConstants;
@@ -30,6 +28,9 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;
 import com.igame.work.user.service.HeadService;
 import com.igame.work.user.service.VIPService;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  *玩家资源操作类
@@ -64,12 +65,7 @@ public class ResourceService {
     public static final int MONEY = 14;
 
     
-    
-    /**
-     * 
-     * @param reward
-     * @return
-     */
+
     public String getRewardString(RewardDto reward){
     	
     	StringBuffer items = new StringBuffer();
@@ -104,12 +100,7 @@ public class ResourceService {
     	
     }
     
-    
-	/**
-	 * 
-	 * @param player
-	 * @param reward
-	 */
+
 	public void addRewarToPlayer(Player player,RewardDto reward){
 
 		// ADDREWARD
@@ -138,14 +129,7 @@ public class ResourceService {
 		
 	}
     
-    
-	/**
-	 * 
-	 * @param val
-	 * @param minuts
-	 * @param maxMinuts
-	 * @return
-	 */
+
     public RewardDto getResRewardDto(String val,int minuts,int maxMinuts){
     	
     	int timeCount = minuts;
@@ -223,9 +207,7 @@ public class ResourceService {
     
 	/**
 	 * 
-	 * @param val
 	 * @param rate 概率 0-100
-	 * @return
 	 */
     public RewardDto getRewardDto(String val,String rate){
     	
@@ -281,13 +263,7 @@ public class ResourceService {
     }
     
     
-    
-    /**
-     * 
-     * @param total
-     * @param add
-     * @return
-     */
+
     public RewardDto getTotalRewardDto(RewardDto total,RewardDto add){
     	
     	total.addGold(add.getGold());
@@ -307,7 +283,6 @@ public class ResourceService {
     
     /**
      * 增加经验
-     * @param player
      */
     public int addExp(Player player,int expAdd){
 
@@ -316,15 +291,13 @@ public class ResourceService {
 		int maxLevel = DataManager.PlayerLvData.getMaxLevel();//最大等级
 		int currLevel = player.getPlayerLevel();
 		int nextLevelNeedExp = DataManager.PlayerLvData.getTemplate(currLevel).getPlayerExp();//升到下一级所需经验
-		int count = 0;
-		while ((currLevel + 1) <= maxLevel && exp >= nextLevelNeedExp) {
+		while (currLevel < maxLevel && exp >= nextLevelNeedExp) {	// 满级后经验值不可以获得经验
 			currLevel++;
 			exp-=nextLevelNeedExp;
 			nextLevelNeedExp = DataManager.PlayerLvData.getTemplate(currLevel).getPlayerExp();
-			count++;
-//			if(count>=50){
-//				break;
-//			}
+		}
+		if(currLevel>=maxLevel){	// 满级后经验值卡在0 不能增加
+			exp = 0;
 		}
 		player.setExp(exp);
 		if (currLevel != tempLevel) {
@@ -341,7 +314,6 @@ public class ResourceService {
     
     /**
      * 增加怪物经验
-     * @param player
      */
     public int addMonsterExp(Player player,long objectId,int expAdd,boolean send){
     	int ret = 0;
@@ -351,11 +323,17 @@ public class ResourceService {
     		return ret;
     	}
     	if(mm.getLevel() >= DataManager.MonsterLvData.getMaxLevel()){//最大等级
+			if (mm.getExp() != 0) {	// 经验值卡在0 不能增加
+				mm.setExp(0);
+			}
     		ret = ErrorCode.LEVEL_MAX;
     		return ret;
     	}
     	int ml = DataManager.PlayerLvData.getTemplate(player.getPlayerLevel()).getMonsterLv();//不能超过人物等级
     	if(mm.getLevel() >= ml){//最大等级
+			if (mm.getExp() != 0) {	// 经验值卡在0 不能增加
+				mm.setExp(0);
+			}
     		ret = ErrorCode.LEVEL_NOT_PLAYER;
     		return ret;
     	}
@@ -364,16 +342,14 @@ public class ResourceService {
 		int maxLevel = DataManager.MonsterLvData.getMaxLevel();//最大等级
 		int currLevel = mm.getLevel();
 		int nextLevelNeedExp = DataManager.MonsterLvData.getTemplate(currLevel).getExp();//升到下一级所需经验
-		int count = 0;
 
-		while ((currLevel + 1) <= maxLevel && (currLevel + 1) <= ml && exp >= nextLevelNeedExp) {
+		while (currLevel < maxLevel && currLevel < ml && exp >= nextLevelNeedExp) {
 			currLevel++;
 			exp-=nextLevelNeedExp;
 			nextLevelNeedExp = DataManager.MonsterLvData.getTemplate(currLevel).getExp();
-			count++;
-//			if(count>=50){
-//				break;
-//			}
+		}
+		if(currLevel>=maxLevel || currLevel >= ml){	// 满级或达到玩家等级后经验值卡在0 不能增加
+			exp = 0;
 		}
 		mm.setExp(exp);
 		if(currLevel >=  DataManager.MonsterLvData.getMaxLevel() || currLevel >= ml){
@@ -422,8 +398,6 @@ public class ResourceService {
     
     /**
      * 增加金币
-     * @param player
-     * @param value
      */
     public void addGold(Player player,long value){
     	player.addGold(value);
@@ -439,8 +413,6 @@ public class ResourceService {
     
     /**
      * 增加体力
-     * @param player
-     * @param value
      */
     public void addPhysica(Player player,int value){
     	player.addPhysical(value);
@@ -455,8 +427,6 @@ public class ResourceService {
     
     /**
      * 增加钻石
-     * @param player
-     * @param value
      */
     public void addDiamond(Player player,int value){
     	player.addDiamond(value);
@@ -472,8 +442,6 @@ public class ResourceService {
     
     /**
      * 玩家升级之后的事情
-     * @param tempLevel
-     * @param currLevel
      */
     public void upgradePlayer(Player player,int tempLevel,int currLevel){
     	int old = player.getBattleSpace();
@@ -531,9 +499,6 @@ public class ResourceService {
     
     /**
      * 添加道具
-     * @param player
-     * @param itemId
-     * @param count
      */
     public Item addItem(Player player,int itemId,int count,boolean send){
     	int ret = 0;
@@ -574,8 +539,6 @@ public class ResourceService {
     
     /**
      * 添加怪物
-     * @param player
-     * @param count
      */
     public List<Monster> addMonster(Player player,int monster_id,int count,boolean send){
     	int ret = 0;
@@ -617,11 +580,6 @@ public class ResourceService {
     
     /**
      * 使用道具
-     * @param itemId
-     * @param count
-     * @param targetType
-     * @param targetId
-     * @return
      */
     public int useItem(Player player,int itemId,int count,int targetType,long targetId){
     	
@@ -702,8 +660,6 @@ public class ResourceService {
     
     /**
      * 增加同调经验
-     * @param player
-     * @param 
      */
     public int addTongExp(Player player,int tongExpAdd){
 
@@ -785,8 +741,6 @@ public class ResourceService {
     
     /**
      * 增加造物台经验值
-     * @param player
-     * @param value
      */
     public void addDrawExp(Player player,int value){
     	
@@ -868,8 +822,6 @@ public class ResourceService {
 	
 	/**
 	 * 竞技场挑战次数
-	 * @param player
-	 * @param value
 	 */
     public void addAreaCount(Player player,int value){
     	player.addAreaCount(value);
@@ -881,8 +833,6 @@ public class ResourceService {
 
 	/**
 	 * 增加充值金额
-	 * @param player
-	 * @param value
 	 */
 	public void addMoney(Player player,long value){
 
