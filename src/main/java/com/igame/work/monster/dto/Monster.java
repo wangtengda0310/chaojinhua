@@ -1,31 +1,27 @@
 package com.igame.work.monster.dto;
 
-import java.util.*;
-
-import com.igame.work.fight.service.ComputeFightService;
-import com.igame.work.user.dto.Team;
-
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Transient;
-import org.mongodb.morphia.utils.IndexDirection;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.data.DataManager;
-import com.igame.core.data.template.ItemTemplate;
 import com.igame.core.data.template.MonsterTemplate;
 import com.igame.core.data.template.TongDiaoTemplate;
 import com.igame.core.db.BasicVO;
 import com.igame.core.log.ExceptionLog;
 import com.igame.util.MyUtil;
-import com.igame.work.item.dto.Item;
+import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.monster.service.EffectService;
-import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.dto.Team;
 import com.igame.work.user.dto.TongAddDto;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Indexed;
+import org.mongodb.morphia.annotations.Transient;
+import org.mongodb.morphia.utils.IndexDirection;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -973,10 +969,10 @@ public class Monster extends BasicVO implements Cloneable {
 
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 
 }

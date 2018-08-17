@@ -1,11 +1,6 @@
 package com.igame.work.fight.dto;
 
 
-import java.util.List;
-
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Transient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igame.core.data.DataManager;
 import com.igame.core.data.template.GodsEffectTemplate;
@@ -14,6 +9,10 @@ import com.igame.util.MyUtil;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Transient;
+
+import java.util.List;
 
 /**
  * 
@@ -77,6 +76,8 @@ public class MatchMonsterDto   implements Cloneable  {
 	
 	@JsonIgnore
 	public float iasInit;//最大攻击速度
+
+	private String equip;//装备(纹章)
 	
 	public MatchMonsterDto(){
 		
@@ -108,7 +109,7 @@ public class MatchMonsterDto   implements Cloneable  {
 		this.skill = monster.getSkill();
 		this.atkType = monster.getAtkType();
 		this.iasInit = monster.getFightProp().getIasInit();
-		 
+		this.equip = monster.getEquip();
 		
 	}
 
@@ -264,8 +265,14 @@ public class MatchMonsterDto   implements Cloneable  {
 	public void setSkill(String skill) {
 		this.skill = skill;
 	}
-	
-	
+
+	public String getEquip() {
+		return equip;
+	}
+
+	public void setEquip(String equip) {
+		this.equip = equip;
+	}
 
 	public String getRound() {
 		return round;
