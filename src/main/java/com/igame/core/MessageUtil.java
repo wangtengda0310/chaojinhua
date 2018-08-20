@@ -1,9 +1,5 @@
 package com.igame.core;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -25,10 +21,17 @@ import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.quest.dto.TaskDayInfo;
-import com.igame.work.user.dto.*;
+import com.igame.work.user.dto.Mail;
+import com.igame.work.user.dto.MessageCache;
+import com.igame.work.user.dto.Player;
+import com.igame.work.user.dto.Team;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 消息发送类
@@ -584,66 +587,6 @@ public class MessageUtil {
 		vo.addData("turntable", player.transTurntableVo());
 
 		MessageUtil.sendMessageToPlayer(player, MProtrol.TURNTABLE_UPDATE, vo);
-	}
-
-
-	/**
-	 * 推送玩家次数更新
-	 * @param player
-	 */
-	public static void notiyCountChange(Player player, String stype, String ext, int count) {
-
-		//推送
-		RetVO vo = new RetVO();
-		vo.addData("stype",stype);
-		vo.addData("ext",ext);
-		vo.addData("count",count);
-
-		MessageUtil.sendMessageToPlayer(player, MProtrol.COUNT_UPDATE, vo);
-	}
-
-
-	/**
-	 * 推送玩家次数更新
-	 * @param player
-	 */
-	public static void notiyCountChange(Player player, String stype, int count) {
-
-		//推送
-		RetVO vo = new RetVO();
-		vo.addData("stype",stype);
-		vo.addData("ext","");
-		vo.addData("count",count);
-
-		MessageUtil.sendMessageToPlayer(player, MProtrol.COUNT_UPDATE, vo);
-	}
-
-
-	/**
-	 * 推送玩家次数更新
-	 * @param player
-	 */
-	public static void notiyAllCountChange(Player player) {
-
-		//推送
-		RetVO vo = new RetVO();
-
-		vo.addData("playerCount",player.getPlayerCount());
-		MessageUtil.sendMessageToPlayer(player, MProtrol.COUNT_ALL_UPDATE, vo);
-	}
-
-
-	/**
-	 * 推送玩家次数更新
-	 * @param player
-	 */
-	public static void notiyTopChange(Player player) {
-
-		//推送
-		RetVO vo = new RetVO();
-
-		vo.addData("playerTop",player.getPlayerTop());
-		MessageUtil.sendMessageToPlayer(player, MProtrol.TOP_UPDATE, vo);
 	}
 
 	/**

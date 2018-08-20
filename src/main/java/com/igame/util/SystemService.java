@@ -120,7 +120,6 @@ public class SystemService extends BasicVO {
 			MessageUtil.notiyWuResetChange(player);
 			MessageUtil.notiyDeInfoChange(player);
 			MessageUtil.notiyVipPrivilegesChange(player);
-			MessageUtil.notiyAllCountChange(player);
 			MessageUtil.notiyFriendInfo(player);
 		}
 	}

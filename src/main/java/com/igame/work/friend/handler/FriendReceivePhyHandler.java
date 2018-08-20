@@ -1,15 +1,7 @@
 package com.igame.work.friend.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.collections.map.HashedMap;
-
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
@@ -18,6 +10,11 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
+import org.apache.commons.collections.map.HashedMap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xym
@@ -107,7 +104,6 @@ public class FriendReceivePhyHandler extends BaseHandler{
         ResourceService.ins().addPhysica(player,addPhy);
 
         //推送体力领取次数更新
-        /*客户端没用这个协议*/MessageUtil.notiyCountChange(player,"friendPhy",player.getPlayerCount().getFriendPhy());
 
         vo.addData("receiveStates",voList);
         vo.addData("physicalCount",20 - player.getPlayerCount().getFriendPhy());    //todo 傻逼前端

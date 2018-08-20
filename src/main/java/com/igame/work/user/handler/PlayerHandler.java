@@ -135,8 +135,6 @@ public class PlayerHandler extends BaseHandler{
 		vo.addData("friends", player.getFriends());
 		vo.addData("teams",player.getTeams().values());
 		vo.addData("vipPrivileges",player.getVipPrivileges());
-		vo.addData("playerCount",player.getPlayerCount().transVo());
-		vo.addData("playerTop",player.getPlayerTop().transVo());
 		try {
 			json = mapper.writeValueAsString(vo);
 		} catch (JsonProcessingException e) {

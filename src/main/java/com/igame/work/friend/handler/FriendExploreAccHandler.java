@@ -2,7 +2,6 @@ package com.igame.work.friend.handler;
 
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
@@ -15,7 +14,6 @@ import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -101,7 +99,6 @@ public class FriendExploreAccHandler extends BaseHandler{
 
         //减少可加速次数
         player.getPlayerCount().addExploreCount(-1);
-        MessageUtil.notiyCountChange(player,"friendExplore",player.getPlayerCount().getFriendPhy());
 
         //推送奖励
         String reward = "1,1,2000";

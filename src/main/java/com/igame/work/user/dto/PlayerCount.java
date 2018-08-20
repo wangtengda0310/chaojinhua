@@ -2,7 +2,6 @@ package com.igame.work.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Maps;
-import com.igame.core.MessageUtil;
 import com.igame.core.data.template.CheckPointTemplate;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
@@ -13,7 +12,7 @@ import java.util.Map;
 
 
 /**
- * 
+ *
  * @author xym
  *
  * 	角色剩余次数
@@ -111,7 +110,6 @@ public class PlayerCount {
 			int count = bossCheckPoint.get(chapterId) == null? value : bossCheckPoint.get(chapterId) + value;
 			bossCheckPoint.put(chapterId,count);
 
-			MessageUtil.notiyCountChange(player,"bossCheckPoint",String.valueOf(chapterId),count);
 		}
 	}
 

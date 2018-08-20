@@ -58,15 +58,8 @@ public class MProtrol {
 	
 	public static final int MONSTER_LSIT = 1021;//怪物信息
 
-	public static final int COUNT_UPDATE = 1022;//玩家剩余可用次数更新
-
-	public static final int COUNT_ALL_UPDATE = 1023;//玩家剩余可用次数更新
-
-	public static final int TOP_UPDATE = 1024;//玩家剩余可用次数更新
-
 	public static final int FRIENDS_UPDATE = 1025;//玩家好友更新
-	
-		
+
 	public static final int CHANGE_TEAM = 2001;//怪物换阵
 
 	public static final int MONSTER_UPDATE = 2002;//玩家怪物更新新
