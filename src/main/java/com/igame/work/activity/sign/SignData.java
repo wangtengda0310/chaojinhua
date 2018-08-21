@@ -18,6 +18,9 @@ public class SignData implements Activities {
     private String signData;
     private String totalSign;
 
+    public SignData() {
+
+    }
     @Transient
     private Player player;
     public SignData(Player player) {

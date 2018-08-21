@@ -7,6 +7,7 @@ import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.util.SystemService;
 import com.igame.work.activity.ActivityHandler;
+import com.igame.work.activity.meiriLiangfa.MeiriLiangfaHandler;
 import com.igame.work.activity.sign.SignHandler;
 import com.igame.work.chat.handler.*;
 import com.igame.work.chat.service.PublicMessageService;
@@ -326,6 +327,8 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ACTICITY), ActivityHandler.class);//幸运大转盘十连抽
 
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.SIGN), SignHandler.class);//签到
+
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MEIRI_LIANGFA), MeiriLiangfaHandler.class);//每日两发
 
 		JobManager.ins();
 

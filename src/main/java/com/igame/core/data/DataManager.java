@@ -1,6 +1,7 @@
 package com.igame.core.data;
 
 
+import com.igame.work.activity.ActivityConfig;
 import com.igame.work.activity.sign.SignConfig;
 
 public class DataManager {
@@ -270,6 +271,11 @@ public class DataManager {
 	 * 签到
 	 */
 	public static SignConfig signConfig;
+
+	/**
+	 * 大部分活动共用的配置
+	 */
+	public static ActivityConfig activityConfig;
 	
     private static final DataManager domain = new DataManager();
 
@@ -335,6 +341,7 @@ public class DataManager {
 		luckTableData             		=XmlDataLoader.loadData(LuckTableData.class,   "resource/lucktable.xml" );
 
 		signConfig             		=XmlDataLoader.loadData(SignConfig.class,   "resource/signreward.xml" );
+		activityConfig             		=XmlDataLoader.loadData(ActivityConfig.class,   "resource/activity.xml" );
 
 	}
 
