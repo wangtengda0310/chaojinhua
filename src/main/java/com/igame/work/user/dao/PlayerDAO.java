@@ -77,6 +77,7 @@ public class PlayerDAO extends AbsDao {
     	Datastore ds = getDatastore(player.getSeverId());
     	UpdateOperations<Player> up = ds.createUpdateOperations(Player.class)
     		.set("nickname", player.getNickname())
+    		.set("lastNickname", player.getLastNickname())
     		.set("playerLevel", player.getPlayerLevel())
     		.set("exp", player.getExp())
     		.set("vip", player.getVip())

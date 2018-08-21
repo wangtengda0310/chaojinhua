@@ -11,25 +11,9 @@ import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
 /**
  * @author xym
  */
-public abstract class BaseEventHandler extends BaseServerEventHandler {
+public abstract class BaseEventHandler extends BaseServerEventHandler implements GameHandler {
 
-
-    protected void sendError(int errorCode, String cmdName, RetVO vo, User user) {
-
-        vo.setState(1);
-        vo.setErrCode(errorCode);
-
-        send(cmdName,vo, user);
-    }
-
-    protected void sendSucceed(String cmdName, RetVO vo, User user) {
-
-        vo.setState(0);
-
-        send(cmdName,vo, user);
-    }
-
-    private void send(String cmdName, RetVO vo, User user) {
+    public void send(String cmdName, RetVO vo, User user) {
         ObjectMapper mapper = new ObjectMapper();
         String json = null;
         ISFSObject res = new SFSObject();

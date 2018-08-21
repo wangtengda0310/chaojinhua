@@ -2,6 +2,7 @@ package com.igame.server;
 
 import com.igame.core.MProtrol;
 import com.igame.core.db.DBManager;
+import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.util.SystemService;
@@ -48,8 +49,10 @@ public class GameServer extends SFSExtension {
 		
 		DBManager.getInstance();
 		
+		addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, BaseHandler.serverEventListener());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
+
 		addEventHandler(SFSEventType.USER_LOGIN, LoginEventHandler.class);//自定义登录接口
-		
+
 		addEventHandler(SFSEventType.USER_LOGOUT, LOGINOUTEventHandler.class);
 		
 		addEventHandler(SFSEventType.USER_DISCONNECT, DisconnectEventHandler.class);
@@ -229,7 +232,9 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.HEAD_CHANGE), ChangeHeadHandler.class);//更换头像
 
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.FRAME_CHANGE), ChangeFrameHandler.class);//更换头像框
-		
+
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MODIFY_NICKNAME), ModifyNicknameHandler.class);//更换昵称
+
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.AREA_INFO), AreaInfoHandler.class);//获取竞技场信息
 
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.BALLISTIC_RANKS), BallisticRankHandler.class);//暴走时刻排行榜

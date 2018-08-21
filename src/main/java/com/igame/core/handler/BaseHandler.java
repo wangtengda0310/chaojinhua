@@ -1,26 +1,66 @@
 package com.igame.core.handler;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import net.sf.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igame.core.SessionManager;
 import com.igame.dto.RetVO;
 import com.igame.work.user.dto.MessageCache;
 import com.igame.work.user.dto.Player;
+import com.smartfoxserver.v2.core.ISFSEvent;
+import com.smartfoxserver.v2.core.SFSEventParam;
+import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
+import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
 import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
+import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author xym
  */
-public abstract class BaseHandler extends BaseClientRequestHandler{
-	
+public abstract class BaseHandler extends BaseClientRequestHandler implements GameHandler {
+	private static Map<String, EventListener> listeners = new HashMap<>();
+
+	{
+		if(eventListener()!=null) {
+			listeners.put(getClass().getSimpleName(), eventListener());
+		}
+	}
+
+	/** 接受用户相关的事件并预处理后传给GameHandler.EventListener */
+	public static BaseServerEventHandler serverEventListener() {
+		return new BaseServerEventHandler() {
+			@Override
+			public void handleServerEvent(ISFSEvent isfsEvent) {
+				if (isfsEvent.getType()== SFSEventType.USER_VARIABLES_UPDATE && isfsEvent.getParameter(SFSEventParam.VARIABLES_MAP)!=null) {
+					if(isfsEvent.getParameter(SFSEventParam.VARIABLES_MAP) instanceof Map) {
+						Map parameters = (Map) isfsEvent.getParameter(SFSEventParam.VARIABLES_MAP);
+						Object parameter = parameters.get("last.event");
+						if(parameter instanceof SFSUserVariable) {
+							for (EventListener listener: listeners.values()) {
+								listener.handleEvent(((SFSUserVariable)parameter).getValue());
+							}
+						}
+					}
+				}
+			}
+		};
+	}
+
+	/** 发送用户相关的事件
+	 * 使用的是setUserVariables 所以会受到用户变量限制 SmartFoxServer默认允许每个玩家使用5个变量
+	 */
+	public void fireEvent(User user, Object event) {
+
+		getApi().setUserVariables(user, Collections.singletonList(new SFSUserVariable("last.event",event, false, true)), false, true);
+	}
 	
 	protected boolean reviceMessage(User user, ISFSObject params,RetVO vo) {
 		
@@ -40,22 +80,7 @@ public abstract class BaseHandler extends BaseClientRequestHandler{
 		return false;
 	}
 
-    protected void sendError(int errorCode, String cmdName, RetVO vo, User user) {
-
-        vo.setState(1);
-        vo.setErrCode(errorCode);
-
-        send(cmdName,vo, user);
-    }
-
-    protected void sendSucceed(String cmdName, RetVO vo, User user) {
-
-        vo.setState(0);
-
-        send(cmdName,vo, user);
-    }
-
-    protected void send(String cmdName, RetVO vo, User user) {
+    public void send(String cmdName, RetVO vo, User user) {
         ObjectMapper mapper = new ObjectMapper();
         String json = null;
         ISFSObject res = new SFSObject();
@@ -82,14 +107,14 @@ public abstract class BaseHandler extends BaseClientRequestHandler{
 	        		for(int i = 0;i < left;i++){
 	        			player.getProMap().remove(key.get(i));
 	        		}
-	        		
+
 	        	}
 			}
 		}
 //		if(!"500".equals(cmdName)){
 			  send(cmdName, res, user);
 //		}
-      
+
     }
 
 }

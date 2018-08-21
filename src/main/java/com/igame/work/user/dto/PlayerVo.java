@@ -1,6 +1,7 @@
 package com.igame.work.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Sets;
 import com.igame.core.db.BasicVO;
 import org.mongodb.morphia.annotations.Entity;
@@ -28,6 +29,9 @@ public class PlayerVo extends BasicVO {
     protected String username;//角色名
 
     protected String nickname;//角色昵称
+
+    @JsonIgnore
+    private String lastNickname;//修改前的昵称
 
     protected int gender;//玩家性别
 
@@ -405,6 +409,11 @@ public class PlayerVo extends BasicVO {
 		this.round = round;
 	}
 
-    
-    
+    public String getLastNickname() {
+        return lastNickname;
+    }
+
+    public void setLastNickname(String lastNickname) {
+        this.lastNickname = lastNickname;
+    }
 }

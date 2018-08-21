@@ -336,6 +336,8 @@ public class MProtrol {
 
 	public static final int FRAME_CHANGE = 4011;//更换头像框
 
+	public static final int MODIFY_NICKNAME = 4012;//更换昵称
+
 	public static final int VIP_DAY_PACK = 4021;//VIP领取每日礼包
 
 	public static final int VIP_FRIST_PACK = 4022;//VIP购买限定礼包
