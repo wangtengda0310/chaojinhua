@@ -1,14 +1,13 @@
 package com.igame.work.fight.service;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
 import com.igame.core.data.DataManager;
 import com.igame.core.data.template.SkillTemplate;
 import com.igame.util.MyUtil;
 import com.igame.work.monster.dto.Effect;
 import com.igame.work.monster.dto.Monster;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 
@@ -19,9 +18,6 @@ public class FightUtil {
 	
 	/**
 	 * 根据配置生成怪物对象
-	 * @param monsterId
-	 * @param monsterLevel
-	 * @return
 	 */
 	public static Map<Long,Monster> createMonster(String monsterId,String monsterLevel,String site,String skillLv,String equips){
 		
@@ -31,7 +27,7 @@ public class FightUtil {
 				site = "";
 			}
 			if(equips == null){
-				equips = "";
+				equips = "-1,-1,-1,-1";
 			}
 			long id = 1;
 			String[] mms = monsterId.split(",");
@@ -58,8 +54,6 @@ public class FightUtil {
 	
 	/**
 	 * 普通攻击伤害值
-	 * @param attacker
-	 * @return
 	 */
 	public static int getNormalDamge(Monster attacker,Monster target){
 		
@@ -84,12 +78,6 @@ public class FightUtil {
 	
 	/**
 	 * 技能攻击伤害值
-	 * @param attacker
-	 * @param target
-	 * @param skillTemplate
-	 * @param skillLevel
-	 * @param skillExp
-	 * @return
 	 */
 	public static int getSkillDamge(Monster attacker,Monster target,SkillTemplate skillTemplate,int skillLevel,int skillExp){
 		
@@ -124,10 +112,6 @@ public class FightUtil {
 	
 	/**
 	 * buffer是否生效
-	 * @param mm
-	 * @param effectType
-	 * @param campLimit
-	 * @return
 	 */
 	public static boolean isValidEffect(Monster mm,int effectType,String campLimit){
 		
@@ -167,8 +151,6 @@ public class FightUtil {
 
 	/**
 	 * 判断是增益还是减益效果
-	 * @param effect
-	 * @return
 	 */
 	public static int effectSacle(Effect effect){
 		

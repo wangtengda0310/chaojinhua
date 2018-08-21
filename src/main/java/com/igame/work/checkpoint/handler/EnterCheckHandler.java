@@ -187,7 +187,6 @@ public class EnterCheckHandler extends BaseHandler{
 	 * 关卡是否存在心魔
 	 * @param player 当前角色
 	 * @param chapterId 关卡ID
-	 * @return
 	 */
 	private boolean isExistXinmo(Player player, int chapterId) {
 		XingMoDto xingMoDto = player.getXinMo().get(chapterId);
@@ -198,7 +197,7 @@ public class EnterCheckHandler extends BaseHandler{
 		CheckPointTemplate ct = DataManager.CheckPointData.getTemplate(chapterId);
 		if(ct != null){
 			if(ct.getRound() == 1){//一周目
-				FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(ct.getMonsterId(), ct.getLevel(), ct.getSite(),"","")));
+				FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(ct.getMonsterId(), ct.getLevel(), ct.getSite(),"",ct.getMonsterProp())));
 
 		    	for(Monster m : fb.getFightB().getMonsters().values()){
 		    		m.setObjectId(idx.incrementAndGet());
@@ -215,7 +214,7 @@ public class EnterCheckHandler extends BaseHandler{
 				if(mid.length > 0){
 					int index = 1;
 					for(int i =0;i<mid.length;i++){
-						FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(mid[i], lv[i], site[i],"","")));
+						FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(mid[i], lv[i], site[i],"",ct.getMonsterProp())));
 
 				    	for(Monster m : fb.getFightB().getMonsters().values()){
 				    		m.setObjectId(idx.incrementAndGet());
