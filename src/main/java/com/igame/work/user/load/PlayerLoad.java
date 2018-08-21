@@ -64,6 +64,8 @@ public class PlayerLoad {
     	QuestDAO.ins().getByPlayer(serverId, player);
 		if (player.getActivityData() == null) {
 			player.setActivityData(new PlayerActivityData(player));
+		} else {
+			player.getActivityData().all().forEach(activity->activity.setPlayer(player));
 		}
     	return null;
     }

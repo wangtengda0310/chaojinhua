@@ -35,15 +35,32 @@ public class SignHandler extends BaseHandler {
 
         int index = jsonObject.getInt("index");
 
+        if(player.getActivityData().all().noneMatch(activities -> activities.getType()==1)) {
+            player.getActivityData().add(new SignData(player));
+        }
         if (index == 0) {
-            String date = player.getActivityData().getSignData().signToday();
+            String date = player.getActivityData().all()
+                    .filter(activity -> activity.getType() == 1)
+                    .map(activity->{
+                        if(activity instanceof SignData){
+                            return ((SignData)activity).signToday();
+                        }
+                        return null;
+                    }).findAny().orElse(null);
             if (date == null) {
                 sendError(ErrorCode.PACK_PURCHASED, MProtrol.toStringProtrol(MProtrol.SIGN), vo, user);
                 return;
             }
             vo.addData("date", date);
         } else if (index < 5) {
-            int ind = player.getActivityData().getSignData().signTotal(index);
+            int ind = player.getActivityData().all()
+                    .filter(activity -> activity.getType() == 1)
+                    .map(activity->{
+                        if(activity instanceof SignData){
+                            return ((SignData)activity).signTotal(index);
+                        }
+                        return -1;
+                    }).findAny().orElse(-1);
             if (ind != index) {
                 sendError(ErrorCode.PACK_PURCHASED, MProtrol.toStringProtrol(MProtrol.SIGN), vo, user);
                 return;

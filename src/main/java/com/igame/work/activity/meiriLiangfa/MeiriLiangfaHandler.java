@@ -5,7 +5,6 @@ import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
-import com.igame.work.activity.PlayerActivityData;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -36,15 +35,19 @@ public class MeiriLiangfaHandler extends BaseHandler {
 
         int index = jsonObject.getInt("index");
 
-        if (player.getActivityData() == null) {
-            player.setActivityData(new PlayerActivityData(player));
+        if(player.getActivityData().all().noneMatch(activities -> activities.getType()==1004)) {
+            player.getActivityData().add(new MeiriLiangfaData(player));
         }
 
-        if (player.getActivityData().getMeiriLiangfaData() == null) {
-            player.getActivityData().setMeiriLiangfaData(new MeiriLiangfaData(player));
-        }
+        String date = player.getActivityData().all()
+                .filter(activity -> activity.getType() == 1)
+                .map(activity->{
+                    if(activity instanceof MeiriLiangfaData){
+                        return ((MeiriLiangfaData)activity).receive(index);
+                    }
+                    return null;
+                }).findAny().orElse(null);
 
-        String date = player.getActivityData().getMeiriLiangfaData().receive(index);
         if (date == null) {
             sendError(ErrorCode.PACK_PURCHASED, MProtrol.toStringProtrol(MProtrol.MEIRI_LIANGFA), vo, user);
             return;

@@ -25,7 +25,7 @@ public class ActivityConfig
 	void afterUnmarshal(Unmarshaller u, Object parent)
 	{
 		its.stream()
-				.filter(template->1004==template.getActivity_sign())
+				.filter(template->"1".equals(template.getActivity_show()))
 				.forEach(MeiriLiangfaData::addActivityConfigTemplate);
 	}
 	

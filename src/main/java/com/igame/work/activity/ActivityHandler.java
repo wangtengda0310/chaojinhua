@@ -35,8 +35,9 @@ public class ActivityHandler extends BaseHandler {
             player.setActivityData(new PlayerActivityData(player));
         }
 
-        data.add(player.getActivityData().getSignData().toClientData());
-        data.add(player.getActivityData().getMeiriLiangfaData().toClientData());
+        player.getActivityData().all().forEach(
+                activity -> data.add(activity.toClientData())
+        );
 
         vo.addData("activitiesData", data);
         sendSucceed(MProtrol.toStringProtrol(MProtrol.ACTICITY), vo, user);

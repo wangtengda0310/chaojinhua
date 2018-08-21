@@ -19,7 +19,7 @@ public class MeiriLiangfaData implements Activities {
     @Transient
     private static List<ActivityConfigTemplate> configs = new ArrayList<>();
     public static void addActivityConfigTemplate(ActivityConfigTemplate template) {
-        if ("1".equals(template.getActivity_show())) {
+        if (1004==template.getActivity_sign()) {
             configs.add(template);
         }
     }
@@ -88,7 +88,7 @@ public class MeiriLiangfaData implements Activities {
     }
 
     @Override
-    public String loadConfig() {
-        return null;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

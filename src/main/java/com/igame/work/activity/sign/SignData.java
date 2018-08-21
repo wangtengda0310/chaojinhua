@@ -55,8 +55,8 @@ public class SignData implements Activities {
     }
 
     @Override
-    public String loadConfig() {
-        return null;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public void setSignData(String signData) {
