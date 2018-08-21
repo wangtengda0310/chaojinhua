@@ -1,16 +1,14 @@
 package com.igame.core.data;
 
-import java.io.File;
+import com.igame.core.log.ExceptionLog;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
-import org.xml.sax.SAXException;
-
-import com.igame.core.log.ExceptionLog;
+import java.net.URL;
 
 /**
  * 
@@ -37,7 +35,8 @@ public class XmlDataLoader {
 		try {
 			JAXBContext jc = JAXBContext.newInstance(dataClass);
 			Unmarshaller un = jc.createUnmarshaller();
-			return (D) un.unmarshal(ClassLoader.getSystemClassLoader().getSystemResource(dataPath));
+			URL systemResource = ClassLoader.getSystemClassLoader().getSystemResource("resource/" + dataPath);
+			return (D) un.unmarshal(systemResource);
 		} catch (Exception e) {
 			e.printStackTrace();
 			ExceptionLog.error(e);

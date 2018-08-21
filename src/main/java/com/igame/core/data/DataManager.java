@@ -286,62 +286,58 @@ public class DataManager {
 	public DataManager()
 	{	
 
-		MONSTER_DATA                   =XmlDataLoader.loadData(MonsterData.class,   "resource/monsterdata.xml" );//怪物信息
-		PlayerLvData                   =XmlDataLoader.loadData(PlayerLvData.class,   "resource/playerlevel.xml" );//玩家等级模板
-		MonsterLvData      			   =XmlDataLoader.loadData(MonsterLvData.class,   "resource/monsterlevel.xml" );//怪物等级模板
-		ItemData           			   =XmlDataLoader.loadData(ItemData.class,   "resource/itemdata.xml" );//道具模板
-		MonsterEvolutionData           =XmlDataLoader.loadData(MonsterEvolutionData.class,   "resource/monsterevolution.xml" );//怪物进化
-		MonsterBreakData               =XmlDataLoader.loadData(MonsterBreakData.class,   "resource/monsterbreak.xml" );//怪物基因突破
-		CheckPointData                 =XmlDataLoader.loadData(CheckPointData.class,   "resource/chapterdata.xml" );
-		DropData                       =XmlDataLoader.loadData(DropData.class,   "resource/dropdata.xml" );
-		NewMonsterData                 =XmlDataLoader.loadData(NewMonsterData.class,   "resource/newmonster.xml" );
-		PropGroupData                  =XmlDataLoader.loadData(PropGroupData.class,   "resource/propgroup.xml" );
-		TangSuoData                    =XmlDataLoader.loadData(TangSuoData.class,   "resource/questteam.xml" );
-		WordEventData                  =XmlDataLoader.loadData(WordEventData.class,   "resource/worldevent.xml" );
-		TongDiaoData                   =XmlDataLoader.loadData(TongDiaoData.class,   "resource/suitdata.xml" );
-		TongHuaData                    =XmlDataLoader.loadData(TongHuaData.class,   "resource/strengthenlevel.xml" );
-		StrengthenmonsterData          =XmlDataLoader.loadData(StrengthenmonsterData.class,   "resource/strengthenmonster.xml" );
-		StrengthenplaceData            =XmlDataLoader.loadData(StrengthenplaceData.class,   "resource/strengthenplace.xml" );
-		StrengthenrewardData           =XmlDataLoader.loadData(StrengthenrewardData.class,   "resource/strengthenreward.xml" );
-		GodsData                       =XmlDataLoader.loadData(GodsData.class,   "resource/godsdata.xml" );
-		StrengthenRouteData            =XmlDataLoader.loadData(StrengthenRouteData.class,   "resource/strengthenroute.xml" );
-		ExchangeData                   =XmlDataLoader.loadData(ExchangeData.class,   "resource/exchangedata.xml" );
-		PokedexData                    =XmlDataLoader.loadData(PokedexData.class,   "resource/pokedexdata.xml" );
-		DrawLevelData                  =XmlDataLoader.loadData(DrawLevelData.class,   "resource/drawlevel.xml" );
-		DrawdataData                   =XmlDataLoader.loadData(DrawdataData.class,   "resource/drawdata.xml" );
-		DrawrewardData                 =XmlDataLoader.loadData(DrawrewardData.class,   "resource/drawreward.xml" );
-		SkillData                      =XmlDataLoader.loadData(SkillData.class,   "resource/skilldata.xml" );
-		SkillLvData                    =XmlDataLoader.loadData(SkillLvData.class,   "resource/skillexp.xml" );
-		EffectData                     =XmlDataLoader.loadData(EffectData.class,   "resource/effectdata.xml" );
-		QuestData                      =XmlDataLoader.loadData(QuestData.class,   "resource/questdata.xml" );
-		TrialData                      =XmlDataLoader.loadData(TrialData.class,   "resource/trialdata.xml" );
-		EndlessData                    =XmlDataLoader.loadData(EndlessData.class,   "resource/endlessdata.xml" );
-		FateData                       =XmlDataLoader.loadData(FateData.class,   "resource/destinydata.xml" );
-		DestinyData                    =XmlDataLoader.loadData(DestinyData.class,   "resource/destinyrate.xml" );
-
-		shopData                       =XmlDataLoader.loadData(ShopData.class,   "resource/shopdata.xml" );
-		shopOutPutData                 =XmlDataLoader.loadData(ShopOutPutData.class,   "resource/shopoutput.xml" );
-		shopRandomData                 =XmlDataLoader.loadData(ShopRandomData.class,   "resource/shoprandom.xml" );
-		shopRandomLvData               =XmlDataLoader.loadData(ShopRandomLvData.class,   "resource/shoprandom_lv.xml" );
-
-		headData                    	=XmlDataLoader.loadData(HeadData.class,   "resource/headdata.xml" );
-		headFrameData                   =XmlDataLoader.loadData(HeadFrameData.class,   "resource/headframe.xml" );
-		ArenaData                       =XmlDataLoader.loadData(ArenaData.class,   "resource/arenadata.xml" );
-		runData                         =XmlDataLoader.loadData(RunData.class,   "resource/rundata.xml" );
-		runTypeData                     =XmlDataLoader.loadData(RunTypeData.class,   "resource/runtype.xml" );
-		runRewardData                   =XmlDataLoader.loadData(RunRewardData.class,   "resource/runreward.xml" );
-		runBattlerewardData             =XmlDataLoader.loadData(RunBattlerewardData.class,   "resource/runbattlereward.xml" );
-
-		monsterGroupData             	=XmlDataLoader.loadData(MonsterGroupData.class,   "resource/monstergroup.xml" );
-		itemGroupData             		=XmlDataLoader.loadData(ItemGroupData.class,   "resource/itemgroup.xml" );
-		vipPackData             		=XmlDataLoader.loadData(VipPackData.class,   "resource/vippack.xml" );
-		vipLevelData             		=XmlDataLoader.loadData(VipLevelData.class,   "resource/viplevel.xml" );
-		vipData             			=XmlDataLoader.loadData(VipData.class,   "resource/vipdata.xml" );
-		GodsEffectData                  =XmlDataLoader.loadData(GodsEffectData.class,   "resource/godseffect.xml" );
-		luckTableData             		=XmlDataLoader.loadData(LuckTableData.class,   "resource/lucktable.xml" );
-
-		signConfig             		=XmlDataLoader.loadData(SignConfig.class,   "resource/signreward.xml" );
-		activityConfig             		=XmlDataLoader.loadData(ActivityConfig.class,   "resource/activity.xml" );
+		MONSTER_DATA                   =XmlDataLoader.loadData(MonsterData.class,   "monsterdata.xml" );//怪物信息
+		PlayerLvData                   =XmlDataLoader.loadData(PlayerLvData.class,   "playerlevel.xml" );//玩家等级模板
+		MonsterLvData      			   =XmlDataLoader.loadData(MonsterLvData.class,   "monsterlevel.xml" );//怪物等级模板
+		ItemData           			   =XmlDataLoader.loadData(ItemData.class,   "itemdata.xml" );//道具模板
+		MonsterEvolutionData           =XmlDataLoader.loadData(MonsterEvolutionData.class,   "monsterevolution.xml" );//怪物进化
+		MonsterBreakData               =XmlDataLoader.loadData(MonsterBreakData.class,   "monsterbreak.xml" );//怪物基因突破
+		CheckPointData                 =XmlDataLoader.loadData(CheckPointData.class,   "chapterdata.xml" );
+		DropData                       =XmlDataLoader.loadData(DropData.class,   "dropdata.xml" );
+		NewMonsterData                 =XmlDataLoader.loadData(NewMonsterData.class,   "newmonster.xml" );
+		PropGroupData                  =XmlDataLoader.loadData(PropGroupData.class,   "propgroup.xml" );
+		TangSuoData                    =XmlDataLoader.loadData(TangSuoData.class,   "questteam.xml" );
+		WordEventData                  =XmlDataLoader.loadData(WordEventData.class,   "worldevent.xml" );
+		TongDiaoData                   =XmlDataLoader.loadData(TongDiaoData.class,   "suitdata.xml" );
+		TongHuaData                    =XmlDataLoader.loadData(TongHuaData.class,   "strengthenlevel.xml" );
+		StrengthenmonsterData          =XmlDataLoader.loadData(StrengthenmonsterData.class,   "strengthenmonster.xml" );
+		StrengthenplaceData            =XmlDataLoader.loadData(StrengthenplaceData.class,   "strengthenplace.xml" );
+		StrengthenrewardData           =XmlDataLoader.loadData(StrengthenrewardData.class,   "strengthenreward.xml" );
+		GodsData                       =XmlDataLoader.loadData(GodsData.class,   "godsdata.xml" );
+		StrengthenRouteData            =XmlDataLoader.loadData(StrengthenRouteData.class,   "strengthenroute.xml" );
+		ExchangeData                   =XmlDataLoader.loadData(ExchangeData.class,   "exchangedata.xml" );
+		PokedexData                    =XmlDataLoader.loadData(PokedexData.class,   "pokedexdata.xml" );
+		DrawLevelData                  =XmlDataLoader.loadData(DrawLevelData.class,   "drawlevel.xml" );
+		DrawdataData                   =XmlDataLoader.loadData(DrawdataData.class,   "drawdata.xml" );
+		DrawrewardData                 =XmlDataLoader.loadData(DrawrewardData.class,   "drawreward.xml" );
+		SkillData                      =XmlDataLoader.loadData(SkillData.class,   "skilldata.xml" );
+		SkillLvData                    =XmlDataLoader.loadData(SkillLvData.class,   "skillexp.xml" );
+		EffectData                     =XmlDataLoader.loadData(EffectData.class,   "effectdata.xml" );
+		QuestData                      =XmlDataLoader.loadData(QuestData.class,   "questdata.xml" );
+		TrialData                      =XmlDataLoader.loadData(TrialData.class,   "trialdata.xml" );
+		EndlessData                    =XmlDataLoader.loadData(EndlessData.class,   "endlessdata.xml" );
+		FateData                       =XmlDataLoader.loadData(FateData.class,   "destinydata.xml" );
+		DestinyData                    =XmlDataLoader.loadData(DestinyData.class,   "destinyrate.xml" );
+		shopData                       =XmlDataLoader.loadData(ShopData.class,   "shopdata.xml" );
+		shopOutPutData                 =XmlDataLoader.loadData(ShopOutPutData.class,   "shopoutput.xml" );
+		shopRandomData                 =XmlDataLoader.loadData(ShopRandomData.class,   "shoprandom.xml" );
+		shopRandomLvData               =XmlDataLoader.loadData(ShopRandomLvData.class,   "shoprandom_lv.xml" );
+		headData                    	=XmlDataLoader.loadData(HeadData.class,   "headdata.xml" );
+		headFrameData                   =XmlDataLoader.loadData(HeadFrameData.class,   "headframe.xml" );
+		ArenaData                       =XmlDataLoader.loadData(ArenaData.class,   "arenadata.xml" );
+		runData                         =XmlDataLoader.loadData(RunData.class,   "rundata.xml" );
+		runTypeData                     =XmlDataLoader.loadData(RunTypeData.class,   "runtype.xml" );
+		runRewardData                   =XmlDataLoader.loadData(RunRewardData.class,   "runreward.xml" );
+		runBattlerewardData             =XmlDataLoader.loadData(RunBattlerewardData.class,   "runbattlereward.xml" );
+		monsterGroupData             	=XmlDataLoader.loadData(MonsterGroupData.class,   "monstergroup.xml" );
+		itemGroupData             		=XmlDataLoader.loadData(ItemGroupData.class,   "itemgroup.xml" );
+		vipPackData             		=XmlDataLoader.loadData(VipPackData.class,   "vippack.xml" );
+		vipLevelData             		=XmlDataLoader.loadData(VipLevelData.class,   "viplevel.xml" );
+		vipData             			=XmlDataLoader.loadData(VipData.class,   "vipdata.xml" );
+		GodsEffectData                  =XmlDataLoader.loadData(GodsEffectData.class,   "godseffect.xml" );
+		luckTableData             		=XmlDataLoader.loadData(LuckTableData.class,   "lucktable.xml" );
+		signConfig             			=XmlDataLoader.loadData(SignConfig.class,   "signreward.xml" );
+		activityConfig             		=XmlDataLoader.loadData(ActivityConfig.class,   "activity.xml" );
 
 	}
 

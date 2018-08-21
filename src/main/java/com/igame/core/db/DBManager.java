@@ -1,22 +1,14 @@
 package com.igame.core.db;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.logging.MorphiaLoggerFactory;
-
-import com.igame.work.user.dto.Tes;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+
+import java.util.*;
 
 /**
  * 
@@ -63,14 +55,7 @@ public class DBManager {
 		return datastores.get("igame1");
 	}
 
-	private DBManager() {
-		
-		try {
-			p.load(ClassLoader.getSystemClassLoader().getResourceAsStream("resource/idb.properties"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+	private void init() {
 		String DBName = p.getProperty("DBName");
 		String[] DBNames = DBName.split(",");
 		MongoClient client = getConnect();
@@ -123,10 +108,6 @@ public class DBManager {
 	
 	/**
 	 * 有用户名密码链接数据库
-	 * @param DBUrl
-	 * @param DBPort
-	 * @param myOptions
-	 * @return
 	 */
 	private MongoClient createMongoDBClient(String DBUrl, int DBPort,MongoClientOptions myOptions){
 		ServerAddress serverAddress = new ServerAddress(DBUrl, DBPort);  
@@ -150,10 +131,16 @@ public class DBManager {
 	}
 
 	
+	public static void init(Properties p) {
+		SingletonHolder.INSTANCE.p = p;
+		SingletonHolder.INSTANCE.init();
+	}
+
+
 	public static DBManager getInstance() {
 		return SingletonHolder.INSTANCE;
 	}
-	
+
 	private static final class SingletonHolder {
 		private static final DBManager INSTANCE = new DBManager();
 	}

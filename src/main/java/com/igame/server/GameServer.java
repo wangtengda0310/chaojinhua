@@ -48,7 +48,7 @@ public class GameServer extends SFSExtension {
 	@Override
 	public void init() {
 		
-		DBManager.getInstance();
+		DBManager.init(getConfigProperties());
 		
 		addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, BaseHandler.serverEventListener());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
 
