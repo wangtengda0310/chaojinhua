@@ -15,26 +15,30 @@ public class DateUtil {
 	
 	private static final DateFormat mailFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private static final DateFormat tiemFormat = new SimpleDateFormat("HH:mm:ss");
-	
+	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
 	public static String formatMailDate(Date date){
 		return mailFormat.format(date);
 	}
 	
+	public static String formatDate(Date date){
+		return dateFormat.format(date);
+	}
+
 	public static String formatTimeDate(Date date){
 		return tiemFormat.format(date);
 	}
-	
+
 	/**
 	 * 返回的是毫秒
-	 * @param date1
-	 * @param date2
-	 * @return
 	 */
 	public static long getIntervalTime(Date date1,Date date2){
 		return Math.abs(date1.getTime() - date2.getTime());
 	}
 	
-	
+	public static String formatToday() {
+		return formatDate(new Date());
+	}
 	public static long getIntervalToSoftTime(long curtime)
 	{
 		long s_time = 60*60*1000;

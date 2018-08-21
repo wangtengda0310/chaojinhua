@@ -8,6 +8,7 @@ import com.igame.core.log.DebugLog;
 import com.igame.util.MyUtil;
 import com.igame.util.PlayerTimeResCalUtil;
 import com.igame.util.SystemService;
+import com.igame.work.activity.PlayerActivityData;
 import com.igame.work.chat.dao.PlayerMessageDAO;
 import com.igame.work.chat.service.MessageBoardService;
 import com.igame.work.checkpoint.dao.WordEventDAO;
@@ -61,6 +62,9 @@ public class PlayerLoad {
 		player.setPrivateMessages(PlayerMessageDAO.ins().getMessageByPlayerId(player.getSeverId(),player.getPlayerId()).getMessages());
 		player.initMessageBoard();
     	QuestDAO.ins().getByPlayer(serverId, player);
+		if (player.getActivityData() == null) {
+			player.setActivityData(new PlayerActivityData(player));
+		}
     	return null;
     }
     

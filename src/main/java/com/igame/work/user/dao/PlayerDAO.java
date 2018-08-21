@@ -1,26 +1,16 @@
 package com.igame.work.user.dao;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.bson.Document;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
-
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
 import com.igame.core.log.ExceptionLog;
-import com.igame.dto.IDFactory;
-import com.igame.dto.IDSeq;
-import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.Tes;
 import com.igame.work.user.handler.ServerListHandler;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCursor;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class PlayerDAO extends AbsDao {
 
@@ -37,23 +27,17 @@ public class PlayerDAO extends AbsDao {
     
     /**
      * 获取角色对象
-     * @param serverId
-     * @param userId
-     * @return
      */
     public Player getPlayerByUserId(int serverId,long userId){
-    	Player p = getDatastore(serverId).find(Player.class, "userId", userId).get();
-    	return p;
+		return getDatastore(serverId).find(Player.class, "userId", userId).get();
     }
     
     public Player getPlayerByPlayerId(int serverId,long playerId){
-    	Player p = getDatastore(serverId).find(Player.class, "playerId", playerId).get();
-    	return p;
+		return getDatastore(serverId).find(Player.class, "playerId", playerId).get();
     }
     
     public Player getPlayerByPlayerNickName(int serverId,String nickname){
-    	Player p = getDatastore(serverId).find(Player.class, "nickname", nickname).get();
-    	return p;
+		return getDatastore(serverId).find(Player.class, "nickname", nickname).get();
     }
     
     public Map<Integer,Player> getAllUser(long userId){
@@ -76,9 +60,6 @@ public class PlayerDAO extends AbsDao {
     
     /**
      * 默认创建一个新玩家
-     * @param serverId
-     * @param player
-     * @return
      */
     public Player savePlayer(int serverId, Player player){
 		getDatastore(serverId).save(player);
@@ -91,7 +72,6 @@ public class PlayerDAO extends AbsDao {
     
     /**
      * 更新玩家
-     * @param player
      */
     public void updatePlayer(Player player,boolean loginOutTime){
     	Datastore ds = getDatastore(player.getSeverId());
@@ -153,6 +133,7 @@ public class PlayerDAO extends AbsDao {
 			.set("playerCount", player.getPlayerCount())
 			.set("playerTop", player.getPlayerTop())
 			.set("fightValue", player.getFightValue())
+			.set("activityData", player.getActivityData())
     		;
     	if(loginOutTime){
     		up.set("loginoutTime", new Date())

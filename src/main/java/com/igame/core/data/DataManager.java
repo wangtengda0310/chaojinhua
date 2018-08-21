@@ -1,6 +1,8 @@
 package com.igame.core.data;
 
 
+import com.igame.work.activity.sign.SignConfig;
+
 public class DataManager {
 
 
@@ -263,6 +265,11 @@ public class DataManager {
 	 * 神灵技能buffer配置
 	 */
 	public static GodsEffectData GodsEffectData;
+
+	/**
+	 * 签到
+	 */
+	public static SignConfig signConfig;
 	
     private static final DataManager domain = new DataManager();
 
@@ -326,6 +333,8 @@ public class DataManager {
 		vipData             			=XmlDataLoader.loadData(VipData.class,   "resource/vipdata.xml" );
 		GodsEffectData                  =XmlDataLoader.loadData(GodsEffectData.class,   "resource/godseffect.xml" );
 		luckTableData             		=XmlDataLoader.loadData(LuckTableData.class,   "resource/lucktable.xml" );
+
+		signConfig             		=XmlDataLoader.loadData(SignConfig.class,   "resource/signreward.xml" );
 
 	}
 

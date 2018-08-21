@@ -5,6 +5,8 @@ import com.igame.core.db.DBManager;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.util.SystemService;
+import com.igame.work.activity.ActivityHandler;
+import com.igame.work.activity.sign.SignHandler;
 import com.igame.work.chat.handler.*;
 import com.igame.work.chat.service.PublicMessageService;
 import com.igame.work.checkpoint.handler.*;
@@ -315,6 +317,10 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MONSTER_INFO), MonsterListHandler.class);//怪物列表
 
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.AREA_BUY), AreaBuyHandler.class);//幸运大转盘十连抽
+
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ACTICITY), ActivityHandler.class);//幸运大转盘十连抽
+
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.SIGN), SignHandler.class);//签到
 
 		JobManager.ins();
 

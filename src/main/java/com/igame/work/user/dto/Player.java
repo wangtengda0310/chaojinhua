@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.igame.work.activity.PlayerActivityData;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.checkpoint.dto.FateSelfData;
 import com.igame.work.checkpoint.dto.TangSuoDto;
@@ -312,7 +313,17 @@ public class Player extends PlayerVo {
     @Transient
     @JsonIgnore
     public Turntable turntable;//幸运大转盘
-    
+
+    private PlayerActivityData activityData;
+
+    public PlayerActivityData getActivityData() {
+        return activityData;
+    }
+
+    public void setActivityData(PlayerActivityData activityData) {
+        this.activityData = activityData;
+    }
+
     public User getUser() {
         return user;
     }
@@ -980,13 +991,11 @@ public class Player extends PlayerVo {
 	
     /**
      * 出战神灵
-     * @return
      */
     public Gods callFightGods(){
 		Team team = this.getTeams().get(this.getCurTeam());
 		if(team != null){
-			Gods gods = this.getGods().get(team.getTeamGod());
-			return gods;
+            return this.getGods().get(team.getTeamGod());
 		}
 		return null;
     }

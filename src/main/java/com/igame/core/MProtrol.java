@@ -354,6 +354,9 @@ public class MProtrol {
 
 	public static final int AREA_BUY = 4029;//购买竞技场挑战次数
 
+	public static final int ACTICITY = 4050;//活动
+	public static final int SIGN = 4051;//签到活动
+
 
 
 	public static String toStringProtrol(int p){
