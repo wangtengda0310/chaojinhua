@@ -6,7 +6,6 @@ package com.igame.work.system;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.db.BasicDto;
-import com.igame.core.db.RankServiceDAO;
 import com.igame.work.user.dto.Player;
 
 import java.util.*;

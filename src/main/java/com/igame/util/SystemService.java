@@ -9,7 +9,7 @@ import com.igame.core.SessionManager;
 import com.igame.work.checkpoint.GuanQiaDataManager;
 import com.igame.work.checkpoint.data.FatedataTemplate;
 import com.igame.core.db.BasicDto;
-import com.igame.core.db.SystemServiceDAO;
+import com.igame.work.system.SystemServiceDAO;
 import com.igame.core.log.ExceptionLog;
 import com.igame.work.checkpoint.dto.WordEventDto;
 import com.igame.work.checkpoint.service.CheckPointService;

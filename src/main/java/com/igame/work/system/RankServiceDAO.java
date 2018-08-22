@@ -1,19 +1,15 @@
-package com.igame.core.db;
+package com.igame.work.system;
 
 
 
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.mongodb.morphia.query.UpdateOperations;
 
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
-import com.igame.core.log.GoldLog;
-import com.igame.work.system.RankService;
-import com.igame.work.system.Ranker;
 
 /**
  * 

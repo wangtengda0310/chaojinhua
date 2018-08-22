@@ -1,7 +1,7 @@
-package com.igame.core.db;
+package com.igame.work.checkpoint.dao;
 
 
-import com.google.common.collect.Maps;
+import com.igame.core.db.AbsDao;
 import com.igame.work.system.BallisticRank;
 import com.igame.work.system.BallisticRanker;
 import org.mongodb.morphia.query.UpdateOperations;

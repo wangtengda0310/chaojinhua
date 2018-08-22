@@ -1,5 +1,5 @@
 import com.igame.core.data.DataManager;
-import com.igame.core.db.RankServiceDAO;
+import com.igame.work.system.RankServiceDAO;
 
 /**
  * 

@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import com.igame.work.checkpoint.GuanQiaDataManager;
 import com.igame.work.checkpoint.data.RunTemplate;
 import com.igame.work.checkpoint.data.RunTypeTemplate;
-import com.igame.core.db.BallisticRankDAO;
+import com.igame.work.checkpoint.dao.BallisticRankDAO;
 import com.igame.core.db.DBManager;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;

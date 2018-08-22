@@ -1,16 +1,14 @@
-package com.igame.core.db;
+package com.igame.work.system;
 
 
 
-
-import java.util.Set;
-
-import org.mongodb.morphia.query.UpdateOperations;
 
 import com.google.common.collect.Sets;
 import com.igame.core.db.AbsDao;
-import com.igame.core.log.GoldLog;
 import com.igame.util.SystemService;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import java.util.Set;
 
 /**
  * 
