@@ -16,7 +16,7 @@ import com.igame.core.SessionManager;
 import com.igame.work.item.data.PropGroupTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
 import com.igame.work.item.dto.Item;
 import com.igame.work.item.service.ItemService;

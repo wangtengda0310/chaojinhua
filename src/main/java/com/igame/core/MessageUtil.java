@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.igame.core.log.ExceptionLog;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.dto.FateDto;
 import com.igame.work.checkpoint.dto.RewardDto;

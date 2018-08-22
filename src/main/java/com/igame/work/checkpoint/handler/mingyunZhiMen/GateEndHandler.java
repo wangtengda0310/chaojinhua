@@ -5,15 +5,12 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.dto.GateDto;
 import com.igame.work.checkpoint.dto.RewardDto;
 import com.igame.work.checkpoint.service.CheckPointService;
@@ -23,8 +20,6 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * @author Marcus.Z

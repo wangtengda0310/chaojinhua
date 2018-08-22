@@ -9,7 +9,7 @@ import com.igame.work.checkpoint.GuanQiaDataManager;
 import com.igame.work.checkpoint.data.RunBattlerewardData;
 import com.igame.work.checkpoint.data.RunBattlerewardTemplate;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.service.BallisticService;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;

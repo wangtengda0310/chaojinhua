@@ -9,7 +9,7 @@ import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.IDFactory;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.checkpoint.dto.FateDto;

@@ -4,7 +4,7 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseEventHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.chat.exception.MessageException;
 import com.igame.work.chat.service.PrivateMessageService;
@@ -19,7 +19,6 @@ import java.util.List;
 
 import static com.igame.work.chat.MessageContants.MSG_LENGTH_MAX;
 import static com.igame.work.chat.MessageContants.MSG_TYPE_FRIEND;
-import static com.igame.work.chat.MessageContants.MSG_TYPE_STRANGER;
 
 /**
  * 

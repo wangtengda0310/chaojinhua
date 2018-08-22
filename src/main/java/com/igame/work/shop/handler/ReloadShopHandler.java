@@ -6,7 +6,7 @@ import com.igame.core.SessionManager;
 import com.igame.work.shop.ShopDataManager;
 import com.igame.work.shop.data.ShopTemplate;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.shop.ShopConstants;
 import com.igame.work.shop.dto.GeneralShop;
 import com.igame.work.shop.dto.MysticalShop;

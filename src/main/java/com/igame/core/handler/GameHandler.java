@@ -1,6 +1,5 @@
 package com.igame.core.handler;
 
-import com.igame.dto.RetVO;
 import com.smartfoxserver.v2.entities.User;
 
 public interface GameHandler {

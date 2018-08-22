@@ -6,7 +6,7 @@ import com.igame.core.SessionManager;
 import com.igame.work.checkpoint.GuanQiaDataManager;
 import com.igame.work.checkpoint.data.TangSuoTemplate;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.dto.TangSuoDto;
 import com.igame.work.user.dto.Player;

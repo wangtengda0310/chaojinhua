@@ -3,7 +3,6 @@ package com.igame.core.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igame.core.SessionManager;
-import com.igame.dto.RetVO;
 import com.igame.work.user.dto.MessageCache;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.core.ISFSEvent;

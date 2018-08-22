@@ -13,7 +13,7 @@ import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.work.monster.data.StrengthenmonsterTemplate;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;

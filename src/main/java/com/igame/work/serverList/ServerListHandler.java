@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.MProtrol;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;

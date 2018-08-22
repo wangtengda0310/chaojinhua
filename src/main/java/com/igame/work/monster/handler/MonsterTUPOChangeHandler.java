@@ -14,7 +14,7 @@ import com.igame.work.monster.data.MonsterBreakTemplate;
 import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.monster.dto.JiyinType;
 import com.igame.work.monster.dto.Monster;

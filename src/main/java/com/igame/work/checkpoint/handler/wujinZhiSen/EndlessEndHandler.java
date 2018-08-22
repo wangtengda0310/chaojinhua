@@ -13,7 +13,7 @@ import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.dto.RewardDto;
 import com.igame.work.monster.dto.WuEffect;

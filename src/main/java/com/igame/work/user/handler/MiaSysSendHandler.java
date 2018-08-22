@@ -10,7 +10,7 @@ import net.sf.json.JSONObject;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.user.dto.Mail;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.MailService;

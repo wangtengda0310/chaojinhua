@@ -10,7 +10,7 @@ import com.igame.core.SessionManager;
 import com.igame.work.checkpoint.GuanQiaDataManager;
 import com.igame.work.checkpoint.data.TrialdataTemplate;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.dto.RewardDto;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;

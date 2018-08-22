@@ -2,28 +2,17 @@ package com.igame.work.gm.handler;
 
 
 
-import java.util.List;
-
 import net.sf.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.log.GoldLog;
-import com.igame.dto.RetVO;
-import com.igame.work.gm.service.GMService;
+import com.igame.core.handler.RetVO;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.SmartFoxServer;
-import com.smartfoxserver.v2.api.ISFSApi;
-import com.smartfoxserver.v2.api.ISFSGameApi;
-import com.smartfoxserver.v2.api.SFSApi;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.entities.invitation.Invitation;
-import com.smartfoxserver.v2.entities.invitation.InvitationCallback;
-import com.smartfoxserver.v2.entities.invitation.SFSInvitation;
 import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**

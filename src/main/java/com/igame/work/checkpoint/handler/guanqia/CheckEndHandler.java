@@ -9,7 +9,7 @@ import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.GuanQiaDataManager;
 import com.igame.work.checkpoint.data.CheckPointTemplate;

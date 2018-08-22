@@ -16,7 +16,7 @@ import com.igame.core.SessionManager;
 import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.data.NewMonsterTemplate;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.dto.RewardDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;

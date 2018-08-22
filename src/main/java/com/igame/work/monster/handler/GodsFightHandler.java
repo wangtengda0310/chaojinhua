@@ -9,7 +9,7 @@ import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;

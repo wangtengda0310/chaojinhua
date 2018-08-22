@@ -4,18 +4,15 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
-import com.igame.dto.RetVO;
+import com.igame.core.handler.RetVO;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.chat.dto.PlayerInfo;
-import com.igame.work.chat.dto.PlayerMessage;
-import com.igame.work.chat.service.PublicMessageService;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
