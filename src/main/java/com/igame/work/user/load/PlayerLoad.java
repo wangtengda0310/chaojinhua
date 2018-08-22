@@ -49,7 +49,7 @@ public class PlayerLoad {
 	
     private static final PlayerLoad domain = new PlayerLoad();
 
-    public static final PlayerLoad ins() {
+    public static PlayerLoad ins() {
         return domain;
     }
     
@@ -69,12 +69,12 @@ public class PlayerLoad {
 		} else {
 			player.getActivityData().all().forEach(activity->activity.setPlayer(player));
 		}
+		PlayerCacheService.ins().remove(player);
     	return null;
     }
     
     /**
      * 玩家登录成功后的操作
-     * @param player
      */
     public void processPlayerLogin(Player player) throws Exception {
 
@@ -111,9 +111,7 @@ public class PlayerLoad {
     		if( i == 5){
     			continue;
     		}
-    		if(player.getResMintues().get(i) == null){
-    			player.getResMintues().put(i, 0);
-    		}
+			player.getResMintues().putIfAbsent(i, 0);
     	}
     	for(Integer type : FightDataManager.GodsData.getSets()){
     		GodsdataTemplate gt = FightDataManager.GodsData.getTemplate(type+"_0");
@@ -183,7 +181,6 @@ public class PlayerLoad {
     
     /**
      * 保存角色相关数据
-     * @param player
      */
     public void savePlayer(Player player,boolean loginOutTime){
     	synchronized(player.dbLock){
@@ -199,7 +196,9 @@ public class PlayerLoad {
         	FriendDAO.ins().updatePlayer(player);
         	PlayerMessageDAO.ins().updatePlayer(player);
 			MessageBoardService.ins().saveMessageBoard(player);
-			PlayerCacheService.ins().updatePlayer(player);
+			PlayerCacheService.ins().cachePlayer(player);
+
+			PlayerCacheService.ins().cachePlayer(player);
     	}
     }
 

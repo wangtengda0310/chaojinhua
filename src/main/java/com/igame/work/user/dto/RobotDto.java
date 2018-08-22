@@ -7,7 +7,7 @@ import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
 
@@ -17,7 +17,7 @@ import com.igame.work.fight.dto.MatchMonsterDto;
  *
  */
 @Entity(value = "Robot", noClassnameStored = true)
-public class RobotDto   extends BasicVO {
+public class RobotDto   extends BasicDto {
 	
 	@JsonIgnore
 	private int severId;

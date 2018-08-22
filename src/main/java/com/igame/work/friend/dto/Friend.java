@@ -3,7 +3,6 @@ package com.igame.work.friend.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerCacheDto;
 import com.igame.work.user.service.PlayerCacheService;
 import org.mongodb.morphia.annotations.Transient;
 
@@ -71,41 +70,18 @@ public class Friend{
 		this.helpAcc = 0;
 	}
 
-	public Friend(PlayerCacheDto playerCacheDto) {
-
-		this.userId = playerCacheDto.getUserId();	//账号ID
-
-		this.playerId = playerCacheDto.getPlayerId();	//好友id
-
-		this.playerLevel = playerCacheDto.getPlayerLevel();	//玩家等级
-
-		this.nickName = playerCacheDto.getName();	//玩家昵称
-
-		this.playerFrameId = playerCacheDto.getPlayerFrameId();	//玩家头像框
-
-		this.playerHeadId = playerCacheDto.getPlayerHeadId();	//玩家头像
-
-		this.fightValue = playerCacheDto.getFightValue();	//战力
-
-		this.loginoutTime = playerCacheDto.getLastLoginOutDate();	//离线时间
-
-		this.givePhy = 0;	//体力赠送 0=未赠送，1=已赠送
-
-		this.receivePhy = 0;	//体力领取 0=未赠送，1=已赠送未领取，2=已领取
-
-		this.helpAcc = 0;
-	}
-
 	public void loadCache(Friend friend, int serverId) {
 
-		PlayerCacheDto cacheDto = PlayerCacheService.ins().getPlayerById(serverId, friend.getPlayerId());
+		Player cacheDto = PlayerCacheService.ins().getPlayerById(serverId, friend.getPlayerId());
 
-		friend.setPlayerLevel(cacheDto.getPlayerLevel());	//玩家等级
-		friend.setNickName(cacheDto.getName());	//玩家昵称
-		friend.setPlayerFrameId(cacheDto.getPlayerFrameId());	//玩家头像框
-		friend.setPlayerHeadId(cacheDto.getPlayerHeadId());	//玩家头像
-		friend.setFightValue(cacheDto.getFightValue());	//战力
-		friend.setLoginoutTime(cacheDto.getLastLoginOutDate());	//战力
+		if(cacheDto!=null) {
+			friend.setPlayerLevel(cacheDto.getPlayerLevel());    //玩家等级
+			friend.setNickName(cacheDto.getNickname());    //玩家昵称
+			friend.setPlayerFrameId(cacheDto.getPlayerFrameId());    //玩家头像框
+			friend.setPlayerHeadId(cacheDto.getPlayerHeadId());    //玩家头像
+			friend.setFightValue(cacheDto.getFightValue());    //战力
+			friend.setLoginoutTime(cacheDto.getLoginoutTime());    //战力
+		}
 	}
 
 	@Override

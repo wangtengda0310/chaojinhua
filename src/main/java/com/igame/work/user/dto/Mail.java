@@ -8,7 +8,7 @@ import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 
 /**
  * 
@@ -16,7 +16,7 @@ import com.igame.core.db.BasicVO;
  *
  */
 @Entity(value = "Mail", noClassnameStored = true)
-public class Mail    extends BasicVO   {
+public class Mail    extends BasicDto {
 	
 	@Indexed
 	@JsonIgnore

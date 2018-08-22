@@ -4,7 +4,7 @@ import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
-import com.igame.work.chat.dto.PublicMessageVo;
+import com.igame.work.chat.dto.PublicMessageDto;
 import com.igame.work.chat.service.PublicMessageService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
@@ -39,12 +39,12 @@ public class PublicMessageHandler extends BaseHandler{
         }
 
         //世界消息
-        List<PublicMessageVo> worldMsg = new ArrayList<>();
-        PublicMessageService.ins().getWorldMessage(player.getSeverId()).forEach(message -> worldMsg.add(new PublicMessageVo(message)));
+        List<PublicMessageDto> worldMsg = new ArrayList<>();
+        PublicMessageService.ins().getWorldMessage(player.getSeverId()).forEach(message -> worldMsg.add(new PublicMessageDto(message)));
 
         //喇叭消息
-        List<PublicMessageVo> hornMsg = new ArrayList<>();
-        PublicMessageService.ins().getHornMessage(player.getSeverId()).forEach(message -> hornMsg.add(new PublicMessageVo(message)));
+        List<PublicMessageDto> hornMsg = new ArrayList<>();
+        PublicMessageService.ins().getHornMessage(player.getSeverId()).forEach(message -> hornMsg.add(new PublicMessageDto(message)));
 
         vo.addData("worldMsg", worldMsg);
         vo.addData("hornMsg", hornMsg);

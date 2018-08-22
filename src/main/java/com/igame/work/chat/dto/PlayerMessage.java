@@ -1,7 +1,7 @@
 package com.igame.work.chat.dto;
 
 import com.google.common.collect.Maps;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Map;
  * 私聊消息
  */
 @Entity(value = "PlayerMessages", noClassnameStored = true)
-public class PlayerMessage extends BasicVO{
+public class PlayerMessage extends BasicDto {
 
     private long playerId;  //角色ID
 

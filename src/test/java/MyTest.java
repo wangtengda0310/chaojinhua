@@ -3,10 +3,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.data.DataManager;
+import com.igame.util.GameMath;
 import com.igame.work.checkpoint.GuanQiaDataManager;
 import com.igame.work.checkpoint.data.RunBattlerewardData;
 import com.igame.work.checkpoint.data.RunBattlerewardTemplate;
-import com.igame.util.GameMath;
 import com.igame.work.checkpoint.service.BallisticService;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.friend.dto.Friend;
@@ -18,7 +18,6 @@ import com.igame.work.shop.service.ShopService;
 import com.igame.work.system.BallisticRank;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerCacheDto;
 import com.igame.work.user.dto.Team;
 import com.igame.work.user.service.PlayerCacheService;
 import com.igame.work.user.service.VIPService;
@@ -267,15 +266,15 @@ public class MyTest {
         //搜索好友的优先级：离线24小时以内，等级差10级以内的优先抽取推荐
         int playerLevel = 10;
 
-        List<PlayerCacheDto> players = PlayerCacheService.ins().getPlayers(1);
-        List<PlayerCacheDto> one = new ArrayList<>();
-        List<PlayerCacheDto> two = new ArrayList<>();
-        List<PlayerCacheDto> three = new ArrayList<>();
-        for (PlayerCacheDto playerCacheDto : players) {
+        List<Player> players = PlayerCacheService.ins().getPlayers(1);
+        List<Player> one = new ArrayList<>();
+        List<Player> two = new ArrayList<>();
+        List<Player> three = new ArrayList<>();
+        for (Player playerCacheDto : players) {
             if (playerCacheDto.getPlayerId() == 1000119)
                 continue;
 
-            Date lastLoginOutDate = playerCacheDto.getLastLoginOutDate();
+            Date lastLoginOutDate = playerCacheDto.getLoginoutTime();
             int playerLevel1 = playerCacheDto.getPlayerLevel();
             if (new Date().getTime() - lastLoginOutDate.getTime() <= 24*60*60*1000){
                 if (Math.abs(playerLevel - playerLevel1) <= 10){
@@ -298,7 +297,7 @@ public class MyTest {
             //随机并添加新的好友
             random(nomFriends, three);
         }else {
-            for (PlayerCacheDto cacheDto : three) {
+            for (Player cacheDto : three) {
                 nomFriends.add(new Friend(cacheDto));
             }
         }
@@ -306,12 +305,12 @@ public class MyTest {
         System.out.println(nomFriends.size());
     }
 
-    private static void random(List<Friend> nomFriends, List<PlayerCacheDto> three) {
+    private static void random(List<Friend> nomFriends, List<Player> three) {
 
         ok:
         while (true){
             int i = new Random().nextInt(three.size());
-            PlayerCacheDto playerCacheDto = three.get(i);
+            Player playerCacheDto = three.get(i);
             nomFriends.add(new Friend(playerCacheDto));
             three.remove(i);
             if (nomFriends.size() >= 10)
@@ -321,7 +320,7 @@ public class MyTest {
 
     private static void testFriendFind() {
         PlayerCacheService.ins().loadData();
-        PlayerCacheDto playerByNickName = PlayerCacheService.ins().getPlayerByNickName(1, "玩家_1000116");
+        Player playerByNickName = PlayerCacheService.ins().getPlayerByNickName(1, "玩家_1000116");
         if (playerByNickName == null){
             System.out.println(1);
             return;

@@ -5,9 +5,8 @@ package com.igame.work.system;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import com.igame.core.db.RankServiceDAO;
-import com.igame.core.log.GoldLog;
 import com.igame.work.user.dto.Player;
 
 import java.util.*;
@@ -18,7 +17,7 @@ import org.mongodb.morphia.annotations.Transient;
 
 
 @Entity(value = "RankService", noClassnameStored = true)
-public class RankService    extends BasicVO {
+public class RankService    extends BasicDto {
 
 	@Transient
 	private static final RankService domain = new RankService();

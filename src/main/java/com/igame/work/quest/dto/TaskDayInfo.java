@@ -8,7 +8,7 @@ import org.mongodb.morphia.annotations.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.igame.work.quest.data.QuestTemplate;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 
@@ -19,7 +19,7 @@ import com.igame.work.user.dto.Player;
  *
  */
 @Entity(value = "Quest", noClassnameStored = true)
-public class TaskDayInfo   extends BasicVO {
+public class TaskDayInfo   extends BasicDto {
 	
 	@Indexed
 	@JsonIgnore

@@ -1,7 +1,6 @@
 package com.igame.work.chat.dto;
 
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerCacheDto;
 
 /**
  *
@@ -36,16 +35,6 @@ public class PlayerInfo {
         this.playerHeadId = player.getPlayerHeadId();
         this.playerLevel = player.getPlayerLevel();
         this.fightValue = player.getFightValue();
-    }
-
-    public PlayerInfo(PlayerCacheDto cacheDto) {
-        this.userId = cacheDto.getUserId();
-        this.playerId = cacheDto.getPlayerId();
-        this.name = cacheDto.getName();
-        this.playerFrameId = cacheDto.getPlayerFrameId();
-        this.playerHeadId = cacheDto.getPlayerHeadId();
-        this.playerLevel = cacheDto.getPlayerLevel();
-        this.fightValue = cacheDto.getFightValue();
     }
 
     public long getUserId() {

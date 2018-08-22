@@ -3,7 +3,7 @@ package com.igame.work.chat.service;
 import com.igame.core.db.DBManager;
 import com.igame.work.chat.dao.MessageDAO;
 import com.igame.work.chat.dto.Message;
-import com.igame.work.chat.dto.PublicMessageVo;
+import com.igame.work.chat.dto.PublicMessageDto;
 import org.apache.commons.collections.map.HashedMap;
 
 import java.util.ArrayList;
@@ -191,12 +191,12 @@ public class PublicMessageService {
         }
 
         //世界消息
-        List<PublicMessageVo> worldMsg = new ArrayList<>();
-        PublicMessageService.ins().getWorldMessage(1).forEach(message -> worldMsg.add(new PublicMessageVo(message)));
+        List<PublicMessageDto> worldMsg = new ArrayList<>();
+        PublicMessageService.ins().getWorldMessage(1).forEach(message -> worldMsg.add(new PublicMessageDto(message)));
 
         //喇叭消息
-        List<PublicMessageVo> hornMsg = new ArrayList<>();
-        PublicMessageService.ins().getHornMessage(1).forEach(message -> hornMsg.add(new PublicMessageVo(message)));
+        List<PublicMessageDto> hornMsg = new ArrayList<>();
+        PublicMessageService.ins().getHornMessage(1).forEach(message -> hornMsg.add(new PublicMessageDto(message)));
 
         ins.save();
 

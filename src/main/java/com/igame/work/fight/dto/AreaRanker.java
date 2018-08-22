@@ -6,12 +6,12 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import com.igame.work.user.dto.Player;
 
 
 @Entity(noClassnameStored = true)
-public class AreaRanker extends BasicVO implements Comparable<AreaRanker>{
+public class AreaRanker extends BasicDto implements Comparable<AreaRanker>{
 	
 	private long playerId;//玩家为100011开头
 	private int rank;//排行

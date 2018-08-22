@@ -3,7 +3,7 @@ package com.igame.work.user.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Sets;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.utils.IndexDirection;
@@ -15,7 +15,7 @@ import java.util.Set;
  * @author Marcus.Z
  */
 @Entity(noClassnameStored = true)
-public class PlayerVo extends BasicVO {
+public class PlayerDto extends BasicDto {
 
     @Indexed(unique = true, value = IndexDirection.ASC)
     protected long userId;//账号ID

@@ -6,12 +6,14 @@ import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerCacheDto;
 import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -46,13 +48,13 @@ public class FriendNominateHandler extends BaseHandler{
         List<Friend> nomFriends = new ArrayList<>();
 
 
-        List<PlayerCacheDto> players = PlayerCacheService.ins().getPlayers(player.getSeverId());
+        List<Player> players = PlayerCacheService.ins().getPlayers(player.getSeverId());
 
         long now = new Date().getTime();
         players.stream()
                 .filter(playerCacheDto->playerCacheDto.getPlayerId() != player.getPlayerId())
                 .filter(playerCacheDto->!curFriends.contains(playerCacheDto.getPlayerId()))
-                .filter(playerCacheDto->now - playerCacheDto.getLastLoginOutDate().getTime() <= 24*60*60*1000
+                .filter(playerCacheDto->now - playerCacheDto.getLoginoutTime().getTime() <= 24*60*60*1000
                         || Math.abs(playerLevel - playerCacheDto.getPlayerLevel()) <= 10)
                 .limit(10)
                 .forEach(playerCacheDto->nomFriends.add(new Friend(playerCacheDto)));

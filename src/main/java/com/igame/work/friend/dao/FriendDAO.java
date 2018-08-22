@@ -6,8 +6,6 @@ import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.UpdateOperations;
 
-import static com.igame.work.friend.FriendConstants.FRIEND_DEF_MAX_COUNT;
-
 public class FriendDAO extends AbsDao {
 
 	@Override
@@ -32,8 +30,8 @@ public class FriendDAO extends AbsDao {
         FriendInfo friendInfo = getDatastore(severId).find(FriendInfo.class, "playerId", playerId).get();
 
         if (friendInfo != null){
-            friendInfo.getCurFriends().forEach(e -> e.loadCache(e,severId));
-            friendInfo.getReqFriends().forEach(e -> e.loadCache(e,severId));
+            friendInfo.getCurFriends().forEach(friend -> friend.loadCache(friend,severId));
+            friendInfo.getReqFriends().forEach(friend -> friend.loadCache(friend,severId));
         }else {
 
             friendInfo = new FriendInfo();

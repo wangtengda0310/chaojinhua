@@ -8,7 +8,6 @@ import com.igame.dto.RetVO;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerCacheDto;
 import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -58,7 +57,7 @@ public class FriendDeleteHandler extends BaseHandler{
 
         //校验要删除的好友
         Player delPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
-        PlayerCacheDto delPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), playerId);
+        Player delPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), playerId);
         if (delPlayer == null && delPlayerCache == null){
             sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_DELETE),vo,user);
             return;

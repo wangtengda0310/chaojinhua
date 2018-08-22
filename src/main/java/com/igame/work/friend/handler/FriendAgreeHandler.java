@@ -8,7 +8,6 @@ import com.igame.dto.RetVO;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerCacheDto;
 import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -114,7 +113,7 @@ public class FriendAgreeHandler extends BaseHandler{
     private int addFriend(Player player, List<Long> delReqFriends, List<Friend> addFriends, long reqPlayerId) {
 
         Player reqPlayer = SessionManager.ins().getSessionByPlayerId(reqPlayerId);
-        PlayerCacheDto reqPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), reqPlayerId);
+        Player reqPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), reqPlayerId);
 
         //校验对方角色是否存在
         if (reqPlayer == null && reqPlayerCache == null){
@@ -132,7 +131,7 @@ public class FriendAgreeHandler extends BaseHandler{
         if (reqPlayer != null){ //如果对方在线，则取session
             curFriendCount = reqPlayer.getFriends().getCurFriends().size();
         } else {    //如果不在线，则取cache
-            curFriendCount = reqPlayerCache.getCurFriendCount();
+            curFriendCount = reqPlayerCache.getFriends().getCurFriends().size();
         }
 
         if (curFriendCount >= max){

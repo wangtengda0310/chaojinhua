@@ -4,7 +4,6 @@ import com.igame.util.MyUtil;
 import com.igame.work.chat.dao.MessageBoardDAO;
 import com.igame.work.chat.dto.MessageBoard;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerCacheDto;
 import com.igame.work.user.service.PlayerCacheService;
 
 import java.util.ArrayList;
@@ -84,8 +83,8 @@ public class MessageBoardService {
             }
 
             //cache
-            PlayerCacheDto cacheDto = PlayerCacheService.ins().getPlayerById(player.getSeverId(), board.getPlayerId());
-            board.setName(cacheDto.getName());
+            Player cacheDto = PlayerCacheService.ins().getPlayerById(player.getSeverId(), board.getPlayerId());
+            board.setName(cacheDto.getNickname());
             board.setPlayerFrameId(cacheDto.getPlayerFrameId());
             board.setPlayerHeadId(cacheDto.getPlayerHeadId());
             board.setPlayerLv(cacheDto.getPlayerLevel());

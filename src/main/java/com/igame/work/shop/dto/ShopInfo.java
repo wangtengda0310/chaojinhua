@@ -1,7 +1,7 @@
 package com.igame.work.shop.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import com.igame.work.shop.ShopConstants;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
@@ -14,7 +14,7 @@ import org.mongodb.morphia.annotations.Transient;
  * 商店信息
  */
 @Entity(value = "Shops", noClassnameStored = true)
-public class ShopInfo extends BasicVO {
+public class ShopInfo extends BasicDto {
 	
 	@Indexed
 	@JsonIgnore

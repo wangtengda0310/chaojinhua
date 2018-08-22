@@ -25,7 +25,6 @@ import com.igame.work.user.dto.PlayerTop;
 import com.igame.work.user.dto.Team;
 import com.igame.work.user.load.PlayerLoad;
 import com.igame.work.user.service.HeadService;
-import com.igame.work.user.service.PlayerCacheService;
 import com.igame.work.user.service.VIPService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -70,9 +69,6 @@ public class PlayerHandler extends BaseHandler{
 		if(player == null){//不存在就默认创建一个
 			try {
 				player = initPlayer(userId, serverId);
-
-				//放入缓存
-				PlayerCacheService.ins().updatePlayer(player);
 				if(player.get_id() == null){
 					sendError(ErrorCode.NEWPLAYER_ERROR,MProtrol.toStringProtrol(MProtrol.PLAYER_ENTER), vo, user);
 					return;

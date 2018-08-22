@@ -38,7 +38,7 @@ import static com.igame.work.chat.MessageContants.MSG_BOARD_OPE_LIKE;
  * @author Marcus.Z
  */
 @Entity(value = "players", noClassnameStored = true)
-public class Player extends PlayerVo {
+public class Player extends PlayerDto {
 
 
 
@@ -172,7 +172,7 @@ public class Player extends PlayerVo {
 
     @Transient
     @JsonIgnore
-    public Object dbLock = new Object();//防止定时保存和玩家离线保存并发的数据库同步锁
+    public final Object dbLock = new Object();//防止定时保存和玩家离线保存并发的数据库同步锁
 
     @Transient
     @JsonIgnore

@@ -78,7 +78,7 @@ public class BallisticRankHandler extends BaseHandler{
         for (int i = 0; i < topFifty.size(); i++) {
             BallisticRanker ballisticRanker = topFifty.get(i);
             ballisticRanker.setRank(i+1);
-            ballisticRanker.setName(PlayerCacheService.ins().getPlayerById(player.getSeverId(),ballisticRanker.getPlayerId()).getName());
+            ballisticRanker.setName(PlayerCacheService.ins().getPlayerById(player.getSeverId(),ballisticRanker.getPlayerId()).getNickname());
         }
 
         //获取玩家排行榜信息

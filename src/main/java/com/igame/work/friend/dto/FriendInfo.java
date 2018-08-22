@@ -2,7 +2,7 @@ package com.igame.work.friend.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Transient;
@@ -16,7 +16,7 @@ import java.util.List;
  * 好友信息
  */
 @Entity(value = "Friends", noClassnameStored = true)
-public class FriendInfo extends BasicVO {
+public class FriendInfo extends BasicDto {
 	
 	@Indexed
 	@JsonIgnore

@@ -6,7 +6,7 @@ import com.google.common.collect.Maps;
 import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.data.TongDiaoTemplate;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import com.igame.core.log.ExceptionLog;
 import com.igame.util.MyUtil;
 import com.igame.work.fight.service.ComputeFightService;
@@ -29,7 +29,7 @@ import java.util.Map;
  *
  */
 @Entity(value = "Monster", noClassnameStored = true)
-public class Monster extends BasicVO implements Cloneable {
+public class Monster extends BasicDto implements Cloneable {
 	
 	@Indexed(unique=true,value=IndexDirection.ASC)
 	public long objectId;//唯一ID

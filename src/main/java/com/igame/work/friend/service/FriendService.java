@@ -3,16 +3,15 @@ package com.igame.work.friend.service;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import com.igame.work.checkpoint.data.TangSuoTemplate;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.TangSuoTemplate;
 import com.igame.work.checkpoint.dto.TangSuoDto;
 import com.igame.work.friend.dao.FriendDAO;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.dto.FriendInfo;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerCacheDto;
 import com.igame.work.user.service.PlayerCacheService;
 
 import java.util.*;
@@ -32,7 +31,7 @@ public class FriendService {
 
     private static final FriendService domain = new FriendService();
 
-    public static final FriendService ins() {
+    public static FriendService ins() {
         return domain;
     }
 
@@ -90,7 +89,7 @@ public class FriendService {
     public void addReqFriend(Player sendPlayer, long recPlayerId) {
 
         Player reqPlayer = SessionManager.ins().getSessionByPlayerId(recPlayerId);
-        PlayerCacheDto reqPlayerCache = PlayerCacheService.ins().getPlayerById(sendPlayer.getSeverId(), recPlayerId);
+        Player reqPlayerCache = PlayerCacheService.ins().getPlayerById(sendPlayer.getSeverId(), recPlayerId);
 
         if (reqPlayer == null && reqPlayerCache == null){
             return;
@@ -158,7 +157,7 @@ public class FriendService {
     public void addFriend(Player player, long reqPlayerId){
 
         Player reqPlayer = SessionManager.ins().getSessionByPlayerId(reqPlayerId);
-        PlayerCacheDto reqPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), reqPlayerId);
+        Player reqPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), reqPlayerId);
 
         if (reqPlayer == null && reqPlayerCache == null){
             return;
@@ -196,15 +195,10 @@ public class FriendService {
 
                 friendInfo.setPlayerId(reqPlayerId);
 
-                //添加好友并增加当前好友数量
-                reqPlayerCache.addCurFriendCount(1);
                 friendInfo.getCurFriends().add(new Friend(player));
 
                 FriendDAO.ins().saveFriendInfo(player.getSeverId(), friendInfo);
             }else {
-
-                //更新缓存
-                reqPlayerCache.addCurFriendCount(1);
 
                 //添加好友并增加当前好友数量
                 friendInfo.getCurFriends().add(new Friend(player));
@@ -225,7 +219,7 @@ public class FriendService {
     public void delFriend(Player player, long delPlayerId) {
 
         Player delPlayer = SessionManager.ins().getSessionByPlayerId(delPlayerId);
-        PlayerCacheDto delPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), delPlayerId);
+        Player delPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), delPlayerId);
 
         //如果对方在线，推送好友更新，不在线，则减少好友数量并存库
         if (delPlayer == null && delPlayerCache == null){
@@ -255,9 +249,6 @@ public class FriendService {
             pushFriends(delPlayer,reqDelFriends,new ArrayList<>());
 
         } else {
-
-            //更新cache
-            delPlayerCache.addCurFriendCount(-1);
 
             //删除好友并减少当前好友数量
             FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(player.getSeverId(), delPlayerId);
@@ -320,7 +311,6 @@ public class FriendService {
 
     /**
      * 零点执行
-     * @param player
      */
     public void zero(Player player) {
 
@@ -343,7 +333,7 @@ public class FriendService {
             Date givePhyDate = curFriend.getGivePhyDate();
             if (givePhyDate == null){   //处理老数据
                 curFriend.setReceivePhy(0);
-            }else if (givePhyDate != null && givePhyDate.before(instance.getTime())){  //如果赠送时间在刷新时间之前，则重置体力领取状态
+            }else if (givePhyDate.before(instance.getTime())){  //如果赠送时间在刷新时间之前，则重置体力领取状态
                 curFriend.setReceivePhy(0);
             }
         }

@@ -6,11 +6,11 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import com.igame.work.user.dto.Player;
 
 @Entity(noClassnameStored = true)
-public class Ranker extends BasicVO implements Comparable<Ranker>{
+public class Ranker extends BasicDto implements Comparable<Ranker>{
 	
 	private long playerId;
 	

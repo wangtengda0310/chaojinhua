@@ -11,7 +11,7 @@ import org.mongodb.morphia.annotations.Transient;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import com.igame.core.db.DBManager;
 import com.igame.util.GameMath;
 import com.igame.work.fight.dto.AreaRanker;
@@ -26,7 +26,7 @@ import com.igame.work.user.service.RobotService;
  *
  */
 @Entity(value = "AreaRanker", noClassnameStored = true)
-public class ArenaService extends BasicVO {
+public class ArenaService extends BasicDto {
 	
     
     private Map<Integer,List<AreaRanker>> rank1 = Maps.newHashMap();//排行榜

@@ -1,7 +1,7 @@
 package com.igame.work.system;
 
 import com.google.common.collect.Maps;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * 暴走时刻排行榜
  */
 @Entity(value = "ballisticRank", noClassnameStored = true)
-public class BallisticRank extends BasicVO {
+public class BallisticRank extends BasicDto {
 
     @Transient
     private static final BallisticRank domain = new BallisticRank();

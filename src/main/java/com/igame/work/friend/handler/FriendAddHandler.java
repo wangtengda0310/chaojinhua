@@ -10,7 +10,6 @@ import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.dto.FriendInfo;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerCacheDto;
 import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -57,7 +56,7 @@ public class FriendAddHandler extends BaseHandler{
 
         //判断对方是否存在
         Player reqPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
-        PlayerCacheDto reqPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), playerId);
+        Player reqPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), playerId);
         if (reqPlayer == null && reqPlayerCache == null){
             sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_ADD),vo,user);
             return;
@@ -76,7 +75,7 @@ public class FriendAddHandler extends BaseHandler{
         if (reqPlayer != null){ //如果对方在线，则取session
             curFriendCount = reqPlayer.getFriends().getCurFriends().size();
         } else {    //如果不在线，则取cache
-            curFriendCount = reqPlayerCache.getCurFriendCount();
+            curFriendCount = reqPlayerCache.getFriends().getCurFriends().size();
         }
         if (curFriendCount >= max){
             vo.addData("state",FRIEND_STATE_OTHERUP);

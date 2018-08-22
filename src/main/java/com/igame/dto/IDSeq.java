@@ -2,12 +2,10 @@ package com.igame.dto;
 
 
 
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 
 
 /**
@@ -16,7 +14,7 @@ import com.igame.core.db.BasicVO;
  *
  */
 @Entity(value = "IDSeq", noClassnameStored = true)
-public class IDSeq extends BasicVO {
+public class IDSeq extends BasicDto {
 	
 
 	@Indexed

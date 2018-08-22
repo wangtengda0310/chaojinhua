@@ -1,19 +1,10 @@
 package com.igame.work.chat.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.igame.work.chat.dto.Message;
-import com.igame.work.chat.dto.PlayerMessage;
-import com.igame.work.chat.dto.PublicMessageVo;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.service.PlayerCacheService;
-import org.apache.commons.collections.map.HashedMap;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import static com.igame.work.chat.MessageContants.*;
 

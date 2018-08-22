@@ -7,7 +7,6 @@ import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.chat.dto.PlayerInfo;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerCacheDto;
 import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -41,7 +40,7 @@ public class GetPlayerInfoHandler extends BaseHandler{
         vo.addData("playerId", playerId);
 
         Player playerSession = SessionManager.ins().getSessionByPlayerId(playerId);
-        PlayerCacheDto playerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), playerId);
+        Player playerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), playerId);
         if (playerSession == null && playerCache == null){
             sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.MESSAGE_PLAYERINFO),vo,user);
             return;

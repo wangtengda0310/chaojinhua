@@ -6,7 +6,7 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.utils.IndexDirection;
 
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 
 
 
@@ -16,7 +16,7 @@ import com.igame.core.db.BasicVO;
  *
  */
 @Entity(value = "tes", noClassnameStored = true)
-public class Tes extends BasicVO {
+public class Tes extends BasicDto {
 	
 	
 	@Indexed(value= IndexDirection.ASC,  unique = true)

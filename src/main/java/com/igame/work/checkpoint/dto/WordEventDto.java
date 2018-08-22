@@ -5,11 +5,11 @@ import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 
 
 @Entity(value = "WordEventDto", noClassnameStored = true)
-public class WordEventDto    extends BasicVO  {
+public class WordEventDto    extends BasicDto {
 	
 	@Indexed
 	@JsonIgnore

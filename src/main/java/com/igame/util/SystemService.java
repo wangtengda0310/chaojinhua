@@ -8,7 +8,7 @@ import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.work.checkpoint.GuanQiaDataManager;
 import com.igame.work.checkpoint.data.FatedataTemplate;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import com.igame.core.db.SystemServiceDAO;
 import com.igame.core.log.ExceptionLog;
 import com.igame.work.checkpoint.dto.WordEventDto;
@@ -35,7 +35,7 @@ import java.util.Set;
  *
  */
 @Entity(value = "SystemService", noClassnameStored = true)
-public class SystemService extends BasicVO {
+public class SystemService extends BasicDto {
 	
     private Set<Long> clock = Sets.newHashSet();//0clock
     

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Marcus.Z
  *
  */
-public class BasicVO {
+public class BasicDto {
 	
 	@Id
 	@JsonIgnore

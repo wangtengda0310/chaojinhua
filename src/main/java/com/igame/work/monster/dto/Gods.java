@@ -7,7 +7,7 @@ import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 
 /**
  * 
@@ -15,7 +15,7 @@ import com.igame.core.db.BasicVO;
  *
  */
 @Entity(value = "Gods", noClassnameStored = true)
-public class Gods   extends BasicVO  implements Cloneable {
+public class Gods   extends BasicDto implements Cloneable {
 	
 	
 	@Indexed

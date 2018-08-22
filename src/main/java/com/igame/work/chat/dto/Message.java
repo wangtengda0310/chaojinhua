@@ -2,7 +2,7 @@ package com.igame.work.chat.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;
 
 import java.util.Date;
@@ -13,7 +13,7 @@ import java.util.Date;
  * 公聊消息
  */
 @Entity(value = "Messages", noClassnameStored = true)
-public class Message extends BasicVO{
+public class Message extends BasicDto {
 
     @JsonIgnore
     private int serverId;//服务器ID

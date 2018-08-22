@@ -1,6 +1,6 @@
 package com.igame.work.chat.dto;
 
-import com.igame.work.user.dto.PlayerCacheDto;
+import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.PlayerCacheService;
 
 /**
@@ -8,7 +8,7 @@ import com.igame.work.user.service.PlayerCacheService;
  *
  * 公聊消息vo
  */
-public class PublicMessageVo extends Message {
+public class PublicMessageDto extends Message {
 
     private long userId;
 
@@ -18,15 +18,15 @@ public class PublicMessageVo extends Message {
 
     private int playerHeadId;//玩家头像
 
-    public PublicMessageVo() {
+    public PublicMessageDto() {
     }
 
-    public PublicMessageVo(Message message) {
+    public PublicMessageDto(Message message) {
 
         super(message);
-        PlayerCacheDto cacheDto = PlayerCacheService.ins().getPlayerById(message.getServerId(), message.getSender());
+        Player cacheDto = PlayerCacheService.ins().getPlayerById(message.getServerId(), message.getSender());
         this.userId = cacheDto.getUserId();
-        this.name = cacheDto.getName();
+        this.name = cacheDto.getNickname();
         this.playerFrameId = cacheDto.getPlayerFrameId();
         this.playerHeadId = cacheDto.getPlayerHeadId();
 

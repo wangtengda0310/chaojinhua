@@ -3,7 +3,7 @@ package com.igame.work.turntable.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Transient;
@@ -19,7 +19,7 @@ import java.util.Map;
  * 幸运大转盘
  */
 @Entity(value = "turntable", noClassnameStored = true)
-public class Turntable extends BasicVO {
+public class Turntable extends BasicDto {
 	
 	@Indexed
 	@JsonIgnore

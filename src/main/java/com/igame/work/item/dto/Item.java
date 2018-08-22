@@ -5,7 +5,7 @@ import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 
 /**
  * 
@@ -13,7 +13,7 @@ import com.igame.core.db.BasicVO;
  *
  */
 @Entity(value = "Item", noClassnameStored = true)
-public class Item   extends BasicVO {
+public class Item   extends BasicDto {
 	
 	@Indexed
 	@JsonIgnore

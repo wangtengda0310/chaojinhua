@@ -2,7 +2,7 @@ package com.igame.work.chat.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
-import com.igame.core.db.BasicVO;
+import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author xym
  */
 @Entity(value = "MessageBoard", noClassnameStored = true)
-public class MessageBoard extends BasicVO implements Comparable<MessageBoard>{
+public class MessageBoard extends BasicDto implements Comparable<MessageBoard>{
 
     @Transient
     private String objectId;
