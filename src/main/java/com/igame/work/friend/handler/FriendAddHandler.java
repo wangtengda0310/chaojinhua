@@ -27,6 +27,8 @@ import static com.igame.work.friend.FriendConstants.*;
  */
 public class FriendAddHandler extends BaseHandler{
 
+    private static final int max = 20;
+
     @Override
     public void handleClientRequest(User user, ISFSObject params) {
 
@@ -63,8 +65,7 @@ public class FriendAddHandler extends BaseHandler{
 
         //判断自己好友上限
         int myCurFriendCount = player.getFriends().getCurFriends().size();
-        int myMaxFriendCount = player.getPlayerTop().getFriendCount();
-        if (myCurFriendCount >= myMaxFriendCount){
+        if (myCurFriendCount >= max){
             vo.addData("state",FRIEND_STATE_MYUP);
             sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_ADD),vo,user);
             return;
@@ -72,15 +73,12 @@ public class FriendAddHandler extends BaseHandler{
 
         //判断对方好友上限
         int curFriendCount;
-        int maxFriendCount;
         if (reqPlayer != null){ //如果对方在线，则取session
             curFriendCount = reqPlayer.getFriends().getCurFriends().size();
-            maxFriendCount = reqPlayer.getPlayerTop().getFriendCount();
         } else {    //如果不在线，则取cache
-            maxFriendCount = reqPlayerCache.getMaxFriendCount();
             curFriendCount = reqPlayerCache.getCurFriendCount();
         }
-        if (curFriendCount >= maxFriendCount){
+        if (curFriendCount >= max){
             vo.addData("state",FRIEND_STATE_OTHERUP);
             sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_ADD),vo,user);
             return;

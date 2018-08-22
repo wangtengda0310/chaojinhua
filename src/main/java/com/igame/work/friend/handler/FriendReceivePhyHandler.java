@@ -27,6 +27,8 @@ public class FriendReceivePhyHandler extends BaseHandler{
     private int state_gave = 1;   //已赠送未领取
     private int state_rec = 2;   //已领取
 
+    private static final int max = 20;
+
     @Override
     public void handleClientRequest(User user, ISFSObject params) {
 
@@ -48,7 +50,9 @@ public class FriendReceivePhyHandler extends BaseHandler{
         vo.addData("playerId",playerId);
 
         //校验体力领取次数
-        if(player.getPlayerCount().getFriendPhy() <= 0){
+
+        long receivedCount = player.getFriends().getCurFriends().stream().filter(friend -> friend.getReceivePhy() == state_rec).count();
+        if(receivedCount > max){
             sendError(ErrorCode.RECEIVEPHY_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.FRIEND_PHY_RECEIVE),vo,user);
             return;
         }
@@ -71,7 +75,6 @@ public class FriendReceivePhyHandler extends BaseHandler{
 
         //biz
         List<HashedMap> voList = new ArrayList<>();   //返回当前体力赠送状态
-        int addPhy = 0;
         if (playerId != -1){
 
             for (Friend curFriend : curFriends) {
@@ -82,31 +85,26 @@ public class FriendReceivePhyHandler extends BaseHandler{
                         return;
                     }else {
                         voList.add(recPhy(player, curFriend));
-                        addPhy++;
                     }
                     break;
                 }
             }
 
         }else {     //全部领取
-
-            for (Friend curFriend : curFriends) {
-                int receivePhy = curFriend.getReceivePhy();
-                if (player.getPlayerCount().getFriendPhy() > 0 && receivePhy == state_gave){   //如果当前状态等于 已赠送未领取
-                    voList.add(recPhy(player, curFriend));
-                    addPhy++;
-                }
-            }
+            curFriends.stream()
+                    .filter(friend -> friend.getReceivePhy() == state_gave)
+                    .limit(max - receivedCount)
+                    .forEach(friend -> voList.add(recPhy(player, friend)));
 
         }
 
+        long count = player.getFriends().getCurFriends().stream().filter(friend -> friend.getReceivePhy() == state_rec).count();
         //推送体力更新
-        ResourceService.ins().addPhysica(player,addPhy);
+        ResourceService.ins().addPhysica(player,(int)count - (int)receivedCount);
 
         //推送体力领取次数更新
-
         vo.addData("receiveStates",voList);
-        vo.addData("physicalCount",20 - player.getPlayerCount().getFriendPhy());    //todo 傻逼前端
+        vo.addData("physicalCount",count);
         sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_PHY_RECEIVE),vo,user);
     }
 
@@ -117,9 +115,6 @@ public class FriendReceivePhyHandler extends BaseHandler{
      * @return voMap 当前角色体力领取状态
      */
     private HashedMap recPhy(Player player, Friend curFriend) {
-
-        //减少体力可领取次数
-        player.getPlayerCount().addPhysicalCount(-1);
 
         //更新状态为已领取
         curFriend.setReceivePhy(state_rec);

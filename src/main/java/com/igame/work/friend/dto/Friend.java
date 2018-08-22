@@ -37,6 +37,8 @@ public class Friend{
 	@JsonIgnore
 	private Date givePhyDate;	//对方何时赠送自己体力
 
+	private int helpAcc;
+
 	@Transient
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", locale = "zh", timezone = "GMT+8")
 	private Date loginoutTime;	//离线时间
@@ -65,6 +67,8 @@ public class Friend{
 		this.givePhy = 0;	//体力赠送 0=未赠送，1=已赠送
 
 		this.receivePhy = 0;	//体力领取 0=未赠送，1=已赠送未领取，2=已领取
+
+		this.helpAcc = 0;
 	}
 
 	public Friend(PlayerCacheDto playerCacheDto) {
@@ -89,6 +93,7 @@ public class Friend{
 
 		this.receivePhy = 0;	//体力领取 0=未赠送，1=已赠送未领取，2=已领取
 
+		this.helpAcc = 0;
 	}
 
 	public void loadCache(Friend friend, int serverId) {
@@ -200,6 +205,14 @@ public class Friend{
 
 	public void setLoginoutTime(Date loginoutTime) {
 		this.loginoutTime = loginoutTime;
+	}
+
+	public int getHelpAcc() {
+		return helpAcc;
+	}
+
+	public void setHelpAcc(int helpAcc) {
+		this.helpAcc = helpAcc;
 	}
 
 	@Override

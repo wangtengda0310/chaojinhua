@@ -26,6 +26,8 @@ import static com.igame.work.friend.FriendConstants.*;
  */
 public class FriendAgreeHandler extends BaseHandler{
 
+    private static final int max = 20;
+
     @Override
     public void handleClientRequest(User user, ISFSObject params) {
 
@@ -83,9 +85,8 @@ public class FriendAgreeHandler extends BaseHandler{
 
         }else { //同意全部
 
-            for (int i = 0; i < reqFriends.size(); i++) {
+            for (Friend reqFriend : reqFriends) {
 
-                Friend reqFriend = reqFriends.get(i);
                 int state = addFriend(player, delReqFriends, addFriends, reqFriend.getPlayerId());
                 states.add(state);
 
@@ -122,23 +123,19 @@ public class FriendAgreeHandler extends BaseHandler{
 
         //判断自己好友上限
         int myCurFriendCount = player.getFriends().getCurFriends().size();
-        int myMaxFriendCount = player.getPlayerTop().getFriendCount();
-        if (myCurFriendCount >= myMaxFriendCount){
+        if (myCurFriendCount >= max){
             return FRIEND_STATE_MYUP;
         }
 
         //校验对方角色好友上限
         int curFriendCount;
-        int maxFriendCount;
         if (reqPlayer != null){ //如果对方在线，则取session
             curFriendCount = reqPlayer.getFriends().getCurFriends().size();
-            maxFriendCount = reqPlayer.getPlayerTop().getFriendCount();
         } else {    //如果不在线，则取cache
             curFriendCount = reqPlayerCache.getCurFriendCount();
-            maxFriendCount = reqPlayerCache.getMaxFriendCount();
         }
 
-        if (curFriendCount >= maxFriendCount){
+        if (curFriendCount >= max){
             return FRIEND_STATE_OTHERUP;
         }
 

@@ -16,6 +16,7 @@ import com.igame.work.checkpoint.dao.WordEventDAO;
 import com.igame.work.checkpoint.service.CheckPointService;
 import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.friend.dao.FriendDAO;
+import com.igame.work.friend.service.FriendService;
 import com.igame.work.item.dao.ItemDAO;
 import com.igame.work.monster.dao.GodsDAO;
 import com.igame.work.monster.dao.MonsterDAO;
@@ -59,7 +60,7 @@ public class PlayerLoad {
     	player.setWordEvent(WordEventDAO.ins().getByPlayer(serverId, player.getPlayerId()));    	
     	player.setMail(MailDAO.ins().getByPlayer(serverId, player.getPlayerId()));
     	player.setShopInfo(ShopDAO.ins().getShopInfoByPlayerId(serverId,player.getPlayerId()));
-		player.setFriends(FriendDAO.ins().getFriendInfoByPlayerId(player.getSeverId(), player.getPlayerId()));
+		FriendService.ins().loadPlayer(player);
 		player.setPrivateMessages(PlayerMessageDAO.ins().getMessageByPlayerId(player.getSeverId(),player.getPlayerId()).getMessages());
 		player.initMessageBoard();
     	QuestDAO.ins().getByPlayer(serverId, player);
@@ -178,7 +179,6 @@ public class PlayerLoad {
 		if (player.getTurntable() != null && TurntableService.ins().needRealod(player.getTurntable().getLastUpdate()))
 			TurntableService.ins().reloadTurntable(player);
 
-		player.getPlayerCount().checkDate();
     }
     
     /**

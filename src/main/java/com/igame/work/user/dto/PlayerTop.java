@@ -42,7 +42,6 @@ public class PlayerTop {
 
 		this.friendPhy = 20;
 		this.friendExplore = 20;
-		this.friendCount = 20;
 
 		return this;
 	}
@@ -63,8 +62,6 @@ public class PlayerTop {
 	private int friendPhy;	//好友体力领取上限
 
 	private int friendExplore;	//好友探索加速上限
-
-	private int friendCount;	//好友数量上限
 
 
 	public Map<Integer, Integer> getBossCheckPoint() {
@@ -114,15 +111,6 @@ public class PlayerTop {
 	public void setFriendExplore(int friendExplore) {
 		this.friendExplore = friendExplore;
 	}
-
-	public int getFriendCount() {
-		return friendCount;
-	}
-
-	public void setFriendCount(int friendCount) {
-		this.friendCount = friendCount;
-	}
-
 
 
 

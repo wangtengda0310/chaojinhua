@@ -109,11 +109,6 @@ public class PlayerHandler extends BaseHandler{
 //			}
 //		}
 
-		//todo 傻逼前端
-		player.getFriends().setExploreCount(20 - player.getPlayerCount().getFriendExplore());
-		player.getFriends().setMaxFriendCount(player.getPlayerTop().getFriendCount());
-		player.getFriends().setPhysicalCount(20 - player.getPlayerCount().getFriendPhy());
-
 		vo.addData("player", player);
 		for (Monster monster : player.getMonsters().values()) {
 			monster.setTeamEquip(player.getTeams().values());

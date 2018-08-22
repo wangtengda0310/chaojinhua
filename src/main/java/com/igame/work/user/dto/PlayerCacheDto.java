@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.igame.core.db.BasicVO;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.friend.dto.FriendInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -44,8 +43,6 @@ public class PlayerCacheDto extends BasicVO {
 
 	private int curFriendCount;//当前好友数量
 
-	private int maxFriendCount;//最大好友数量
-
 	private Date lastLoginOutDate;//上回登出时间
 
 	public PlayerCacheDto() {
@@ -65,7 +62,6 @@ public class PlayerCacheDto extends BasicVO {
 		this.fightValue = player.getFightValue();
 		this.lastLoginOutDate = player.getLoginoutTime();
 		this.curFriendCount = player.getFriends().getCurFriends().size();
-		this.maxFriendCount = player.getPlayerTop().getFriendCount();
 	}
 
 
@@ -173,14 +169,6 @@ public class PlayerCacheDto extends BasicVO {
 		this.curFriendCount = curFriendCount;
 	}
 
-	public int getMaxFriendCount() {
-		return maxFriendCount;
-	}
-
-	public void setMaxFriendCount(int maxFriendCount) {
-		this.maxFriendCount = maxFriendCount;
-	}
-
 	public Date getLastLoginOutDate() {
 		return lastLoginOutDate == null? new Date() : lastLoginOutDate;
 	}
@@ -207,7 +195,6 @@ public class PlayerCacheDto extends BasicVO {
 		if (player.getPlayerTop() == null){
 			player.setPlayerTop(new PlayerTop().init());
 		}
-		this.maxFriendCount = player.getPlayerTop().getFriendCount();
 	}
 
 

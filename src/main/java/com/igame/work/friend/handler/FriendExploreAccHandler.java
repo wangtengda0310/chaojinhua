@@ -15,6 +15,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author xym
@@ -46,7 +47,7 @@ public class FriendExploreAccHandler extends BaseHandler{
         vo.addData("exploreMapId",exploreMapId);
 
         //校验探索可加速次数
-        if (player.getPlayerCount().getFriendExplore() <= 0){
+        if (helpedFriendsOf(player).count() > 20){
             sendError(ErrorCode.EXPLORE_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.FRIEND_EXPLORE_ACC),vo,user);
             return;
         }
@@ -98,7 +99,9 @@ public class FriendExploreAccHandler extends BaseHandler{
         }
 
         //减少可加速次数
-        player.getPlayerCount().addExploreCount(-1);
+        player.getFriends().getCurFriends().stream()
+                .filter(friend -> friend.getPlayerId() == playerId)
+                .forEach(friend -> friend.setHelpAcc(1));
 
         //推送奖励
         String reward = "1,1,2000";
@@ -110,8 +113,12 @@ public class FriendExploreAccHandler extends BaseHandler{
         tangSuoDto.calLeftTime(System.currentTimeMillis());
 
         vo.addData("leftTime",tangSuoDto.getLeftTime());
-        vo.addData("exploreCount",20 - player.getPlayerCount().getFriendExplore());    //todo 傻逼前端
+        vo.addData("exploreCount",helpedFriendsOf(player).count());
         vo.addData("reward",reward);
         sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_EXPLORE_ACC),vo,user);
+    }
+
+    private Stream<Friend> helpedFriendsOf(Player player) {
+        return player.getFriends().getCurFriends().stream().filter(friend -> friend.getHelpAcc() == 1);
     }
 }

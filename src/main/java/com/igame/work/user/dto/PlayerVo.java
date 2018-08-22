@@ -31,7 +31,7 @@ public class PlayerVo extends BasicVO {
     protected String nickname;//角色昵称
 
     @JsonIgnore
-    private String lastNickname;//修改前的昵称
+    private String lastNickname="";//修改前的昵称
 
     protected int gender;//玩家性别
 

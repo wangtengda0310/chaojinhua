@@ -6,8 +6,6 @@ import com.igame.work.checkpoint.data.CheckPointTemplate;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 
@@ -33,13 +31,6 @@ public class PlayerCount {
 	@Transient
 	@JsonIgnore
 	private String generalCheckPointStr = "";	//一般关卡可挑战次数
-
-	private int friendPhy = 0;	//好友体力可领取次数
-
-	private int friendExplore = 0;	//好友探索可加速次数
-
-	private String recordDate;
-
 
 	public Map<Integer, Integer> getBossCheckPoint() {
 		return bossCheckPoint;
@@ -73,23 +64,6 @@ public class PlayerCount {
 		this.generalCheckPointStr = generalCheckPointStr;
 	}
 
-	/**可领取次数*/
-	public int getFriendPhy() {
-		return friendPhy;
-	}
-
-	public void setFriendPhy(int friendPhy) {
-		this.friendPhy = friendPhy;
-	}
-
-	public int getFriendExplore() {
-		return friendExplore;
-	}
-
-	public void setFriendExplore(int friendExplore) {
-		this.friendExplore = friendExplore;
-	}
-
 
 
 
@@ -113,14 +87,6 @@ public class PlayerCount {
 		}
 	}
 
-	public synchronized void addPhysicalCount(int value) {
-		this.friendPhy += value;
-	}
-
-	public synchronized void addExploreCount(int value) {
-		this.friendExplore += value;
-	}
-
 	public int getCheckPoint(int chapterType, int chapterId) {
 
 		int count = 0;
@@ -133,14 +99,6 @@ public class PlayerCount {
 		}
 
 		return count;
-	}
-
-	public String getRecordDate() {
-		return recordDate;
-	}
-
-	public void setRecordDate(String recordDate) {
-		this.recordDate = recordDate;
 	}
 
 	public PlayerCount transVo(){
@@ -170,11 +128,4 @@ public class PlayerCount {
 		return this;
 	}
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	/**根据时间检查计数是否需要更新*/
-	public void checkDate() {
-		if(!sdf.format(new Date()).equals(recordDate)) {
-			friendPhy = 20;
-		}
-	}
 }

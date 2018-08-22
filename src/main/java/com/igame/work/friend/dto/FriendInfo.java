@@ -29,7 +29,7 @@ public class FriendInfo extends BasicVO {
 	private int exploreCount;
 
 	@Transient
-	private int maxFriendCount;
+	private int maxFriendCount = 20;
 
 	private List<Friend> curFriends = Lists.newArrayList();	//好友列表
 

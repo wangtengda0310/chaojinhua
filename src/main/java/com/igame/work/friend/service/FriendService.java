@@ -348,4 +348,13 @@ public class FriendService {
             }
         }
     }
+
+    public void loadPlayer(Player player) {
+        player.setFriends(FriendDAO.ins().getFriendInfoByPlayerId(player.getSeverId(), player.getPlayerId()));
+        long explorerCount = player.getFriends().getCurFriends().stream().filter(friend -> friend.getHelpAcc() == 1).count();
+        player.getFriends().setExploreCount((int) explorerCount);
+        player.getFriends().setMaxFriendCount(20);
+        long phyCount = player.getFriends().getCurFriends().stream().filter(friend -> friend.getReceivePhy() == 2).count();
+        player.getFriends().setPhysicalCount((int) phyCount);
+    }
 }
