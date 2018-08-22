@@ -8,7 +8,6 @@ import com.igame.core.data.template.HeadFrameTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.service.HeadService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
