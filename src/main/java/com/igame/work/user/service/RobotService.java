@@ -1,13 +1,8 @@
 package com.igame.work.user.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.SessionManager;
-import com.igame.work.user.PlayerDataManager;
-import com.igame.work.user.data.ArenadataTemplate;
 import com.igame.core.db.DBManager;
 import com.igame.util.GameMath;
 import com.igame.work.fight.dto.FightBase;
@@ -18,10 +13,15 @@ import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.fight.service.FightUtil;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.dao.RobotDAO;
+import com.igame.work.user.data.ArenadataTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.dto.Team;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -32,21 +32,17 @@ public class RobotService {
 	
     private static final RobotService domain = new RobotService();
 
-    public static final RobotService ins() {
+    public static RobotService ins() {
         return domain;
     }
     
-    public Map<Integer,Map<String,RobotDto>> robot = Maps.newHashMap();
+    private Map<Integer,Map<String,RobotDto>> robot = Maps.newHashMap();
     
     
     public void ref(){
     	for(Player player : SessionManager.ins().getSessions().values()){
-    		Map<String,RobotDto> map = robot.get(player.getSeverId());
-    		if(map == null){
-    			map = Maps.newHashMap();
-    			robot.put(player.getSeverId(), map);
-    		}
-    		RobotDto rb = map.get(player.getNickname());
+			Map<String, RobotDto> map = robot.computeIfAbsent(player.getSeverId(), k -> Maps.newHashMap());
+			RobotDto rb = map.get(player.getNickname());
     		if(rb == null){
     			rb = new RobotDto();
     			rb.setDtate(1);
@@ -111,8 +107,6 @@ public class RobotService {
 
     /**
      * 生成机器人数据
-     * @param player
-     * @return
      */
     public RobotDto createRobotDto(Player player,long playerId,String name,int level){
     	RobotDto rto = null;
@@ -130,24 +124,24 @@ public class RobotService {
     		int count = GameMath.getRandomCount(Integer.parseInt(at.getNum().split(",")[0]), Integer.parseInt(at.getNum().split(",")[1]));
     		String[] fornt = at.getFront().split(",");
     		String[] back = at.getBack().split(",");
-    		String monsterId = "";
-    		String monsterLevel = "";
+    		StringBuilder monsterId = new StringBuilder();
+    		StringBuilder monsterLevel = new StringBuilder();
     		for(int i = 1;i<=count;i++){
-    			monsterId += "," + fornt[GameMath.getRandInt(fornt.length)];
-    			monsterLevel += "," +GameMath.getRandomCount(aiLv1,aiLv2);
+    			monsterId.append(",").append(fornt[GameMath.getRandInt(fornt.length)]);
+    			monsterLevel.append(",").append(GameMath.getRandomCount(aiLv1, aiLv2));
     		}
     		count = 5- count;
     		for(int i = 1;i<=count;i++){
-    			monsterId += "," + back[GameMath.getRandInt(fornt.length)];
-    			monsterLevel += "," + GameMath.getRandomCount(aiLv1,aiLv2);
+    			monsterId.append(",").append(back[GameMath.getRandInt(fornt.length)]);
+    			monsterLevel.append(",").append(GameMath.getRandomCount(aiLv1, aiLv2));
     		}
     		if(monsterId.length() > 0){
-    			monsterId = monsterId.substring(1);
+    			monsterId = new StringBuilder(monsterId.substring(1));
     		}
     		if(monsterLevel.length() > 0){
-    			monsterLevel = monsterLevel.substring(1);
+    			monsterLevel = new StringBuilder(monsterLevel.substring(1));
     		}
-			FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(monsterId, monsterLevel, "", "","")));
+			FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(monsterId.toString(), monsterLevel.toString(), "", "","")));
 			
 	    	for(Monster m : fb.getFightB().getMonsters().values()){
 	    		MatchMonsterDto mto = new MatchMonsterDto(m);

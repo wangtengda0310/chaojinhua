@@ -77,7 +77,7 @@ public class MatchMonsterDto   implements Cloneable  {
 	@JsonIgnore
 	public float iasInit;//最大攻击速度
 
-	private String equip;//装备(纹章)
+	private String equip = "-1,-1,-1,-1";//装备(纹章)
 	
 	public MatchMonsterDto(){
 		
