@@ -1,39 +1,19 @@
 package com.igame.work.checkpoint.handler.tansuo;
 
-import java.util.List;
-import java.util.Map;
-
-import net.sf.json.JSONObject;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.db.DBManager;
 import com.igame.core.handler.BaseHandler;
-import com.igame.core.log.GoldLog;
-import com.igame.dto.IDFactory;
 import com.igame.dto.RetVO;
-import com.igame.dto.ServerInfo;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.dto.TangSuoDto;
-import com.igame.work.monster.dao.MonsterDAO;
 import com.igame.work.monster.dto.Monster;
-import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.load.PlayerLoad;
-import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.exceptions.SFSErrorCode;
-import com.smartfoxserver.v2.exceptions.SFSErrorData;
-import com.smartfoxserver.v2.exceptions.SFSException;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
+import net.sf.json.JSONObject;
+
+import java.util.Map;
 
 /**
  * 

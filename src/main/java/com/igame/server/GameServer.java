@@ -7,6 +7,7 @@ import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.util.SystemService;
+import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.activity.ActivityHandler;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaHandler;
 import com.igame.work.activity.sign.SignHandler;

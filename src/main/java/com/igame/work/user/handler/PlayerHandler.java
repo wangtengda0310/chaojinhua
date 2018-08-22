@@ -11,6 +11,7 @@ import com.igame.core.log.GoldLog;
 import com.igame.dto.IDFactory;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.checkpoint.dto.FateDto;
 import com.igame.work.checkpoint.service.CheckPointService;
 import com.igame.work.friend.service.FriendService;

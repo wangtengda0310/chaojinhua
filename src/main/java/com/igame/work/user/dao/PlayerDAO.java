@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
 import com.igame.core.log.ExceptionLog;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.handler.ServerListHandler;
+import com.igame.work.serverList.ServerListHandler;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.UpdateOperations;
 

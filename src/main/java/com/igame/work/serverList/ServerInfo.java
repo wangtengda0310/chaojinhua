@@ -1,4 +1,4 @@
-package com.igame.dto;
+package com.igame.work.serverList;
 
 /**
  * 
