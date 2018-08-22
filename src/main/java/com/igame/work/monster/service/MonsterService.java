@@ -1,24 +1,25 @@
 package com.igame.work.monster.service;
 
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.work.monster.MonsterDataManager;
-import com.igame.work.monster.data.MonsterEvolutionTemplate;
-import com.igame.work.monster.data.MonsterTemplate;
-import com.igame.work.monster.data.PokedexdataTemplate;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.item.dto.Item;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.dao.MonsterDAO;
+import com.igame.work.monster.data.MonsterEvolutionTemplate;
+import com.igame.work.monster.data.MonsterTemplate;
+import com.igame.work.monster.data.PokedexdataTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -238,4 +239,7 @@ public class MonsterService {
 		return mms;
 	}
 
+	public static void loadPlayer(Player player, int serverId) {
+		player.setMonsters(MonsterDAO.ins().getMonsterByPlayer(player,serverId, player.getPlayerId()));
+	}
 }

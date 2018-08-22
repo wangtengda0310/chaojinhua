@@ -1,11 +1,14 @@
 package com.igame.work.item.service;
 
+import com.igame.work.item.dao.ItemDAO;
 import com.igame.work.item.dto.Item;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author xym
@@ -126,5 +129,9 @@ public class ItemService {
         //更新阵容装备
         monsterEquip.put(location,itemId);
 
+    }
+
+    public void loadPlayer(Player player, int serverId) {
+        player.setItems(ItemDAO.ins().getItemByPlayer(serverId, player.getPlayerId()));
     }
 }

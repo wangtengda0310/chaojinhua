@@ -1,24 +1,21 @@
 package com.igame.work.quest.service;
 
-import java.util.List;
-import java.util.Map;
-
-
-
-
-
 import com.google.common.collect.Lists;
 import com.igame.core.MessageUtil;
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import com.igame.work.quest.QuestDataManager;
-import com.igame.work.quest.data.QuestTemplate;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
+import com.igame.work.checkpoint.GuanQiaDataManager;
 import com.igame.work.checkpoint.dto.RewardDto;
 import com.igame.work.monster.dto.Gods;
+import com.igame.work.quest.QuestDataManager;
+import com.igame.work.quest.dao.QuestDAO;
+import com.igame.work.quest.data.QuestTemplate;
 import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -338,8 +335,9 @@ public class QuestService {
 		qList.add(td);
 
 	}
-	
-	
 
 
+	public static void loadPlayer(Player player, int serverId) {
+		QuestDAO.ins().getByPlayer(serverId, player);
+	}
 }

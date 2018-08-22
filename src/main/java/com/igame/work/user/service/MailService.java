@@ -1,10 +1,5 @@
 package com.igame.work.user.service;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
-
-import com.google.common.collect.Maps;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.log.GoldLog;
@@ -12,8 +7,10 @@ import com.igame.work.user.dao.MailDAO;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Mail;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.handler.ServerListHandler;
-import com.igame.work.user.load.ResourceService;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * 
@@ -138,6 +135,9 @@ public class MailService {
     	}
     	return mail;
     }
-    
 
+
+    public void loadPlayer(Player player, int serverId) {
+		player.setMail(MailDAO.ins().getByPlayer(serverId, player.getPlayerId()));
+    }
 }

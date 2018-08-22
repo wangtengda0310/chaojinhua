@@ -3,15 +3,16 @@ package com.igame.work.shop.service;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.work.shop.ShopDataManager;
-import com.igame.work.shop.data.ShopData;
-import com.igame.work.shop.data.ShopOutPutTemplate;
-import com.igame.work.shop.data.ShopRandomTemplate;
-import com.igame.work.shop.data.ShopTemplate;
 import com.igame.dto.RetVO;
 import com.igame.util.DateUtil;
 import com.igame.util.GameMath;
 import com.igame.work.shop.ShopConstants;
+import com.igame.work.shop.ShopDataManager;
+import com.igame.work.shop.dao.ShopDAO;
+import com.igame.work.shop.data.ShopData;
+import com.igame.work.shop.data.ShopOutPutTemplate;
+import com.igame.work.shop.data.ShopRandomTemplate;
+import com.igame.work.shop.data.ShopTemplate;
 import com.igame.work.shop.dto.GeneralShop;
 import com.igame.work.shop.dto.MysticalShop;
 import com.igame.work.shop.dto.ShopInfo;
@@ -377,5 +378,9 @@ public class ShopService {
         array[index] = array[array.length-1];
         array = Arrays.copyOf(array, array.length-1);
         return array;
+    }
+
+    public void loadPlayer(Player player, int serverId) {
+        player.setShopInfo(ShopDAO.ins().getShopInfoByPlayerId(serverId,player.getPlayerId()));
     }
 }

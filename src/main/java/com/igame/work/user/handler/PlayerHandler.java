@@ -86,7 +86,7 @@ public class PlayerHandler extends BaseHandler{
 		try {
 			player.setUser(user);
 			SessionManager.ins().addSession(player);
-			PlayerLoad.ins().processPlayerLogin(player);
+			PlayerLoad.ins().afterPlayerLogin(player);
 		} catch (Exception e) {
 			this.getLogger().warn("PlayerHandler load error", e);
 			e.printStackTrace();

@@ -1,23 +1,24 @@
 package com.igame.work.user.load;
 
 import com.google.common.collect.Maps;
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import com.igame.work.checkpoint.data.CheckPointTemplate;
-import com.igame.work.fight.FightDataManager;
-import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.core.log.DebugLog;
 import com.igame.util.MyUtil;
 import com.igame.util.PlayerTimeResCalUtil;
 import com.igame.util.SystemService;
-import com.igame.work.activity.PlayerActivityData;
+import com.igame.work.activity.ActivityService;
 import com.igame.work.chat.dao.PlayerMessageDAO;
 import com.igame.work.chat.service.MessageBoardService;
+import com.igame.work.checkpoint.GuanQiaDataManager;
 import com.igame.work.checkpoint.dao.WordEventDAO;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 import com.igame.work.checkpoint.service.CheckPointService;
+import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.friend.dao.FriendDAO;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.item.dao.ItemDAO;
+import com.igame.work.item.service.ItemService;
 import com.igame.work.monster.dao.GodsDAO;
 import com.igame.work.monster.dao.MonsterDAO;
 import com.igame.work.monster.dto.Gods;
@@ -34,6 +35,7 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.PlayerTop;
 import com.igame.work.user.dto.Team;
 import com.igame.work.user.service.HeadService;
+import com.igame.work.user.service.MailService;
 import com.igame.work.user.service.PlayerCacheService;
 import com.igame.work.user.service.VIPService;
 import org.apache.commons.beanutils.BeanUtils;
@@ -54,21 +56,24 @@ public class PlayerLoad {
     }
     
     public Player loadPlayer(Player player,int serverId,long userId){
-    	player.setItems(ItemDAO.ins().getItemByPlayer(serverId, player.getPlayerId()));
+		ItemService.ins().loadPlayer(player, serverId);
+
     	player.setGods(GodsDAO.ins().getByPlayer(serverId, player.getPlayerId()));
-    	player.setMonsters(MonsterDAO.ins().getMonsterByPlayer(player,serverId, player.getPlayerId()));
-    	player.setWordEvent(WordEventDAO.ins().getByPlayer(serverId, player.getPlayerId()));    	
-    	player.setMail(MailDAO.ins().getByPlayer(serverId, player.getPlayerId()));
-    	player.setShopInfo(ShopDAO.ins().getShopInfoByPlayerId(serverId,player.getPlayerId()));
+
+    	MonsterService.loadPlayer(player,serverId);
+
+    	player.setWordEvent(WordEventDAO.ins().getByPlayer(serverId, player.getPlayerId()));
+
+		MailService.ins().loadPlayer(player, serverId);
+		ShopService.ins().loadPlayer(player, serverId);
 		FriendService.ins().loadPlayer(player);
+
 		player.setPrivateMessages(PlayerMessageDAO.ins().getMessageByPlayerId(player.getSeverId(),player.getPlayerId()).getMessages());
 		player.initMessageBoard();
-    	QuestDAO.ins().getByPlayer(serverId, player);
-		if (player.getActivityData() == null) {
-			player.setActivityData(new PlayerActivityData(player));
-		} else {
-			player.getActivityData().all().forEach(activity->activity.setPlayer(player));
-		}
+
+    	QuestService.loadPlayer(player, serverId);
+		ActivityService.loadPlayer(player);
+
 		PlayerCacheService.ins().remove(player);
     	return null;
     }
@@ -76,7 +81,7 @@ public class PlayerLoad {
     /**
      * 玩家登录成功后的操作
      */
-    public void processPlayerLogin(Player player) throws Exception {
+    public void afterPlayerLogin(Player player) throws Exception {
 
     	if (player.getPrivateMessages().size() <= 0)
 			VIPService.ins().initPrivileges(player.getVipPrivileges());
