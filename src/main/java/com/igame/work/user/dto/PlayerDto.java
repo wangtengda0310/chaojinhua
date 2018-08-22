@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
+import org.mongodb.morphia.annotations.Transient;
 import org.mongodb.morphia.utils.IndexDirection;
 
 import java.util.Date;
@@ -29,9 +30,6 @@ public class PlayerDto extends BasicDto {
     protected String username;//角色名
 
     protected String nickname;//角色昵称
-
-    @JsonIgnore
-    private String lastNickname="";//修改前的昵称
 
     protected int gender;//玩家性别
 
@@ -104,6 +102,11 @@ public class PlayerDto extends BasicDto {
     protected double totalMoney = 0;    //充值金额
     
     protected int round = 1;//二周目 1-一周目  2-二周目
+
+    @JsonIgnore
+    private String lastNickname="";//修改前的昵称
+    @Transient
+    private int modifiedName;
 
     public long getUserId() {
         return userId;
@@ -415,5 +418,13 @@ public class PlayerDto extends BasicDto {
 
     public void setLastNickname(String lastNickname) {
         this.lastNickname = lastNickname;
+    }
+
+    public int getModifiedName() {
+        return modifiedName;
+    }
+
+    public void setModifiedName(int modifiedName) {
+        this.modifiedName = modifiedName;
     }
 }

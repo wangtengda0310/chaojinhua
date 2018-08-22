@@ -51,7 +51,6 @@ public class ModifyNicknameHandler extends BaseHandler {
         player.setLastNickname(player.getNickname());
         player.setNickname(nickname);
 
-        vo.addData("diamond", player.getDiamond());
         fireEvent(user, "diamond");
 
         sendSucceed(MProtrol.toStringProtrol(MProtrol.MODIFY_NICKNAME), vo, user);

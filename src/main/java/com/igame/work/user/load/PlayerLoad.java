@@ -182,6 +182,9 @@ public class PlayerLoad {
 		if (player.getTurntable() != null && TurntableService.ins().needRealod(player.getTurntable().getLastUpdate()))
 			TurntableService.ins().reloadTurntable(player);
 
+		if(player.getLastNickname()!=null && !"".equals(player.getLastNickname())) {
+			player.setModifiedName(1);
+		}
     }
     
     /**
