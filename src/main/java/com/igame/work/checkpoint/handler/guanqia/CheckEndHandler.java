@@ -1,24 +1,20 @@
 package com.igame.work.checkpoint.handler.guanqia;
 
 
-
-import java.util.List;
-
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import net.sf.json.JSONObject;
-
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.work.checkpoint.data.CheckPointTemplate;
-import com.igame.work.checkpoint.data.TangSuoTemplate;
-import com.igame.work.checkpoint.data.WorldEventTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
+import com.igame.work.checkpoint.data.TangSuoTemplate;
+import com.igame.work.checkpoint.data.WorldEventTemplate;
 import com.igame.work.checkpoint.dto.RewardDto;
 import com.igame.work.checkpoint.dto.TangSuoDto;
 import com.igame.work.checkpoint.dto.WordEventDto;
@@ -30,6 +26,10 @@ import com.igame.work.user.load.PlayerService;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -127,7 +127,7 @@ public class CheckEndHandler extends BaseHandler{
 				player.setCheckPoint(player.getCheckPoint()+"," +String.valueOf(chapterId));
 			}
 
-			MessageUtil.notiyUnLockCheck(player, ct.getUnlock(),chapterId);//推送解锁关卡
+			notiyUnLockCheck(player, ct.getUnlock(),chapterId);//推送解锁关卡
 
 			for(TangSuoTemplate ts : GuanQiaDataManager.TangSuoData.getAll()){//解锁探索关卡
 				if(chapterId ==  ts.getUnlock() && player.getTangSuo().get(ts.getNum()) == null){
@@ -166,5 +166,90 @@ public class CheckEndHandler extends BaseHandler{
 		sendSucceed(MProtrol.toStringProtrol(MProtrol.CHECKPOINT_END), vo, user);
 	}
 
-	
+
+	private void notiyUnLockCheck(Player player,String unlock,int newchapterId){
+
+		String str = "";
+		String strC = "";
+		String checkPoint = String.valueOf(newchapterId);
+		if(!MyUtil.isNullOrEmpty(unlock)){
+			String[] us = unlock.split(",");
+			Set<Integer> ccs = Sets.newHashSet();
+			Set<Integer> newccs = Sets.newHashSet();
+			if(player.getCheckPoint() != null && !MyUtil.isNullOrEmpty(player.getCheckPoint())){//已过章节
+				String[] cc = player.getCheckPoint().split(",");
+				for(String c : cc){
+					CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(c));
+					if(ct != null && !ccs.contains(ct.getCityId())){
+						ccs.add(ct.getCityId());
+					}
+				}
+			}
+			for(String u : us){
+				CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(u));
+				if(!MyUtil.hasCheckPoint(player.getCheckPoint(), u)){//真正第一次已过关卡更新
+					if(ct.getChapterType()!=2){
+						str+=","+u;
+					}
+
+					if(ct.getChapterType()==2 && !MyUtil.isNullOrEmpty(ct.getDropPoint())){
+						if(player.getTimeResCheck().get(ct.getChapterId()) == null){//资源关卡
+							checkPoint  += ","+ct.getChapterId();
+							player.setCheckPoint(player.getCheckPoint()+"," +String.valueOf(ct.getChapterId()));
+							player.getTimeResCheck().put(ct.getChapterId(), ct.getMaxTime() * 60);
+							RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), ct.getMaxTime() * 60, ct.getMaxTime() * 60);
+							MessageUtil.notiyTimeResToPlayer(player,ct.getChapterId(), dto);    //推送金币关卡 第一次满
+						}
+					}
+				}
+
+				if(ct != null && !ccs.contains(ct.getCityId()) && !newccs.contains(ct.getCityId())){
+					newccs.add(ct.getCityId());
+				}
+			}
+			if(!newccs.isEmpty()){
+				for(Integer ii : newccs){
+					strC += ","+ii;
+				}
+			}
+			if(strC.length()>0){
+				strC = strC.substring(1);
+			}
+			if(str.length()>0){
+				str = str.substring(1);
+				if(isTwoRound(str)){
+					if(player.getRound() == 1){
+						player.setRound(2);
+					}
+				}
+			}
+
+
+		}
+		RetVO vo = new RetVO();
+		vo.addData("unlock", str);
+		vo.addData("unlockCity", strC);
+		vo.addData("checkPoint", checkPoint);
+		vo.addData("round", player.getRound());
+		MessageUtil.sendMessageToPlayer(player, MProtrol.CHECK_UNLOCK, vo);
+
+
+	}
+
+	private boolean isTwoRound(String checkpoint){
+		if (checkpoint == null) {
+			return false;
+		}
+
+		String[] ssc = checkpoint.split(",");
+		for(String ss : ssc){
+			CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(ss));
+			if(ct.getRound() == 2){
+				return true;
+			}
+		}
+		return false;
+
+	}
+
 }

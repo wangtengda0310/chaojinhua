@@ -1,16 +1,8 @@
 package com.igame.util;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import com.igame.work.checkpoint.data.CheckPointTemplate;
-
 import net.sf.json.JSONArray;
+
+import java.util.*;
 
 public class MyUtil {
 	//字符串类型的数字转换成int,如果value为null或者空，则返回int.MaxValue
@@ -253,21 +245,7 @@ public class MyUtil {
 		return false;
 		
 	}
-	
-	public static boolean isTwoRound(String checkpoint){
-		String[] ssc = checkpoint.split(",");
-		if(ssc != null){
-			for(String ss : ssc){
-				CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(ss));
-				if(ct.getRound() == 2){
-					return true;
-				}
-			}
-		}
-		return false;
-		
-	}
-	
+
 	public static boolean vlaidString(String tail,String is){
 		
 		if(tail == null || is == null){
