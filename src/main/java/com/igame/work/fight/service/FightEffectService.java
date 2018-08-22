@@ -1,19 +1,19 @@
 package com.igame.work.fight.service;
 
-import java.util.List;
-import java.util.concurrent.ScheduledFuture;
-
 import com.google.common.collect.Lists;
 import com.igame.core.data.DataManager;
 import com.igame.core.data.template.EffectTemplate;
 import com.igame.core.data.template.SkillTemplate;
-import com.igame.util.MyUtil;
 import com.igame.util.ThreadPoolManager;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightCmd;
 import com.igame.work.fight.dto.RetFightCmd;
 import com.igame.work.monster.dto.Effect;
 import com.igame.work.monster.dto.Monster;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 
 
@@ -94,7 +94,7 @@ public class FightEffectService {
 							if(et.getHotTime() > 0){//HOT
 								if(et.getTimes() > 0){//加入场景对象中
 									eet.setHotTime(et.getHotTime() * 1000);
-									if(fb.addEffectToHotList(eet) != null){
+									if(addEffectToHotList(fb, eet) != null){
 										ls.add(eet);
 										rcd.getBuffer().add(addEet);
 									}	
@@ -195,5 +195,32 @@ public class FightEffectService {
 		return ls;		
     }
 
-	
+
+	private Effect addEffectToHotList(FightBase fb, Effect effect){
+		if(effect.getRepeat() <= 1){//替换
+			Iterator<Effect> efs = fb.scBuffers.iterator();
+			while(efs.hasNext()){
+				Effect ef = efs.next();
+				if(ef.getEffectId() == effect.getEffectId()){
+					efs.remove();
+				}
+			}
+			fb.scBuffers.add(effect);
+			return effect;
+		}else{
+			int count = 0;
+			for(Effect ef : fb.scBuffers){
+				if(ef.getEffectId() == effect.getEffectId()){
+					count++;
+				}
+			}
+			if(count < effect.getRepeat()){
+				fb.scBuffers.add(effect);
+				return effect;
+			}else{
+				return null;
+			}
+		}
+	}
+
 }

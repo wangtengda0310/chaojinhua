@@ -1,13 +1,11 @@
 package com.igame.work.fight.dto;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.igame.work.monster.dto.Effect;
+
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -135,38 +133,5 @@ public class FightBase {
 	public void setAreaList(List<Effect> areaList) {
 		this.areaList = areaList;
 	}
-
-
-
-	public Effect addEffectToHotList(Effect effect){
-		if(effect.getRepeat() <= 1){//替换
-			Iterator<Effect> efs = this.scBuffers.iterator();
-			while(efs.hasNext()){
-				Effect ef = efs.next();
-				if(ef.getEffectId() == effect.getEffectId()){
-					efs.remove();
-				}
-			}
-			this.scBuffers.add(effect);
-			return effect;
-		}else{
-			int count = 0;
-			for(Effect ef : this.scBuffers){
-				if(ef.getEffectId() == effect.getEffectId()){
-					count++;
-				}
-			}
-			if(count < effect.getRepeat()){
-				this.scBuffers.add(effect);
-				return effect;
-			}else{
-				return null;
-			}
-		}
-	}
-	
-	
-	
-	
 
 }
