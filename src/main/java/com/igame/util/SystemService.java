@@ -6,8 +6,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.FatedataTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.FatedataTemplate;
 import com.igame.core.db.BasicVO;
 import com.igame.core.db.SystemServiceDAO;
 import com.igame.core.log.ExceptionLog;
@@ -15,6 +15,7 @@ import com.igame.work.checkpoint.dto.WordEventDto;
 import com.igame.work.checkpoint.service.CheckPointService;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.quest.QuestDataManager;
 import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.VIPService;
@@ -77,7 +78,7 @@ public class SystemService extends BasicVO {
         }
         List<TaskDayInfo> qList = Lists.newArrayList();
         for(TaskDayInfo td : player.getAchievement().values()){
-        	if(DataManager.QuestData.getTemplate(td.getQuestId()) != null && DataManager.QuestData.getTemplate(td.getQuestId()).getQuestType() == 1){
+        	if(QuestDataManager.QuestData.getTemplate(td.getQuestId()) != null && QuestDataManager.QuestData.getTemplate(td.getQuestId()).getQuestType() == 1){
         		if(td.getVars() > 0){
         			td.setVars(0);
         			td.setStatus(1);
@@ -149,7 +150,7 @@ public class SystemService extends BasicVO {
 	public void refFateMap(){
 		
 		this.fateMap.clear();
-		for(FatedataTemplate ft : DataManager.FateData.getAll()){
+		for(FatedataTemplate ft : GuanQiaDataManager.FateData.getAll()){
 			List<Map<Long,Monster>> ls = Lists.newArrayList();
 			for(int i = 1;i <= 3;i++){
 				ls.add(CheckPointService.getNormalFateMonster(ft.getFloorNum()));

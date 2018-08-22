@@ -3,13 +3,11 @@ package com.igame.work.shop.service;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.ShopData;
-import com.igame.core.data.template.ShopOutPutTemplate;
-import com.igame.core.data.template.ShopRandomLvTemplate;
-import com.igame.core.data.template.ShopRandomTemplate;
-import com.igame.core.data.template.ShopTemplate;
-import com.igame.core.log.GoldLog;
+import com.igame.work.shop.ShopDataManager;
+import com.igame.work.shop.data.ShopData;
+import com.igame.work.shop.data.ShopOutPutTemplate;
+import com.igame.work.shop.data.ShopRandomTemplate;
+import com.igame.work.shop.data.ShopTemplate;
 import com.igame.dto.RetVO;
 import com.igame.util.DateUtil;
 import com.igame.util.GameMath;
@@ -39,7 +37,7 @@ public class ShopService {
      */
     public ShopInfo initShop(Player player){
 
-        ShopData shopData = DataManager.shopData;
+        ShopData shopData = ShopDataManager.shopData;
         ShopInfo shopInfo = new ShopInfo();
         shopInfo.setPlayerId(player.getPlayerId());
         shopInfo.setDtate(1);   //新增
@@ -165,7 +163,7 @@ public class ShopService {
         if (lastReload == null)
             return true;
 
-        ShopTemplate template = DataManager.shopData.getTemplate(shopId);
+        ShopTemplate template = ShopDataManager.shopData.getTemplate(shopId);
 
         String[] resestTimes = template.getResestTime().split(ShopConstants.SPLIT_ONE);
 
@@ -189,7 +187,7 @@ public class ShopService {
      */
     public ShopInfo reloadShop(int shopId, ShopInfo shopInfo, boolean isManual){
 
-        ShopTemplate shopTemplate = DataManager.shopData.getTemplate(shopId);
+        ShopTemplate shopTemplate = ShopDataManager.shopData.getTemplate(shopId);
 
         int shopType = shopTemplate.getShopType();
 
@@ -249,13 +247,13 @@ public class ShopService {
 
         int curLv = mysticalShop.getShopLv();
         int curExp = mysticalShop.getExp() + exp;
-        int nextLevelNeedExp = DataManager.shopRandomLvData.getTemplate(curLv).getExp();
+        int nextLevelNeedExp = ShopDataManager.shopRandomLvData.getTemplate(curLv).getExp();
 
         while (curExp > nextLevelNeedExp && curLv < 4){	//升级
 
             curLv++;
             curExp -= nextLevelNeedExp;
-            nextLevelNeedExp = DataManager.shopRandomLvData.getTemplate(curLv).getExp();
+            nextLevelNeedExp = ShopDataManager.shopRandomLvData.getTemplate(curLv).getExp();
         }
 
         mysticalShop.setShopLv(curLv);
@@ -272,7 +270,7 @@ public class ShopService {
     private void reloadMysticalShop(int shopId, ShopInfo shopInfo, boolean isManual) {
 
         int shopLv = shopInfo.getMysticalShop().getShopLv();
-        ShopRandomTemplate randomTemplate = DataManager.shopRandomData.getTemplate(shopLv);
+        ShopRandomTemplate randomTemplate = ShopDataManager.shopRandomData.getTemplate(shopLv);
         if (shopLv == 0 || randomTemplate == null)
             return;
 
@@ -327,7 +325,7 @@ public class ShopService {
     //刷新一般商店
     private void reloadGeneralShop(int shopId, ShopInfo shopInfo, boolean isManual) {
 
-        ShopOutPutTemplate outPutTemplate = DataManager.shopOutPutData.getTemplate(shopId);
+        ShopOutPutTemplate outPutTemplate = ShopDataManager.shopOutPutData.getTemplate(shopId);
         String s = outPutTemplate.getItem();
         String r = outPutTemplate.getRate();
         String c = outPutTemplate.getBuy();

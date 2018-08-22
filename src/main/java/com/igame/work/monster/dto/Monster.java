@@ -3,9 +3,9 @@ package com.igame.work.monster.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterTemplate;
-import com.igame.core.data.template.TongDiaoTemplate;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.data.MonsterTemplate;
+import com.igame.work.monster.data.TongDiaoTemplate;
 import com.igame.core.db.BasicVO;
 import com.igame.core.log.ExceptionLog;
 import com.igame.util.MyUtil;
@@ -168,7 +168,7 @@ public class Monster extends BasicVO implements Cloneable {
 			this.equip = MyUtil.toString(ee, ",");
 			
 		}
-		MonsterTemplate mt = DataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
+		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
 		if(mt != null && mt.getSkill() != null){
 			String[] skills = mt.getSkill().split(",");
 			if(skills != null){
@@ -200,7 +200,7 @@ public class Monster extends BasicVO implements Cloneable {
 		this.hp = hp;
 		this.dtate = dtate;
 		this.monsterId = monsterId;
-		MonsterTemplate mt = DataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
+		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
 		if(mt != null && mt.getSkill() != null){
 			String[] skills = mt.getSkill().split(",");
 			if(skills.length != 0){
@@ -456,7 +456,7 @@ public class Monster extends BasicVO implements Cloneable {
 	//重新计算怪物各项属性  包含模板、等级、突破、同化、符文系统加成、图鉴增加
 	public void reCalculate(Player player,boolean dbHp){
 		
-		MonsterTemplate mt = DataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
+		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
 		if(mt != null){
 			
 			reCalLevelValue(dbHp);
@@ -549,7 +549,7 @@ public class Monster extends BasicVO implements Cloneable {
 	 * @param dbHp
 	 */
 	public void reCalLevelValue(boolean dbHp){
-		MonsterTemplate mt = DataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
+		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
 		if(mt != null){
 			if(dbHp){
 				this.hp = mt.getMonster_hp() +(int)( mt.getHp_up() * (this.level - 1));
@@ -589,7 +589,7 @@ public class Monster extends BasicVO implements Cloneable {
 		if(total >= 4){//触发同调
 			List<TongDiaoTemplate> lts = Lists.newArrayList();
 			for(String s : is){
-				TongDiaoTemplate tt = DataManager.TongDiaoData.getByItemId(s);
+				TongDiaoTemplate tt = MonsterDataManager.TongDiaoData.getByItemId(s);
 				if(tt != null){
 					lts.add(tt);
 				}
@@ -608,7 +608,7 @@ public class Monster extends BasicVO implements Cloneable {
 		}		
 		
 		
-		MonsterTemplate mt = DataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
+		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
 		if(mt != null){
 			for(Effect vl : effes){
 				switch (vl.getEffectId()){

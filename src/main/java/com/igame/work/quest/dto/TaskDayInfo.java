@@ -1,13 +1,13 @@
 package com.igame.work.quest.dto;
 
+import com.igame.work.quest.QuestDataManager;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.QuestTemplate;
+import com.igame.work.quest.data.QuestTemplate;
 import com.igame.core.db.BasicVO;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
@@ -52,7 +52,7 @@ public class TaskDayInfo   extends BasicVO {
 		this.questId = questId;
 		this.dtate = 1;
 		this.action = 1;
-		QuestTemplate qt = DataManager.QuestData.getTemplate(questId);
+		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(questId);
 		if(qt.getQuestType()==2 && qt.getClaim()>1 && qt.getClaim()<=25){
 			QuestService.processTaskDetail(player, Lists.newArrayList(), this, qt.getClaim(), 0);
 		}

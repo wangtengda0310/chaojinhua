@@ -7,8 +7,8 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.TrialdataTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.TrialdataTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.checkpoint.dto.RewardDto;
@@ -41,7 +41,7 @@ public class WaKuangHandler extends BaseHandler{
 		}
 		int ret = 0;
 		String reward = "";
-		TrialdataTemplate ct = DataManager.ins().TrialData.getTemplate(player.getTowerId());
+		TrialdataTemplate ct = GuanQiaDataManager.TrialData.getTemplate(player.getTowerId());
 		if(ct == null){
 			ret = ErrorCode.ERROR;
 		}else{

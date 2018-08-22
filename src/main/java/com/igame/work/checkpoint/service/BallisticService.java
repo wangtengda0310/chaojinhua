@@ -2,9 +2,9 @@ package com.igame.work.checkpoint.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.RunTemplate;
-import com.igame.core.data.template.RunTypeTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.RunTemplate;
+import com.igame.work.checkpoint.data.RunTypeTemplate;
 import com.igame.core.db.BallisticRankDAO;
 import com.igame.core.db.DBManager;
 import com.igame.work.fight.dto.MatchMonsterDto;
@@ -115,7 +115,7 @@ public class BallisticService {
         if (index >= killNums.length)
             return matchMonsterDtos;
 
-        RunTemplate template = DataManager.runData.getTemplate(killNums[index]);
+        RunTemplate template = GuanQiaDataManager.runData.getTemplate(killNums[index]);
 
         if (curBuildNum >= tocalBuildNum){  //如果当前等级可以生成的怪物数量大于需要生成的怪物数量
             matchMonsterDtos.addAll(buildMonster(template, tocalBuildNum));
@@ -182,29 +182,29 @@ public class BallisticService {
 
                 String reward = "";
                 if (rank == 1){
-                    reward = DataManager.runRewardData.getTemplate(1).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(1).getReward();
                 }else if (rank == 2){
-                    reward = DataManager.runRewardData.getTemplate(2).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(2).getReward();
                 }else if (rank == 3){
-                    reward = DataManager.runRewardData.getTemplate(3).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(3).getReward();
                 }else if (4 <= rank && rank <= 10){
-                    reward = DataManager.runRewardData.getTemplate(4).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(4).getReward();
                 }else if (10 < rank && rankPercent <= 15){
-                    reward = DataManager.runRewardData.getTemplate(5).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(5).getReward();
                 }else if (15 < rankPercent && rankPercent <= 25){
-                    reward = DataManager.runRewardData.getTemplate(6).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(6).getReward();
                 }else if (15 < rankPercent && rankPercent <= 25){
-                    reward = DataManager.runRewardData.getTemplate(7).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(7).getReward();
                 }else if (25 < rankPercent && rankPercent <= 35){
-                    reward = DataManager.runRewardData.getTemplate(8).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(8).getReward();
                 }else if (35 < rankPercent && rankPercent <= 50){
-                    reward = DataManager.runRewardData.getTemplate(9).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(9).getReward();
                 }else if (50 < rankPercent && rankPercent <= 70){
-                    reward = DataManager.runRewardData.getTemplate(10).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(10).getReward();
                 }else if (70 < rankPercent && rankPercent <= 90){
-                    reward = DataManager.runRewardData.getTemplate(11).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(11).getReward();
                 }else if (90 < rankPercent && rankPercent <= 100){
-                    reward = DataManager.runRewardData.getTemplate(12).getReward();
+                    reward = GuanQiaDataManager.runRewardData.getTemplate(12).getReward();
                 }
 
                 MailService.ins().senderMail(serverId, playerId, 1, 1, "系统", "标题", "正文", reward);
@@ -213,7 +213,7 @@ public class BallisticService {
 
 
         //随机当日buff
-        List<RunTypeTemplate> all = DataManager.runTypeData.getAll();
+        List<RunTypeTemplate> all = GuanQiaDataManager.runTypeData.getAll();
         for (Map.Entry<Integer, Integer> entry : buffMap.entrySet()) {
 
             int newValue;
@@ -249,7 +249,7 @@ public class BallisticService {
             String[] DBNames = DBName.split(",");
             for(String db : DBNames){
                 int serverId=Integer.parseInt(db.substring(5));
-                List<RunTypeTemplate> all = DataManager.runTypeData.getAll();
+                List<RunTypeTemplate> all = GuanQiaDataManager.runTypeData.getAll();
 
                 buffMap.put(serverId,new Random().nextInt(all.size()+1));
             }

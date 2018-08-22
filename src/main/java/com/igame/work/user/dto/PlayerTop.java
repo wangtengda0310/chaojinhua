@@ -2,8 +2,8 @@ package com.igame.work.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Maps;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
@@ -24,7 +24,7 @@ public class PlayerTop {
 	public PlayerTop init(){
 
 		//初始化关卡挑战次数
-		List<CheckPointTemplate> all = DataManager.CheckPointData.getAll();
+		List<CheckPointTemplate> all = GuanQiaDataManager.CheckPointData.getAll();
 		for (CheckPointTemplate template : all) {
 			int chapterId = template.getChapterId();
 			int chapterType = template.getChapterType();

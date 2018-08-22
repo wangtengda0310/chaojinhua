@@ -1,8 +1,8 @@
 package com.igame.work.activity.sign;
 
-import com.igame.core.data.DataManager;
 import com.igame.util.DateUtil;
 import com.igame.work.activity.Activities;
+import com.igame.work.activity.ActivityDataManager;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.dto.Player;
 import net.sf.json.JSONArray;
@@ -36,7 +36,7 @@ public class SignData implements Activities {
         String[] split = signData.split(",");
         int round = Integer.parseInt(split[0]);
         int signDays = Integer.parseInt(split[1]);
-        SignConfigTemplate template = DataManager.signConfig.getTemplate(round + 1);
+        SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(round + 1);
         JSONArray array = new JSONArray();
         int index = 0;
         for(String reward :template.getRewardData().split(";")) {
@@ -84,7 +84,7 @@ public class SignData implements Activities {
         String today = DateUtil.formatToday();
         if (signData == null || "".equals(signData)) {
             signData = "0,0," + today;
-            SignConfigTemplate template = DataManager.signConfig.getTemplate(1);
+            SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
             String reward = template.getRewardData().split(";")[0];
             GMService.processGM(player,reward);
         } else {
@@ -93,14 +93,14 @@ public class SignData implements Activities {
                 return null;
             } else {
                 int round = Integer.parseInt(data[0]);
-                SignConfigTemplate template = DataManager.signConfig.getTemplate(round + 1);    // 数据库中round从0开始记，配置文件中round从1开始记
+                SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(round + 1);    // 数据库中round从0开始记，配置文件中round从1开始记
                 int signed = Integer.parseInt(data[1]) + 1;
 
                 String reward = template.getRewardData().split(";")[0];
                 GMService.processGM(player,reward);
                 if (signed > template.getRewardData().split(";").length) {
                     signed = 0;
-                    round = (round + 1) % DataManager.signConfig.size();
+                    round = (round + 1) % ActivityDataManager.signConfig.size();
                     totalSign = "0,0,0,0";
                 }
                 setSignData(round + "," + signed + "," + today);
@@ -132,7 +132,7 @@ public class SignData implements Activities {
             totalSigns[index - 1] = DateUtil.formatToday();
             setTotalSign(String.join(",",Arrays.asList(totalSigns)));
 
-            SignConfigTemplate template = DataManager.signConfig.getTemplate(1);
+            SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
             if(index==1) {
                 GMService.processGM(player, template.getTotalSign3());
             }

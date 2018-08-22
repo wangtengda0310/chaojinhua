@@ -1,22 +1,18 @@
 package com.igame.work.monster.dao;
 
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Query;
+import com.igame.work.monster.MonsterDataManager;
 import org.mongodb.morphia.query.UpdateOperations;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterTemplate;
+import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.core.db.AbsDao;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
-import com.mongodb.QueryBuilder;
 
 /**
  * 怪物DAO
@@ -67,7 +63,7 @@ public class MonsterDAO extends AbsDao {
     	List<Monster> ls = getDatastore(serverId).find(Monster.class, "playerId", playerId).asList();
     	if(ls != null){
     		for(Monster mm : ls){
-    			MonsterTemplate mt = DataManager.ins().MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
+    			MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
     			if(mt != null && mt.getSkill() != null){
     				String[] skills = mt.getSkill().split(",");
     				if(skills != null){

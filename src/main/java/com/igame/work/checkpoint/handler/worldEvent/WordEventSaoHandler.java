@@ -7,8 +7,8 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.WorldEventTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.WorldEventTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.GameMath;
@@ -53,7 +53,7 @@ public class WordEventSaoHandler extends BaseHandler{
 		String monsterExpStr = "";
 		
 		WordEventDto wd = player.getWordEvent().get(eventType);
-		WorldEventTemplate wt = DataManager.ins().WordEventData.getTemplate(eventType+"_"+level);
+		WorldEventTemplate wt = GuanQiaDataManager.WordEventData.getTemplate(eventType+"_"+level);
 		if(wd == null ||wt ==null|| wd.getLevel().indexOf(String.valueOf(level)) == -1){
 			ret = ErrorCode.CHECKPOINT_END_ERROR;
 		}else{

@@ -6,8 +6,8 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.DrawdataTemplate;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.DrawdataTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
@@ -58,7 +58,7 @@ public class DrawGetHandler extends BaseHandler{
 		}else if (player.getItems().size() >= player.getBagSpace()){
 			ret = ErrorCode.BAGSPACE_ALREADY_FULL;
 		}else{
-			DrawdataTemplate dt  =  DataManager.DrawdataData.getTemplate(drawType+"_"+player.getDraw().getDrawLv());
+			DrawdataTemplate dt  =  PlayerDataManager.DrawdataData.getTemplate(drawType+"_"+player.getDraw().getDrawLv());
 			if(dt == null){
 				ret = ErrorCode.ERROR;
 			}else{

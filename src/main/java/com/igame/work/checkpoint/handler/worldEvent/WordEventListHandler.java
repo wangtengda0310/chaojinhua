@@ -4,25 +4,19 @@ package com.igame.work.checkpoint.handler.worldEvent;
 
 
 
+import com.igame.work.checkpoint.GuanQiaDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.TangSuoTemplate;
-import com.igame.core.data.template.WorldEventTemplate;
+import com.igame.work.checkpoint.data.WorldEventTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
-import com.igame.work.checkpoint.dto.TangSuoDto;
 import com.igame.work.checkpoint.dto.WordEventDto;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 
@@ -48,7 +42,7 @@ public class WordEventListHandler extends BaseHandler{
 			return;
 		}
 		
-		for(WorldEventTemplate ts : DataManager.WordEventData.getAll()){
+		for(WorldEventTemplate ts : GuanQiaDataManager.WordEventData.getAll()){
 			if(ts.getLevel() == 1 &&  MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(ts.getUnlock()))){
 				player.getWordEvent().computeIfAbsent(ts.getEvent_type(),wet -> new WordEventDto(player.getPlayerId(), ts.getEvent_type(), "", 0,1));
 			}

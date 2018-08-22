@@ -7,20 +7,15 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
-import com.igame.core.data.template.DestinyrateTemplate;
-import com.igame.core.data.template.DropDataTemplate;
-import com.igame.core.data.template.EndlessdataTemplate;
-import com.igame.core.data.template.FatedataTemplate;
-import com.igame.core.log.GoldLog;
-import com.igame.dto.RetVO;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
+import com.igame.work.checkpoint.data.DestinyrateTemplate;
+import com.igame.work.checkpoint.data.DropDataTemplate;
+import com.igame.work.checkpoint.data.EndlessdataTemplate;
+import com.igame.work.checkpoint.data.FatedataTemplate;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
 import com.igame.util.SystemService;
-import com.igame.work.checkpoint.dto.FateSelfData;
 import com.igame.work.checkpoint.dto.GateDto;
 import com.igame.work.checkpoint.dto.RewardDto;
 import com.igame.work.checkpoint.dto.WuZhengDto;
@@ -53,8 +48,8 @@ public class CheckPointService {
 		
 		RewardDto reward = new RewardDto();
 		int ret = 0;
-		CheckPointTemplate ct = DataManager.ins().CheckPointData.getTemplate(chapterId);
-		DropDataTemplate dt = DataManager.ins().DropData.getTemplate(ct.getDropId());
+		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
+		DropDataTemplate dt = GuanQiaDataManager.DropData.getTemplate(ct.getDropId());
 
 		if(win == 1){//赢了
 			reward.setExp(ct.getExp());
@@ -108,7 +103,7 @@ public class CheckPointService {
 			lv = 21;
 		}
 		List<EndlessdataTemplate> ls = Lists.newArrayList();
-		for(EndlessdataTemplate et : DataManager.ins().EndlessData.getAll()){
+		for(EndlessdataTemplate et : GuanQiaDataManager.EndlessData.getAll()){
 			if(lv >= Integer.parseInt(et.getLvRange().split(",")[0]) && lv <= Integer.parseInt(et.getLvRange().split(",")[1])){
 				ls.add(et);
 			}
@@ -177,7 +172,7 @@ public class CheckPointService {
 	 */
 	public static Map<Long,Monster> getNormalFateMonster(int floorNum){
 		
-		FatedataTemplate ft  = DataManager.ins().FateData.getTemplate(floorNum);
+		FatedataTemplate ft  = GuanQiaDataManager.FateData.getTemplate(floorNum);
 		if(ft == null){
 			return Maps.newHashMap();
 		}
@@ -259,7 +254,7 @@ public class CheckPointService {
 		
 		
 		//生成特殊门
-		DestinyrateTemplate dt = DataManager.DestinyData.getTemplate(type);
+		DestinyrateTemplate dt = GuanQiaDataManager.DestinyData.getTemplate(type);
 		if(dt != null){
 			if(player.getFateData().getTempSpecialCount() >= dt.getMaxTimes()){//已经最大特殊门次数
 				

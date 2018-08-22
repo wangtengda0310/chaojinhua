@@ -1,8 +1,8 @@
 package com.igame.work.turntable.service;
 
 import com.igame.core.MessageUtil;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.LuckTableTemplate;
+import com.igame.work.turntable.LuckTableDataManager;
+import com.igame.work.turntable.data.LuckTableTemplate;
 import com.igame.util.DateUtil;
 import com.igame.util.GameMath;
 import com.igame.work.turntable.dto.Turntable;
@@ -86,7 +86,7 @@ public class TurntableService {
         results.clear();
 
         //随机十二个位置的商品
-        List<LuckTableTemplate> templates = DataManager.luckTableData.getTemplate(playerLevel);
+        List<LuckTableTemplate> templates = LuckTableDataManager.luckTableData.getTemplate(playerLevel);
         for (LuckTableTemplate template : templates) {
 
             int site = template.getSite();
@@ -124,7 +124,7 @@ public class TurntableService {
 
         //计算概率
         Float[] floats = new Float[rewards.size()];
-        List<LuckTableTemplate> templates = DataManager.luckTableData.getTemplate(playerLevel);
+        List<LuckTableTemplate> templates = LuckTableDataManager.luckTableData.getTemplate(playerLevel);
         for (LuckTableTemplate template : templates) {
 
             int site = template.getSite();

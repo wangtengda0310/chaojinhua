@@ -6,13 +6,13 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.item.dto.Item;
 import com.igame.work.item.service.ItemService;
+import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
@@ -64,7 +64,7 @@ public class MonsterEquipDownAllHandler extends BaseHandler{
 
 		//校验怪兽
 		Monster mm = player.getMonsters().get(mid);
-		if(mm == null || DataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId()) == null){//没有此怪物
+		if(mm == null || MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId()) == null){//没有此怪物
 			sendError(ErrorCode.MONSTER_NOT,MProtrol.toStringProtrol(MProtrol.ITEM_EQ_ALL), vo, user);
 			return;
 		}

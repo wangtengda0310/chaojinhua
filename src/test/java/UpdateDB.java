@@ -1,12 +1,10 @@
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterGroupTemplate;
-import com.igame.core.data.template.MonsterTemplate;
-import com.igame.core.data.template.SkillLvTemplate;
+import com.igame.work.fight.FightDataManager;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.data.MonsterGroupTemplate;
+import com.igame.work.monster.data.MonsterTemplate;
+import com.igame.work.fight.data.SkillLvTemplate;
 import com.igame.core.db.DBManager;
 import com.igame.dto.IDFactory;
-import com.igame.work.checkpoint.dto.TangSuoDto;
 import com.igame.work.item.dto.Item;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
@@ -50,7 +48,7 @@ public class UpdateDB{
         int maxAtxId = 0;
         int maxHp = 0;
         int maxHpId = 0;
-        List<MonsterTemplate> all = DataManager.MONSTER_DATA.getAll();
+        List<MonsterTemplate> all = MonsterDataManager.MONSTER_DATA.getAll();
         for (MonsterTemplate monsterTemplate : all) {
             int atk = (int) (monsterTemplate.getMonster_atk() + monsterTemplate.getAtk_up() * 80);
             int hp = (int) (monsterTemplate.getMonster_hp() + monsterTemplate.getHp_up() * 80);
@@ -65,11 +63,11 @@ public class UpdateDB{
             }
         }
 
-        Monster maxAtkM = new Monster(player, IDFactory.ins().getNewIdMonster(player.getSeverId()), player.getPlayerId(),  DataManager.ins().MONSTER_DATA.getMonsterTemplate(maxAtxId).getMonster_hp(), 0,maxAtxId);
+        Monster maxAtkM = new Monster(player, IDFactory.ins().getNewIdMonster(player.getSeverId()), player.getPlayerId(),  MonsterDataManager.MONSTER_DATA.getMonsterTemplate(maxAtxId).getMonster_hp(), 0,maxAtxId);
         maxAtkM.setLevel(80);
         getDatastore(player.getSeverId()).save(maxAtkM);
 
-        Monster maxHpM = new Monster(player, IDFactory.ins().getNewIdMonster(player.getSeverId()), player.getPlayerId(),  DataManager.ins().MONSTER_DATA.getMonsterTemplate(maxHpId).getMonster_hp(), 0,maxHpId);
+        Monster maxHpM = new Monster(player, IDFactory.ins().getNewIdMonster(player.getSeverId()), player.getPlayerId(),  MonsterDataManager.MONSTER_DATA.getMonsterTemplate(maxHpId).getMonster_hp(), 0,maxHpId);
         maxHpM.setLevel(80);
         getDatastore(player.getSeverId()).save(maxHpM);
 
@@ -82,7 +80,7 @@ public class UpdateDB{
      */
     private static void updatePlayerItem(Player player) {
         int count = 0;
-        List<MonsterGroupTemplate> all = DataManager.monsterGroupData.getAll();
+        List<MonsterGroupTemplate> all = MonsterDataManager.monsterGroupData.getAll();
         for (MonsterGroupTemplate template : all) {
 
             if (template.getNum() > 0){
@@ -108,7 +106,7 @@ public class UpdateDB{
         Set<Integer> addItems = new HashSet();
         Map<Integer,Item> odlItems = new HashMap<>();
 
-        List<SkillLvTemplate> all = DataManager.SkillLvData.getAll();
+        List<SkillLvTemplate> all = FightDataManager.SkillLvData.getAll();
         for (SkillLvTemplate template : all) {
             String useItem = template.getUseItem();
             addItems.add(Integer.parseInt(useItem));

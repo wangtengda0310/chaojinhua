@@ -9,8 +9,9 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.igame.core.MessageUtil;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.QuestTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.quest.QuestDataManager;
+import com.igame.work.quest.data.QuestTemplate;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.dto.RewardDto;
@@ -35,11 +36,11 @@ public class QuestService {
 	public static void checkPlayerQuest(Player player){
 			
 		for(TaskDayInfo td :player.getAchievement().values()){
-			if(DataManager.QuestData.getTemplate(td.getQuestId()) == null){
+			if(QuestDataManager.QuestData.getTemplate(td.getQuestId()) == null){
 				td.setDtate(3);
 			}
 		}
-		for(QuestTemplate qt : DataManager.QuestData.getAll()){
+		for(QuestTemplate qt : QuestDataManager.QuestData.getAll()){
 			
 			//成就
 			TaskDayInfo tf = player.getAchievement().get(qt.getQuestId());
@@ -94,7 +95,7 @@ public class QuestService {
 	 */
 	public static String getReward(Player player,TaskDayInfo td){
 		
-		QuestTemplate qt = DataManager.ins().QuestData.getTemplate(td.getQuestId());
+		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(td.getQuestId());
 		RewardDto reward = ResourceService.ins().getRewardDto(qt.getReward(), "100");
 		ResourceService.ins().addRewarToPlayer(player, reward);
 		td.setStatus(3);
@@ -118,7 +119,7 @@ public class QuestService {
 	public static List<TaskDayInfo> endQuest(Player player,TaskDayInfo td){
 		
 		List<TaskDayInfo> qs = Lists.newArrayList();
-		for(QuestTemplate qt : DataManager.ins().QuestData.getAll()){
+		for(QuestTemplate qt : QuestDataManager.QuestData.getAll()){
 			if(!MyUtil.isNullOrEmpty(qt.getUnlock())){
 				String[] uc = qt.getUnlock().split(",");
 				if("2".equals(uc[0])){
@@ -139,7 +140,7 @@ public class QuestService {
 	public static void onLevelUp(Player player){
 		
 		List<TaskDayInfo> qList = Lists.newArrayList();
-		for(QuestTemplate qt : DataManager.QuestData.getAll()){
+		for(QuestTemplate qt : QuestDataManager.QuestData.getAll()){
 			
 			TaskDayInfo tf = player.getAchievement().get(qt.getQuestId());
 			if(tf == null){
@@ -178,7 +179,7 @@ public class QuestService {
 	
 	public static void processTaskDetail(Player player,List<TaskDayInfo> qList,TaskDayInfo td,int claim,int count){
 		if(td.getStatus() != 3){
-			QuestTemplate qt = DataManager.QuestData.getTemplate(td.getQuestId());
+			QuestTemplate qt = QuestDataManager.QuestData.getTemplate(td.getQuestId());
 			if(qt != null && qt.getClaim() == claim){
 				switch (claim){
 					case 1://怪物提升一级
@@ -286,7 +287,7 @@ public class QuestService {
 						int total = 0;
 						if(!MyUtil.isNullOrEmpty(player.getCheckPoint())){
 							for(String cc : player.getCheckPoint().split(",")){
-								if(DataManager.CheckPointData.getTemplate(Integer.parseInt(cc)).getChapterType() == 2){
+								if(GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(cc)).getChapterType() == 2){
 									total++;
 								}
 							}
@@ -301,7 +302,7 @@ public class QuestService {
 					case 25://城市占领度达到x%
 						int tal = 0;
 						if(!MyUtil.isNullOrEmpty(player.getCheckPoint())){
-							tal = (int)(player.getCheckPoint().split(",").length/(DataManager.CheckPointData.size()+.0) * 100);
+							tal = (int)(player.getCheckPoint().split(",").length/(GuanQiaDataManager.CheckPointData.size()+.0) * 100);
 						}
 						if(tal > td.getVars()){
 							td.setVars(tal);

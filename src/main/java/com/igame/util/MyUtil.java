@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 
 import net.sf.json.JSONArray;
 
@@ -258,7 +258,7 @@ public class MyUtil {
 		String[] ssc = checkpoint.split(",");
 		if(ssc != null){
 			for(String ss : ssc){
-				CheckPointTemplate ct = DataManager.ins().CheckPointData.getTemplate(Integer.parseInt(ss));
+				CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(ss));
 				if(ct.getRound() == 2){
 					return true;
 				}

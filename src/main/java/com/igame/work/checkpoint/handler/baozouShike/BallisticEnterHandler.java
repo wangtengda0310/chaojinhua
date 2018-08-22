@@ -3,8 +3,8 @@ package com.igame.work.checkpoint.handler.baozouShike;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.RunTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.RunTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.checkpoint.service.BallisticService;
@@ -67,7 +67,7 @@ public class BallisticEnterHandler extends BaseHandler{
         }
 
         //生成怪兽
-        RunTemplate template = DataManager.runData.getTemplate(BALL_MONSTER_INIT);
+        RunTemplate template = GuanQiaDataManager.runData.getTemplate(BALL_MONSTER_INIT);
         List<MatchMonsterDto> matchMonsterDtos = BallisticService.ins().buildMonster(template, BALL_MONSTER_INIT);
 
         //记录开始时间

@@ -3,8 +3,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.data.DataManager;
-import com.igame.core.data.RunBattlerewardData;
-import com.igame.core.data.template.RunBattlerewardTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.RunBattlerewardData;
+import com.igame.work.checkpoint.data.RunBattlerewardTemplate;
 import com.igame.util.GameMath;
 import com.igame.work.checkpoint.service.BallisticService;
 import com.igame.work.fight.dto.MatchMonsterDto;
@@ -37,7 +38,7 @@ public class MyTest {
 
     public static void main(String[] args) throws Exception{
 
-        DataManager.ins();
+        DataManager.load();
 
         //testLottery();
         //testAddMysticalShopLv();
@@ -342,7 +343,7 @@ public class MyTest {
     private static void testBallReward() {
         int gold = 0;
 
-        RunBattlerewardData runBattlerewardData = DataManager.runBattlerewardData;
+        RunBattlerewardData runBattlerewardData = GuanQiaDataManager.runBattlerewardData;
         List<RunBattlerewardTemplate> runBattlerewardDataAll = runBattlerewardData.getAll();
         int i = runBattlerewardDataAll.indexOf(runBattlerewardData.getTemplate(600));
         for (int j = 0; j <= i; j++) {
@@ -377,7 +378,7 @@ public class MyTest {
     }
 
     private static void testData() {
-        DataManager.ins();
+        DataManager.load();
     }
 
 }

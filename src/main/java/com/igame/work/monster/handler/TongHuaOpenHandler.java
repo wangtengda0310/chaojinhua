@@ -2,30 +2,21 @@ package com.igame.work.monster.handler;
 
 
 
+import com.igame.work.monster.MonsterDataManager;
 import net.sf.json.JSONObject;
 
-import java.util.List;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.StrengthenRouteTemplate;
+import com.igame.work.monster.data.StrengthenRouteTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
-import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 
@@ -88,7 +79,7 @@ public class TongHuaOpenHandler extends BaseHandler{
 							timeIndex = index;
 							leftTime = 120 * 60;
 						}
-						StrengthenRouteTemplate srt = DataManager.ins().StrengthenRouteData.getTemplate(tdo.getSid());
+						StrengthenRouteTemplate srt = MonsterDataManager.StrengthenRouteData.getTemplate(tdo.getSid());
 						if(srt != null && !"1".equals(t[0]) && tdo.getTimeIndex() == 0){//怪物关卡或者是倒计时还在，不能解锁下面
 							String points = null;
 							for(String temp : srt.getCoordinate().split(";")){

@@ -3,14 +3,11 @@ package com.igame.util;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 import com.igame.core.log.GoldLog;
 import com.igame.work.checkpoint.dto.RewardDto;
 import com.igame.work.checkpoint.dto.XingMoDto;
@@ -43,7 +40,7 @@ public class PlayerTimeResCalUtil {
 	    	if(!player.getTimeResCheck().isEmpty()){
 	        	long now = System.currentTimeMillis();	
     			for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){
-    				CheckPointTemplate ct = DataManager.ins().CheckPointData.getTemplate(m.getKey());
+    				CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(m.getKey());
     				if(ct != null && !MyUtil.isNullOrEmpty(ct.getDropPoint())){		
     					int total = m.getValue();//原有分钟数
     					if(player.getLoginoutTime() != null){//计算新的
@@ -96,7 +93,7 @@ public class PlayerTimeResCalUtil {
 					String[] ccs =  player.getCheckPoint().split(",");
 					List<Integer> ls = Collections.synchronizedList(Lists.newArrayList());					
 					for(String cc : ccs){
-						if(!player.getXinMo().containsKey(Integer.parseInt(cc)) && DataManager.ins().CheckPointData.getTemplate(Integer.parseInt(cc)).getChapterType() != 2 && Integer.parseInt(cc) <=140){//有心魔的关卡不在生成列表中
+						if(!player.getXinMo().containsKey(Integer.parseInt(cc)) && GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(cc)).getChapterType() != 2 && Integer.parseInt(cc) <=140){//有心魔的关卡不在生成列表中
 							ls.add(Integer.parseInt(cc));
 						}
 					}

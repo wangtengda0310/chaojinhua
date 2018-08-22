@@ -6,8 +6,9 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.ItemTemplate;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.ItemTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
@@ -67,7 +68,7 @@ public class MonsterEquipHandler extends BaseHandler{
 
 		//校验怪兽
 		Monster mm = player.getMonsters().get(mid);
-		if(mm == null || DataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId()) == null){//没有此怪物
+		if(mm == null || MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId()) == null){//没有此怪物
 			sendError(ErrorCode.MONSTER_NOT,MProtrol.toStringProtrol(MProtrol.ITEM_EQ), vo, user);
 			return;
 		}
@@ -96,7 +97,7 @@ public class MonsterEquipHandler extends BaseHandler{
 
 			//校验道具
 			Item item = player.getItems().get(itemId);
-			ItemTemplate it = DataManager.ItemData.getTemplate(itemId);
+			ItemTemplate it = PlayerDataManager.ItemData.getTemplate(itemId);
 			if(item == null || item.getUsableCount(teamId) < 0 ||it == null || it.getItemType() != 1){
 				sendError(ErrorCode.ITEM_NOT_EXIT,MProtrol.toStringProtrol(MProtrol.ITEM_EQ), vo, user);
 				return;

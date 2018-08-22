@@ -4,8 +4,8 @@ package com.igame.work.quest.handler;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.QuestTemplate;
+import com.igame.work.quest.QuestDataManager;
+import com.igame.work.quest.data.QuestTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.quest.dto.TaskDayInfo;
@@ -44,7 +44,7 @@ public class QuestRewardHandler extends BaseHandler{
 		vo.addData("questId", questId);
 
 		TaskDayInfo td = player.getAchievement().get(questId);
-		QuestTemplate qt = DataManager.QuestData.getTemplate(questId);
+		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(questId);
 		if(td == null || qt == null || td.getVars() < qt.getFinish() || td.getStatus() == 3){
 			sendError(ErrorCode.QUEST_REWARD_NOT,MProtrol.toStringProtrol(MProtrol.QUEST_REWARD), vo, user);
 			return;

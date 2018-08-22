@@ -8,10 +8,10 @@ import com.google.common.collect.Sets;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterEvolutionTemplate;
-import com.igame.core.data.template.MonsterTemplate;
-import com.igame.core.data.template.PokedexdataTemplate;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.data.MonsterEvolutionTemplate;
+import com.igame.work.monster.data.MonsterTemplate;
+import com.igame.work.monster.data.PokedexdataTemplate;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
@@ -41,7 +41,7 @@ public class MonsterService {
 		if(mm == null){
 			return ErrorCode.MONSTER_NOT;//玩家没有此怪物
 		}
-		MonsterEvolutionTemplate mt = DataManager.MonsterEvolutionData.getTemplate(mm.getMonsterId());
+		MonsterEvolutionTemplate mt = MonsterDataManager.MonsterEvolutionData.getTemplate(mm.getMonsterId());
 		if(mt == null){
 			return ErrorCode.MONSTER_NOT;//玩家没有此怪物
 		}
@@ -49,7 +49,7 @@ public class MonsterService {
 			return ErrorCode.MONSTER_EV_MAX;//已进化到最大品级。
 		}
 		if(mt.getMonsterObject().indexOf(String.valueOf(nextObject)) == -1
-				|| DataManager.MONSTER_DATA.getMonsterTemplate(nextObject) == null){
+				|| MonsterDataManager.MONSTER_DATA.getMonsterTemplate(nextObject) == null){
 			return ErrorCode.NOT_NEXT_OBJECT;//无法进化到此品质
 		}
 		if(mm.getLevel() < mt.getLevelLimit()){
@@ -70,7 +70,7 @@ public class MonsterService {
 		}		
 		
 		mm.setMonsterId(nextObject);
-		MonsterTemplate nt = DataManager.ins().MONSTER_DATA.getMonsterTemplate(nextObject);
+		MonsterTemplate nt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(nextObject);
 		if(nt.getSkill() != null){//解锁新的技能
 			String[] skills = nt.getSkill().split(",");
 			if(skills != null){
@@ -138,7 +138,7 @@ public class MonsterService {
 			mm.damgeAddExt = 0;
 		}
 		
-		for(PokedexdataTemplate pt  :DataManager.PokedexData.getAll()){
+		for(PokedexdataTemplate pt  : MonsterDataManager.PokedexData.getAll()){
 			if(!MyUtil.isNullOrEmpty(pt.getTakeMonster()) && !MyUtil.isNullOrEmpty(pt.getEffectId()) && !MyUtil.isNullOrEmpty(pt.getValue())){
 				String[] takeMonster = pt.getTakeMonster().split(",");
 				List<Monster> plus100 = getMonster(player,pt.getPlus100());//加100%属性的怪物

@@ -5,11 +5,12 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
@@ -45,7 +46,7 @@ public class CheckEnterHandler extends BaseHandler{
 		vo.addData("chapterId", chapterId);
 
 		//校验关卡ID
-		CheckPointTemplate ct = DataManager.CheckPointData.getTemplate(chapterId);
+		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
 		if(ct == null){
 			sendError(ErrorCode.CHECKPOINT_ENTER_ERROR,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_ENTER), vo, user);
 			return;
@@ -165,7 +166,7 @@ public class CheckEnterHandler extends BaseHandler{
             for(String ids :meetM.split(":")){
                 for(String id :ids.split(",")){
                     int mid = Integer.parseInt(id);
-                    if(DataManager.MONSTER_DATA.getMonsterTemplate(mid) != null && !player.getMeetM().contains(mid)){
+                    if(MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mid) != null && !player.getMeetM().contains(mid)){
                         player.getMeetM().add(mid);
                         change = true;
                     }

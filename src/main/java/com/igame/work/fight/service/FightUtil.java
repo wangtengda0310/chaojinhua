@@ -1,8 +1,9 @@
 package com.igame.work.fight.service;
 
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.SkillTemplate;
+import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.data.SkillTemplate;
 import com.igame.util.MyUtil;
+import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.dto.Effect;
 import com.igame.work.monster.dto.Monster;
 
@@ -36,7 +37,7 @@ public class FightUtil {
 			String[] skills = skillLv.split(",");
 			String[] equs = equips.split(";");
 			for(int i = 0;i < mms.length;i++){
-				if(DataManager.MONSTER_DATA.getMonsterTemplate(Integer.parseInt(mms[i])) != null){
+				if(MonsterDataManager.MONSTER_DATA.getMonsterTemplate(Integer.parseInt(mms[i])) != null){
 					int j = i+1;
 					if(j > 5){
 						j=j%5 + 1;
@@ -93,7 +94,7 @@ public class FightUtil {
 		float skillUpAdd = 0;//技能up加成
 		if(skillTemplate.getSubtype() == 1){//直接触发类型有技能UP加成  
 			skillUpAdd = (1 + (skillLevel-1)*5 +
-					skillLevel>=DataManager.SkillLvData.getMaxLevel() ? 0 : (int)(skillExp/(DataManager.SkillLvData.getTemplate(skillTemplate.getSkillId()).getSkillExp()+.0)*5))
+					skillLevel>= FightDataManager.SkillLvData.getMaxLevel() ? 0 : (int)(skillExp/(FightDataManager.SkillLvData.getTemplate(skillTemplate.getSkillId()).getSkillExp()+.0)*5))
 							* skillTemplate.getHurtUp();
 		}
 		//攻击力 * 技能加成(基本数值+UP值*等级)

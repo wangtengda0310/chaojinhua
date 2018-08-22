@@ -3,8 +3,8 @@ package com.igame.work.friend.service;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.TangSuoTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.TangSuoTemplate;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.dto.TangSuoDto;
@@ -15,10 +15,8 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.PlayerCacheDto;
 import com.igame.work.user.service.PlayerCacheService;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.igame.work.friend.FriendConstants.FRIEND_DEF_MAX_COUNT;
 import static com.igame.work.friend.FriendConstants.FRIEND_STATE_CAN_HELP;
 import static com.igame.work.friend.FriendConstants.FRIEND_STATE_NO_HELP;
 
@@ -46,7 +44,7 @@ public class FriendService {
     public List<TangSuoDto> getExploreList(Player friendPlayer) {
 
         //计算剩余时间
-        for(TangSuoTemplate ts : DataManager.TangSuoData.getAll()){
+        for(TangSuoTemplate ts : GuanQiaDataManager.TangSuoData.getAll()){
             if(MyUtil.hasCheckPoint(friendPlayer.getCheckPoint(), String.valueOf(ts.getUnlock())) && friendPlayer.getTangSuo().get(ts.getNum()) == null){
                 friendPlayer.getTangSuo().put(ts.getNum(), new TangSuoDto(ts));
             }

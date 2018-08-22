@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.log.GoldLog;
 import com.igame.util.GameMath;
@@ -27,7 +27,6 @@ import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.service.ArenaService;
 import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.shop.service.ShopService;
-import com.igame.work.system.BallisticRank;
 import com.igame.work.system.RankService;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dto.Player;
@@ -35,7 +34,6 @@ import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.load.ResourceService;
 import com.igame.work.user.service.PlayerCacheService;
 import com.igame.work.user.service.RobotService;
-import com.igame.work.user.service.VIPService;
 
 /**
  * 
@@ -107,7 +105,7 @@ public class GameQuartzListener {
     		synchronized (player.getTimeLock()) {
     			if(!player.getTimeResCheck().isEmpty()){
 		    		for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){
-		    			CheckPointTemplate ct = DataManager.CheckPointData.getTemplate(m.getKey());
+		    			CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(m.getKey());
 		    			if(ct != null && !MyUtil.isNullOrEmpty(ct.getDropPoint())){
 	        				if(m.getValue() < ct.getMaxTime() * 60){//没到上限
 	        					player.getTimeResCheck().put(m.getKey(), m.getValue()+ 1);
@@ -201,7 +199,7 @@ public class GameQuartzListener {
 					String[] ccs =  player.getCheckPoint().split(",");
 					List<Integer> ls = Lists.newArrayList();
 					for(String cc : ccs){
-						if(!player.getXinMo().containsKey(Integer.parseInt(cc)) && DataManager.ins().CheckPointData.getTemplate(Integer.parseInt(cc)).getChapterType() != 2 && Integer.parseInt(cc) <=140){//有心魔的关卡不在生成列表中
+						if(!player.getXinMo().containsKey(Integer.parseInt(cc)) && GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(cc)).getChapterType() != 2 && Integer.parseInt(cc) <=140){//有心魔的关卡不在生成列表中
 							ls.add(Integer.parseInt(cc));
 						}
 					}

@@ -4,17 +4,16 @@ package com.igame.work.checkpoint.handler.wujinZhiSen;
 
 import java.util.List;
 
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.monster.MonsterDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.EndlessdataTemplate;
+import com.igame.work.checkpoint.data.EndlessdataTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.GameMath;
@@ -28,8 +27,6 @@ import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 
@@ -86,7 +83,7 @@ public class EndlessEnterHandler extends BaseHandler{
 			
 			//怪物装备
 			String equips = "";
-			EndlessdataTemplate edt = DataManager.ins().EndlessData.getTemplate(currIndex);
+			EndlessdataTemplate edt = GuanQiaDataManager.EndlessData.getTemplate(currIndex);
 			String[] props = null;
 			if(edt != null && !MyUtil.isNullOrEmpty(edt.getMonsterProp())){
 				props = edt.getMonsterProp().split(";");
@@ -99,7 +96,7 @@ public class EndlessEnterHandler extends BaseHandler{
 
 				for(String id :meetM.split(",")){
 					int mid = Integer.parseInt(id);
-					if(DataManager.MONSTER_DATA.getMonsterTemplate(mid) != null && !player.getMeetM().contains(mid)){
+					if(MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mid) != null && !player.getMeetM().contains(mid)){
 						player.getMeetM().add(mid);
 						change = true;
 					}

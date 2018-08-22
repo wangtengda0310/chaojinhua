@@ -3,20 +3,17 @@ package com.igame.work.user.handler;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.VipPackTemplate;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.VipPackTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
-import com.igame.work.chat.dto.Message;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
-
-import java.util.List;
 
 import static com.igame.work.user.VIPConstants.KEY_FIRST_PACK;
 
@@ -62,7 +59,7 @@ public class VipBuyFristPackHandler extends BaseHandler{
             return;
         }
 
-        VipPackTemplate template = DataManager.vipPackData.getTemplate(vipLv);
+        VipPackTemplate template = PlayerDataManager.vipPackData.getTemplate(vipLv);
         if (template == null){
             sendError(ErrorCode.PARAMS_INVALID,MProtrol.toStringProtrol(MProtrol.VIP_FRIST_PACK),vo,user);
             return;

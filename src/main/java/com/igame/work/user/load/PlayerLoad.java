@@ -1,9 +1,10 @@
 package com.igame.work.user.load;
 
 import com.google.common.collect.Maps;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
-import com.igame.core.data.template.GodsdataTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
+import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.core.log.DebugLog;
 import com.igame.util.MyUtil;
 import com.igame.util.PlayerTimeResCalUtil;
@@ -113,8 +114,8 @@ public class PlayerLoad {
     			player.getResMintues().put(i, 0);
     		}
     	}
-    	for(Integer type : DataManager.GodsData.getSets()){
-    		GodsdataTemplate gt = DataManager.GodsData.getTemplate(type+"_0");
+    	for(Integer type : FightDataManager.GodsData.getSets()){
+    		GodsdataTemplate gt = FightDataManager.GodsData.getTemplate(type+"_0");
     		if(gt != null && player.getPlayerLevel() >= gt.getUnlockLv() && player.getGods().get(type) == null){
     			Gods gods = new Gods(player.getPlayerId(), type, 0, 1);
     			player.getGods().put(gods.getGodsType(), gods);
@@ -125,7 +126,7 @@ public class PlayerLoad {
     	if(!MyUtil.isNullOrEmpty(player.getCheckPoint())){
     		for(String cc :player.getCheckPoint().split(",")){//已过关卡有，但是资源关卡时间计数器没有添加
     			Integer cid = Integer.parseInt(cc);
-    			CheckPointTemplate ct = DataManager.CheckPointData.getTemplate(cid);
+    			CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(cid);
     			if(ct != null && ct.getChapterType() == 2 && !MyUtil.isNullOrEmpty(ct.getDropPoint())
     					&& !player.getTimeResCheck().containsKey(cid)){
     				player.getTimeResCheck().put(cid, ct.getMaxTime() * 60);

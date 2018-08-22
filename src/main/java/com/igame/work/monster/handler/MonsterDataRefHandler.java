@@ -2,23 +2,18 @@ package com.igame.work.monster.handler;
 
 
 
+import com.igame.work.monster.MonsterDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterTemplate;
+import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.monster.dto.Monster;
-import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 
@@ -51,7 +46,7 @@ public class MonsterDataRefHandler extends BaseHandler{
 
 		Monster mm = player.getMonsters().get(objectId);
 		if(mm != null){
-			MonsterTemplate mt = DataManager.ins().MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
+			MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
 			if(mt != null){
 				hp = (int)(mm.getHpInit() + (level - mm.getLevel()) * mt.getHp_up());
 				attack = (int)(mm.getAttack() + (level - mm.getLevel()) * mt.getAtk_up());

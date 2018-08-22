@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterBreakTemplate;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.data.MonsterBreakTemplate;
 import com.igame.util.GameMath;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
@@ -168,7 +168,7 @@ public class JiyinType {
 		}
 		if(randow != null){
 
-			MonsterBreakTemplate mt = DataManager.ins().MonsterBreakData.getTemplate(rank);
+			MonsterBreakTemplate mt = MonsterDataManager.MonsterBreakData.getTemplate(rank);
 			if(costType == 1){//金币改造
 				long totalCost = 0;//总花销
 				if(player.getGold() < mt.getChange_gold()){

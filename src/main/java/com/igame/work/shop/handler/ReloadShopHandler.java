@@ -3,8 +3,8 @@ package com.igame.work.shop.handler;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.ShopTemplate;
+import com.igame.work.shop.ShopDataManager;
+import com.igame.work.shop.data.ShopTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.shop.ShopConstants;
@@ -52,7 +52,7 @@ public class ReloadShopHandler extends BaseHandler{
         }
 
         ShopInfo shopInfo = player.getShopInfo();
-        ShopTemplate shopTemplate = DataManager.shopData.getTemplate(shopId);
+        ShopTemplate shopTemplate = ShopDataManager.shopData.getTemplate(shopId);
 
         //校验刷新次数
         if (shopTemplate.getResestMax() != -1 && shopTemplate.getResestMax() <= shopInfo.getReloadCount(shopId)){

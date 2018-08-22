@@ -1,7 +1,7 @@
 package com.igame.work.fight.service;
 
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterTemplate;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;
@@ -61,7 +61,7 @@ public class ComputeFightService {
      */
     public long computeMonsterFight(Monster monster){
 
-        MonsterTemplate mt = DataManager.MONSTER_DATA.getMonsterTemplate(monster.getMonsterId());
+        MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monster.getMonsterId());
         if(mt != null){
             String[] types = mt.getMonstertype().split(",");
             if(types.length != 0){

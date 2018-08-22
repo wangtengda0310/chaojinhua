@@ -5,9 +5,9 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.RunBattlerewardData;
-import com.igame.core.data.template.RunBattlerewardTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.RunBattlerewardData;
+import com.igame.work.checkpoint.data.RunBattlerewardTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.checkpoint.service.BallisticService;
@@ -154,7 +154,7 @@ public class BallisticEndHandler extends BaseHandler{
 
         int gold = 0;
 
-        RunBattlerewardData runBattlerewardData = DataManager.runBattlerewardData;
+        RunBattlerewardData runBattlerewardData = GuanQiaDataManager.runBattlerewardData;
         List<RunBattlerewardTemplate> runBattlerewardDataAll = runBattlerewardData.getAll();
         int i = runBattlerewardDataAll.indexOf(runBattlerewardData.getTemplate(killNum));
         for (int j = 0; j <= i; j++) {

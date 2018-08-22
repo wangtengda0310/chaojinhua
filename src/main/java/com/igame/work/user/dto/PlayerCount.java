@@ -2,7 +2,7 @@ package com.igame.work.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Maps;
-import com.igame.core.data.template.CheckPointTemplate;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 

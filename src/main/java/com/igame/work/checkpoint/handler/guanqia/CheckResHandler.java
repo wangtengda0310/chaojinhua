@@ -2,26 +2,20 @@ package com.igame.work.checkpoint.handler.guanqia;
 
 
 
+import com.igame.work.checkpoint.GuanQiaDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 import com.igame.core.handler.BaseHandler;
-import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
 import com.igame.work.checkpoint.dto.RewardDto;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 
@@ -49,7 +43,7 @@ public class CheckResHandler extends BaseHandler{
 		String reward = "";
 		for(String temp: chapterIdstr.split(",")){
 			int chapterId = Integer.parseInt(temp);
-			CheckPointTemplate ct = DataManager.ins().CheckPointData.getTemplate(chapterId);
+			CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
 			synchronized (player.getTimeLock()) {
 				if(!player.getTimeResCheck().containsKey(chapterId) || ct == null || ct.getChapterType() != 2){
 //					ret = ErrorCode.CHECKPOINT_RESNOT_EXIT;

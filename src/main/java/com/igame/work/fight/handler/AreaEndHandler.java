@@ -4,41 +4,19 @@ package com.igame.work.fight.handler;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
-import com.igame.core.data.template.TangSuoTemplate;
-import com.igame.core.data.template.WorldEventTemplate;
 import com.igame.core.handler.BaseHandler;
-import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
-import com.igame.util.MyUtil;
-import com.igame.work.checkpoint.dto.RewardDto;
-import com.igame.work.checkpoint.dto.TangSuoDto;
-import com.igame.work.checkpoint.dto.WordEventDto;
-import com.igame.work.checkpoint.service.CheckPointService;
 import com.igame.work.fight.dto.AreaRanker;
 import com.igame.work.fight.service.ArenaService;
-import com.igame.work.monster.dto.Monster;
-import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.RobotDto;
-import com.igame.work.user.load.PlayerService;
-import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 

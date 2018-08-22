@@ -3,8 +3,8 @@ package com.igame.work.user.handler;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.VipPackTemplate;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.VipPackTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.gm.service.GMService;
@@ -13,7 +13,6 @@ import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
 import static com.igame.work.user.VIPConstants.KEY_DAY_PACK;
-import static com.igame.work.user.VIPConstants.KEY_FIRST_PACK;
 
 /**
  * @author xym
@@ -51,7 +50,7 @@ public class VipRecDayPackHandler extends BaseHandler{
             return;
         }
 
-        VipPackTemplate template = DataManager.vipPackData.getTemplate(vip);
+        VipPackTemplate template = PlayerDataManager.vipPackData.getTemplate(vip);
         if (template == null){
             sendError(ErrorCode.PARAMS_INVALID,MProtrol.toStringProtrol(MProtrol.VIP_FRIST_PACK),vo,user);
             return;

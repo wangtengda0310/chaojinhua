@@ -3,16 +3,13 @@ package com.igame.work.quest.dao;
 
 
 import java.util.List;
-import java.util.Map;
 
+import com.igame.work.quest.QuestDataManager;
 import org.mongodb.morphia.query.UpdateOperations;
 
-import com.google.common.collect.Maps;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.QuestTemplate;
+import com.igame.work.quest.data.QuestTemplate;
 import com.igame.core.db.AbsDao;
 import com.igame.work.quest.dto.TaskDayInfo;
-import com.igame.work.user.dto.Mail;
 import com.igame.work.user.dto.Player;
 
 /**
@@ -44,7 +41,7 @@ public class QuestDAO extends AbsDao {
     	
     	List<TaskDayInfo> ls = getDatastore(serverId).find(TaskDayInfo.class, "playerId", player.getPlayerId()).asList();
     	for(TaskDayInfo tk :ls){
-    		QuestTemplate qt = DataManager.ins().QuestData.getTemplate(tk.getQuestId());
+    		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(tk.getQuestId());
     		if(qt!= null){
 //    			if(qt.getQuestType() == 1){
 //    				player.getDayTask().put(tk.getQuestId(), tk);

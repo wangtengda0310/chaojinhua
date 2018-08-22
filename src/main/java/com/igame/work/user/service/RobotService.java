@@ -6,8 +6,8 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.ArenadataTemplate;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.ArenadataTemplate;
 import com.igame.core.db.DBManager;
 import com.igame.util.GameMath;
 import com.igame.work.fight.dto.FightBase;
@@ -116,7 +116,7 @@ public class RobotService {
      */
     public RobotDto createRobotDto(Player player,long playerId,String name,int level){
     	RobotDto rto = null;
-    	ArenadataTemplate at = DataManager.ArenaData.getTemplateByPlayerLevel(player.getPlayerLevel());
+    	ArenadataTemplate at = PlayerDataManager.ArenaData.getTemplateByPlayerLevel(player.getPlayerLevel());
     	if(at != null){
     		rto = new RobotDto();
     		rto.setSeverId(player.getSeverId());

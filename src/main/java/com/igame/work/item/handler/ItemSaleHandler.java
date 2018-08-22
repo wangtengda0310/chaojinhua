@@ -3,8 +3,8 @@ package com.igame.work.item.handler;
 
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.ItemTemplate;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.ItemTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.item.dto.Item;
@@ -74,7 +74,7 @@ public class ItemSaleHandler extends BaseHandler{
 			ResourceService.ins().addItem(player,itemId,-count,true);
 
 			//增加金币
-			ItemTemplate template = DataManager.ItemData.getTemplate(itemId);
+			ItemTemplate template = PlayerDataManager.ItemData.getTemplate(itemId);
 			gold += template.getSale() * count;
 		}
 

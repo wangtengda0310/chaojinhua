@@ -1,7 +1,7 @@
 package com.igame.work.user.service;
 
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.VipLevelTemplate;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.VipLevelTemplate;
 import com.igame.core.log.ExceptionLog;
 import com.igame.work.user.dto.Player;
 
@@ -31,7 +31,7 @@ public class VIPService {
         int vip = player.getVip();
         double totalMoney = player.getTotalMoney();
 
-        VipLevelTemplate template = DataManager.vipLevelData.getTemplate(vip);
+        VipLevelTemplate template = PlayerDataManager.vipLevelData.getTemplate(vip);
         double vipExp = template.getVipExp();
 
         return vipExp != -1 && totalMoney >= vipExp;

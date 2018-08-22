@@ -6,8 +6,8 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.TrialdataTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.TrialdataTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
@@ -15,6 +15,7 @@ import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.fight.service.FightUtil;
+import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
@@ -47,7 +48,7 @@ public class TrialEnterHandler extends BaseHandler{
 		}
     	List<MatchMonsterDto> lb = Lists.newArrayList();
 		int ret = 0;
-		TrialdataTemplate ct = DataManager.ins().TrialData.getTemplate(player.getTowerId() + 1);
+		TrialdataTemplate ct = GuanQiaDataManager.TrialData.getTemplate(player.getTowerId() + 1);
 		if(ct == null){
 			ret = ErrorCode.ERROR;
 		}else if (player.getItems().size() >= player.getBagSpace()){
@@ -75,7 +76,7 @@ public class TrialEnterHandler extends BaseHandler{
 					boolean change = false;
 					for(String id :meetM.split(",")){
 						int mid = Integer.parseInt(id);
-						if(DataManager.MONSTER_DATA.getMonsterTemplate(mid) != null && !player.getMeetM().contains(mid)){
+						if(MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mid) != null && !player.getMeetM().contains(mid)){
 							player.getMeetM().add(mid);
 							change = true;
 						}

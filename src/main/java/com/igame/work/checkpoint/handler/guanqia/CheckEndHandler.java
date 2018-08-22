@@ -3,21 +3,18 @@ package com.igame.work.checkpoint.handler.guanqia;
 
 
 import java.util.List;
-import java.util.Map;
 
+import com.igame.work.checkpoint.GuanQiaDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
-import com.igame.core.data.template.TangSuoTemplate;
-import com.igame.core.data.template.WorldEventTemplate;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
+import com.igame.work.checkpoint.data.TangSuoTemplate;
+import com.igame.work.checkpoint.data.WorldEventTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
@@ -33,8 +30,6 @@ import com.igame.work.user.load.PlayerService;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 
@@ -67,7 +62,7 @@ public class CheckEndHandler extends BaseHandler{
 		vo.addData("chapterId", chapterId);
 		vo.addData("win", win);
 
-		CheckPointTemplate ct = DataManager.CheckPointData.getTemplate(chapterId);
+		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
 		if(ct == null || chapterId != player.getEnterCheckpointId()){
 			sendError(ErrorCode.CHECKPOINT_END_ERROR,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_END), vo, user);
 	    	GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
@@ -134,13 +129,13 @@ public class CheckEndHandler extends BaseHandler{
 
 			MessageUtil.notiyUnLockCheck(player, ct.getUnlock(),chapterId);//推送解锁关卡
 
-			for(TangSuoTemplate ts : DataManager.TangSuoData.getAll()){//解锁探索关卡
+			for(TangSuoTemplate ts : GuanQiaDataManager.TangSuoData.getAll()){//解锁探索关卡
 				if(chapterId ==  ts.getUnlock() && player.getTangSuo().get(ts.getNum()) == null){
 					player.getTangSuo().put(ts.getNum(), new TangSuoDto(ts));
 				}
 			}
 
-			for(WorldEventTemplate ts : DataManager.WordEventData.getAll()){//解锁世界事件
+			for(WorldEventTemplate ts : GuanQiaDataManager.WordEventData.getAll()){//解锁世界事件
 				if(ts.getLevel() == 1 && chapterId ==  ts.getUnlock()){
 					WordEventDto wet = new WordEventDto(player.getPlayerId(), ts.getEvent_type(), "", 0,1);
 					player.getWordEvent().put(ts.getEvent_type(), wet);

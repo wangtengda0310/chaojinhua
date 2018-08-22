@@ -5,7 +5,7 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.igame.core.data.template.TangSuoTemplate;
+import com.igame.work.checkpoint.data.TangSuoTemplate;
 import com.igame.util.MyUtil;
 
 /**

@@ -7,11 +7,12 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.MessageUtil;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.DrawdataTemplate;
-import com.igame.core.data.template.DrawrewardTemplate;
-import com.igame.core.data.template.StrengthenplaceTemplate;
-import com.igame.core.data.template.StrengthenrewardTemplate;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.DrawdataTemplate;
+import com.igame.work.user.data.DrawrewardTemplate;
+import com.igame.work.monster.data.StrengthenplaceTemplate;
+import com.igame.work.monster.data.StrengthenrewardTemplate;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.dto.RewardDto;
@@ -32,9 +33,9 @@ public class PlayerService {
 	public static TongHuaDto getRandomTongHuaDto(){
 		
 		TongHuaDto td = new TongHuaDto();
-		int id = DataManager.StrengthenplaceData.getSet().get(GameMath.getRandInt(DataManager.StrengthenplaceData.getSet().size()));
+		int id = MonsterDataManager.StrengthenplaceData.getSet().get(GameMath.getRandInt(MonsterDataManager.StrengthenplaceData.getSet().size()));
 		td.setId(id);
-		List<StrengthenplaceTemplate> ls = DataManager.StrengthenplaceData.getRandom(id);
+		List<StrengthenplaceTemplate> ls = MonsterDataManager.StrengthenplaceData.getRandom(id);
 		int total = 11;
 		td.setSid(1);
 		if(ls.get(0).getTotal() > 0){
@@ -50,14 +51,14 @@ public class PlayerService {
 				maps.put(Integer.parseInt(counts[i]), Integer.parseInt(rates[i]));
 			}
 			int rcount = GameMath.getAIRate100(maps);//个数
-			StrengthenrewardTemplate sw = DataManager.StrengthenrewardData.getTemplate(st.getStrengthen_type());
+			StrengthenrewardTemplate sw = MonsterDataManager.StrengthenrewardData.getTemplate(st.getStrengthen_type());
 			
 			for(int i = 0;i < rcount;i++){
 				String temp = String.valueOf(st.getStrengthen_type());
 				if(st.getStrengthen_type() == 1){//怪物
 					temp += ",-1";
 					temp += ",1";
-					temp += "," +DataManager.StrengthenmonsterData.getAll().get(GameMath.getRandInt(DataManager.StrengthenmonsterData.getAll().size())).getNum();
+					temp += "," + MonsterDataManager.StrengthenmonsterData.getAll().get(GameMath.getRandInt(MonsterDataManager.StrengthenmonsterData.getAll().size())).getNum();
 					temp += ",1";
 				}else{
 					temp += ",-1";
@@ -94,7 +95,7 @@ public class PlayerService {
 		
 		int mormal = total - points.size();
 		if(mormal > 0){
-			StrengthenrewardTemplate sw = DataManager.StrengthenrewardData.getTemplate(0);
+			StrengthenrewardTemplate sw = MonsterDataManager.StrengthenrewardData.getTemplate(0);
 			String[] r1 = sw.getStrengthen_reward().split(",");
 			String[] v1 = sw.getValue().split(",");
 			String[] rate1 = sw.getRate().split(",");
@@ -151,7 +152,7 @@ public class PlayerService {
 
 		String tempDraw = player.getDraw().getDrawList();
 		
-		for(DrawdataTemplate dt : DataManager.DrawdataData.getAll()){
+		for(DrawdataTemplate dt : PlayerDataManager.DrawdataData.getAll()){
 			if(dt.getLimit().equals("-1") && !MyUtil.hasCheckPoint(player.getDraw().getDrawList(), String.valueOf(dt.getDrawType()))){
 				player.getDraw().setDrawList(player.getDraw().getDrawList() + ","+String.valueOf(dt.getDrawType()));
 			}
@@ -185,7 +186,7 @@ public class PlayerService {
 	public static List<RewardDto> couKa(int rewardId,int count){
 		
 		List<RewardDto> rt = Lists.newArrayList();
-		DrawrewardTemplate dt = DataManager.DrawrewardData.getTemplate(rewardId);
+		DrawrewardTemplate dt = PlayerDataManager.DrawrewardData.getTemplate(rewardId);
 		if(dt != null){
 			Map<Integer,Integer> rates = Maps.newHashMap();//概率
 			Map<Integer,Integer> rateInc = Maps.newHashMap();//概率提升

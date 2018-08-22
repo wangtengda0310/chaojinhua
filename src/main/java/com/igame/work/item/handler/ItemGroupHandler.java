@@ -3,8 +3,8 @@ package com.igame.work.item.handler;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.ItemGroupTemplate;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.ItemGroupTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.item.dto.Item;
@@ -58,7 +58,7 @@ public class ItemGroupHandler extends BaseHandler {
         }
 
         //检验道具是否可召唤怪兽
-        ItemGroupTemplate template = DataManager.itemGroupData.getTemplate(itemId);
+        ItemGroupTemplate template = PlayerDataManager.itemGroupData.getTemplate(itemId);
         if (template == null){
             sendError(ErrorCode.PARAMS_INVALID, MProtrol.toStringProtrol(MProtrol.ITEM_GROUP),vo,user);
             return;

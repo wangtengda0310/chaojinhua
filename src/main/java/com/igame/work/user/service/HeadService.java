@@ -2,14 +2,13 @@ package com.igame.work.user.service;
 
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.HeadFrameTemplate;
-import com.igame.core.data.template.HeadTemplate;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.HeadFrameTemplate;
+import com.igame.work.user.data.HeadTemplate;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.load.ResourceService;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ public class HeadService {
      * @param player 玩家
      */
     public void initHead(Player player) {
-        List<HeadTemplate> all = DataManager.headData.getAll();
+        List<HeadTemplate> all = PlayerDataManager.headData.getAll();
         for (HeadTemplate headTemplate : all) {
             if (isUnlockHead(player,headTemplate))
                 addHead(player,headTemplate.getHeadId(),headTemplate.getTouchLimit(),false);
@@ -49,7 +48,7 @@ public class HeadService {
      * @param player 玩家
      */
     public void initFrame(Player player) {
-        List<HeadFrameTemplate> all = DataManager.headFrameData.getAll();
+        List<HeadFrameTemplate> all = PlayerDataManager.headFrameData.getAll();
         for (HeadFrameTemplate frameTemplate : all) {
             if (isUnlockHeadFrame(player,frameTemplate))
                 addFrame(player,frameTemplate.getHeadFrameId(),frameTemplate.getTouchLimit(),false);
@@ -64,7 +63,7 @@ public class HeadService {
      */
     public boolean unlockHead(Player player, int touchLimit) {
 
-        List<HeadTemplate> headTemplates = DataManager.headData.getTemplates(touchLimit);
+        List<HeadTemplate> headTemplates = PlayerDataManager.headData.getTemplates(touchLimit);
 
         for (HeadTemplate headTemplate : headTemplates) {
 
@@ -85,7 +84,7 @@ public class HeadService {
      */
     public boolean unlockHeadFrame(Player player, int touchLimit) {
 
-        List<HeadFrameTemplate> frameTemplates = DataManager.headFrameData.getTemplates(touchLimit);
+        List<HeadFrameTemplate> frameTemplates = PlayerDataManager.headFrameData.getTemplates(touchLimit);
 
         for (HeadFrameTemplate frameTemplate : frameTemplates) {
 

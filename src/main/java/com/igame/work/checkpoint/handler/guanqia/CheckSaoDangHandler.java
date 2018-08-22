@@ -7,8 +7,8 @@ import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
@@ -52,7 +52,7 @@ public class CheckSaoDangHandler extends BaseHandler{
 		vo.addData("chapterId", chapterId);
 
 		//入参校验
-		CheckPointTemplate ct = DataManager.CheckPointData.getTemplate(chapterId);
+		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
 		if(ct == null || !MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(chapterId))){
 	    	GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 	    			+"#act:cheat" + "#type:saoC#chapterId:"+chapterId);

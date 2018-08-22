@@ -1,9 +1,9 @@
 package com.igame.work.fight.service;
 
 import com.google.common.collect.Lists;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.EffectTemplate;
-import com.igame.core.data.template.SkillTemplate;
+import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.data.EffectTemplate;
+import com.igame.work.fight.data.SkillTemplate;
 import com.igame.util.ThreadPoolManager;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightCmd;
@@ -51,7 +51,7 @@ public class FightEffectService {
     public List<Effect> processAddEffect(FightBase fb,FightCmd fc,Monster attacker,SkillTemplate skillTemplate, List<Monster> targets,RetFightCmd rcd,List<RetFightCmd> retCmd){
     	
     	List<Effect> ls = Lists.newArrayList();
-		EffectTemplate et = DataManager.EffectData.getTemplate(Integer.parseInt(skillTemplate.getEffect()));
+		EffectTemplate et = FightDataManager.EffectData.getTemplate(Integer.parseInt(skillTemplate.getEffect()));
 		if(et != null){
 			
 			String[] efs = et.getEffectId().split(et.getEffectId());

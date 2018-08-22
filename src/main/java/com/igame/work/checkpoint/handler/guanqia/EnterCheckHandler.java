@@ -5,8 +5,8 @@ import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
@@ -57,7 +57,7 @@ public class EnterCheckHandler extends BaseHandler{
 		vo.addData("chapterId", chapterId);
 
 		//入参校验
-		CheckPointTemplate ct = DataManager.CheckPointData.getTemplate(chapterId);
+		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
 		if(ct == null){
 			sendError(ErrorCode.CHECKPOINT_ENTER_ERROR,MProtrol.toStringProtrol(MProtrol.ENTER_CHECK), vo, user);
 			return;
@@ -118,7 +118,7 @@ public class EnterCheckHandler extends BaseHandler{
 				}
 				if(ct.getRound() == 2){
 					int front =  chapterId-140;
-					CheckPointTemplate ft = DataManager.CheckPointData.getTemplate(front);
+					CheckPointTemplate ft = GuanQiaDataManager.CheckPointData.getTemplate(front);
 					if(ft != null && !MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(front))){
 						sendError(ErrorCode.CHECKPOINT_ENTER_ERROR,MProtrol.toStringProtrol(MProtrol.ENTER_CHECK), vo, user);
 						return;
@@ -130,7 +130,7 @@ public class EnterCheckHandler extends BaseHandler{
 				}
 				if(ct.getRound() == 3){
 					int front =  chapterId-280;
-					CheckPointTemplate ft = DataManager.CheckPointData.getTemplate(front);
+					CheckPointTemplate ft = GuanQiaDataManager.CheckPointData.getTemplate(front);
 					if(ft != null && !MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(front))){
 						sendError(ErrorCode.CHECKPOINT_ENTER_ERROR,MProtrol.toStringProtrol(MProtrol.ENTER_CHECK), vo, user);
 						return;
@@ -194,7 +194,7 @@ public class EnterCheckHandler extends BaseHandler{
 	}
 
 	private void process(Player player,List<MatchMonsterDto> lb,int chapterId,AtomicInteger idx){
-		CheckPointTemplate ct = DataManager.CheckPointData.getTemplate(chapterId);
+		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
 		if(ct != null){
 			if(ct.getRound() == 1){//一周目
 				FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(ct.getMonsterId(), ct.getLevel(), ct.getSite(),"",ct.getMonsterProp())));

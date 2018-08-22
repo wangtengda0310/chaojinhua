@@ -4,17 +4,16 @@ package com.igame.work.item.handler;
 
 import java.util.List;
 
+import com.igame.work.item.ItemDataManager;
+import com.igame.work.user.PlayerDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.PropGroupTemplate;
+import com.igame.work.item.data.PropGroupTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
@@ -27,8 +26,6 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 
@@ -71,14 +68,14 @@ public class ItemHeChengAllHandler extends BaseHandler{
 		int currItem = 0;
 		int nextItem = 0;
 		List<Monster> mm = Lists.newArrayList();
-		List<Item> list = DataManager.ItemData.getByEquip(player.getItems().values(), type, effects);//筛选出符合条件的装备
+		List<Item> list = PlayerDataManager.ItemData.getByEquip(player.getItems().values(), type, effects);//筛选出符合条件的装备
 		if(list == null || list.isEmpty()){
 			end = 1;//已经全部合成完毕
 		}else{
 			Item item = null;
 			PropGroupTemplate pt = null;
 			for(Item ii : list){
-				pt = DataManager.PropGroupData.getTemplate(ii.getItemId());
+				pt = ItemDataManager.PropGroupData.getTemplate(ii.getItemId());
 				if(pt != null){
 					item = ii;
 					break;
@@ -118,7 +115,7 @@ public class ItemHeChengAllHandler extends BaseHandler{
 					QuestService.processTask(player, 9, 1);
 
 					//判断下步是否有可合成的
-					list = DataManager.ItemData.getByEquip(player.getItems().values(), type, effects);
+					list = PlayerDataManager.ItemData.getByEquip(player.getItems().values(), type, effects);
 					if(list == null || list.isEmpty()){
 						end = 1;//已经全部合成完毕
 					}else{

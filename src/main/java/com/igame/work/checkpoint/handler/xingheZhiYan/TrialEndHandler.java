@@ -3,16 +3,14 @@ package com.igame.work.checkpoint.handler.xingheZhiYan;
 
 
 
+import com.igame.work.checkpoint.GuanQiaDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.TrialdataTemplate;
+import com.igame.work.checkpoint.data.TrialdataTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.checkpoint.dto.RewardDto;
@@ -21,8 +19,6 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 
@@ -50,7 +46,7 @@ public class TrialEndHandler extends BaseHandler{
 		int playerExp = 0;
 		String monsterExpStr = null;
 		String reward = "";
-		TrialdataTemplate ct = DataManager.ins().TrialData.getTemplate(player.getTowerId() + 1);
+		TrialdataTemplate ct = GuanQiaDataManager.TrialData.getTemplate(player.getTowerId() + 1);
 		if(ct == null){
 			ret = ErrorCode.CHECKPOINT_END_ERROR;
 		}else{

@@ -2,18 +2,16 @@ package com.igame.work.monster.handler;
 
 
 
+import com.igame.work.monster.MonsterDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterBreakTemplate;
-import com.igame.core.data.template.MonsterTemplate;
+import com.igame.work.monster.data.MonsterBreakTemplate;
+import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
@@ -24,8 +22,6 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 import java.util.List;
 
@@ -59,18 +55,18 @@ public class MonsterTUPOChangeHandler extends BaseHandler{
 		int ret = 0;
 		String type = "-1";
 		Monster mm = player.getMonsters().get(objectId);
-		MonsterTemplate mont = DataManager.ins().MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
+		MonsterTemplate mont = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
 		if(mm == null || mont == null){
 			ret = ErrorCode.MONSTER_NOT;//没有此怪物
 		}else{
 			String[] jiying = mm.getBreaklv().split(",");
-			if(rank <=0 || rank > DataManager.ins().MonsterBreakData.size()){
+			if(rank <=0 || rank > MonsterDataManager.MonsterBreakData.size()){
 				ret = ErrorCode.MONSTER_CHANGE_NOT;//此阶无法突破
 			}else{
 				if("-1".equals(jiying[rank - 1])){
 					ret = ErrorCode.MONSTER_TUPO_NOT;//此阶尚未突破
 				}else{
-					MonsterBreakTemplate mt = DataManager.ins().MonsterBreakData.getTemplate(rank);
+					MonsterBreakTemplate mt = MonsterDataManager.MonsterBreakData.getTemplate(rank);
 					if(costType == 1){//gold
 						if(player.getGold() < mt.getChange_gold()){
 							ret = ErrorCode.GOLD_NOT_ENOUGH;

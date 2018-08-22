@@ -3,9 +3,8 @@ package com.igame.work.monster.service;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.ItemTemplate;
-import com.igame.work.item.dto.Item;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.ItemTemplate;
 import com.igame.work.monster.dto.Effect;
 
 /**
@@ -25,7 +24,7 @@ public class EffectService {
 		
 		List<Effect> ls = Lists.newArrayList();
 		for(Integer item : items){
-			ItemTemplate it = DataManager.ins().ItemData.getTemplate(item);
+			ItemTemplate it = PlayerDataManager.ItemData.getTemplate(item);
 			if(it != null && it.getEffect() != 0){
 				if(equip && it.getItemType() != 1){
 					continue;
@@ -48,7 +47,7 @@ public class EffectService {
 	public static Effect getEffectByItem(int item,boolean equip){
 		
 
-		ItemTemplate it = DataManager.ins().ItemData.getTemplate(item);
+		ItemTemplate it = PlayerDataManager.ItemData.getTemplate(item);
 		if(it != null && it.getEffect() != 0){
 			if(equip && it.getItemType() != 1){
 				return null;

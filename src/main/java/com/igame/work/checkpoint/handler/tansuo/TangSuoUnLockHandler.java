@@ -3,8 +3,8 @@ package com.igame.work.checkpoint.handler.tansuo;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.TangSuoTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.TangSuoTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
@@ -41,7 +41,7 @@ public class TangSuoUnLockHandler extends BaseHandler{
 		int ret = 0;
 		
 		TangSuoDto dto = player.getTangSuo().get(sid);
-		TangSuoTemplate ts = DataManager.ins().TangSuoData.getTemplate(sid);
+		TangSuoTemplate ts = GuanQiaDataManager.TangSuoData.getTemplate(sid);
 		if(dto == null || index < 1 || index > 5 || ts == null || dto.getState()> 0){
 			ret = ErrorCode.ERROR;
 		}else{

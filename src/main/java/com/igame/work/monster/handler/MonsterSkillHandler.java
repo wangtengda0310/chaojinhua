@@ -4,8 +4,8 @@ package com.igame.work.monster.handler;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.SkillLvTemplate;
+import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.data.SkillLvTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.item.dto.Item;
@@ -77,7 +77,7 @@ public class MonsterSkillHandler extends BaseHandler{
 
 			Set<Integer> set = monster.getSkillMap().keySet();
 			for (Integer tempSkillId : set) {
-				SkillLvTemplate skillLvTemplate = DataManager.SkillLvData.getTemplate(tempSkillId);
+				SkillLvTemplate skillLvTemplate = FightDataManager.SkillLvData.getTemplate(tempSkillId);
 				if (skillLvTemplate.getUseItem().contains(String.valueOf(itemId))){
 					template = skillLvTemplate;
 					skillId = tempSkillId;

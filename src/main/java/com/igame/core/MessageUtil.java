@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.CheckPointTemplate;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.CheckPointTemplate;
 import com.igame.core.log.ExceptionLog;
 import com.igame.dto.RetVO;
 import com.igame.util.MyUtil;
@@ -142,14 +142,14 @@ public class MessageUtil {
 			if(player.getCheckPoint() != null && !MyUtil.isNullOrEmpty(player.getCheckPoint())){//已过章节
 				String[] cc = player.getCheckPoint().split(",");
 				for(String c : cc){
-					CheckPointTemplate ct = DataManager.CheckPointData.getTemplate(Integer.parseInt(c));
+					CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(c));
 					if(ct != null && !ccs.contains(ct.getCityId())){
 						ccs.add(ct.getCityId());
 					}
 				}
 			}
 			for(String u : us){
-				CheckPointTemplate ct = DataManager.CheckPointData.getTemplate(Integer.parseInt(u));
+				CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(u));
 				if(!MyUtil.hasCheckPoint(player.getCheckPoint(), u)){//真正第一次已过关卡更新
 					if(ct.getChapterType()!=2){
 						str+=","+u;

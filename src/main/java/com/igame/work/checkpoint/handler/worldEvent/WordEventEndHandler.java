@@ -5,17 +5,15 @@ package com.igame.work.checkpoint.handler.worldEvent;
 import java.util.List;
 
 import com.igame.util.MyUtil;
+import com.igame.work.checkpoint.GuanQiaDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.WorldEventTemplate;
+import com.igame.work.checkpoint.data.WorldEventTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.util.GameMath;
@@ -28,8 +26,6 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 
@@ -71,7 +67,7 @@ public class WordEventEndHandler extends BaseHandler{
 		}
 
 		WordEventDto wd = player.getWordEvent().get(eventType);
-		WorldEventTemplate wt = DataManager.WordEventData.getTemplate(eventType+"_"+level);
+		WorldEventTemplate wt = GuanQiaDataManager.WordEventData.getTemplate(eventType+"_"+level);
 		if(wd == null ||wt ==null){
 			sendError(ErrorCode.CHECKPOINT_END_ERROR,MProtrol.toStringProtrol(MProtrol.WWORDEVENT_END), vo, user);
 			return;

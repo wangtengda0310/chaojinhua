@@ -4,11 +4,13 @@ import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.DrawLevelTemplate;
-import com.igame.core.data.template.GodsdataTemplate;
-import com.igame.core.data.template.ItemTemplate;
-import com.igame.core.data.template.MonsterTemplate;
+import com.igame.work.fight.FightDataManager;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.DrawLevelTemplate;
+import com.igame.work.fight.data.GodsdataTemplate;
+import com.igame.work.user.data.ItemTemplate;
+import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.IDFactory;
 import com.igame.dto.RetVO;
@@ -169,9 +171,9 @@ public class ResourceService {
 							break;
 						case "4"://monster exp item
 							int totalExp = (int)(Double.parseDouble(temp[2]) * count);
-							ItemTemplate max1 = DataManager.ins().ItemData.getTemplate(200003);
-							ItemTemplate max2 = DataManager.ins().ItemData.getTemplate(200002);
-							ItemTemplate max3 = DataManager.ins().ItemData.getTemplate(200001);
+							ItemTemplate max1 = PlayerDataManager.ItemData.getTemplate(200003);
+							ItemTemplate max2 = PlayerDataManager.ItemData.getTemplate(200002);
+							ItemTemplate max3 = PlayerDataManager.ItemData.getTemplate(200001);
 							if(max1 != null){
 								if(totalExp > (int)max1.getValue()){//大
 									int cl = totalExp/(int)max1.getValue();
@@ -288,13 +290,13 @@ public class ResourceService {
 
     	int exp = player.getExp() + expAdd;
 		int tempLevel = player.getPlayerLevel();//当前等级
-		int maxLevel = DataManager.PlayerLvData.getMaxLevel();//最大等级
+		int maxLevel = PlayerDataManager.PlayerLvData.getMaxLevel();//最大等级
 		int currLevel = player.getPlayerLevel();
-		int nextLevelNeedExp = DataManager.PlayerLvData.getTemplate(currLevel).getPlayerExp();//升到下一级所需经验
+		int nextLevelNeedExp = PlayerDataManager.PlayerLvData.getTemplate(currLevel).getPlayerExp();//升到下一级所需经验
 		while (currLevel < maxLevel && exp >= nextLevelNeedExp) {	// 满级后经验值不可以获得经验
 			currLevel++;
 			exp-=nextLevelNeedExp;
-			nextLevelNeedExp = DataManager.PlayerLvData.getTemplate(currLevel).getPlayerExp();
+			nextLevelNeedExp = PlayerDataManager.PlayerLvData.getTemplate(currLevel).getPlayerExp();
 		}
 		if(currLevel>=maxLevel){	// 满级后经验值卡在0 不能增加
 			exp = 0;
@@ -322,14 +324,14 @@ public class ResourceService {
     		ret = ErrorCode.MONSTER_NOT;
     		return ret;
     	}
-    	if(mm.getLevel() >= DataManager.MonsterLvData.getMaxLevel()){//最大等级
+    	if(mm.getLevel() >= MonsterDataManager.MonsterLvData.getMaxLevel()){//最大等级
 			if (mm.getExp() != 0) {	// 经验值卡在0 不能增加
 				mm.setExp(0);
 			}
     		ret = ErrorCode.LEVEL_MAX;
     		return ret;
     	}
-    	int ml = DataManager.PlayerLvData.getTemplate(player.getPlayerLevel()).getMonsterLv();//不能超过人物等级
+    	int ml = PlayerDataManager.PlayerLvData.getTemplate(player.getPlayerLevel()).getMonsterLv();//不能超过人物等级
     	if(mm.getLevel() >= ml){//最大等级
 			if (mm.getExp() != 0) {	// 经验值卡在0 不能增加
 				mm.setExp(0);
@@ -339,20 +341,20 @@ public class ResourceService {
     	}
     	int exp = mm.getExp() + expAdd;
 		int tempLevel = mm.getLevel();//当前等级
-		int maxLevel = DataManager.MonsterLvData.getMaxLevel();//最大等级
+		int maxLevel = MonsterDataManager.MonsterLvData.getMaxLevel();//最大等级
 		int currLevel = mm.getLevel();
-		int nextLevelNeedExp = DataManager.MonsterLvData.getTemplate(currLevel).getExp();//升到下一级所需经验
+		int nextLevelNeedExp = MonsterDataManager.MonsterLvData.getTemplate(currLevel).getExp();//升到下一级所需经验
 
 		while (currLevel < maxLevel && currLevel < ml && exp >= nextLevelNeedExp) {
 			currLevel++;
 			exp-=nextLevelNeedExp;
-			nextLevelNeedExp = DataManager.MonsterLvData.getTemplate(currLevel).getExp();
+			nextLevelNeedExp = MonsterDataManager.MonsterLvData.getTemplate(currLevel).getExp();
 		}
 		if(currLevel>=maxLevel || currLevel >= ml){	// 满级或达到玩家等级后经验值卡在0 不能增加
 			exp = 0;
 		}
 		mm.setExp(exp);
-		if(currLevel >=  DataManager.MonsterLvData.getMaxLevel() || currLevel >= ml){
+		if(currLevel >=  MonsterDataManager.MonsterLvData.getMaxLevel() || currLevel >= ml){
 //			mm.setExp(0);
 		}
 		if (currLevel != tempLevel) {
@@ -474,8 +476,8 @@ public class ResourceService {
     		MessageUtil.sendMessageToPlayer(player, MProtrol.PLAYER_INDE_UP, vo);
     	}
     	List<Gods> ll = Lists.newArrayList();
-    	for(Integer type : DataManager.GodsData.getSets()){
-    		GodsdataTemplate gt = DataManager.GodsData.getTemplate(type+"_0");
+    	for(Integer type : FightDataManager.GodsData.getSets()){
+    		GodsdataTemplate gt = FightDataManager.GodsData.getTemplate(type+"_0");
     		if(gt != null && player.getPlayerLevel() >= gt.getUnlockLv() && player.getGods().get(type) == null){   			
     			Gods gods = new Gods(player.getPlayerId(), type, 0, 1);
     			ll.add(gods);
@@ -503,7 +505,7 @@ public class ResourceService {
     public Item addItem(Player player,int itemId,int count,boolean send){
     	int ret = 0;
     	Item item = player.getItems().get(itemId);
-    	if(DataManager.ItemData.getTemplate(itemId) == null){
+    	if(PlayerDataManager.ItemData.getTemplate(itemId) == null){
     		ret = 1;
     	}else{
         	if(item == null){
@@ -542,7 +544,7 @@ public class ResourceService {
      */
     public List<Monster> addMonster(Player player,int monster_id,int count,boolean send){
     	int ret = 0;
-    	MonsterTemplate mt = DataManager.MONSTER_DATA.getMonsterTemplate(monster_id);
+    	MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monster_id);
     	List<Monster> ls = Lists.newArrayList();
     	if(mt == null){
     		ret = 1;
@@ -589,7 +591,7 @@ public class ResourceService {
     		ret = ErrorCode.ITEM_NOT_EXIT;//道具不存在
     		return ret;
     	}
-    	ItemTemplate itemTemplate = DataManager.ItemData.getTemplate(itemId);
+    	ItemTemplate itemTemplate = PlayerDataManager.ItemData.getTemplate(itemId);
     	if(itemTemplate == null){
     		ret = ErrorCode.ITEM_NOT_EXIT;//道具不存在
     		return ret;
@@ -601,11 +603,11 @@ public class ResourceService {
     	    		ret = ErrorCode.MONSTER_NOT;
     	    		return ret;
     	    	}
-    	    	if(mm.getLevel() >= DataManager.MonsterLvData.getMaxLevel()){//最大等级
+    	    	if(mm.getLevel() >= MonsterDataManager.MonsterLvData.getMaxLevel()){//最大等级
     	    		ret = ErrorCode.LEVEL_MAX;
     	    		return ret;
     	    	}
-    	    	int ml = DataManager.PlayerLvData.getTemplate(player.getPlayerLevel()).getMonsterLv();//不能超过人物等级
+    	    	int ml = PlayerDataManager.PlayerLvData.getTemplate(player.getPlayerLevel()).getMonsterLv();//不能超过人物等级
     	    	if(mm.getLevel() >= ml){//最大等级
     	    		ret = ErrorCode.LEVEL_NOT_PLAYER;
     	    		return ret;
@@ -665,13 +667,13 @@ public class ResourceService {
 
     	int exp = player.getTongAdd().getTongExp() + tongExpAdd;
 		int tempLevel = player.getTongAdd().getTongLevel();//当前等级
-		int maxLevel = DataManager.TongHuaData.getAll().get(DataManager.TongHuaData.getAll().size() -1).getStrengthen_lv();
+		int maxLevel = MonsterDataManager.TongHuaData.getAll().get(MonsterDataManager.TongHuaData.getAll().size() -1).getStrengthen_lv();
 		int currLevel = player.getTongAdd().getTongLevel();
-		int nextLevelNeedExp = DataManager.TongHuaData.getTemplate(currLevel).getExp();//升到下一级所需经验;
+		int nextLevelNeedExp = MonsterDataManager.TongHuaData.getTemplate(currLevel).getExp();//升到下一级所需经验;
 		while ((currLevel + 1) <= maxLevel && exp >= nextLevelNeedExp) {
 			currLevel++;
 			exp-=nextLevelNeedExp;
-			nextLevelNeedExp = DataManager.TongHuaData.getTemplate(currLevel).getExp();
+			nextLevelNeedExp = MonsterDataManager.TongHuaData.getTemplate(currLevel).getExp();
 		}
 		player.getTongAdd().setTongExp(exp);
 		if (currLevel != tempLevel) {
@@ -747,15 +749,15 @@ public class ResourceService {
     	int tempExp = player.getDraw().getDrawExp();
     	int exp = player.getDraw().getDrawExp() + value;
 		int tempLevel = player.getDraw().getDrawLv();//当前等级
-		DrawLevelTemplate max = DataManager.DrawLevelData.getAll().get(DataManager.DrawLevelData.getAll().size() -1);
+		DrawLevelTemplate max = PlayerDataManager.DrawLevelData.getAll().get(PlayerDataManager.DrawLevelData.getAll().size() -1);
 		int maxLevel = max.getDrawLevel();
 		int currLevel = player.getDraw().getDrawLv();
-		int nextLevelNeedExp = DataManager.DrawLevelData.getTemplate(currLevel).getDrawExp();//升到下一级所需经验
+		int nextLevelNeedExp = PlayerDataManager.DrawLevelData.getTemplate(currLevel).getDrawExp();//升到下一级所需经验
 		int count = 0;
 		while ((currLevel + 1) <= maxLevel && exp >= nextLevelNeedExp) {
 			currLevel++;
 			exp-=nextLevelNeedExp;
-			nextLevelNeedExp = DataManager.DrawLevelData.getTemplate(currLevel).getDrawExp();
+			nextLevelNeedExp = PlayerDataManager.DrawLevelData.getTemplate(currLevel).getDrawExp();
 			count++;
 //			if(count>=50){
 //				break;

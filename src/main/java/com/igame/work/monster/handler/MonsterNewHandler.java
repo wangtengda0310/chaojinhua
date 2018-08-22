@@ -5,29 +5,24 @@ package com.igame.work.monster.handler;
 import java.util.Map;
 import java.util.List;
 
+import com.igame.work.monster.MonsterDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterTemplate;
-import com.igame.core.data.template.NewMonsterTemplate;
+import com.igame.work.monster.data.MonsterTemplate;
+import com.igame.work.monster.data.NewMonsterTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.checkpoint.dto.RewardDto;
 import com.igame.work.monster.dto.Monster;
-import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 import com.igame.work.item.dto.Item;
 
 /**
@@ -53,8 +48,8 @@ public class MonsterNewHandler extends BaseHandler{
 		}
 		int ret = 0;
 		int newMonster = jsonObject.getInt("newMonster");
-		NewMonsterTemplate nt = DataManager.NewMonsterData.getTemplate(newMonster);
-		MonsterTemplate mt = DataManager.MONSTER_DATA.getMonsterTemplate(newMonster);
+		NewMonsterTemplate nt = MonsterDataManager.NewMonsterData.getTemplate(newMonster);
+		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(newMonster);
 		if(nt == null || mt == null){
 			ret = 1;
 		}else{

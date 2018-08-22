@@ -2,17 +2,15 @@ package com.igame.work.monster.handler;
 
 
 
+import com.igame.work.monster.MonsterDataManager;
 import net.sf.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterTemplate;
+import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.RetVO;
@@ -23,8 +21,6 @@ import com.igame.work.monster.dto.RandoRes;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 import java.util.List;
 
@@ -61,13 +57,13 @@ public class MonsterTUPOAllHandler extends BaseHandler{
 		int result = -1;
 		long cost = 0;
 		Monster mm = player.getMonsters().get(objectId);
-		MonsterTemplate mont = DataManager.ins().MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
+		MonsterTemplate mont = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
 		if(mm == null || mont == null){
 			ret = ErrorCode.MONSTER_NOT;//没有此怪物
 		}else{
 			String[] jiying = mm.getBreaklv().split(",");				
 
-			if(rank <=0 || rank > DataManager.MONSTER_DATA.size()){
+			if(rank <=0 || rank > MonsterDataManager.MONSTER_DATA.size()){
 				ret = ErrorCode.MONSTER_CHANGE_NOT;//此阶无法改造
 			}else{
 				if("-1".equals(jiying[rank - 1])){

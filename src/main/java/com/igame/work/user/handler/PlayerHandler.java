@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.IDFactory;
@@ -15,6 +14,7 @@ import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.dto.FateDto;
 import com.igame.work.checkpoint.service.CheckPointService;
 import com.igame.work.friend.service.FriendService;
+import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.dao.MonsterDAO;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.dto.TaskDayInfo;
@@ -164,8 +164,8 @@ public class PlayerHandler extends BaseHandler{
 		player.setLoginTime(new Date());
 
 		//创建默认的怪物
-		Monster m1 = new Monster(player, IDFactory.ins().getNewIdMonster(serverId), player.getPlayerId(), DataManager.MONSTER_DATA.getMonsterTemplate(1001).getMonster_hp(), 0,1001);
-		Monster m2 = new Monster(player,IDFactory.ins().getNewIdMonster(serverId), player.getPlayerId(),  DataManager.MONSTER_DATA.getMonsterTemplate(1002).getMonster_hp(), 0,1002);
+		Monster m1 = new Monster(player, IDFactory.ins().getNewIdMonster(serverId), player.getPlayerId(), MonsterDataManager.MONSTER_DATA.getMonsterTemplate(1001).getMonster_hp(), 0,1001);
+		Monster m2 = new Monster(player,IDFactory.ins().getNewIdMonster(serverId), player.getPlayerId(),  MonsterDataManager.MONSTER_DATA.getMonsterTemplate(1002).getMonster_hp(), 0,1002);
 
 		m1.reCalculate(player,true);
 		m2.reCalculate(player,true);

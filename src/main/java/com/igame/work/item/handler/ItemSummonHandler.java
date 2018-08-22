@@ -4,8 +4,8 @@ package com.igame.work.item.handler;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.data.DataManager;
-import com.igame.core.data.template.MonsterGroupTemplate;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.data.MonsterGroupTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.dto.RetVO;
 import com.igame.work.item.dto.Item;
@@ -64,7 +64,7 @@ public class ItemSummonHandler extends BaseHandler{
 		}
 
 		//检验道具是否可召唤怪兽
-		MonsterGroupTemplate template = DataManager.monsterGroupData.getTemplate(itemId);
+		MonsterGroupTemplate template = MonsterDataManager.monsterGroupData.getTemplate(itemId);
 		if (template == null){
 			sendError(ErrorCode.PARAMS_INVALID, MProtrol.toStringProtrol(MProtrol.ITEM_SUMMON),vo,user);
 			return;
