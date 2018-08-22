@@ -13,7 +13,9 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author xym
@@ -30,47 +32,35 @@ public class FriendRefuseHandler extends BaseHandler{
 			return;
 		}
 
-        String infor = params.getUtfString("infor");
-        JSONObject jsonObject = JSONObject.fromObject(infor);
-
         Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;
         }
 
+        String infor = params.getUtfString("infor");
+        JSONObject jsonObject = JSONObject.fromObject(infor);
+
         long playerId = jsonObject.getLong("playerId");
         vo.addData("playerId",playerId);
 
         //判断对方是否在自己的请求列表中
         List<Friend> reqFriends = player.getFriends().getReqFriends();
-        if (playerId != -1){
-            boolean exist = false;
-            for (Friend reqFriend : reqFriends) {
-                if (reqFriend.getPlayerId() == playerId)
-                    exist = true;
-            }
-
-            if (!exist){
-                sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_REFUSE),vo,user);
-                return;
-            }
+        if (playerId != -1 && reqFriends.stream().noneMatch(req -> req.getPlayerId() == playerId)){
+            sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_REFUSE),vo,user);
+            return;
         }
 
         //biz
-        List<Long> delReqFriends = new ArrayList<>();   //当前角色删除好友请求列表
+        List<Long> delReqFriends;   //当前角色删除好友请求列表
 
         if (playerId != -1){
 
             FriendService.ins().delReqFriend(player, playerId);
-            delReqFriends.add(playerId);
+            delReqFriends = Collections.singletonList(playerId);
 
         }else { //拒绝全部
-
-            for (Friend reqFriend : reqFriends) {
-                long delPlayerId = reqFriend.getPlayerId();
-                delReqFriends.add(delPlayerId);
-            }
+            delReqFriends = reqFriends.stream().map(Friend::getPlayerId).collect(Collectors.toList());
 
             reqFriends.clear();
         }

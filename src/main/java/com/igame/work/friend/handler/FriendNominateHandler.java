@@ -45,8 +45,8 @@ public class FriendNominateHandler extends BaseHandler{
         Set<Long> curFriends = player.getFriends().getCurFriends().stream()
                 .map(Friend::getPlayerId)
                 .collect(Collectors.toSet());
-        List<Friend> nomFriends = new ArrayList<>();
 
+        List<Friend> nomFriends = new ArrayList<>();
 
         List<Player> players = PlayerCacheService.ins().getPlayers(player.getSeverId());
 
@@ -54,6 +54,7 @@ public class FriendNominateHandler extends BaseHandler{
         players.stream()
                 .filter(playerCacheDto->playerCacheDto.getPlayerId() != player.getPlayerId())
                 .filter(playerCacheDto->!curFriends.contains(playerCacheDto.getPlayerId()))
+                .filter(playerCacheDto->!reqFriends(playerCacheDto).contains(player.getPlayerId()))
                 .filter(playerCacheDto->now - playerCacheDto.getLoginoutTime().getTime() <= 24*60*60*1000
                         || Math.abs(playerLevel - playerCacheDto.getPlayerLevel()) <= 10)
                 .limit(10)
@@ -63,4 +64,9 @@ public class FriendNominateHandler extends BaseHandler{
         sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_NOMINATE),vo,user);
     }
 
+    private Set<Long> reqFriends(Player player) {
+        return player.getFriends().getReqFriends().stream()
+                .map(Friend::getPlayerId)
+                .collect(Collectors.toSet());
+    }
 }

@@ -68,7 +68,7 @@ public class PlayerHandler extends BaseHandler{
 		Player player = PlayerDAO.ins().getPlayerByUserId(serverId, userId);
 		if(player == null){//不存在就默认创建一个
 			try {
-				player = initPlayer(userId, serverId);
+				player = newPlayer(userId, serverId);
 				if(player.get_id() == null){
 					sendError(ErrorCode.NEWPLAYER_ERROR,MProtrol.toStringProtrol(MProtrol.PLAYER_ENTER), vo, user);
 					return;
@@ -80,7 +80,7 @@ public class PlayerHandler extends BaseHandler{
 				return;
 			}
 		}else{
-			PlayerLoad.ins().loadPlayer(player,serverId, userId);//载入玩家数据
+			PlayerLoad.ins().loadPlayer(player,serverId);//载入玩家数据
 		}
 
 		try {
@@ -137,7 +137,7 @@ public class PlayerHandler extends BaseHandler{
 		GoldLog.info(player.getSeverId(), player.getUserId(), player.getPlayerId(), GoldLog.LOGIN,"");
 	}
 
-	private Player initPlayer(long userId, int serverId) throws Exception {
+	private Player newPlayer(long userId, int serverId) throws Exception {
 
 		Player player = new Player();
 
@@ -186,7 +186,7 @@ public class PlayerHandler extends BaseHandler{
 		HeadService.ins().initFrame(player);
 
 		//初始化好友
-		FriendService.ins().initFriend(player);
+		FriendService.ins().newPlayer(player);
 
 		//初始化会员特权
 		VIPService.ins().initPrivileges(player.getVipPrivileges());

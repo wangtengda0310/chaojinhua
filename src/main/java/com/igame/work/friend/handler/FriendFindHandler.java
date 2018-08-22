@@ -36,14 +36,14 @@ public class FriendFindHandler extends BaseHandler{
 			return;
 		}
 
-        String infor = params.getUtfString("infor");
-        JSONObject jsonObject = JSONObject.fromObject(infor);
-
         Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;
         }
+
+        String infor = params.getUtfString("infor");
+        JSONObject jsonObject = JSONObject.fromObject(infor);
 
         String nickname = jsonObject.getString("nickname");
         vo.addData("nickname",nickname);

@@ -37,14 +37,14 @@ public class FriendReceivePhyHandler extends BaseHandler{
 			return;
 		}
 
-        String infor = params.getUtfString("infor");
-        JSONObject jsonObject = JSONObject.fromObject(infor);
-
         Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;
         }
+
+        String infor = params.getUtfString("infor");
+        JSONObject jsonObject = JSONObject.fromObject(infor);
 
         long playerId = jsonObject.getLong("playerId");
         vo.addData("playerId",playerId);

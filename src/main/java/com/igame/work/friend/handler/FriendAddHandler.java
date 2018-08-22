@@ -36,14 +36,14 @@ public class FriendAddHandler extends BaseHandler{
 			return;
 		}
 
-        String infor = params.getUtfString("infor");
-        JSONObject jsonObject = JSONObject.fromObject(infor);
-
         Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;
         }
+
+        String infor = params.getUtfString("infor");
+        JSONObject jsonObject = JSONObject.fromObject(infor);
 
         long playerId = jsonObject.getLong("playerId");
         vo.addData("playerId",playerId);
@@ -85,12 +85,7 @@ public class FriendAddHandler extends BaseHandler{
 
         //判断对方是否在自己的好友列表中
         List<Friend> curFriends = player.getFriends().getCurFriends();
-        boolean exist = false;
-        for (Friend curFriend : curFriends) {
-            if (curFriend.getPlayerId() == playerId)
-                exist = true;
-        }
-        if (exist){
+        if (curFriends.stream().anyMatch(friend -> friend.getPlayerId() == playerId)){
             vo.addData("state",FRIEND_STATE_ADDED);
             sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_ADD),vo,user);
             return;
@@ -105,12 +100,10 @@ public class FriendAddHandler extends BaseHandler{
             reqFriends = friendInfo.getReqFriends();
         }
         //判断自己是否在对方的请求列表中
-        for (Friend reqFriend : reqFriends) {
-            if (reqFriend.getPlayerId() == player.getPlayerId()){
-                vo.addData("state",FRIEND_STATE_REQED);
-                sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_ADD),vo,user);
-                return;
-            }
+        if (reqFriends.stream().anyMatch(friend -> friend.getPlayerId() == player.getPlayerId())){
+            vo.addData("state",FRIEND_STATE_REQED);
+            sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_ADD),vo,user);
+            return;
         }
 
         //添加好友请求

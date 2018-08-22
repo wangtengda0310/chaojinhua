@@ -111,9 +111,7 @@ public class FriendService {
             FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(sendPlayer.getSeverId(), recPlayerId);
             if (friendInfo == null){    //todo 处理老数据
 
-                friendInfo = new FriendInfo();
-
-                friendInfo.setPlayerId(recPlayerId);
+                friendInfo = new FriendInfo(recPlayerId);
 
                 friendInfo.getReqFriends().add(friend);
 
@@ -191,9 +189,7 @@ public class FriendService {
 
             if (friendInfo == null){
 
-                friendInfo = new FriendInfo();
-
-                friendInfo.setPlayerId(reqPlayerId);
+                friendInfo = new FriendInfo(reqPlayerId);
 
                 friendInfo.getCurFriends().add(new Friend(player));
 
@@ -300,11 +296,9 @@ public class FriendService {
      * 初始化玩家好友信息
      * @param player 角色
      */
-    public void initFriend(Player player) {
+    public void newPlayer(Player player) {
 
-        FriendInfo friendInfo = new FriendInfo();
-
-        friendInfo.setPlayerId(player.getPlayerId());
+        FriendInfo friendInfo = new FriendInfo(player.getPlayerId());
 
         player.setFriends(friendInfo);
     }

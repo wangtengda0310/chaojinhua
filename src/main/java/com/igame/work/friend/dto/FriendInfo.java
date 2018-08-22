@@ -17,10 +17,15 @@ import java.util.List;
  */
 @Entity(value = "Friends", noClassnameStored = true)
 public class FriendInfo extends BasicDto {
+	public FriendInfo(){}
 	
 	@Indexed
 	@JsonIgnore
 	private long playerId;//所属角色ID
+
+	public FriendInfo(long playerId) {
+		this.playerId = playerId;
+	}
 
 	@Transient
 	private int physicalCount;

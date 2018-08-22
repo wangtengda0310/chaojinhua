@@ -1,13 +1,5 @@
 package com.igame.work.friend.handler;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.collections.map.HashedMap;
-
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
@@ -20,6 +12,12 @@ import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
+import org.apache.commons.collections.map.HashedMap;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author xym
@@ -39,14 +37,14 @@ public class FriendGivePhyHandler extends BaseHandler{
 			return;
 		}
 
-        String infor = params.getUtfString("infor");
-        JSONObject jsonObject = JSONObject.fromObject(infor);
-
         Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;
         }
+
+        String infor = params.getUtfString("infor");
+        JSONObject jsonObject = JSONObject.fromObject(infor);
 
         long playerId = jsonObject.getInt("playerId");
         vo.addData("playerId",playerId);

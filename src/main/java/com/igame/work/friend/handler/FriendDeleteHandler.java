@@ -31,26 +31,21 @@ public class FriendDeleteHandler extends BaseHandler{
 			return;
 		}
 
-        String infor = params.getUtfString("infor");
-        JSONObject jsonObject = JSONObject.fromObject(infor);
-
         Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;
         }
 
+        String infor = params.getUtfString("infor");
+        JSONObject jsonObject = JSONObject.fromObject(infor);
+
         long playerId = jsonObject.getLong("playerId");
         vo.addData("playerId",playerId);
 
         //判断对方是否在自己的好友列表中
-        boolean isExist = false;
         List<Friend> curFriends = player.getFriends().getCurFriends();
-        for (Friend curFriend : curFriends) {
-            if (curFriend.getPlayerId() == playerId)
-                isExist = true;
-        }
-        if (!isExist){
+        if (curFriends.stream().noneMatch(friend -> friend.getPlayerId() == playerId)){
             sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_DELETE),vo,user);
             return;
         }
@@ -63,6 +58,7 @@ public class FriendDeleteHandler extends BaseHandler{
             return;
         }
 
+        fireEvent(user,"deleteFriend");
         //删除好友
         FriendService.ins().delFriend(player,playerId);
 

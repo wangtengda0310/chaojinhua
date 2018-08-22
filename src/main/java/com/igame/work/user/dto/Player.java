@@ -280,7 +280,7 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private FriendInfo friends = new FriendInfo();    //好友
+    private FriendInfo friends;    //好友 在Friends表中存储 不在Player表中存储
 
     @Transient
     @JsonIgnore

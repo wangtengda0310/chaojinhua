@@ -55,7 +55,7 @@ public class PlayerLoad {
         return domain;
     }
     
-    public Player loadPlayer(Player player,int serverId,long userId){
+    public void loadPlayer(Player player,int serverId){
 		ItemService.ins().loadPlayer(player, serverId);
 
     	player.setGods(GodsDAO.ins().getByPlayer(serverId, player.getPlayerId()));
@@ -75,7 +75,6 @@ public class PlayerLoad {
 		ActivityService.loadPlayer(player);
 
 		PlayerCacheService.ins().remove(player);
-    	return null;
     }
     
     /**

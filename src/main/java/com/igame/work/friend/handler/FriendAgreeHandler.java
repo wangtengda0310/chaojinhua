@@ -14,7 +14,9 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.igame.work.friend.FriendConstants.*;
 
@@ -35,63 +37,50 @@ public class FriendAgreeHandler extends BaseHandler{
 			return;
 		}
 
-        String infor = params.getUtfString("infor");
-        JSONObject jsonObject = JSONObject.fromObject(infor);
-
         Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;
         }
 
+        String infor = params.getUtfString("infor");
+        JSONObject jsonObject = JSONObject.fromObject(infor);
+
         long playerId = jsonObject.getLong("playerId");
         vo.addData("playerId",playerId);
 
         //判断对方是否在自己的请求列表中
         List<Friend> reqFriends = player.getFriends().getReqFriends();
-        if (playerId != -1){
-            boolean exist = false;
-            for (Friend reqFriend : reqFriends) {
-                if (reqFriend.getPlayerId() == playerId)
-                    exist = true;
-            }
-
-            if (!exist){
-                sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_AGREE),vo,user);
-                return;
-            }
+        if (playerId != -1 && reqFriends.stream().noneMatch(req -> req.getPlayerId() == playerId)){
+            sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_AGREE),vo,user);
+            return;
         }
 
         //判断对方是否在自己的好友列表中
         List<Friend> curFriends = player.getFriends().getCurFriends();
-        for (Friend curFriend : curFriends) {
-            if (curFriend.getPlayerId() == playerId){
-                vo.addData("state",FRIEND_STATE_ADDED);
-                sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_AGREE),vo,user);
-                return;
-            }
+        if (curFriends.stream().anyMatch(req->req.getPlayerId() == playerId)){
+            vo.addData("state",FRIEND_STATE_ADDED);
+            sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_AGREE),vo,user);
+            return;
         }
 
         //biz
-        List<Integer> states = new ArrayList<>();   //返回状态码
+        List<Integer> states;   //返回状态码
         List<Long> delReqFriends = new ArrayList<>();   //当前角色删除好友请求列表
         List<Friend> addFriends = new ArrayList<>();    //当前角色添加好友列表
 
         if (playerId != -1){
 
             int state = addFriend(player, delReqFriends, addFriends, playerId);
-            states.add(state);
+            states = Collections.singletonList(state);
 
         }else { //同意全部
-
-            for (Friend reqFriend : reqFriends) {
-
-                int state = addFriend(player, delReqFriends, addFriends, reqFriend.getPlayerId());
-                states.add(state);
-
-            }
+            states = reqFriends.stream()
+                    .map(reqFriend->addFriend(player, delReqFriends, addFriends, reqFriend.getPlayerId()))
+                    .collect(Collectors.toList());
         }
 
+        fireEvent(user, "agreeFriend");
         //推送当前角色好友更新
         FriendService.ins().pushFriends(player,new ArrayList<>(),addFriends);
 

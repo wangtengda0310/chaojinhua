@@ -34,9 +34,7 @@ public class FriendDAO extends AbsDao {
             friendInfo.getReqFriends().forEach(friend -> friend.loadCache(friend,severId));
         }else {
 
-            friendInfo = new FriendInfo();
-
-            friendInfo.setPlayerId(playerId);
+            friendInfo = new FriendInfo(playerId);
 
             saveFriendInfo(severId,friendInfo);
         }
