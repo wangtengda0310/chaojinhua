@@ -40,7 +40,7 @@ public class GetPlayerInfoHandler extends BaseHandler{
         vo.addData("playerId", playerId);
 
         Player playerSession = SessionManager.ins().getSessionByPlayerId(playerId);
-        Player playerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), playerId);
+        Player playerCache = PlayerCacheService.ins().getPlayerById(playerId);
         if (playerSession == null && playerCache == null){
             sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.MESSAGE_PLAYERINFO),vo,user);
             return;

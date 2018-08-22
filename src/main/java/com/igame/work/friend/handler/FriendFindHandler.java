@@ -60,7 +60,7 @@ public class FriendFindHandler extends BaseHandler{
         }
 
         //检验昵称是否存在
-        Player reqPlayerCache = PlayerCacheService.ins().getPlayerByNickName(player.getSeverId(), nickname);
+        Player reqPlayerCache = PlayerCacheService.ins().getPlayerByNickName(nickname);
         if (reqPlayerCache == null){
             vo.addData("state",FRIEND_STATE_NOTEXIST);
             sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_FIND),vo,user);

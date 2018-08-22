@@ -25,7 +25,7 @@ public class PlayerCacheService {
 	
     private static final PlayerCacheService domain = new PlayerCacheService();
 
-    public static final PlayerCacheService ins() {
+    public static PlayerCacheService ins() {
         return domain;
     }
     
@@ -47,7 +47,7 @@ public class PlayerCacheService {
     /**
      * 根据玩家ID获取
      */
-    public Player getPlayerById(int serverId,long playerId){
+    public Player getPlayerById(long playerId){
 
 		Player player  = SessionManager.ins().getSessionByPlayerId(playerId);
 		if(player != null){	//如果玩家在线
@@ -62,9 +62,8 @@ public class PlayerCacheService {
     /**
      * 根据玩家昵称
      */
-    public Player getPlayerByNickName(int serverId,String nickName){
+    public Player getPlayerByNickName(String nickName){
 
-		Player pdo;
 		Player player  = SessionManager.ins().getSession(nickName);
 		if(player != null){	//如果玩家在线
 			pcn.remove(player.getNickname());

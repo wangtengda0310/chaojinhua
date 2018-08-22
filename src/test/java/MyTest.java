@@ -320,7 +320,7 @@ public class MyTest {
 
     private static void testFriendFind() {
         PlayerCacheService.ins().loadData();
-        Player playerByNickName = PlayerCacheService.ins().getPlayerByNickName(1, "玩家_1000116");
+        Player playerByNickName = PlayerCacheService.ins().getPlayerByNickName("玩家_1000116");
         if (playerByNickName == null){
             System.out.println(1);
             return;

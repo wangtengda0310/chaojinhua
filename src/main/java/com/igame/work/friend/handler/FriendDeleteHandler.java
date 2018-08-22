@@ -52,7 +52,7 @@ public class FriendDeleteHandler extends BaseHandler{
 
         //校验要删除的好友
         Player delPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
-        Player delPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), playerId);
+        Player delPlayerCache = PlayerCacheService.ins().getPlayerById(playerId);
         if (delPlayer == null && delPlayerCache == null){
             sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_DELETE),vo,user);
             return;

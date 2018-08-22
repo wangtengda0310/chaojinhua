@@ -102,7 +102,7 @@ public class FriendAgreeHandler extends BaseHandler{
     private int addFriend(Player player, List<Long> delReqFriends, List<Friend> addFriends, long reqPlayerId) {
 
         Player reqPlayer = SessionManager.ins().getSessionByPlayerId(reqPlayerId);
-        Player reqPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), reqPlayerId);
+        Player reqPlayerCache = PlayerCacheService.ins().getPlayerById(reqPlayerId);
 
         //校验对方角色是否存在
         if (reqPlayer == null && reqPlayerCache == null){

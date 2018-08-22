@@ -72,7 +72,7 @@ public class Friend{
 
 	public void loadCache(Friend friend, int serverId) {
 
-		Player cacheDto = PlayerCacheService.ins().getPlayerById(serverId, friend.getPlayerId());
+		Player cacheDto = PlayerCacheService.ins().getPlayerById(friend.getPlayerId());
 
 		if(cacheDto!=null) {
 			friend.setPlayerLevel(cacheDto.getPlayerLevel());    //玩家等级

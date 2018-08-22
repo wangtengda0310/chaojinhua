@@ -56,7 +56,7 @@ public class FriendAddHandler extends BaseHandler{
 
         //判断对方是否存在
         Player reqPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
-        Player reqPlayerCache = PlayerCacheService.ins().getPlayerById(player.getSeverId(), playerId);
+        Player reqPlayerCache = PlayerCacheService.ins().getPlayerById(playerId);
         if (reqPlayer == null && reqPlayerCache == null){
             sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_ADD),vo,user);
             return;
