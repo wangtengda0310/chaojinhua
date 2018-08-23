@@ -1,13 +1,13 @@
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
 import com.igame.core.data.DataManager;
-import com.igame.work.monster.MonsterDataManager;
-import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.util.MyUtil;
+import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.dao.MonsterDAO;
+import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.Monster;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -18,7 +18,7 @@ public class MonsterProcess {
 
 	public static void main(String[] args) {
 		
-		DataManager.load();
+		DataManager.load("resource");
 		
 		List<Monster> ll = MonsterDAO.ins().getALLMonster(1);
 		int i = 0;

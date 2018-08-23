@@ -26,61 +26,62 @@ import com.igame.work.user.data.*;
 
 public class DataManager {
 
-	public static void load()
+	public static void load(String resourceFolder)
 	{
+		ClassXmlDataLoader loader = new ClassXmlDataLoader(resourceFolder);
 
-		MonsterDataManager.MONSTER_DATA                 =XmlDataLoader.loadData(MonsterData.class,   "monsterdata.xml" );//怪物信息
-		PlayerDataManager.PlayerLvData                  =XmlDataLoader.loadData(PlayerLvData.class,   "playerlevel.xml" );//玩家等级模板
-		MonsterDataManager.MonsterLvData                =XmlDataLoader.loadData(MonsterLvData.class,   "monsterlevel.xml" );//怪物等级模板
-		PlayerDataManager.ItemData                      =XmlDataLoader.loadData(ItemData.class,   "itemdata.xml" );//道具模板
-		MonsterDataManager.MonsterEvolutionData         =XmlDataLoader.loadData(MonsterEvolutionData.class,   "monsterevolution.xml" );//怪物进化
-		MonsterDataManager.MonsterBreakData             =XmlDataLoader.loadData(MonsterBreakData.class,   "monsterbreak.xml" );//怪物基因突破
-		GuanQiaDataManager.CheckPointData               =XmlDataLoader.loadData(CheckPointData.class,   "chapterdata.xml" );
-		GuanQiaDataManager.DropData                     =XmlDataLoader.loadData(DropData.class,   "dropdata.xml" );
-		MonsterDataManager.NewMonsterData               =XmlDataLoader.loadData(NewMonsterData.class,   "newmonster.xml" );
-		ItemDataManager.PropGroupData                   =XmlDataLoader.loadData(PropGroupData.class,   "propgroup.xml" );
-		GuanQiaDataManager.TangSuoData                  =XmlDataLoader.loadData(TangSuoData.class,   "questteam.xml" );
-		GuanQiaDataManager.WordEventData                =XmlDataLoader.loadData(WordEventData.class,   "worldevent.xml" );
-		MonsterDataManager.TongDiaoData                 =XmlDataLoader.loadData(TongDiaoData.class,   "suitdata.xml" );
-		MonsterDataManager.TongHuaData                  =XmlDataLoader.loadData(TongHuaData.class,   "strengthenlevel.xml" );
-		MonsterDataManager.StrengthenmonsterData        =XmlDataLoader.loadData(StrengthenmonsterData.class,   "strengthenmonster.xml" );
-		MonsterDataManager.StrengthenplaceData          =XmlDataLoader.loadData(StrengthenplaceData.class,   "strengthenplace.xml" );
-		MonsterDataManager.StrengthenrewardData         =XmlDataLoader.loadData(StrengthenrewardData.class,   "strengthenreward.xml" );
-		FightDataManager.GodsData                       =XmlDataLoader.loadData(GodsData.class,   "godsdata.xml" );
-		MonsterDataManager.StrengthenRouteData          =XmlDataLoader.loadData(StrengthenRouteData.class,   "strengthenroute.xml" );
-		MonsterDataManager.ExchangeData                 =XmlDataLoader.loadData(ExchangeData.class,   "exchangedata.xml" );
-		MonsterDataManager.PokedexData                  =XmlDataLoader.loadData(PokedexData.class,   "pokedexdata.xml" );
-		PlayerDataManager.DrawLevelData                 =XmlDataLoader.loadData(DrawLevelData.class,   "drawlevel.xml" );
-		PlayerDataManager.DrawdataData                  =XmlDataLoader.loadData(DrawdataData.class,   "drawdata.xml" );
-		PlayerDataManager.DrawrewardData                =XmlDataLoader.loadData(DrawrewardData.class,   "drawreward.xml" );
-		FightDataManager.SkillData                      =XmlDataLoader.loadData(SkillData.class,   "skilldata.xml" );
-		FightDataManager.SkillLvData                    =XmlDataLoader.loadData(SkillLvData.class,   "skillexp.xml" );
-		FightDataManager.EffectData                     =XmlDataLoader.loadData(EffectData.class,   "effectdata.xml" );
-		QuestDataManager.QuestData                      =XmlDataLoader.loadData(QuestData.class,   "questdata.xml" );
-		GuanQiaDataManager.TrialData                    =XmlDataLoader.loadData(TrialData.class,   "trialdata.xml" );
-		GuanQiaDataManager.EndlessData                  =XmlDataLoader.loadData(EndlessData.class,   "endlessdata.xml" );
-		GuanQiaDataManager.FateData                     =XmlDataLoader.loadData(FateData.class,   "destinydata.xml" );
-		GuanQiaDataManager.DestinyData                  =XmlDataLoader.loadData(DestinyData.class,   "destinyrate.xml" );
-		ShopDataManager.shopData                        =XmlDataLoader.loadData(ShopData.class,   "shopdata.xml" );
-		ShopDataManager.shopOutPutData                  =XmlDataLoader.loadData(ShopOutPutData.class,   "shopoutput.xml" );
-		ShopDataManager.shopRandomData                  =XmlDataLoader.loadData(ShopRandomData.class,   "shoprandom.xml" );
-		ShopDataManager.shopRandomLvData                =XmlDataLoader.loadData(ShopRandomLvData.class,   "shoprandom_lv.xml" );
-		PlayerDataManager.headData                    	=XmlDataLoader.loadData(HeadData.class,   "headdata.xml" );
-		PlayerDataManager.headFrameData                 =XmlDataLoader.loadData(HeadFrameData.class,   "headframe.xml" );
-		PlayerDataManager.ArenaData                     =XmlDataLoader.loadData(ArenaData.class,   "arenadata.xml" );
-		GuanQiaDataManager.runData                      =XmlDataLoader.loadData(RunData.class,   "rundata.xml" );
-		GuanQiaDataManager.runTypeData                  =XmlDataLoader.loadData(RunTypeData.class,   "runtype.xml" );
-		GuanQiaDataManager.runRewardData                =XmlDataLoader.loadData(RunRewardData.class,   "runreward.xml" );
-		GuanQiaDataManager.runBattlerewardData          =XmlDataLoader.loadData(RunBattlerewardData.class,   "runbattlereward.xml" );
-		MonsterDataManager.monsterGroupData             =XmlDataLoader.loadData(MonsterGroupData.class,   "monstergroup.xml" );
-		PlayerDataManager.itemGroupData                 =XmlDataLoader.loadData(ItemGroupData.class,   "itemgroup.xml" );
-		PlayerDataManager.vipPackData                   =XmlDataLoader.loadData(VipPackData.class,   "vippack.xml" );
-		PlayerDataManager.vipLevelData                  =XmlDataLoader.loadData(VipLevelData.class,   "viplevel.xml" );
-		PlayerDataManager.vipData             			=XmlDataLoader.loadData(VipData.class,   "vipdata.xml" );
-		FightDataManager.GodsEffectData                 =XmlDataLoader.loadData(GodsEffectData.class,   "godseffect.xml" );
-		LuckTableDataManager.luckTableData              =XmlDataLoader.loadData(LuckTableData.class,   "lucktable.xml" );
-		ActivityDataManager.signConfig                  =XmlDataLoader.loadData(SignConfig.class,   "signreward.xml" );
-		ActivityDataManager.activityConfig              =XmlDataLoader.loadData(ActivityConfig.class,   "activity.xml" );
+		MonsterDataManager.MONSTER_DATA                 =loader.loadData(MonsterData.class,   "monsterdata.xml" );//怪物信息
+		PlayerDataManager.PlayerLvData                  =loader.loadData(PlayerLvData.class,   "playerlevel.xml" );//玩家等级模板
+		MonsterDataManager.MonsterLvData                =loader.loadData(MonsterLvData.class,   "monsterlevel.xml" );//怪物等级模板
+		PlayerDataManager.ItemData                      =loader.loadData(ItemData.class,   "itemdata.xml" );//道具模板
+		MonsterDataManager.MonsterEvolutionData         =loader.loadData(MonsterEvolutionData.class,   "monsterevolution.xml" );//怪物进化
+		MonsterDataManager.MonsterBreakData             =loader.loadData(MonsterBreakData.class,   "monsterbreak.xml" );//怪物基因突破
+		GuanQiaDataManager.CheckPointData               =loader.loadData(CheckPointData.class,   "chapterdata.xml" );
+		GuanQiaDataManager.DropData                     =loader.loadData(DropData.class,   "dropdata.xml" );
+		MonsterDataManager.NewMonsterData               =loader.loadData(NewMonsterData.class,   "newmonster.xml" );
+		ItemDataManager.PropGroupData                   =loader.loadData(PropGroupData.class,   "propgroup.xml" );
+		GuanQiaDataManager.TangSuoData                  =loader.loadData(TangSuoData.class,   "questteam.xml" );
+		GuanQiaDataManager.WordEventData                =loader.loadData(WordEventData.class,   "worldevent.xml" );
+		MonsterDataManager.TongDiaoData                 =loader.loadData(TongDiaoData.class,   "suitdata.xml" );
+		MonsterDataManager.TongHuaData                  =loader.loadData(TongHuaData.class,   "strengthenlevel.xml" );
+		MonsterDataManager.StrengthenmonsterData        =loader.loadData(StrengthenmonsterData.class,   "strengthenmonster.xml" );
+		MonsterDataManager.StrengthenplaceData          =loader.loadData(StrengthenplaceData.class,   "strengthenplace.xml" );
+		MonsterDataManager.StrengthenrewardData         =loader.loadData(StrengthenrewardData.class,   "strengthenreward.xml" );
+		FightDataManager.GodsData                       =loader.loadData(GodsData.class,   "godsdata.xml" );
+		MonsterDataManager.StrengthenRouteData          =loader.loadData(StrengthenRouteData.class,   "strengthenroute.xml" );
+		MonsterDataManager.ExchangeData                 =loader.loadData(ExchangeData.class,   "exchangedata.xml" );
+		MonsterDataManager.PokedexData                  =loader.loadData(PokedexData.class,   "pokedexdata.xml" );
+		PlayerDataManager.DrawLevelData                 =loader.loadData(DrawLevelData.class,   "drawlevel.xml" );
+		PlayerDataManager.DrawdataData                  =loader.loadData(DrawdataData.class,   "drawdata.xml" );
+		PlayerDataManager.DrawrewardData                =loader.loadData(DrawrewardData.class,   "drawreward.xml" );
+		FightDataManager.SkillData                      =loader.loadData(SkillData.class,   "skilldata.xml" );
+		FightDataManager.SkillLvData                    =loader.loadData(SkillLvData.class,   "skillexp.xml" );
+		FightDataManager.EffectData                     =loader.loadData(EffectData.class,   "effectdata.xml" );
+		QuestDataManager.QuestData                      =loader.loadData(QuestData.class,   "questdata.xml" );
+		GuanQiaDataManager.TrialData                    =loader.loadData(TrialData.class,   "trialdata.xml" );
+		GuanQiaDataManager.EndlessData                  =loader.loadData(EndlessData.class,   "endlessdata.xml" );
+		GuanQiaDataManager.FateData                     =loader.loadData(FateData.class,   "destinydata.xml" );
+		GuanQiaDataManager.DestinyData                  =loader.loadData(DestinyData.class,   "destinyrate.xml" );
+		ShopDataManager.shopData                        =loader.loadData(ShopData.class,   "shopdata.xml" );
+		ShopDataManager.shopOutPutData                  =loader.loadData(ShopOutPutData.class,   "shopoutput.xml" );
+		ShopDataManager.shopRandomData                  =loader.loadData(ShopRandomData.class,   "shoprandom.xml" );
+		ShopDataManager.shopRandomLvData                =loader.loadData(ShopRandomLvData.class,   "shoprandom_lv.xml" );
+		PlayerDataManager.headData                    	=loader.loadData(HeadData.class,   "headdata.xml" );
+		PlayerDataManager.headFrameData                 =loader.loadData(HeadFrameData.class,   "headframe.xml" );
+		PlayerDataManager.ArenaData                     =loader.loadData(ArenaData.class,   "arenadata.xml" );
+		GuanQiaDataManager.runData                      =loader.loadData(RunData.class,   "rundata.xml" );
+		GuanQiaDataManager.runTypeData                  =loader.loadData(RunTypeData.class,   "runtype.xml" );
+		GuanQiaDataManager.runRewardData                =loader.loadData(RunRewardData.class,   "runreward.xml" );
+		GuanQiaDataManager.runBattlerewardData          =loader.loadData(RunBattlerewardData.class,   "runbattlereward.xml" );
+		MonsterDataManager.monsterGroupData             =loader.loadData(MonsterGroupData.class,   "monstergroup.xml" );
+		PlayerDataManager.itemGroupData                 =loader.loadData(ItemGroupData.class,   "itemgroup.xml" );
+		PlayerDataManager.vipPackData                   =loader.loadData(VipPackData.class,   "vippack.xml" );
+		PlayerDataManager.vipLevelData                  =loader.loadData(VipLevelData.class,   "viplevel.xml" );
+		PlayerDataManager.vipData             			=loader.loadData(VipData.class,   "vipdata.xml" );
+		FightDataManager.GodsEffectData                 =loader.loadData(GodsEffectData.class,   "godseffect.xml" );
+		LuckTableDataManager.luckTableData              =loader.loadData(LuckTableData.class,   "lucktable.xml" );
+		ActivityDataManager.signConfig                  =loader.loadData(SignConfig.class,   "signreward.xml" );
+		ActivityDataManager.activityConfig              =loader.loadData(ActivityConfig.class,   "activity.xml" );
 
 	}
 

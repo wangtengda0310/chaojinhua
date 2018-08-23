@@ -37,7 +37,7 @@ public class MyTest {
 
     public static void main(String[] args) throws Exception{
 
-        DataManager.load();
+        DataManager.load("resource/");
 
         //testLottery();
         //testAddMysticalShopLv();
@@ -377,7 +377,7 @@ public class MyTest {
     }
 
     private static void testData() {
-        DataManager.load();
+        DataManager.load("resource");
     }
 
 }

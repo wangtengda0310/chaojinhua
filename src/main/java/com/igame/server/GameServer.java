@@ -68,7 +68,7 @@ public class GameServer extends SFSExtension {
 	@Override
 	public void init() {
 		DBManager.init(getConfigProperties());
-		DataManager.load();
+		DataManager.load("resource/");
 		JobManager.ins();
 		SystemService.ins().loadData();
 		RankService.ins().loadData();

@@ -10,7 +10,7 @@ public class DAOProcessTest {
 
 	public static void main(String[] args) {
 		
-		DataManager.load();
+		DataManager.load("resource");
 		
 		RankServiceDAO.ins().updateTest();
 

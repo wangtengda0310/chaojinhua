@@ -15,7 +15,7 @@ public class Test {
 
 	public static void main(String[] args) {
 
-		DataManager.load();
+		DataManager.load("resource");
 
 //		Player player = PlayerDAO.ins().getPlayerByPlayerId(1, 10001132);
 //		PlayerLoad.ins().loadPlayer(player,1,1);

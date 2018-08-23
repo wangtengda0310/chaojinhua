@@ -13,7 +13,7 @@ public class PlayerProcess {
 
 	public static void main(String[] args) {
 		
-		DataManager.load();
+		DataManager.load("resource");
 		
 		List<Player> ll = PlayerDAO.ins().getALLPlayer(1);
 		for(Player mm : ll){
