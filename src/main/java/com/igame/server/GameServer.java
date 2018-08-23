@@ -7,32 +7,31 @@ import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.util.SystemService;
-import com.igame.work.checkpoint.handler.FightAgainHandler;
-import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.activity.ActivityHandler;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaHandler;
 import com.igame.work.activity.sign.SignHandler;
 import com.igame.work.chat.handler.*;
 import com.igame.work.chat.service.PublicMessageService;
-import com.igame.work.checkpoint.handler.baozouShike.BallisticEndHandler;
-import com.igame.work.checkpoint.handler.baozouShike.BallisticEnterHandler;
-import com.igame.work.checkpoint.handler.baozouShike.BallisticMonsterHandler;
-import com.igame.work.checkpoint.handler.baozouShike.BallisticRankHandler;
-import com.igame.work.checkpoint.handler.guanqia.*;
-import com.igame.work.checkpoint.handler.mingyunZhiMen.*;
-import com.igame.work.checkpoint.handler.tansuo.*;
-import com.igame.work.checkpoint.handler.worldEvent.WordEventEndHandler;
-import com.igame.work.checkpoint.handler.worldEvent.WordEventEnterHandler;
-import com.igame.work.checkpoint.handler.worldEvent.WordEventListHandler;
-import com.igame.work.checkpoint.handler.worldEvent.WordEventSaoHandler;
-import com.igame.work.checkpoint.handler.wujinZhiSen.*;
-import com.igame.work.checkpoint.handler.xingheZhiYan.TrialEndHandler;
-import com.igame.work.checkpoint.handler.xingheZhiYan.TrialEnterHandler;
-import com.igame.work.checkpoint.handler.xingheZhiYan.TrialSaleHandler;
-import com.igame.work.checkpoint.handler.xingheZhiYan.WaKuangHandler;
-import com.igame.work.checkpoint.handler.xinmo.XingMoEnterHandler;
-import com.igame.work.checkpoint.handler.xinmo.XiongMoEndHandler;
-import com.igame.work.checkpoint.service.BallisticService;
+import com.igame.work.checkpoint.FightAgainHandler;
+import com.igame.work.checkpoint.baozouShike.BallisticService;
+import com.igame.work.checkpoint.baozouShike.handler.BallisticEndHandler;
+import com.igame.work.checkpoint.baozouShike.handler.BallisticEnterHandler;
+import com.igame.work.checkpoint.baozouShike.handler.BallisticMonsterHandler;
+import com.igame.work.checkpoint.baozouShike.handler.BallisticRankHandler;
+import com.igame.work.checkpoint.guanqia.handler.*;
+import com.igame.work.checkpoint.mingyunZhiMen.handler.*;
+import com.igame.work.checkpoint.tansuo.handler.*;
+import com.igame.work.checkpoint.worldEvent.handler.WorldEventEndHandler;
+import com.igame.work.checkpoint.worldEvent.handler.WorldEventEnterHandler;
+import com.igame.work.checkpoint.worldEvent.handler.WorldEventListHandler;
+import com.igame.work.checkpoint.worldEvent.handler.WorldEventSaoHandler;
+import com.igame.work.checkpoint.wujinZhiSen.handler.*;
+import com.igame.work.checkpoint.xingheZhiYan.handler.TrialEndHandler;
+import com.igame.work.checkpoint.xingheZhiYan.handler.TrialEnterHandler;
+import com.igame.work.checkpoint.xingheZhiYan.handler.TrialSaleHandler;
+import com.igame.work.checkpoint.xingheZhiYan.handler.WaKuangHandler;
+import com.igame.work.checkpoint.xinmo.XinmoEndHandler;
+import com.igame.work.checkpoint.xinmo.XinmoEnterHandler;
 import com.igame.work.fight.handler.*;
 import com.igame.work.fight.service.ArenaService;
 import com.igame.work.fight.service.FightEffectService;
@@ -42,6 +41,7 @@ import com.igame.work.gm.handler.TestHandler;
 import com.igame.work.item.handler.*;
 import com.igame.work.monster.handler.*;
 import com.igame.work.quest.handler.QuestRewardHandler;
+import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.shop.handler.ReloadShopHandler;
 import com.igame.work.shop.handler.ShopBuyHandler;
 import com.igame.work.shop.handler.ShopInfoHandler;
@@ -113,15 +113,15 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ITEM_EQ_ALL), MonsterEquipDownAllHandler.class);//一键下文章
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ITEM_HE), ItemHeChengHandler.class);//装备合成
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ITEM_HE_ALL), ItemHeChengAllHandler.class);//一键合成
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANGSUO_LIST), TangSuoListHandler.class);//探索
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANGSUO_MONSTER), TangSuoMonsterHandler.class);//探索怪物
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANGSUO_MONSTER_UN), TangSuoUnLockHandler.class);//探索怪物
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANGSUO_START), TangStartHandler.class);//探索开始
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANGSUO_END), TangEndHandler.class);//探索结束
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_LIST), WordEventListHandler.class);//世界事件列表
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_ENTER), WordEventEnterHandler.class);//世界事件进入
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_END), WordEventEndHandler.class);//世界事件完成
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_SAO), WordEventSaoHandler.class);//世界事件扫荡
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANGSUO_LIST), TansuoListHandler.class);//探索
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANGSUO_MONSTER), TansuoMonsterHandler.class);//探索怪物
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANGSUO_MONSTER_UN), TansuoUnLockHandler.class);//探索怪物
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANGSUO_START), TansuoStartHandler.class);//探索开始
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANGSUO_END), TansuoEndHandler.class);//探索结束
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_LIST), WorldEventListHandler.class);//世界事件列表
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_ENTER), WorldEventEnterHandler.class);//世界事件进入
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_END), WorldEventEndHandler.class);//世界事件完成
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_SAO), WorldEventSaoHandler.class);//世界事件扫荡
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MONSTER_REF), MonsterDataRefHandler.class);//MONSTER_REF
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TONGHUA_INFO), TongHuaInfoHandler.class);//同化信息
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TONGHUA_OPEN), TongHuaOpenHandler.class);//同化打开
@@ -168,8 +168,8 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.SHOP_INFO), ShopInfoHandler.class);//获取商店信息
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.SHOP_BUY), ShopBuyHandler.class);//购买商品
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.SHOP_Reload), ReloadShopHandler.class);//刷新商店
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.XINGMO_ENTER), XingMoEnterHandler.class);//进入心魔关卡
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.XINGMO_END), XiongMoEndHandler.class);//结束心魔关卡战斗
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.XINGMO_ENTER), XinmoEnterHandler.class);//进入心魔关卡
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.XINGMO_END), XinmoEndHandler.class);//结束心魔关卡战斗
 		//addRequestHandler(MProtrol.toStringProtrol(MProtrol.JINGJI_ZHENG), MonsterDefendHandler.class);//竞技场防守阵容上阵下阵怪物
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ENTER_CHECK), EnterCheckHandler.class);//获取关卡信息
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.HEAD_CHANGE), ChangeHeadHandler.class);//更换头像

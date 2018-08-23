@@ -6,13 +6,13 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import com.igame.work.checkpoint.data.FatedataTemplate;
+import com.igame.work.checkpoint.mingyunZhiMen.data.FatedataTemplate;
 import com.igame.core.db.BasicDto;
+import com.igame.work.checkpoint.mingyunZhiMen.MingyunZhiMenDataManager;
 import com.igame.work.system.SystemServiceDAO;
 import com.igame.core.log.ExceptionLog;
-import com.igame.work.checkpoint.dto.WordEventDto;
-import com.igame.work.checkpoint.service.CheckPointService;
+import com.igame.work.checkpoint.worldEvent.WorldEventDto;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.QuestDataManager;
@@ -72,7 +72,7 @@ public class SystemService extends BasicDto {
 		player.getFateData().setAddRate(0);//更新临时特殊门几率增长
 		player.setAreaCount(0);
 		
-        for(WordEventDto wt : player.getWordEvent().values()){
+        for(WorldEventDto wt : player.getWordEvent().values()){
         	wt.setCount(0);
         	wt.setDtate(2);
         }
@@ -150,7 +150,7 @@ public class SystemService extends BasicDto {
 	public void refFateMap(){
 		
 		this.fateMap.clear();
-		for(FatedataTemplate ft : GuanQiaDataManager.FateData.getAll()){
+		for(FatedataTemplate ft : MingyunZhiMenDataManager.FateData.getAll()){
 			List<Map<Long,Monster>> ls = Lists.newArrayList();
 			for(int i = 1;i <= 3;i++){
 				ls.add(CheckPointService.getNormalFateMonster(ft.getFloorNum()));

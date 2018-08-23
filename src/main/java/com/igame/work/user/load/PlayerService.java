@@ -15,7 +15,7 @@ import com.igame.work.monster.data.StrengthenplaceTemplate;
 import com.igame.work.monster.data.StrengthenrewardTemplate;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
-import com.igame.work.checkpoint.dto.RewardDto;
+import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
 

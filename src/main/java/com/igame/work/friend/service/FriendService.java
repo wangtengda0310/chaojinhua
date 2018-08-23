@@ -5,9 +5,9 @@ import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import com.igame.work.checkpoint.data.TangSuoTemplate;
-import com.igame.work.checkpoint.dto.TangSuoDto;
+import com.igame.work.checkpoint.tansuo.TansuoDataManager;
+import com.igame.work.checkpoint.tansuo.TansuoTemplate;
+import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.friend.dao.FriendDAO;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.dto.FriendInfo;
@@ -40,22 +40,22 @@ public class FriendService {
      * @param friendPlayer 好友角色对象
      * @return 正在探索中且剩余时间大于0的探索小队
      */
-    public List<TangSuoDto> getExploreList(Player friendPlayer) {
+    public List<TansuoDto> getExploreList(Player friendPlayer) {
 
         //计算剩余时间
-        for(TangSuoTemplate ts : GuanQiaDataManager.TangSuoData.getAll()){
+        for(TansuoTemplate ts : TansuoDataManager.TansuoData.getAll()){
             if(MyUtil.hasCheckPoint(friendPlayer.getCheckPoint(), String.valueOf(ts.getUnlock())) && friendPlayer.getTangSuo().get(ts.getNum()) == null){
-                friendPlayer.getTangSuo().put(ts.getNum(), new TangSuoDto(ts));
+                friendPlayer.getTangSuo().put(ts.getNum(), new TansuoDto(ts));
             }
         }
 
         long now = System.currentTimeMillis();
         friendPlayer.getTangSuo().values().forEach(e -> e.calLeftTime(now));
 
-        List<TangSuoDto> exploreList = new ArrayList<>();
-        for (TangSuoDto tangSuoDto : friendPlayer.getTangSuo().values()) {
-            if (tangSuoDto.getLeftTime() > 0)
-                exploreList.add(tangSuoDto);
+        List<TansuoDto> exploreList = new ArrayList<>();
+        for (TansuoDto tansuoDto : friendPlayer.getTangSuo().values()) {
+            if (tansuoDto.getLeftTime() > 0)
+                exploreList.add(tansuoDto);
         }
 
         return exploreList;
@@ -66,11 +66,11 @@ public class FriendService {
      * @param exploreList 探索列表
      * @return 0等于不可帮助，1等于可帮助
      */
-    public int getHelpState(Collection<TangSuoDto> exploreList) {
+    public int getHelpState(Collection<TansuoDto> exploreList) {
 
         int helpState = FRIEND_STATE_NO_HELP;  //0等于不可帮助，1等于可帮助
 
-        for (TangSuoDto value : exploreList) {
+        for (TansuoDto value : exploreList) {
             //如果剩余时间大于0并且还没人帮助
             if (value.getLeftTime() > 0 && value.getIsHelp() == 0)
                 helpState = FRIEND_STATE_CAN_HELP;

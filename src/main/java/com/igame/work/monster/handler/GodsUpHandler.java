@@ -16,7 +16,7 @@ import com.igame.core.SessionManager;
 import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.checkpoint.dto.RewardDto;
+import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.item.dto.Item;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.quest.service.QuestService;

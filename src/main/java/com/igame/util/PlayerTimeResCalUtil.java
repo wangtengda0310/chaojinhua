@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import com.igame.work.checkpoint.data.CheckPointTemplate;
+import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.core.log.GoldLog;
-import com.igame.work.checkpoint.dto.RewardDto;
-import com.igame.work.checkpoint.dto.XingMoDto;
+import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.ResCdto;
 import com.igame.work.user.dto.RobotDto;

@@ -1,28 +1,20 @@
 package com.igame.core.quartz;
 
 
-
-
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Lists;
 import com.igame.core.MessageUtil;
 import com.igame.core.SessionManager;
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import com.igame.work.checkpoint.data.CheckPointTemplate;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.log.GoldLog;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
 import com.igame.util.SystemService;
 import com.igame.work.chat.service.PublicMessageService;
-import com.igame.work.checkpoint.dto.RewardDto;
-import com.igame.work.checkpoint.dto.XingMoDto;
-import com.igame.work.checkpoint.service.BallisticService;
+import com.igame.work.checkpoint.baozouShike.BallisticService;
+import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
+import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.service.ArenaService;
 import com.igame.work.fight.service.PVPFightService;
@@ -34,6 +26,11 @@ import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.load.ResourceService;
 import com.igame.work.user.service.PlayerCacheService;
 import com.igame.work.user.service.RobotService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 

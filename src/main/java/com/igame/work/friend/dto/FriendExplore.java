@@ -1,10 +1,8 @@
 package com.igame.work.friend.dto;
 
-import com.igame.work.checkpoint.dto.TangSuoDto;
+import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.monster.dao.MonsterDAO;
 import com.igame.work.monster.dto.Monster;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Transient;
 
 /**
  * 
@@ -28,17 +26,17 @@ public class FriendExplore {
 	public FriendExplore() {
 	}
 
-	public FriendExplore(TangSuoDto tangSuoDto, int severId) {
+	public FriendExplore(TansuoDto tansuoDto, int severId) {
 
-		this.id = tangSuoDto.getId();
-		this.leftTime = tangSuoDto.getLeftTime();
-		this.state = tangSuoDto.getState();
-		this.isHelp = tangSuoDto.getIsHelp();
-		this.accPlayerName = tangSuoDto.getAccPlayerName();
+		this.id = tansuoDto.getId();
+		this.leftTime = tansuoDto.getLeftTime();
+		this.state = tansuoDto.getState();
+		this.isHelp = tansuoDto.getIsHelp();
+		this.accPlayerName = tansuoDto.getAccPlayerName();
 
 		//  "monId:monLv:breakLv;monId,monLv,breakLv;"
 		StringBuilder sb = new StringBuilder();
-		String[] split = tangSuoDto.getMons().split(",");
+		String[] split = tansuoDto.getMons().split(",");
 		for (String s : split) {
 
 			Monster monsterByOid = MonsterDAO.ins().getMonsterByOid(severId, Long.parseLong(s));

@@ -4,10 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.data.DataManager;
 import com.igame.util.GameMath;
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import com.igame.work.checkpoint.data.RunBattlerewardData;
-import com.igame.work.checkpoint.data.RunBattlerewardTemplate;
-import com.igame.work.checkpoint.service.BallisticService;
+import com.igame.work.checkpoint.baozouShike.BallisticRank;
+import com.igame.work.checkpoint.baozouShike.BallisticService;
+import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
+import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardData;
+import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardTemplate;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.service.FriendService;
@@ -15,7 +16,6 @@ import com.igame.work.monster.dto.Monster;
 import com.igame.work.shop.dto.MysticalShop;
 import com.igame.work.shop.dto.ShopInfo;
 import com.igame.work.shop.service.ShopService;
-import com.igame.work.system.BallisticRank;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;
@@ -342,7 +342,7 @@ public class MyTest {
     private static void testBallReward() {
         int gold = 0;
 
-        RunBattlerewardData runBattlerewardData = GuanQiaDataManager.runBattlerewardData;
+        RunBattlerewardData runBattlerewardData = BaozouShikeDataManager.runBattlerewardData;
         List<RunBattlerewardTemplate> runBattlerewardDataAll = runBattlerewardData.getAll();
         int i = runBattlerewardDataAll.indexOf(runBattlerewardData.getTemplate(600));
         for (int j = 0; j <= i; j++) {

@@ -5,7 +5,7 @@ import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.checkpoint.dto.TangSuoDto;
+import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
@@ -77,21 +77,21 @@ public class FriendExploreAccHandler extends BaseHandler{
         }
 
         //异常校验
-        TangSuoDto tangSuoDto = friendPlayer.getTangSuo().get(exploreMapId);
-        if (tangSuoDto == null){
+        TansuoDto tansuoDto = friendPlayer.getTangSuo().get(exploreMapId);
+        if (tansuoDto == null){
             sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_EXPLORE_ACC),vo,user);
             return;
         }
 
         //校验对方探索是否可加速
-        tangSuoDto.calLeftTime(System.currentTimeMillis());
-        if (tangSuoDto.getLeftTime() <= 0 || tangSuoDto.getIsHelp() == 1){
+        tansuoDto.calLeftTime(System.currentTimeMillis());
+        if (tansuoDto.getLeftTime() <= 0 || tansuoDto.getIsHelp() == 1){
             sendError(ErrorCode.EXPLORE_NO_ACC,MProtrol.toStringProtrol(MProtrol.FRIEND_EXPLORE_ACC),vo,user);
             return;
         }
 
         //加速
-        tangSuoDto.help(player);
+        tansuoDto.help(player);
 
         //如果对方不在线，则存库
         if (!isOnline){
@@ -110,9 +110,9 @@ public class FriendExploreAccHandler extends BaseHandler{
         ResourceService.ins().addGold(player,gold);
 
         //重新计算最新剩余时间
-        tangSuoDto.calLeftTime(System.currentTimeMillis());
+        tansuoDto.calLeftTime(System.currentTimeMillis());
 
-        vo.addData("leftTime",tangSuoDto.getLeftTime());
+        vo.addData("leftTime", tansuoDto.getLeftTime());
         vo.addData("exploreCount",helpedFriendsOf(player).count());
         vo.addData("reward",reward);
         sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_EXPLORE_ACC),vo,user);

@@ -5,7 +5,7 @@ import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.checkpoint.dto.TangSuoDto;
+import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.dto.FriendExplore;
 import com.igame.work.friend.service.FriendService;
@@ -67,12 +67,12 @@ public class FriendGetExploreHandler extends BaseHandler{
         }
 
         //获取
-        List<TangSuoDto> exploreList = FriendService.ins().getExploreList(friendPlayer);
+        List<TansuoDto> exploreList = FriendService.ins().getExploreList(friendPlayer);
         int helpState = FriendService.ins().getHelpState(exploreList);
 
         List<FriendExplore> friendExplores = new ArrayList<>();
-        for (TangSuoDto tangSuoDto : exploreList) {
-            FriendExplore friendExplore = new FriendExplore(tangSuoDto,player.getSeverId());
+        for (TansuoDto tansuoDto : exploreList) {
+            FriendExplore friendExplore = new FriendExplore(tansuoDto,player.getSeverId());
             friendExplores.add(friendExplore);
         }
 

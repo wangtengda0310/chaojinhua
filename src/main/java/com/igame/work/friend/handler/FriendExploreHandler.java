@@ -4,7 +4,7 @@ import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.checkpoint.dto.TangSuoDto;
+import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dao.PlayerDAO;
@@ -51,7 +51,7 @@ public class FriendExploreHandler extends BaseHandler{
                 friendPlayer = PlayerDAO.ins().getPlayerByPlayerId(player.getSeverId(), playerId);
 
             //获取探索列表
-            List<TangSuoDto> exploreList = FriendService.ins().getExploreList(friendPlayer);
+            List<TansuoDto> exploreList = FriendService.ins().getExploreList(friendPlayer);
             int state = FriendService.ins().getHelpState(exploreList);
 
             Map<String,Object> helpState = new HashedMap();

@@ -6,10 +6,10 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.igame.work.activity.PlayerActivityData;
 import com.igame.work.chat.dto.Message;
-import com.igame.work.checkpoint.dto.FateSelfData;
-import com.igame.work.checkpoint.dto.TangSuoDto;
-import com.igame.work.checkpoint.dto.WordEventDto;
-import com.igame.work.checkpoint.dto.XingMoDto;
+import com.igame.work.checkpoint.mingyunZhiMen.FateSelfData;
+import com.igame.work.checkpoint.tansuo.TansuoDto;
+import com.igame.work.checkpoint.worldEvent.WorldEventDto;
+import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.dto.AreaRanker;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.GodsDto;
@@ -67,7 +67,7 @@ public class Player extends PlayerDto {
     private TongHuaDto tonghua;//当前正在同化的对象
 
     @JsonIgnore
-    private Map<Integer, TangSuoDto> tangSuo = Maps.newHashMap();//探索
+    private Map<Integer, TansuoDto> tangSuo = Maps.newHashMap();//探索
 
     @JsonIgnore
     private TongAddDto tongAdd = new TongAddDto();//同化的属性加成
@@ -196,7 +196,7 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private Map<Integer, WordEventDto> wordEvent = Maps.newHashMap();//世界事件
+    private Map<Integer, WorldEventDto> wordEvent = Maps.newHashMap();//世界事件
 
     @Transient
     @JsonIgnore
@@ -439,19 +439,19 @@ public class Player extends PlayerDto {
         this.xinMoMinuts = xinMoMinuts;
     }
 
-    public Map<Integer, TangSuoDto> getTangSuo() {
+    public Map<Integer, TansuoDto> getTangSuo() {
         return tangSuo;
     }
 
-    public void setTangSuo(Map<Integer, TangSuoDto> tangSuo) {
+    public void setTangSuo(Map<Integer, TansuoDto> tangSuo) {
         this.tangSuo = tangSuo;
     }
 
-    public Map<Integer, WordEventDto> getWordEvent() {
+    public Map<Integer, WorldEventDto> getWordEvent() {
         return wordEvent;
     }
 
-    public void setWordEvent(Map<Integer, WordEventDto> wordEvent) {
+    public void setWordEvent(Map<Integer, WorldEventDto> wordEvent) {
         this.wordEvent = wordEvent;
     }
 
