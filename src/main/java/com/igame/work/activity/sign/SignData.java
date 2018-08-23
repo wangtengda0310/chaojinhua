@@ -1,44 +1,36 @@
 package com.igame.work.activity.sign;
 
 import com.igame.util.DateUtil;
-import com.igame.work.activity.Activities;
 import com.igame.work.activity.ActivityDataManager;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.dto.Player;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Transient;
 
 import java.util.Arrays;
 
 
 @Entity(noClassnameStored = true)
-public class SignData implements Activities {
-    private String signData;
-    private String totalSign;
+public class SignData {
+    private String signData;    // 最后一次签到日期
+    private String totalSign;   // 累积签到奖励
 
     public SignData() {
 
-    }
-    @Transient
-    private Player player;
-    public SignData(Player player) {
-        this.player = player;
     }
 
     public int getType() {
         return 1;
     }
 
-    @Override
     public JSONObject toClientData() {
         String[] split = signData.split(",");
         int round = Integer.parseInt(split[0]);
         int signDays = Integer.parseInt(split[1]);
         SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(round + 1);
         JSONArray array = new JSONArray();
-        int index = 0;
+        int index = 1;
         for(String reward :template.getRewardData().split(";")) {
             JSONObject object = new JSONObject();
             object.put("reward",reward);
@@ -54,10 +46,6 @@ public class SignData implements Activities {
         return object;
     }
 
-    @Override
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
 
     public void setSignData(String signData) {
         this.signData = signData;
@@ -80,26 +68,26 @@ public class SignData implements Activities {
      *
      * @return 成功返回今天日期 失败返回null
      */
-    String signToday() {
+    String signToday(Player player) {
         String today = DateUtil.formatToday();
         if (signData == null || "".equals(signData)) {
-            signData = "0,0," + today;
+            signData = "1,1," + today;
             SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
             String reward = template.getRewardData().split(";")[0];
             GMService.processGM(player,reward);
         } else {
             String[] data = signData.split(",");
-            if (!today.equals(data[2])) {
+            if (today.equals(data[2])) {
                 return null;
             } else {
                 int round = Integer.parseInt(data[0]);
-                SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(round + 1);    // 数据库中round从0开始记，配置文件中round从1开始记
+                SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(round);
                 int signed = Integer.parseInt(data[1]) + 1;
 
                 String reward = template.getRewardData().split(";")[0];
                 GMService.processGM(player,reward);
                 if (signed > template.getRewardData().split(";").length) {
-                    signed = 0;
+                    signed = 1;
                     round = (round + 1) % ActivityDataManager.signConfig.size();
                     totalSign = "0,0,0,0";
                 }
@@ -113,7 +101,10 @@ public class SignData implements Activities {
      * 累签
      */
 
-    int signTotal(int index) {
+    int signTotal(Player player, int index) {
+        if (signData == null) {
+            return -1;
+        }
         String[] data = signData.split(",");
         int signedDays = Integer.parseInt(data[1]);
         if(index<1||index>4) {

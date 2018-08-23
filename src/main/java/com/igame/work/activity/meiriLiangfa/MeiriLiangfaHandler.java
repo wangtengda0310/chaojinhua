@@ -35,18 +35,11 @@ public class MeiriLiangfaHandler extends BaseHandler {
 
         int index = jsonObject.getInt("index");
 
-        if(player.getActivityData().all().noneMatch(activities -> activities.getType()==1004)) {
-            player.getActivityData().add(new MeiriLiangfaData(player));
+        if(player.getActivityData().getMeiriLiangfa()==null) {
+            player.getActivityData().setMeiriLiangfa(new MeiriLiangfaData());
         }
 
-        String date = player.getActivityData().all()
-                .filter(activity -> activity.getType() == 1)
-                .map(activity->{
-                    if(activity instanceof MeiriLiangfaData){
-                        return ((MeiriLiangfaData)activity).receive(index);
-                    }
-                    return null;
-                }).findAny().orElse(null);
+        String date = player.getActivityData().getMeiriLiangfa().receive(player, index);
 
         if (date == null) {
             sendError(ErrorCode.PACK_PURCHASED, MProtrol.toStringProtrol(MProtrol.MEIRI_LIANGFA), vo, user);

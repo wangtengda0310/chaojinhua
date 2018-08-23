@@ -1,30 +1,31 @@
 package com.igame.work.activity;
 
-import com.igame.work.user.dto.Player;
+import com.igame.work.activity.meiriLiangfa.MeiriLiangfaData;
+import com.igame.work.activity.sign.SignData;
 import org.mongodb.morphia.annotations.Entity;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
 
 @Entity(value = "activityData", noClassnameStored = true)
 public class PlayerActivityData {
-
-    private List<Activities> activities = new ArrayList<>();
+    private SignData sign;
+    private MeiriLiangfaData meiriLiangfa;
 
     public PlayerActivityData() {
 
     }
 
-    public PlayerActivityData(Player player) {
-        all().forEach(activity->activity.setPlayer(player));
+    public SignData getSign() {
+        return sign;
     }
 
-    public Stream<Activities> all() {
-        return activities.stream();
+    public void setSign(SignData sign) {
+        this.sign = sign;
     }
 
-    public void add(Activities activity) {
-        activities.add(activity);
+    public MeiriLiangfaData getMeiriLiangfa() {
+        return meiriLiangfa;
+    }
+
+    public void setMeiriLiangfa(MeiriLiangfaData meiriLiangfa) {
+        this.meiriLiangfa = meiriLiangfa;
     }
 }

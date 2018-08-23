@@ -1,12 +1,10 @@
 package com.igame.work.activity.meiriLiangfa;
 
 import com.igame.util.DateUtil;
-import com.igame.work.activity.Activities;
 import com.igame.work.activity.ActivityConfigTemplate;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.dto.Player;
 import net.sf.json.JSONObject;
-import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
 import java.util.ArrayList;
@@ -14,8 +12,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Entity(noClassnameStored = true)
-public class MeiriLiangfaData implements Activities {
+public class MeiriLiangfaData {
     @Transient
     private static List<ActivityConfigTemplate> configs = new ArrayList<>();
     public static void addActivityConfigTemplate(ActivityConfigTemplate template) {
@@ -23,27 +20,14 @@ public class MeiriLiangfaData implements Activities {
             configs.add(template);
         }
     }
-    @Transient
-    Player player;
 
     private String record;
 
     public MeiriLiangfaData() {
 
     }
-    public MeiriLiangfaData(Player player) {
-        this.player = player;
-    }
 
-    public String getRecord() {
-        return record;
-    }
-
-    public void setRecord(String record) {
-        this.record = record;
-    }
-
-    public String receive(int index) {
+    public String receive(Player player, int index) {
         configs.stream().filter(template -> {
             String configTime = template.getGet_value();
             String[] split = configTime.split(",");
@@ -71,12 +55,10 @@ public class MeiriLiangfaData implements Activities {
         return record;
     }
 
-    @Override
     public int getType() {
         return 1004;
     }
 
-    @Override
     public JSONObject toClientData() {
         JSONObject object = new JSONObject();
         String result = configs.stream()
@@ -87,8 +69,4 @@ public class MeiriLiangfaData implements Activities {
         return object;
     }
 
-    @Override
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
 }

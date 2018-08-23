@@ -32,12 +32,15 @@ public class ActivityHandler extends BaseHandler {
 
         List<JSONObject> data = new ArrayList<>();
         if (player.getActivityData() == null) {
-            player.setActivityData(new PlayerActivityData(player));
+            player.setActivityData(new PlayerActivityData());
         }
 
-        player.getActivityData().all().forEach(
-                activity -> data.add(activity.toClientData())
-        );
+        if(player.getActivityData().getSign()!=null) {
+            data.add(player.getActivityData().getSign().toClientData());
+        }
+        if(player.getActivityData().getMeiriLiangfa()!=null) {
+            data.add(player.getActivityData().getMeiriLiangfa().toClientData());
+        }
 
         vo.addData("activitiesData", data);
         sendSucceed(MProtrol.toStringProtrol(MProtrol.ACTICITY), vo, user);
