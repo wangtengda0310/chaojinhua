@@ -7,6 +7,7 @@ import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.util.SystemService;
+import com.igame.work.checkpoint.handler.FightAgainHandler;
 import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.activity.ActivityHandler;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaHandler;
@@ -132,6 +133,7 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TONGHUA_CD_REF), TongHuaRefHandler.class);//同化刷新
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.Gods_UP), GodsUpHandler.class);//神灵升级
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.Gods_RESET), GodsResetHandler.class);//神灵重置
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.FIGHT_AGAIN), FightAgainHandler.class);//神灵重置
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.BUG_RES), ResBuyHandler.class);//资源购买
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MAIL_READ), MialReadHandler.class);//邮件读取
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MAIL_GET), MialGetHandler.class);//邮件领取

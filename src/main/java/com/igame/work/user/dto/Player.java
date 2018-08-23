@@ -313,6 +313,9 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     public Turntable turntable;//幸运大转盘
+    @Transient
+    @JsonIgnore
+    private Map<String, Object> lastBattleParam;//上次战斗的关卡参数
 
     private PlayerActivityData activityData;
 
@@ -858,6 +861,14 @@ public class Player extends PlayerDto {
 
     public void setPlayerTop(PlayerTop playerTop) {
         this.playerTop = playerTop;
+    }
+
+    public Map<String, Object> getLastBattleParam() {
+        return lastBattleParam;
+    }
+
+    public void setLastBattleParam(Map<String,Object> lastBattleParam) {
+        this.lastBattleParam = lastBattleParam;
     }
 
     /**

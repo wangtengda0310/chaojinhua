@@ -17,6 +17,9 @@ import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 
  * @author Marcus.Z
@@ -149,6 +152,10 @@ public class CheckEnterHandler extends BaseHandler{
 		//减少可挑战次数
         player.getPlayerCount().addCheckPoint(player,ct,-1);
 
+		Map<String, Object> param = new HashMap<>();
+		param.put("battleType", 1);
+		param.put("chapterId", chapterId);
+		player.setLastBattleParam(param);
 		sendSucceed(MProtrol.toStringProtrol(MProtrol.CHECKPOINT_ENTER), vo, user);
 	}
 

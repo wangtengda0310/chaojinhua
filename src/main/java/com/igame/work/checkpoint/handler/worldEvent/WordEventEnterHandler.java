@@ -2,18 +2,14 @@ package com.igame.work.checkpoint.handler.worldEvent;
 
 
 
-import java.util.List;
-
-import com.igame.work.checkpoint.GuanQiaDataManager;
-import net.sf.json.JSONObject;
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.work.checkpoint.data.WorldEventTemplate;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.checkpoint.GuanQiaDataManager;
+import com.igame.work.checkpoint.data.WorldEventTemplate;
 import com.igame.work.checkpoint.dto.WordEventDto;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
@@ -24,6 +20,11 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -105,6 +106,13 @@ public class WordEventEnterHandler extends BaseHandler{
 		}
 
 		vo.addData("m", lb);
+
+		Map<String, Object> param = new HashMap<>();
+		param.put("battleType", 2);
+		param.put("eventType", eventType);
+		param.put("level", level);
+		player.setLastBattleParam(param);
+
 		send(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_ENTER), vo, user);
 	}
 

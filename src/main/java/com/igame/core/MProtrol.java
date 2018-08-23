@@ -182,8 +182,10 @@ public class MProtrol {
 	// 2059 在前面用到了 一键下纹章
 	public static final int CHECK_UNLOCK= 2070;//关卡解锁
 	
+	public static final int FIGHT_AGAIN= 2061;//再虐一次
+
 	public static final int CD_DOWN= 2071;//倒计时开始
-	
+
 	
 	public static final int F_P_S= 3000;//战斗匹配
 	
