@@ -52,7 +52,7 @@ public class PlayerTimeResCalUtil {
     						player.getTimeResCheck().put(m.getKey(), total);
     					}
     					RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), total, ct.getMaxTime() * 60);
-//    					MessageUtil.notiyTimeResToPlayer(player, m.getKey(), dto);
+//    					MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
     					player.getResC().put(ct.getChapterId(),new ResCdto(ct.getChapterId(), ResourceService.ins().getRewardString(dto)));
     					
     				}

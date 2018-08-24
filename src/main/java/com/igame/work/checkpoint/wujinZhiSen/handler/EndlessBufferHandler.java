@@ -1,9 +1,9 @@
 package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
@@ -49,7 +49,7 @@ public class EndlessBufferHandler extends ReconnectedHandler {
 			}
 		}
 
-		MessageUtil.notiyWuBufferChange(player,player.getWuEffect());
+		MessageUtil.notifyWuBufferChange(player,player.getWuEffect());
 
 		return vo;
 	}

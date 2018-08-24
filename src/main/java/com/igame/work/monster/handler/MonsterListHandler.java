@@ -2,8 +2,8 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.monster.dto.Monster;
@@ -41,7 +41,7 @@ public class MonsterListHandler extends ReconnectedHandler {
 			ls.add(monster);
 			if((size >=perSize && size%perSize==0) || size == player.getMonsters().size()){
 				index++;
-				MessageUtil.notiyMonsterList(player, total, index, ls);
+				MessageUtil.notifyMonsterList(player, total, index, ls);
 				ls.clear();
 			}
 		}

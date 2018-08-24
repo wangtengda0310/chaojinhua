@@ -1,7 +1,7 @@
 package com.igame.work.user.service;
 
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.data.HeadFrameTemplate;
 import com.igame.work.user.data.HeadTemplate;

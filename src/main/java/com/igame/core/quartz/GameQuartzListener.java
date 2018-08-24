@@ -2,7 +2,7 @@ package com.igame.core.quartz;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.MessageUtil;
+import com.igame.work.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.log.GoldLog;
@@ -90,7 +90,7 @@ public class GameQuartzListener {
 				//更新大转盘
 				TurntableService.ins().reloadTurntable(player);
 				//推送更新
-				MessageUtil.notiyTurntableChange(player);
+				MessageUtil.notifyTurntableChange(player);
 			}
 		}
 
@@ -108,12 +108,12 @@ public class GameQuartzListener {
 	        					player.getTimeResCheck().put(m.getKey(), m.getValue()+ 1);
 	        					if(m.getValue() >= 60 && m.getValue() % 60 == 0){//到了一小时更新，推送金币数
 	        						RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), m.getValue(), ct.getMaxTime() * 60);
-	        						MessageUtil.notiyTimeResToPlayer(player, m.getKey(), dto);      						
+	        						MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
 	        					}
 	        					
 	        					//零时测试
 //        						RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), m.getValue(), ct.getMaxTime() * 60);
-//        						MessageUtil.notiyTimeResToPlayer(player, m.getKey(), dto);     
+//        						MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
 	        				} 				
 		    			}
 		    		}
@@ -136,7 +136,7 @@ public class GameQuartzListener {
     	if(player.getResMintues().get(3) != null){
     		if(player.getResMintues().get(3) >=6){
     			ResourceService.ins().addPhysica(player, 1);
-    			MessageUtil.notiyCDDown(player, 3);
+    			MessageUtil.notifyCDDown(player, 3);
     			player.getResMintues().put(3, 0);
     		}
     		
@@ -229,7 +229,7 @@ public class GameQuartzListener {
     		if(removeId.length() > 0){
     			removeId = removeId.substring(1);
     		}
-    		MessageUtil.notiyXingMoChange(player,removeId,lx);//推送更新
+    		MessageUtil.notifyXingMoChange(player,removeId,lx);//推送更新
     	}
     	
     }

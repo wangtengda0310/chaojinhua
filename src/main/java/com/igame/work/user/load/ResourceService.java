@@ -1,9 +1,9 @@
 package com.igame.work.user.load;
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.fight.FightDataManager;
 import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.user.PlayerDataManager;
@@ -469,7 +469,7 @@ public class ResourceService {
 						team.getTeamMonster()[i] = 0;
 					}
 				}
-//				MessageUtil.notiyTeamChange(player,team);
+//				MessageUtil.notifyTeamChange(player,team);
 			}
 			RetVO vo = new RetVO();
     		vo.addData("battleSpace", player.getBattleSpace());
@@ -484,7 +484,7 @@ public class ResourceService {
     			player.getGods().put(gods.getGodsType(), gods);
     		}
     	}
-    	MessageUtil.notiyGodsChange(player, ll);
+    	MessageUtil.notifyGodsChange(player, ll);
     	PlayerService.checkDrawData(player, true);//检测造物台数据
     	QuestService.onLevelUp(player);//任务开放
 
@@ -559,7 +559,7 @@ public class ResourceService {
     		}
     		if(player.getMeetM().contains(monster_id)){//把遇到的怪物删除
     			player.getMeetM().remove(monster_id);
-    			MessageUtil.notiyMeetM(player);
+    			MessageUtil.notifyMeetM(player);
     		}
     		//重新计算玩家怪物图鉴属性
     		MonsterService.reCalMonsterExtPre(player,true);
@@ -646,7 +646,7 @@ public class ResourceService {
 	        		}
 	        		List<Monster> mons = Lists.newArrayList();
 	        		mons.add(temp);
-	        		MessageUtil.notiyMonsterChange(player, mons);
+	        		MessageUtil.notifyMonsterChange(player, mons);
     	    		
     			}else{
     				ret = ErrorCode.LEVEL_NOT_PLAYER;//一个道具也没使用超成功
@@ -680,7 +680,7 @@ public class ResourceService {
 			player.getTongAdd().setTongLevel(currLevel);
 			QuestService.processTask(player, 19, 0);
 		}
-		MessageUtil.notiyTongHuaAddChange(player);
+		MessageUtil.notifyTongHuaAddChange(player);
 		return tongExpAdd;
     }
     
@@ -771,7 +771,7 @@ public class ResourceService {
 			player.getDraw().setDrawLv(currLevel);
 		}
 		if (currLevel != tempLevel || tempExp != player.getDraw().getDrawExp()) {
-			MessageUtil.notiyDrawData(player);
+			MessageUtil.notifyDrawData(player);
 //	    	GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 //			+"#act:addRes"+"#stype:" + XING + "#count:"+value);
 		}
@@ -829,7 +829,7 @@ public class ResourceService {
     	player.addAreaCount(value);
 //    	GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 //    			+"#act:addRes"+"#stype:" + Sao + "#count:"+value);
-		MessageUtil.notiyAreaCountChange(player);
+		MessageUtil.notifyAreaCountChange(player);
 
     }
 
@@ -844,7 +844,7 @@ public class ResourceService {
 
 		boolean flag = VIPService.ins().addVipLv(player);
 		if (flag){
-			MessageUtil.notiyVipPrivilegesChange(player);
+			MessageUtil.notifyVipPrivilegesChange(player);
 		}
 
 	}

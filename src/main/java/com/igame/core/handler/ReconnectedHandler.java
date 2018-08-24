@@ -1,7 +1,7 @@
 package com.igame.core.handler;
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.work.user.dto.MessageCache;
 import com.igame.work.user.dto.Player;

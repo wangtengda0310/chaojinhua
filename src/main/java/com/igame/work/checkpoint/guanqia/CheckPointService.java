@@ -2,7 +2,7 @@ package com.igame.work.checkpoint.guanqia;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.core.ErrorCode;
+import com.igame.work.ErrorCode;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;

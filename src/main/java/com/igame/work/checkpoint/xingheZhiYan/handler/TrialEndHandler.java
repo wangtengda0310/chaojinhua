@@ -1,9 +1,9 @@
 package com.igame.work.checkpoint.xingheZhiYan.handler;
 
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.RewardDto;
@@ -43,7 +43,7 @@ public class TrialEndHandler extends ReconnectedHandler {
 //				ResourceService.ins().addExp(player, wt.getPhysical() * 5);
 //				playerExp = wt.getPhysical() * 5;
 				player.setTowerId(player.getTowerId() + 1);
-				MessageUtil.notiyTrialChange(player);
+				MessageUtil.notifyTrialChange(player);
 			}
 			QuestService.processTask(player, 12, 1);
 			
@@ -65,7 +65,7 @@ public class TrialEndHandler extends ReconnectedHandler {
 //					}
 //				}
 //			}
-//			MessageUtil.notiyMonsterChange(player, ll);
+//			MessageUtil.notifyMonsterChange(player, ll);
 //			if(monsterExpStr.lastIndexOf(";") >0){
 //				monsterExpStr = monsterExpStr.substring(0,monsterExpStr.lastIndexOf(";"));
 //			}

@@ -1,6 +1,6 @@
 package com.igame.work.checkpoint.baozouShike.handler;
 
-import com.igame.core.MProtrol;
+import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.baozouShike.BallisticService;

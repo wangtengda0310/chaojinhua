@@ -1,7 +1,7 @@
 package com.igame.work.monster.handler;
 
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.fight.service.ComputeFightService;
@@ -36,7 +36,7 @@ public class MonsterHandler extends ReconnectedHandler {
 
                     //更新阵容战力
                     ComputeFightService.ins().computeTeamFight(player, teamId);
-                    MessageUtil.notiyTeamChange(player,player.getTeams().get(teamId));
+                    MessageUtil.notifyTeamChange(player,player.getTeams().get(teamId));
 
                     if (teamId == player.getCurTeam()) {
                         ComputeFightService.ins().computePlayerFight(player);

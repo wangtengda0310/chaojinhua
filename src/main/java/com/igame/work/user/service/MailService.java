@@ -1,6 +1,6 @@
 package com.igame.work.user.service;
 
-import com.igame.core.MessageUtil;
+import com.igame.work.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.log.GoldLog;
 import com.igame.work.user.dao.MailDAO;
@@ -65,7 +65,7 @@ public class MailService {
     		}
     		mail.setId(serverId * 100000 + Integer.parseInt(maxId.substring(maxId.length() - 5)));
     		player.getMail().put(mail.getId(), mail);
-    		MessageUtil.notiyNewMail(player, mail); 		
+    		MessageUtil.notifyNewMail(player, mail);
     	}else{
     		mail.setDtate(0);
     		  		
@@ -111,7 +111,7 @@ public class MailService {
     		}
     		mail.setId(serverId * 100000 + Integer.parseInt(maxId.substring(maxId.length() - 5)));
     		player.getMail().put(mail.getId(), mail);
-    		MessageUtil.notiyNewMail(player, mail); 		
+    		MessageUtil.notifyNewMail(player, mail);
     	}else{
     		mail.setDtate(0);
     		  		

@@ -1,9 +1,9 @@
 package com.igame.work.checkpoint.mingyunZhiMen.handler;
 
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -59,7 +59,7 @@ public class GateRewardHandler extends ReconnectedHandler {
 					RewardDto rt = new RewardDto();
 					ResourceService.ins().addRewarToPlayer(player, rt);
 					reward = ResourceService.ins().getRewardString(rt);
-					MessageUtil.notiyDeInfoChange(player);
+					MessageUtil.notifyDeInfoChange(player);
 					
 //				}                                                                                                                                                                                                                                                                                                             
 				

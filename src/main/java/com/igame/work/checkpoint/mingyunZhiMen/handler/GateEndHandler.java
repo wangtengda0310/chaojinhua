@@ -1,9 +1,9 @@
 package com.igame.work.checkpoint.mingyunZhiMen.handler;
 
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.RewardDto;
@@ -69,8 +69,8 @@ public class GateEndHandler extends ReconnectedHandler {
                 player.getFateData().addTodayFateLevel();//到下一层
                 List<GateDto> gls = GateService.creatGate(player);//创建新的门
                 player.getFateData().setGate(gls);
-                MessageUtil.notiyDeInfoChange(player);
-                MessageUtil.notiyGateChange(player);
+                MessageUtil.notifyDeInfoChange(player);
+                MessageUtil.notifyGateChange(player);
                 RewardDto rt = new RewardDto();
                 ResourceService.ins().addRewarToPlayer(player, rt);
                 reward = ResourceService.ins().getRewardString(rt);
@@ -82,7 +82,7 @@ public class GateEndHandler extends ReconnectedHandler {
                 RankService.ins().setMRank(player);
                 RankService.ins().sort();
 
-                MessageUtil.notiyDeInfoChange(player);
+                MessageUtil.notifyDeInfoChange(player);
             }
 
         }

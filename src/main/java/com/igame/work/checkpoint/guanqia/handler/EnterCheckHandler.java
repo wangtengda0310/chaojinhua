@@ -2,8 +2,8 @@ package com.igame.work.checkpoint.guanqia.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;

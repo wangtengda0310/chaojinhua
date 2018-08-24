@@ -4,14 +4,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.igame.core.MessageUtil;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.RetFightCmd;
 import com.igame.work.monster.dto.Effect;
-import com.igame.work.monster.dto.FightProp;
 import com.igame.work.monster.dto.Monster;
-import com.igame.work.user.dto.Player;
-
 
 
 /**

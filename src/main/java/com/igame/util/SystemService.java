@@ -4,7 +4,7 @@ package com.igame.util;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.igame.core.MessageUtil;
+import com.igame.work.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.work.checkpoint.mingyunZhiMen.data.FatedataTemplate;
 import com.igame.core.db.BasicDto;
@@ -117,11 +117,11 @@ public class SystemService extends BasicDto {
 		}
 
 		if(notiy){
-			MessageUtil.notiyQuestChange(player, qList);
-			MessageUtil.notiyWuResetChange(player);
-			MessageUtil.notiyDeInfoChange(player);
-			MessageUtil.notiyVipPrivilegesChange(player);
-			MessageUtil.notiyFriendInfo(player);
+			MessageUtil.notifyQuestChange(player, qList);
+			MessageUtil.notifyWuResetChange(player);
+			MessageUtil.notifyDeInfoChange(player);
+			MessageUtil.notifyVipPrivilegesChange(player);
+			MessageUtil.notifyFriendInfo(player);
 		}
 	}
 

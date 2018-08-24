@@ -2,7 +2,7 @@ package com.igame.work.checkpoint.mingyunZhiMen.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.MProtrol;
+import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.system.RankService;

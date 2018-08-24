@@ -3,7 +3,7 @@ package com.igame.work.monster.dto;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
+import com.igame.work.ErrorCode;
 import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.data.MonsterBreakTemplate;
 import com.igame.util.GameMath;

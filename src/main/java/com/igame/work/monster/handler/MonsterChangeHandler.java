@@ -3,9 +3,9 @@ package com.igame.work.monster.handler;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
@@ -110,11 +110,11 @@ public class MonsterChangeHandler extends ReconnectedHandler {
 						List<Monster> ll = Lists.newArrayList();
 						ll.add(mm1);
 						ll.add(mm2);
-						MessageUtil.notiyMonsterChange(player, ll);
+						MessageUtil.notifyMonsterChange(player, ll);
 
 						Item xiao = ResourceService.ins().addItem(player, 300001, -1, false);//消耗道具
 						items.add(xiao);
-						MessageUtil.notiyItemChange(player, items);
+						MessageUtil.notifyItemChange(player, items);
 						
 					}
 				}

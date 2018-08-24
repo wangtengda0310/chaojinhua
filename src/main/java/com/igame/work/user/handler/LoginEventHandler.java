@@ -3,7 +3,7 @@ package com.igame.work.user.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.igame.core.MProtrol;
+import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.RetVO;
 import com.igame.util.KickIDisconnectionReason;

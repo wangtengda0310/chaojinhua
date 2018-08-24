@@ -2,9 +2,9 @@ package com.igame.work.checkpoint.worldEvent.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
@@ -87,7 +87,7 @@ public class WorldEventSaoHandler extends ReconnectedHandler {
 					for (long mid : teamMonster) {
 						monsterExpStr = getString(player, monsterExpStr, wt, ll, mid);
 					}
-					MessageUtil.notiyMonsterChange(player, ll);
+					MessageUtil.notifyMonsterChange(player, ll);
 					if(monsterExpStr.lastIndexOf(";") >0){
 						monsterExpStr = monsterExpStr.substring(0,monsterExpStr.lastIndexOf(";"));
 					}

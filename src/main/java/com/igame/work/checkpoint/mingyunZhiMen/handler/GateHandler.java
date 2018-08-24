@@ -2,9 +2,9 @@ package com.igame.work.checkpoint.mingyunZhiMen.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.mingyunZhiMen.GateDto;
@@ -53,7 +53,7 @@ public class GateHandler extends ReconnectedHandler {
 		List<GateDto> ls = Lists.newArrayList();
         ls = GateEnterHandler.getGateDtos(player, ls);
         if(player.getFateData().getTempBoxCount() > 0){
-			MessageUtil.notiyDeInfoChange(player);
+			MessageUtil.notifyDeInfoChange(player);
 		}
 		if(ls.isEmpty()){//说明已经达到昨天最高门,但都没有随机到特殊门
 			ls = GateService.creatGate(player);

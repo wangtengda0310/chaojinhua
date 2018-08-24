@@ -1,9 +1,9 @@
 package com.igame.work.monster.handler;
 
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -172,8 +172,8 @@ public class TongHuaFightHandler extends ReconnectedHandler {
 						}
 
 
-						MessageUtil.notiyTongHuaAddChange(player);
-						MessageUtil.notiyMonsterChange(player, player.reCalMonsterValue());
+						MessageUtil.notifyTongHuaAddChange(player);
+						MessageUtil.notifyMonsterChange(player, player.reCalMonsterValue());
 						t[1] = "3";
 					}
 

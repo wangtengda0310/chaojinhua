@@ -2,9 +2,9 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.RewardDto;
@@ -79,7 +79,7 @@ public class MonsterNewHandler extends ReconnectedHandler {
 						for(Map.Entry<Integer, Integer> m :rt.getItems().entrySet()){
 							ll.add(ResourceService.ins().addItem(player, m.getKey(), 0-m.getValue(), false));
 						}
-						MessageUtil.notiyItemChange(player, ll);
+						MessageUtil.notifyItemChange(player, ll);
 					}
 
 				}

@@ -2,9 +2,9 @@ package com.igame.work.user.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -81,7 +81,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 //						RewardDto dto = ResourceService.ins().getRewardDto("1,2,100;3,200001,10", "100");
 //						reward = ResourceService.ins().getRewardString(dto);
 //						ResourceService.ins().addRewarToPlayer(player, dto);
-//						MessageUtil.notiyItemChange(player, ll);
+//						MessageUtil.notifyItemChange(player, ll);
 //						ResourceService.ins().addDrawExp(player, dt.getDrawExp());
 //					}
 //				}else 
@@ -127,7 +127,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 							reward = new StringBuilder(reward.substring(1));
 						}
 						ResourceService.ins().addRewarToPlayer(player, dto);
-						MessageUtil.notiyItemChange(player, ll);
+						MessageUtil.notifyItemChange(player, ll);
 						ResourceService.ins().addDrawExp(player, dt.getDrawExp() * number);
 					}
 				}else{

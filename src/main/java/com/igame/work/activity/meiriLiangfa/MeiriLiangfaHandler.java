@@ -1,7 +1,7 @@
 package com.igame.work.activity.meiriLiangfa;
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.core.handler.RetVO;
 import com.igame.work.activity.ActivityHandler;
 import com.igame.work.activity.PlayerActivityData;

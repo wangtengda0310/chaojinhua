@@ -1,8 +1,8 @@
 package com.igame.work.checkpoint.guanqia.handler;
 
 
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
@@ -45,7 +45,7 @@ public class CheckResHandler extends ReconnectedHandler {
 						reward += ";"+ ResourceService.ins().getRewardString(dto);//返回字符串
 						ResourceService.ins().addRewarToPlayer(player, dto);//真实给玩家加东西
 						player.getTimeResCheck().put(chapterId, timeCount % 60);
-						MessageUtil.notiyTimeResToPlayer(player, chapterId, new RewardDto());	
+						MessageUtil.notifyTimeResToPlayer(player, chapterId, new RewardDto());
 					}
 				}
 			}

@@ -2,9 +2,9 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -60,7 +60,7 @@ public class GodsResetHandler extends ReconnectedHandler {
 				reward = ResourceService.ins().getRewardString(rt);
 				List<Gods> ll = Lists.newArrayList();
 				ll.add(gods);
-				MessageUtil.notiyGodsChange(player, ll);		
+				MessageUtil.notifyGodsChange(player, ll);
 				GoldLog.info(player.getSeverId(), player.getUserId(), player.getPlayerId(), GoldLog.GODSRESET, "#godsType:" + godsType +"#lvl:"+lvl);
 
 			}

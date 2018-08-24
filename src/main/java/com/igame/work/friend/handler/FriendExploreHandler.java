@@ -1,6 +1,6 @@
 package com.igame.work.friend.handler;
 
-import com.igame.core.MProtrol;
+import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;

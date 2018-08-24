@@ -5,11 +5,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.igame.core.MessageUtil;
+import com.igame.work.MessageUtil;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
-import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 
 
@@ -83,7 +81,7 @@ public class PVPFightService {
 //    	fights.put(playerA.getPlayerId(), fb);
     	playerA.setFightBase(fb);
     	playerB.setFightBase(fb);
-    	MessageUtil.notiyMatchEnd(fb);
+    	MessageUtil.notifyMatchEnd(fb);
     	
     	
     }
@@ -101,7 +99,7 @@ public class PVPFightService {
     			if(System.currentTimeMillis() - fb.getStartTime() >= 9 * 1000){
         			fb.state.add(player.getPlayerId());
         			if(fb.state.size() >= 2){
-        				MessageUtil.notiyMatchLoad(fb);
+        				MessageUtil.notifyMatchLoad(fb);
         				fb.state.clear();
         			}
     			}

@@ -1,4 +1,4 @@
-package com.igame.core;
+package com.igame.work;
 
 /**
  * 

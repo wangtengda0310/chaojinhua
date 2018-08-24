@@ -1,8 +1,8 @@
 package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
@@ -37,18 +37,18 @@ public class EndlessRefHandler extends ReconnectedHandler {
 		}else{
 			ret = CheckPointService.refEndlessRef(player);
 			player.setWuReset(1);
-			MessageUtil.notiyWuResetChange(player);
+			MessageUtil.notifyWuResetChange(player);
 		}
 
 		if(ret != 0){
 			vo.setState(1);
 			vo.setErrCode(ret);
 		}else{
-			MessageUtil.notiyWuChange(player);
-			MessageUtil.notiyWuZhengChange(player);
-			MessageUtil.notiyWuNaiChange(player);
-			MessageUtil.notiyWuBufferChange(player,player.getWuEffect());
-			MessageUtil.notiyWuResetChange(player);
+			MessageUtil.notifyWuChange(player);
+			MessageUtil.notifyWuZhengChange(player);
+			MessageUtil.notifyWuNaiChange(player);
+			MessageUtil.notifyWuBufferChange(player,player.getWuEffect());
+			MessageUtil.notifyWuResetChange(player);
 		}
 
 		return vo;

@@ -2,9 +2,9 @@ package com.igame.work.item.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -110,12 +110,12 @@ public class ItemHeChengAllHandler extends ReconnectedHandler {
 					}
 
 				}
-				MessageUtil.notiyItemChange(player, ll);
+				MessageUtil.notifyItemChange(player, ll);
 			}
 		}
 
 		if (mm.size() > 0)
-			MessageUtil.notiyMonsterChange(player,mm);
+			MessageUtil.notifyMonsterChange(player,mm);
 		
 		GoldLog.info(player.getSeverId(), player.getUserId(), player.getPlayerId(), GoldLog.HECHENG, "#effects:" + effects+"#end:"+end+"#res:"+res+"#newItemId:"+newItemId);
 

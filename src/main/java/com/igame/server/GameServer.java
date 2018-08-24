@@ -1,6 +1,6 @@
 package com.igame.server;
 
-import com.igame.core.MProtrol;
+import com.igame.work.MProtrol;
 import com.igame.core.data.DataManager;
 import com.igame.core.db.DBManager;
 import com.igame.core.event.EventManager;

@@ -1,8 +1,8 @@
 package com.igame.work.monster.handler;
 
 
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
@@ -31,7 +31,7 @@ public class TuJianHandler extends ReconnectedHandler {
 			boolean change = false;
 			change = isChange(player, meetM, change);
 			if(change){
-				MessageUtil.notiyMeetM(player);
+				MessageUtil.notifyMeetM(player);
 			}
 		}
 

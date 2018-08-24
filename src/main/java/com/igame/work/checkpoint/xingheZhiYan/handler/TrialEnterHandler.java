@@ -2,9 +2,9 @@ package com.igame.work.checkpoint.xingheZhiYan.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
@@ -67,7 +67,7 @@ public class TrialEnterHandler extends ReconnectedHandler {
 					boolean change = false;
 					change = TuJianHandler.isChange(player, meetM, change);
 					if(change){
-						MessageUtil.notiyMeetM(player);
+						MessageUtil.notifyMeetM(player);
 					}
 					//怪物装备
 					if(props != null){

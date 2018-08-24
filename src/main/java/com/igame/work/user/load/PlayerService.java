@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.core.MessageUtil;
+import com.igame.work.MessageUtil;
 import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.data.DrawdataTemplate;
@@ -170,7 +170,7 @@ public class PlayerService {
 			player.getDraw().setDrawList(player.getDraw().getDrawList().substring(1));
 		}
 		if(notif && !tempDraw.equals(player.getDraw().getDrawList())){
-			MessageUtil.notiyDrawData(player);
+			MessageUtil.notifyDrawData(player);
 		}
 		
 	}

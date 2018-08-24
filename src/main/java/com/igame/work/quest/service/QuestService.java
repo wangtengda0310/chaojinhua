@@ -1,7 +1,7 @@
 package com.igame.work.quest.service;
 
 import com.google.common.collect.Lists;
-import com.igame.core.MessageUtil;
+import com.igame.work.MessageUtil;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
@@ -101,7 +101,7 @@ public class QuestService {
 		List<TaskDayInfo> qList = Lists.newArrayList();
 		qList.add(td);
 		qList.addAll(endQuest(player, td));//判断是否有新开启任务
-		MessageUtil.notiyQuestChange(player, qList);
+		MessageUtil.notifyQuestChange(player, qList);
 		GoldLog.info(player.getSeverId(), player.getUserId(), player.getPlayerId(), GoldLog.QUESTREWARD, "#questId:" + td.getQuestId());
 		return ResourceService.ins().getRewardString(reward);
 				
@@ -153,7 +153,7 @@ public class QuestService {
 				}
 			}
 		}
-		MessageUtil.notiyQuestChange(player, qList);
+		MessageUtil.notifyQuestChange(player, qList);
 	}
 	
 	/**
@@ -168,7 +168,7 @@ public class QuestService {
 		for(TaskDayInfo td : player.getAchievement().values()){
 			processTaskDetail(player,qList,td,claim,count);
 		}
-		MessageUtil.notiyQuestChange(player, qList);
+		MessageUtil.notifyQuestChange(player, qList);
 		return qList;
 		
 		

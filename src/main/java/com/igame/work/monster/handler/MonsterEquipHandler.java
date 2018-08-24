@@ -2,9 +2,9 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
@@ -102,7 +102,7 @@ public class MonsterEquipHandler extends ReconnectedHandler {
 		}
 
 		//推送道具更新
-		MessageUtil.notiyItemChange(player,items);
+		MessageUtil.notifyItemChange(player,items);
 
 		//如果更新怪兽装备及战力,并推送
 		List<Monster> mms = Lists.newArrayList();
@@ -113,13 +113,13 @@ public class MonsterEquipHandler extends ReconnectedHandler {
 		mm.setDtate(2);
 
 		mms.add(mm);
-		MessageUtil.notiyMonsterChange(player, mms);
+		MessageUtil.notifyMonsterChange(player, mms);
 
 		//如果更新怪兽为当前阵容出战怪兽,更新阵容战力
 		if (Arrays.asList(player.getTeams().get(teamId).getTeamMonster()).contains(mid)){
 			ComputeFightService.ins().computeTeamFight(player,teamId);
 		}
-		MessageUtil.notiyTeamChange(player,player.getTeams().get(teamId));
+		MessageUtil.notifyTeamChange(player,player.getTeams().get(teamId));
 
 		return vo;
 	}

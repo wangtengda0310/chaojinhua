@@ -2,9 +2,9 @@ package com.igame.work.item.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -138,9 +138,9 @@ public class ItemHeChengHandler extends ReconnectedHandler {
 		GoldLog.info(player.getSeverId(), player.getUserId(), player.getPlayerId(), GoldLog.HECHENG, "#itemId:" + itemId+"#type:"+type+"#res:"+res+"#newItemId:"+newItemId);
 
 		if (mm.size() > 0)
-			MessageUtil.notiyMonsterChange(player,mm);
+			MessageUtil.notifyMonsterChange(player,mm);
 
-		MessageUtil.notiyItemChange(player, ll);
+		MessageUtil.notifyItemChange(player, ll);
 
 		QuestService.processTask(player, 9, 1);
 

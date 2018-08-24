@@ -1,7 +1,7 @@
 package com.igame.work.user.handler;
 
 
-import com.igame.core.MProtrol;
+import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;

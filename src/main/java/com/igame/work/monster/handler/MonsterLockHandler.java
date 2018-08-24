@@ -1,8 +1,8 @@
 package com.igame.work.monster.handler;
 
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.monster.dto.Monster;
@@ -40,7 +40,7 @@ public class MonsterLockHandler extends ReconnectedHandler {
 		}
 //		List<Monster> ll = Lists.newArrayList();
 //		ll.add(mm);
-//		MessageUtil.notiyMonsterChange(player, ll);
+//		MessageUtil.notifyMonsterChange(player, ll);
 
 		vo.addData("objectId", objectId);
 		vo.addData("lock", mm.getIsLock());

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.core.MProtrol;
+import com.igame.work.MProtrol;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.user.dao.PlayerDAO;

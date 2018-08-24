@@ -1,9 +1,9 @@
 package com.igame.work.checkpoint.xingheZhiYan.handler;
 
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.RewardDto;
@@ -42,7 +42,7 @@ public class WaKuangHandler extends ReconnectedHandler {
 				ResourceService.ins().addRewarToPlayer(player, rt);
 				reward = ResourceService.ins().getRewardString(rt);
 				player.setOreCount(player.getOreCount() + 1);
-				MessageUtil.notiyTrialChange(player);
+				MessageUtil.notifyTrialChange(player);
 			}
 		}
 

@@ -3,9 +3,9 @@ package com.igame.work.checkpoint.guanqia.handler;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -86,7 +86,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 		List<Monster> ll = Lists.newArrayList();
         monsterExpStr = CheckSaoDangHandler.getString(player, reward, ll, monsterExpStr);
 
-        MessageUtil.notiyMonsterChange(player, ll);
+        MessageUtil.notifyMonsterChange(player, ll);
 
 		player.setLastCheckpointId(chapterId);
 
@@ -177,7 +177,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 							player.setCheckPoint(player.getCheckPoint()+"," +String.valueOf(ct.getChapterId()));
 							player.getTimeResCheck().put(ct.getChapterId(), ct.getMaxTime() * 60);
 							RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), ct.getMaxTime() * 60, ct.getMaxTime() * 60);
-							MessageUtil.notiyTimeResToPlayer(player,ct.getChapterId(), dto);    //推送金币关卡 第一次满
+							MessageUtil.notifyTimeResToPlayer(player,ct.getChapterId(), dto);    //推送金币关卡 第一次满
 						}
 					}
 				}

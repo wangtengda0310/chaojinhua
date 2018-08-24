@@ -3,8 +3,8 @@ package com.igame.work.gm.service;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.item.dto.Item;

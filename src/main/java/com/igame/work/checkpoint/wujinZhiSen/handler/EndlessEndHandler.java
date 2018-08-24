@@ -2,9 +2,9 @@ package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
@@ -79,14 +79,14 @@ public class EndlessEndHandler extends ReconnectedHandler {
 				reward = ResourceService.ins().getRewardString(rt);
 				ct[2] = "1";
 				player.getWuMap().put(currIndex, MyUtil.toString(ct, ";"));
-				MessageUtil.notiyWuZhengChange(player);
-				MessageUtil.notiyWuChange(player);
+				MessageUtil.notifyWuZhengChange(player);
+				MessageUtil.notifyWuChange(player);
 				if(player.getTempBufferId() > 0){
 		    		player.getWuEffect().add(new WuEffect(player.getTempBufferId()));
 		    		player.setTempBufferId(0);
 				}
 			}else{
-				MessageUtil.notiyWuBufferChange(player,player.getWuEffect());
+				MessageUtil.notifyWuBufferChange(player,player.getWuEffect());
 			}
 			QuestService.processTask(player, 11, 1);
 

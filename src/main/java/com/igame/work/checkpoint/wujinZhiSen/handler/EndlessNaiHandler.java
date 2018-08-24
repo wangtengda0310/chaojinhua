@@ -1,9 +1,9 @@
 package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
@@ -47,8 +47,8 @@ public class EndlessNaiHandler extends ReconnectedHandler {
 
 		}
 
-		MessageUtil.notiyWuNaiChange(player);
-		MessageUtil.notiyWuZhengChange(player);
+		MessageUtil.notifyWuNaiChange(player);
+		MessageUtil.notifyWuZhengChange(player);
 
 		return new RetVO();
 	}

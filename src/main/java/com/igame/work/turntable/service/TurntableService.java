@@ -1,6 +1,6 @@
 package com.igame.work.turntable.service;
 
-import com.igame.core.MessageUtil;
+import com.igame.work.MessageUtil;
 import com.igame.work.turntable.LuckTableDataManager;
 import com.igame.work.turntable.data.LuckTableTemplate;
 import com.igame.util.DateUtil;
@@ -43,7 +43,7 @@ public class TurntableService {
         reloadTurntable(player);
 
         //推送更新
-        MessageUtil.notiyTurntableChange(player);
+        MessageUtil.notifyTurntableChange(player);
     }
 
     /**

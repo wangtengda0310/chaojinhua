@@ -1,7 +1,7 @@
 package com.igame.work.shop.service;
 
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.RetVO;
 import com.igame.util.DateUtil;

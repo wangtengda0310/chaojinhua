@@ -2,9 +2,9 @@ package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
@@ -83,7 +83,7 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 
 				change = TuJianHandler.isChange(player, meetM, change);
 				if(change){
-					MessageUtil.notiyMeetM(player);
+					MessageUtil.notifyMeetM(player);
 				}
 				
 				//怪物装备
@@ -109,7 +109,7 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 	    		player.setTempBufferId(buffer);
 	    		ls.addAll(player.getWuEffect());
 	    		ls.add(new WuEffect(buffer));
-	    		MessageUtil.notiyWuBufferChange(player,ls);
+	    		MessageUtil.notifyWuBufferChange(player,ls);
 	    	}
 	    	for(MatchMonsterDto mdt : player.getWuZheng().values()){
 	    		mdt.reCalValue(ls);

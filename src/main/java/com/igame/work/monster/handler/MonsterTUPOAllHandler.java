@@ -2,9 +2,9 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -72,7 +72,7 @@ public class MonsterTUPOAllHandler extends ReconnectedHandler {
 						mm.setDtate(2);
 						List<Monster> mons = Lists.newArrayList();
 						mons.add(mm);
-						MessageUtil.notiyMonsterChange(player, mons);
+						MessageUtil.notifyMonsterChange(player, mons);
 				    	GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 				    			+"#act:monsterTUPOAll" + "#objectId:" + objectId+"#rank:"+rank+"#type:"+rtype);
 					}else{

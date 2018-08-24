@@ -1,9 +1,9 @@
 package com.igame.work.monster.handler;
 
 
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.monster.dto.Gods;
@@ -33,7 +33,7 @@ public class GodsFightHandler extends ReconnectedHandler {
 			return error(ErrorCode.ERROR);
 		}else{
 			 player.getTeams().get(teamId).setTeamGod(godsType);
-			 MessageUtil.notiyTeamChange(player,player.getTeams().get(teamId));
+			 MessageUtil.notifyTeamChange(player,player.getTeams().get(teamId));
 		}
 
 		RetVO vo = new RetVO();

@@ -1,4 +1,4 @@
-package com.igame.core;
+package com.igame.work;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +25,7 @@ import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,11 +38,9 @@ public class MessageUtil {
 	
 	/**
 	 * 推送一条消息给玩家
-	 * @param player
-	 * @param protrol
-	 * @param vo
 	 */
 	public static void sendMessageToPlayer(Player player,int protrol,RetVO vo){
+		// TODO 跟GameHandler类的sendClient和ReconnectedHandler类的cacheResponse方法很像
 
 		if (player == null){
 			return;
@@ -63,8 +62,9 @@ public class MessageUtil {
 			int size = player.getProTuiMap().size();
 			if(size > 20){
 				int left = size - 20;
-				List<Integer> key = player.getProTuiMap().keySet().stream().collect(Collectors.toList());
-				key.sort((h1, h2) -> h1-h2);
+				List<Integer> key = player.getProTuiMap().keySet().stream()
+						.sorted(Comparator.comparingInt(h -> h))
+						.collect(Collectors.toList());
 				if(key.size() < left){
 					left = key.size();
 				}
@@ -91,13 +91,8 @@ public class MessageUtil {
 
 		
 	}
-	
-	/**
-	 * 
-	 * @param player
-	 * @param chapterId
-	 */
-	public static void notiyTimeResToPlayer(Player player,int chapterId,RewardDto reward){
+
+	public static void notifyTimeResToPlayer(Player player, int chapterId, RewardDto reward){
 		
 		RetVO vo = new RetVO();	
     	vo.addData("chapterId", chapterId);
@@ -105,13 +100,8 @@ public class MessageUtil {
     	MessageUtil.sendMessageToPlayer(player, MProtrol.CHECKPOINT_RES_UPDATE, vo);
 		
 	}
-	
-	/**
-	 * 
-	 * @param player
-	 * @param items
-	 */
-	public static void notiyItemChange(Player player,List<Item> items){
+
+	public static void notifyItemChange(Player player, List<Item> items){
 		
 		if(!items.isEmpty()){
 			RetVO vo = new RetVO();
@@ -126,7 +116,7 @@ public class MessageUtil {
 	 * @param player 玩家
 	 * @param mons 怪兽list
 	 */
-	public static void notiyMonsterChange(Player player,List<Monster> mons){
+	public static void notifyMonsterChange(Player player, List<Monster> mons){
 		
 		if(!mons.isEmpty()){
 			RetVO vo = new RetVO();		
@@ -140,7 +130,7 @@ public class MessageUtil {
 	 * @param player 玩家
 	 * @param mons 怪兽list
 	 */
-	public static void notiyMonsterList(Player player,int total,int index,List<Monster> mons){
+	public static void notifyMonsterList(Player player, int total, int index, List<Monster> mons){
 		
 		if(!mons.isEmpty()){
 			RetVO vo = new RetVO();	
@@ -150,12 +140,8 @@ public class MessageUtil {
 			MessageUtil.sendMessageToPlayer(player, MProtrol.MONSTER_LSIT, vo);
 		}
 	}
-	
-	/**
-	 * 
-	 * @param player
-	 */
-	public static void notiyGodsChange(Player player,List<Gods> gods){
+
+	public static void notifyGodsChange(Player player, List<Gods> gods){
 		
 		if(!gods.isEmpty()){
 			RetVO vo = new RetVO();		
@@ -166,9 +152,8 @@ public class MessageUtil {
 	
 	/**
 	 * 心魔列表更新
-	 * @param player
 	 */
-	public static void notiyXingMoChange(Player player,String removeId,List<XingMoDto> ls){
+	public static void notifyXingMoChange(Player player, String removeId, List<XingMoDto> ls){
 		
 		RetVO vo = new RetVO();	
 		player.calLeftTime();
@@ -184,9 +169,8 @@ public class MessageUtil {
 	
 	/**
 	 * 同化对象更新
-	 * @param player
 	 */
-	public static void notiyTongHuaDtoChange(Player player){
+	public static void notifyTongHuaDtoChange(Player player){
 		
 		RetVO vo = new RetVO();	
 		player.getTonghua().calLeftTime();
@@ -198,9 +182,8 @@ public class MessageUtil {
 	
 	/**
 	 * 同化属性更新
-	 * @param player
 	 */
-	public static void notiyTongHuaAddChange(Player player){
+	public static void notifyTongHuaAddChange(Player player){
 		
 		RetVO vo = new RetVO();	
     	vo.addData("tongAdd", player.getTongAdd());
@@ -210,9 +193,8 @@ public class MessageUtil {
 	
 	/**
 	 * 新邮件通知
-	 * @param player
 	 */
-	public static void notiyNewMail(Player player,Mail mail){
+	public static void notifyNewMail(Player player, Mail mail){
 		
 		RetVO vo = new RetVO();	
     	vo.addData("mail", mail);
@@ -223,9 +205,8 @@ public class MessageUtil {
 	
 	/**
 	 * 新邮件通知
-	 * @param player
 	 */
-	public static void notiyMeetM(Player player){
+	public static void notifyMeetM(Player player){
 		
 		RetVO vo = new RetVO();	
     	vo.addData("meetM", MyUtil.toString(player.getMeetM(), ","));
@@ -235,9 +216,8 @@ public class MessageUtil {
 	
 	/**
 	 * 造物台更新
-	 * @param player
 	 */
-	public static void notiyDrawData(Player player){
+	public static void notifyDrawData(Player player){
 		
 		RetVO vo = new RetVO();	
     	vo.addData("draw", player.getDraw());
@@ -248,7 +228,7 @@ public class MessageUtil {
 	/**
 	 * 匹配结束
 	 */
-	public static void notiyMatchEnd(FightBase fb){
+	public static void notifyMatchEnd(FightBase fb){
 		
 		RetVO vo = new RetVO();			
     	vo.addData("i", fb.getFightB().getPlayer().getPlayerId());
@@ -283,7 +263,7 @@ public class MessageUtil {
 	/**
 	 * 开始加载游戏
 	 */
-	public static void notiyMatchLoad(FightBase fb){
+	public static void notifyMatchLoad(FightBase fb){
 		
 		RetVO vo = new RetVO();			
 		MessageUtil.sendMessageToPlayer(fb.getFightA().getPlayer(), MProtrol.F_P_ENTER, vo);
@@ -303,22 +283,21 @@ public class MessageUtil {
 
 	}
 	
-	
-	public static void notiyWinner(Player player,long winner){
-		
-		RetVO vo = new RetVO();	
+
+	public static void notifyWinner(Player player,long winner){
+
+		RetVO vo = new RetVO();
     	vo.addData("winner", winner);
-		MessageUtil.sendMessageToPlayer(player, 400, vo);
+		MessageUtil.sendMessageToPlayer(player, 400, vo);	// 400 现在定义的事心跳协议?
 
 	}
-	
+
 	
 	
 	/**
 	 * 任务更新
-	 * @param player
 	 */
-	public static void notiyQuestChange(Player player,List<TaskDayInfo> qList){
+	public static void notifyQuestChange(Player player, List<TaskDayInfo> qList){
 		
 		if(!qList.isEmpty()){
 			RetVO vo = new RetVO();		
@@ -330,9 +309,8 @@ public class MessageUtil {
 	
 	/**
 	 * 星河之眼更新
-	 * @param player
 	 */
-	public static void notiyTrialChange(Player player){
+	public static void notifyTrialChange(Player player){
 	
 		RetVO vo = new RetVO();		
     	vo.addData("towerId", player.getTowerId());
@@ -344,9 +322,8 @@ public class MessageUtil {
 	
 	/**
 	 * 无尽之森关卡更新
-	 * @param player
 	 */
-	public static void notiyWuChange(Player player){
+	public static void notifyWuChange(Player player){
 	
 		RetVO vo = new RetVO();		
     	vo.addData("wuMap", player.getWuMap().values());
@@ -356,9 +333,8 @@ public class MessageUtil {
 	
 	/**
 	 * 无尽无尽之森自己怪物阵容更新
-	 * @param player
 	 */
-	public static void notiyWuZhengChange(Player player){
+	public static void notifyWuZhengChange(Player player){
 	
 		RetVO vo = new RetVO();		
     	vo.addData("wuZheng", CheckPointService.parsePlayer(player));
@@ -368,9 +344,8 @@ public class MessageUtil {
 	
 	/**
 	 * 推送无尽之森奶更新
-	 * @param player
 	 */
-	public static void notiyWuNaiChange(Player player){
+	public static void notifyWuNaiChange(Player player){
 	
 		RetVO vo = new RetVO();		
     	vo.addData("wuNai", player.getWuNai());
@@ -380,9 +355,8 @@ public class MessageUtil {
 	
 	/**
 	 * 无尽无尽之森自己怪物阵容更新
-	 * @param player
 	 */
-	public static void notiyWuBufferChange(Player player,List<WuEffect> ls){
+	public static void notifyWuBufferChange(Player player, List<WuEffect> ls){
 	
 		RetVO vo = new RetVO();		
     	vo.addData("wuEffect", ls);
@@ -393,9 +367,8 @@ public class MessageUtil {
 	
 	/**
 	 * 无尽之森已用免费重置次数更新
-	 * @param player
 	 */
-	public static void notiyWuResetChange(Player player){
+	public static void notifyWuResetChange(Player player){
 	
 		RetVO vo = new RetVO();		
     	vo.addData("wuReset", player.getWuReset());
@@ -406,9 +379,8 @@ public class MessageUtil {
 	
 	/**
 	 * 推送命运之门信息更新
-	 * @param player
 	 */
-	public static void notiyDeInfoChange(Player player){
+	public static void notifyDeInfoChange(Player player){
 	
 		RetVO vo = new RetVO();		
     	vo.addData("desInfo", FateDto.creatFateDto(player.getFateData()));
@@ -419,9 +391,8 @@ public class MessageUtil {
 	
 	/**
 	 * 推送新门更新
-	 * @param player
 	 */
-	public static void notiyGateChange(Player player){
+	public static void notifyGateChange(Player player){
 	
 		RetVO vo = new RetVO();		
     	vo.addData("gateInfo", player.getFateData().getGate());
@@ -432,9 +403,8 @@ public class MessageUtil {
 	
 	/**
 	 * 推送竞技场已用挑战次数
-	 * @param player
 	 */
-	public static void notiyAreaCountChange(Player player){
+	public static void notifyAreaCountChange(Player player){
 	
 		RetVO vo = new RetVO();		
     	vo.addData("areaCount", player.getAreaCount());
@@ -445,9 +415,8 @@ public class MessageUtil {
 
 	/**
 	 * 推送阵容更新
-	 * @param player
 	 */
-	public static void notiyTeamChange(Player player, Team team){
+	public static void notifyTeamChange(Player player, Team team){
 
 		RetVO vo = new RetVO();
     	vo.addData("team", team);
@@ -458,9 +427,8 @@ public class MessageUtil {
 	
 	/**
 	 * 推送玩家倒计时开始
-	 * @param player
 	 */
-	public static void notiyCDDown(Player player, int type){
+	public static void notifyCDDown(Player player, int type){
 
 		RetVO vo = new RetVO();
     	vo.addData("type", type);
@@ -471,9 +439,8 @@ public class MessageUtil {
 
 	/**
 	 * 推送玩家vip更新
-	 * @param player
 	 */
-	public static void notiyVipPrivilegesChange(Player player) {
+	public static void notifyVipPrivilegesChange(Player player) {
 
 		//推送
 		RetVO vo = new RetVO();
@@ -486,9 +453,8 @@ public class MessageUtil {
 
 	/**
 	 * 推送玩家大转盘更新
-	 * @param player
 	 */
-	public static void notiyTurntableChange(Player player) {
+	public static void notifyTurntableChange(Player player) {
 
 		//推送
 		RetVO vo = new RetVO();
@@ -499,9 +465,8 @@ public class MessageUtil {
 
 	/**
 	 * 推送玩家好友更新
-	 * @param player
 	 */
-	public static void notiyFriendInfo(Player player) {
+	public static void notifyFriendInfo(Player player) {
 
 		//推送
 		RetVO vo = new RetVO();

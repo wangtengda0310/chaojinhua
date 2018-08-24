@@ -2,9 +2,9 @@ package com.igame.work.checkpoint.xinmo;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
@@ -77,7 +77,7 @@ public class XinmoEndHandler extends ReconnectedHandler {
 				}else{
 					removeId = String.valueOf(chapterId);
 				}
-				MessageUtil.notiyXingMoChange(player,removeId,ls);
+				MessageUtil.notifyXingMoChange(player,removeId,ls);
 			}
 		}
 

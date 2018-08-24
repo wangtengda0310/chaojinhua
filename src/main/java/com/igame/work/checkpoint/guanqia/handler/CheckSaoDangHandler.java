@@ -2,9 +2,9 @@ package com.igame.work.checkpoint.guanqia.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.core.ErrorCode;
-import com.igame.core.MProtrol;
-import com.igame.core.MessageUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -85,7 +85,7 @@ public class CheckSaoDangHandler extends ReconnectedHandler {
 		String monsterExpStr = "";
 		monsterExpStr = getString(player, reward, ll, monsterExpStr);
 
-		MessageUtil.notiyMonsterChange(player, ll);
+		MessageUtil.notifyMonsterChange(player, ll);
 
 		//怪物经验字符串
 		if(monsterExpStr.lastIndexOf(";") >0){

@@ -1,6 +1,6 @@
 package com.igame.work.activity;
 
-import com.igame.core.MProtrol;
+import com.igame.work.MProtrol;
 import com.igame.core.handler.RetVO;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
