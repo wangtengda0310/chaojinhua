@@ -40,6 +40,11 @@ public class FightAgainHandler extends BaseHandler {
         JSONObject jsonObject = JSONObject.fromObject(infor);
 
         Map<String, Object> param = player.getLastBattleParam();
+        if (param == null || !param.containsKey("battleType")) {
+            sendError(ErrorCode.CHECKPOINT_END_ERROR,MProtrol.toStringProtrol(MProtrol.FIGHT_AGAIN), vo, user);
+            return;
+        }
+
         int battleType = (int)param.get("battleType");
 
         if(battleType == 1) { // 从CheckEnterHandler复制过来的
@@ -153,5 +158,7 @@ public class FightAgainHandler extends BaseHandler {
             player.setBallisticEnter(new Date());
 
         }
+
+        send(MProtrol.toStringProtrol(MProtrol.FIGHT_AGAIN), vo, user);
     }
 }
