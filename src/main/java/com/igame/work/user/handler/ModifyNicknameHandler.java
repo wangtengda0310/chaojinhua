@@ -39,7 +39,7 @@ public class ModifyNicknameHandler extends BaseHandler {
 
         vo.addData("nickname", nickname);
 
-        if (player.getLastNickname() != null) {
+        if (player.getLastNickname() != null && !"".equals(player.getLastNickname())) {
             if (player.getDiamond() < 100) {
                 sendError(ErrorCode.DIAMOND_NOT_ENOUGH, MProtrol.toStringProtrol(MProtrol.MODIFY_NICKNAME), vo, user);
                 return;
