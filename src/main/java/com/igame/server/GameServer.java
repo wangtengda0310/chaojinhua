@@ -3,7 +3,7 @@ package com.igame.server;
 import com.igame.core.MProtrol;
 import com.igame.core.data.DataManager;
 import com.igame.core.db.DBManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.event.EventManager;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.util.SystemService;
@@ -80,7 +80,7 @@ public class GameServer extends SFSExtension {
 		PublicMessageService.ins().load();
 		FightEffectService.ins().initFightEffect();
 
-		addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, BaseHandler.serverEventListener());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
+		addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, EventManager.serverEventListener());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
 		addEventHandler(SFSEventType.USER_LOGIN, LoginEventHandler.class);//自定义登录接口
 		addEventHandler(SFSEventType.USER_LOGOUT, LOGINOUTEventHandler.class);
 		addEventHandler(SFSEventType.USER_DISCONNECT, DisconnectEventHandler.class);
@@ -233,6 +233,8 @@ public class GameServer extends SFSExtension {
 	public void destroy(){
 
 		SystemService.ins().saveData();
+
+		EventManager.clearAllListeners();
 		GoldLog.info("GameServer destroy");
 	}
 

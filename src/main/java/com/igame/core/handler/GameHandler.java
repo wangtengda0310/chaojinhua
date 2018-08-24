@@ -38,13 +38,6 @@ public interface GameHandler {
         return res;
     }
 
-    default EventListener eventListener() {
-        return null;
-    }
-    interface EventListener {
-        void handleEvent(Object event);
-    }
-
     /** 写成全局的单例 稍微提高点性能 */
     ObjectMapper mapper = new ObjectMapper();
     /** 把对象转成json */
