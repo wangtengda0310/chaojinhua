@@ -62,7 +62,7 @@ public class PlayerHandler extends BaseHandler{
 		String json = null;
 		ISFSObject res = new SFSObject();
 		if(!ServerListHandler.servers.containsKey(serverId)){//不存在的服务器ID
-			sendClient(MProtrol.toStringProtrol(MProtrol.PLAYER_ENTER),error(ErrorCode.SERVER_NOT),user);
+			sendClient(MProtrol.PLAYER_ENTER,error(ErrorCode.SERVER_NOT),user);
 			return;
 		}
 		
@@ -71,13 +71,13 @@ public class PlayerHandler extends BaseHandler{
 			try {
 				player = newPlayer(userId, serverId);
 				if(player.get_id() == null){
-					sendClient(MProtrol.toStringProtrol(MProtrol.PLAYER_ENTER),error(ErrorCode.NEWPLAYER_ERROR),user);
+					sendClient(MProtrol.PLAYER_ENTER,error(ErrorCode.NEWPLAYER_ERROR),user);
 					return;
 				}
 			} catch (Exception e) {
 				this.getLogger().warn("PlayerHandler save error", e);
 				e.printStackTrace();
-				sendClient(MProtrol.toStringProtrol(MProtrol.PLAYER_ENTER),error(ErrorCode.NEWPLAYER_ERROR),user);
+				sendClient(MProtrol.PLAYER_ENTER,error(ErrorCode.NEWPLAYER_ERROR),user);
 				return;
 			}
 		}else{
@@ -91,7 +91,7 @@ public class PlayerHandler extends BaseHandler{
 		} catch (Exception e) {
 			this.getLogger().warn("PlayerHandler load error", e);
 			e.printStackTrace();
-			sendClient(MProtrol.toStringProtrol(MProtrol.PLAYER_ENTER),error(ErrorCode.NEWPLAYER_ERROR),user);
+			sendClient(MProtrol.PLAYER_ENTER,error(ErrorCode.NEWPLAYER_ERROR),user);
 		}
 
 		List<TaskDayInfo> qs = Lists.newArrayList();

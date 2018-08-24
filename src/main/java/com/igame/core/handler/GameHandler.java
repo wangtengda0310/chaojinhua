@@ -16,6 +16,12 @@ public interface GameHandler {
 
     void warn(String warn,Exception e);
     void sendClient(User user, String cmdName, ISFSObject params);
+
+    /** 因为MProtrol里定义的协议都是int类型 所以提供这个方法 避免代码里到处转字符串 */
+    default ISFSObject sendClient(int cmd, RetVO vo, User user) {
+        return sendClient(String.valueOf(cmd), vo, user);
+    }
+
     default ISFSObject sendClient(String cmdName, RetVO vo, User user) {
         String json = null;
 

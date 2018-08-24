@@ -43,13 +43,13 @@ public class PrivateMessageEventHandler extends BaseEventHandler {
 
 		Player senderPlayer =  SessionManager.ins().getSession(Long.parseLong(sender.getName()));
 		if(senderPlayer == null){
-			sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.ERROR),sender);
+			sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.ERROR),sender);
 			throw new MessageException("senderPlayer not online : name="+sender.getName());
 		}
 
 		Player recPlayer =  SessionManager.ins().getSession(Long.parseLong(recipient.getName()));
 		if(recPlayer == null){
-			sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.RECIPIENT_NOT_ONLINE),sender);
+			sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.RECIPIENT_NOT_ONLINE),sender);
 			throw new MessageException("recipient not online : name="+recipient.getName());
 		}
 
@@ -69,7 +69,7 @@ public class PrivateMessageEventHandler extends BaseEventHandler {
 
 		if (!isExist && recPlayer.getIsBanStrangers() == 0){
 			vo.addData("type",type);
-			sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.IS_BAN_STRANGERS),sender);
+			sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.IS_BAN_STRANGERS),sender);
 			throw new MessageException("privateMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.MESSAGE_TOO_LONG);
 		}
 
@@ -77,13 +77,13 @@ public class PrivateMessageEventHandler extends BaseEventHandler {
 		byte[] buff = content.getBytes();
 		if(buff.length > MSG_LENGTH_MAX){
 			vo.addData("type",type);
-			sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.MESSAGE_TOO_LONG),sender);
+			sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.MESSAGE_TOO_LONG),sender);
 			throw new MessageException("privateMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.MESSAGE_TOO_LONG);
 		}
 
 		//放入缓存
 		Message message = PrivateMessageService.ins().addMessage(senderPlayer,recPlayer,type,content);
-		sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
+		sendClient(MProtrol.MESSAGE_ERROR,vo,sender);
 	}
 	
 }

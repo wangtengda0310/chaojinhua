@@ -27,6 +27,6 @@ public class HeartHandler extends BaseHandler{
             return;
         }
         player.setHeartTime(System.currentTimeMillis());
-        sendClient(MProtrol.toStringProtrol(MProtrol.HEART),vo,user);
+        sendClient(MProtrol.HEART,vo,user);
     }
 }

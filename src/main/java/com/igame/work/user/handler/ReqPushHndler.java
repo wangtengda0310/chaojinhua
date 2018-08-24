@@ -45,7 +45,7 @@ public class ReqPushHndler extends ReconnectedHandler {
 			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
 			vo.addData("index", index);
 			vo.addData("isReLogin", 1);
-			sendClient(MProtrol.toStringProtrol(MProtrol.REQ_PUSH), vo, user);
+			sendClient(MProtrol.REQ_PUSH, vo, user);
 			return;
 		}
 		player.setUser(user);
@@ -75,7 +75,7 @@ public class ReqPushHndler extends ReconnectedHandler {
 		
 		vo.addData("index", index);
 		vo.addData("isReLogin", 0);
-		sendClient(MProtrol.toStringProtrol(MProtrol.REQ_PUSH), vo, user);
+		sendClient(MProtrol.REQ_PUSH, vo, user);
 		
 	}
 

@@ -366,12 +366,7 @@ public class MProtrol {
 
 
 	public static String toStringProtrol(int p){
-		return String.valueOf(p);		
+		return String.valueOf(p);
 	}
-	
-	public static int toIntProtrol(String p){
-		return Integer.parseInt(p);
-	}
-	
 
 }

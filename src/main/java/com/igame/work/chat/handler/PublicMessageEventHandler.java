@@ -56,7 +56,7 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 		//校验消息字节
 		byte[] buff = content.getBytes();
 		if(buff.length > MSG_LENGTH_MAX){
-			sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.MESSAGE_TOO_LONG),sender);
+			sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.MESSAGE_TOO_LONG),sender);
 			throw new MessageException("worldMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.MESSAGE_TOO_LONG);
 		}
 
@@ -66,7 +66,7 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 			//校验间隔时间
 			Date lastWorldSpeak = player.getLastWorldSpeak();
 			if (lastWorldSpeak != null && System.currentTimeMillis() - lastWorldSpeak.getTime() < 10000){
-				sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.SHORT_INTERVAL_TIME),sender);
+				sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.SHORT_INTERVAL_TIME),sender);
 				throw new MessageException("worldMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
 			}
 
@@ -77,14 +77,14 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 			//校验间隔时间
 			Date lastHornSpeak = player.getLastHornSpeak();
 			if (lastHornSpeak != null && System.currentTimeMillis() - lastHornSpeak.getTime() < 20000){
-				sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.SHORT_INTERVAL_TIME),sender);
+				sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.SHORT_INTERVAL_TIME),sender);
 				throw new MessageException("hornMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
 			}
 
 			//校验钻石
 			int diamond = player.getDiamond();
 			if (diamond < 5){
-				sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.DIAMOND_NOT_ENOUGH),sender);
+				sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.DIAMOND_NOT_ENOUGH),sender);
 				throw new MessageException("hornMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.DIAMOND_NOT_ENOUGH);
 			}
 
@@ -98,7 +98,7 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 			//校验间隔时间
 			Date lastClubSpeak = player.getLastClubSpeak();
 			if (lastClubSpeak != null && System.currentTimeMillis() - lastClubSpeak.getTime() < 3000){
-				sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.SHORT_INTERVAL_TIME),sender);
+				sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.SHORT_INTERVAL_TIME),sender);
 				throw new MessageException("clubMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
 			}
 
@@ -111,7 +111,7 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 		//放入缓存
 		Message message = PublicMessageService.ins().addMessage(player.getSeverId(),type,player.getPlayerId(),recipient,content);
 
-		sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
+		sendClient(MProtrol.MESSAGE_ERROR,vo,sender);
 	}
 	
 }
