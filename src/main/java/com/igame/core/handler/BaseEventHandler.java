@@ -1,10 +1,7 @@
 package com.igame.core.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
 
 /**
@@ -12,19 +9,14 @@ import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
  */
 public abstract class BaseEventHandler extends BaseServerEventHandler implements GameHandler {
 
-    public void send(String cmdName, RetVO vo, User user) {
-        ObjectMapper mapper = new ObjectMapper();
-        String json = null;
-        ISFSObject res = new SFSObject();
+    @Override
+    public void warn(String warn, Exception e) {
 
-        try {
-            json = mapper.writeValueAsString(vo);
-        } catch (JsonProcessingException e) {
-            this.getLogger().warn(cmdName+"  Vo2Json error", e);
-        }
-
-        res.putUtfString("infor", json);
-        send(cmdName, res, user);
+        this.getLogger().warn(warn, e);
     }
 
+    @Override
+    public void sendClient(User user, String cmdName, ISFSObject params) {
+        send(cmdName, params, user);
+    }
 }

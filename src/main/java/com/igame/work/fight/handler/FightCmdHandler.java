@@ -1,49 +1,36 @@
 package com.igame.work.fight.handler;
 
 
-
-
-
-
-import java.util.List;
-
-import net.sf.json.JSONObject;
-
 import com.google.common.collect.Lists;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.fight.dto.FightCmd;
 import com.igame.work.fight.dto.RetFightCmd;
 import com.igame.work.fight.service.FightProcessser;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
+
+import java.util.List;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class FightCmdHandler extends BaseHandler{
+public class FightCmdHandler extends ReconnectedHandler {
 	
 
 	
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
+
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
+
 		List<RetFightCmd> ls = Lists.newArrayList();
 		String cmdStr = jsonObject.getString("c");
 		if(!MyUtil.isNullOrEmpty(cmdStr)){
@@ -60,13 +47,7 @@ public class FightCmdHandler extends BaseHandler{
 //		if(cmdList != null && !cmdList.isEmpty()){
 //			
 //		}
-		
-		int ret = 0;
 
-		if(ret != 0){
-			vo.setState(1);
-			vo.setErrCode(ret);
-		}
 		vo.addData("c", ls);
 		if(player.getFightBase() == null){
 			vo.addData("winner", -1);
@@ -75,9 +56,13 @@ public class FightCmdHandler extends BaseHandler{
 		}
 		
 
-		send(MProtrol.toStringProtrol(MProtrol.F_CMD), vo, user);
+		return vo;
 
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.F_CMD;
+	}
+
 }

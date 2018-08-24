@@ -1,18 +1,11 @@
 package com.igame.work.checkpoint.mingyunZhiMen.handler;
 
 
-
-
-
-
-
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.mingyunZhiMen.FateDto;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -21,26 +14,16 @@ import net.sf.json.JSONObject;
  * @author Marcus.Z
  *
  */
-public class DeInfoHandler extends BaseHandler{
+public class DeInfoHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
-		int ret = 0;
 		if(player.getPlayerLevel() <18){
 //			ret = ErrorCode.ERROR;
 		}else{
@@ -48,14 +31,14 @@ public class DeInfoHandler extends BaseHandler{
 
 		}
 
-		if(ret != 0){
-			vo.setState(1);
-			vo.setErrCode(ret);
-		}
 		vo.addData("desInfo", FateDto.creatFateDto(player.getFateData()));
 
-		send(MProtrol.toStringProtrol(MProtrol.DE_INFO), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.DE_INFO;
+	}
+
 }

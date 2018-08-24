@@ -2,13 +2,11 @@ package com.igame.work.friend.handler;
 
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.map.HashedMap;
@@ -21,7 +19,7 @@ import java.util.List;
  *
  * 领取体力
  */
-public class FriendReceivePhyHandler extends BaseHandler{
+public class FriendReceivePhyHandler extends ReconnectedHandler {
 
     private int state_ungive = 0;   //对方未赠送
     private int state_gave = 1;   //已赠送未领取
@@ -30,18 +28,9 @@ public class FriendReceivePhyHandler extends BaseHandler{
     private static final int max = 20;
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -53,8 +42,7 @@ public class FriendReceivePhyHandler extends BaseHandler{
 
         long receivedCount = player.getFriends().getCurFriends().stream().filter(friend -> friend.getReceivePhy() == state_rec).count();
         if(receivedCount > max){
-            sendError(ErrorCode.RECEIVEPHY_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.FRIEND_PHY_RECEIVE),vo,user);
-            return;
+            return error(ErrorCode.RECEIVEPHY_NOT_ENOUGH);
         }
 
         //判断对方是否在自己的好友列表中
@@ -68,8 +56,7 @@ public class FriendReceivePhyHandler extends BaseHandler{
                 }
             }
             if (!isExist){
-                sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_PHY_RECEIVE),vo,user);
-                return;
+                return error(ErrorCode.ERROR);
             }
         }
 
@@ -81,8 +68,7 @@ public class FriendReceivePhyHandler extends BaseHandler{
                 if (curFriend.getPlayerId() == playerId){
                     int receivePhy = curFriend.getReceivePhy();
                     if (receivePhy != state_gave){   //如果当前状态不等于 已赠送未领取
-                        sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.FRIEND_PHY_RECEIVE),vo,user);
-                        return;
+                        return error(ErrorCode.ERROR);
                     }else {
                         voList.add(recPhy(player, curFriend));
                     }
@@ -105,7 +91,12 @@ public class FriendReceivePhyHandler extends BaseHandler{
         //推送体力领取次数更新
         vo.addData("receiveStates",voList);
         vo.addData("physicalCount",count);
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_PHY_RECEIVE),vo,user);
+        return vo;
+    }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.FRIEND_PHY_RECEIVE;
     }
 
     /**

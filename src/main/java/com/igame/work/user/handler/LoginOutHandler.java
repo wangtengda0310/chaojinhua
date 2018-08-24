@@ -1,23 +1,22 @@
 package com.igame.work.user.handler;
 
 import com.igame.core.SessionManager;
+import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.log.GoldLog;
 import com.igame.util.KickIDisconnectionReason;
 import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.PlayerLoad;
-import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class LoginOutHandler extends BaseClientRequestHandler{
+public class LoginOutHandler extends BaseHandler {
 
 
 	@Override

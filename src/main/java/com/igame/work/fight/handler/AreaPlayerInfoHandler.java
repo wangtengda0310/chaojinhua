@@ -1,16 +1,10 @@
 package com.igame.work.fight.handler;
 
 
-import java.util.List;
-import java.util.Map;
-
-import net.sf.json.JSONObject;
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.fight.dto.AreaRanker;
 import com.igame.work.fight.dto.GodsDto;
@@ -22,33 +16,27 @@ import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.service.RobotService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class AreaPlayerInfoHandler extends BaseHandler{
+public class AreaPlayerInfoHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		long playerId = jsonObject.getLong("playerId");
 
@@ -71,8 +59,7 @@ public class AreaPlayerInfoHandler extends BaseHandler{
 			}
 		}
 		if(map == null){
-			sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.AREA_P_INFO), vo, user);
-			return;
+			return error(ErrorCode.ERROR);
 		}
 		RobotDto rto = map.get(playerId);
 
@@ -93,8 +80,7 @@ public class AreaPlayerInfoHandler extends BaseHandler{
 			playerHeadId = rto.getPlayerHeadId();
 		}else if(rto == null){
 			if(playerId >= 100011){
-				sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.AREA_P_INFO), vo, user);
-				return;
+				return error(ErrorCode.ERROR);
 			}
 
 			if(oter != null){
@@ -141,8 +127,12 @@ public class AreaPlayerInfoHandler extends BaseHandler{
 		vo.addData("gods", gods);
 		vo.addData("m", lb);
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.AREA_P_INFO), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.AREA_P_INFO;
+	}
+
 }

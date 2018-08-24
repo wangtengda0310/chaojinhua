@@ -3,7 +3,7 @@ package com.igame.work.friend.handler;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.friend.dao.FriendDAO;
 import com.igame.work.friend.dto.Friend;
@@ -11,7 +11,6 @@ import com.igame.work.friend.dto.FriendInfo;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.PlayerCacheService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -24,23 +23,14 @@ import static com.igame.work.friend.FriendConstants.*;
  *
  * 根据昵称查找好友
  */
-public class FriendFindHandler extends BaseHandler{
+public class FriendFindHandler extends ReconnectedHandler {
 
     private static final int max = 20;
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -49,30 +39,26 @@ public class FriendFindHandler extends BaseHandler{
         vo.addData("nickname",nickname);
 
         if (nickname == null || nickname.isEmpty()){
-            sendError(ErrorCode.PARAMS_INVALID,MProtrol.toStringProtrol(MProtrol.FRIEND_FIND),vo,user);
-            return;
+            return error(ErrorCode.PARAMS_INVALID);
         }
 
         //校验是否为当前用户
         if (player.getNickname().equals(nickname)){
-            sendError(ErrorCode.PARAMS_INVALID,MProtrol.toStringProtrol(MProtrol.FRIEND_FIND),vo,user);
-            return;
+            return error(ErrorCode.PARAMS_INVALID);
         }
 
         //检验昵称是否存在
         Player reqPlayerCache = PlayerCacheService.ins().getPlayerByNickName(nickname);
         if (reqPlayerCache == null){
             vo.addData("state",FRIEND_STATE_NOTEXIST);
-            sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_FIND),vo,user);
-            return;
+            return vo;
         }
 
         //校验自己好友上限
         int myCurFriendCount = player.getFriends().getCurFriends().size();
         if (myCurFriendCount >= max){
             vo.addData("state",FRIEND_STATE_MYUP);
-            sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_FIND),vo,user);
-            return;
+            return vo;
         }
 
         //判断对方好友上限
@@ -85,8 +71,7 @@ public class FriendFindHandler extends BaseHandler{
         }
         if (curFriendCount >= max){
             vo.addData("state",FRIEND_STATE_OTHERUP);
-            sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_FIND),vo,user);
-            return;
+            return vo;
         }
 
         //判断对方是否在自己的好友列表中
@@ -94,8 +79,7 @@ public class FriendFindHandler extends BaseHandler{
         for (Friend curFriend : curFriends) {
             if (curFriend.getNickName().equals(nickname)){
                 vo.addData("state",FRIEND_STATE_ADDED);
-                sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_FIND),vo,user);
-                return;
+                return vo;
             }
         }
 
@@ -111,8 +95,7 @@ public class FriendFindHandler extends BaseHandler{
         for (Friend reqFriend : reqFriends) {
             if (reqFriend.getPlayerId() == player.getPlayerId()){
                 vo.addData("state",FRIEND_STATE_REQED);
-                sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_FIND),vo,user);
-                return;
+                return vo;
             }
         }
 
@@ -120,6 +103,12 @@ public class FriendFindHandler extends BaseHandler{
         FriendService.ins().addReqFriend(player, reqPlayerCache.getPlayerId());
 
         vo.addData("state",FRIEND_STATE_SUCC);
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_FIND),vo,user);
+        return vo;
     }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.FRIEND_FIND;
+    }
+
 }

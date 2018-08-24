@@ -6,27 +6,25 @@ import com.google.common.collect.Sets;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
-import com.igame.core.log.GoldLog;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.tansuo.TansuoDataManager;
+import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.checkpoint.tansuo.TansuoTemplate;
 import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
-import com.igame.work.checkpoint.guanqia.RewardDto;
-import com.igame.work.checkpoint.tansuo.TansuoDto;
-import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.PlayerService;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -38,22 +36,13 @@ import java.util.Set;
  * @author Marcus.Z
  *
  */
-public class CheckEndHandler extends BaseHandler{
+public class CheckEndHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -66,20 +55,17 @@ public class CheckEndHandler extends BaseHandler{
 
 		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
 		if(ct == null || chapterId != player.getEnterCheckpointId()){
-			sendError(ErrorCode.CHECKPOINT_END_ERROR,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_END), vo, user);
-	    	GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
-	    			+"#act:cheat" + "#type:endC#chapterId:"+chapterId);
-	    	return;
+			GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
+					+"#act:cheat" + "#type:endC#chapterId:"+chapterId);
+			return error(ErrorCode.CHECKPOINT_END_ERROR);
 		}
 
 		if(player.getXinMo().get(chapterId) != null && player.getXinMo().get(chapterId).calLeftTime(System.currentTimeMillis()) > 0){
-			sendError(ErrorCode.XINGMO_EXIT,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_END), vo, user);
-			return;
+			return error(ErrorCode.XINGMO_EXIT);
 		}
 
 		if (win != 1){
-			sendSucceed(MProtrol.toStringProtrol(MProtrol.CHECKPOINT_END), vo, user);
-			return;
+			return vo;
 		}
 
 		boolean first = false;
@@ -98,23 +84,9 @@ public class CheckEndHandler extends BaseHandler{
 		//增加怪物经验
 		String monsterExpStr = "";
 		List<Monster> ll = Lists.newArrayList();
-		for(long mid : player.getTeams().get(player.getCurTeam()).getTeamMonster()){
-			if(-1 != mid){
-				Monster mm = player.getMonsters().get(mid);
-				if(mm != null){
-					int mmExp = CheckPointService.getTotalExp(mm, reward.getExp());
-					monsterExpStr += mid;
-					if(ResourceService.ins().addMonsterExp(player, mid, mmExp, false) == 0){
-						ll.add(mm);
-						monsterExpStr += ("," + mmExp +";");
-					}else{
-						monsterExpStr += ",0;";
-					}
-				}
-			}
-		}
+        monsterExpStr = CheckSaoDangHandler.getString(player, reward, ll, monsterExpStr);
 
-		MessageUtil.notiyMonsterChange(player, ll);
+        MessageUtil.notiyMonsterChange(player, ll);
 
 		player.setLastCheckpointId(chapterId);
 
@@ -165,15 +137,20 @@ public class CheckEndHandler extends BaseHandler{
 		vo.addData("monsterExp", monsterExpStr);
 		vo.addData("reward", rr);
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.CHECKPOINT_END), vo, user);
+		return vo;
+	}
+
+	@Override
+	protected int protocolId() {
+		return MProtrol.CHECKPOINT_END;
 	}
 
 
 	private void notiyUnLockCheck(Player player,String unlock,int newchapterId){
 
-		String str = "";
-		String strC = "";
-		String checkPoint = String.valueOf(newchapterId);
+		StringBuilder str = new StringBuilder();
+		StringBuilder strC = new StringBuilder();
+		StringBuilder checkPoint = new StringBuilder(String.valueOf(newchapterId));
 		if(!MyUtil.isNullOrEmpty(unlock)){
 			String[] us = unlock.split(",");
 			Set<Integer> ccs = Sets.newHashSet();
@@ -182,7 +159,7 @@ public class CheckEndHandler extends BaseHandler{
 				String[] cc = player.getCheckPoint().split(",");
 				for(String c : cc){
 					CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(c));
-					if(ct != null && !ccs.contains(ct.getCityId())){
+					if(ct != null){
 						ccs.add(ct.getCityId());
 					}
 				}
@@ -191,12 +168,12 @@ public class CheckEndHandler extends BaseHandler{
 				CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(u));
 				if(!MyUtil.hasCheckPoint(player.getCheckPoint(), u)){//真正第一次已过关卡更新
 					if(ct.getChapterType()!=2){
-						str+=","+u;
+						str.append(",").append(u);
 					}
 
 					if(ct.getChapterType()==2 && !MyUtil.isNullOrEmpty(ct.getDropPoint())){
 						if(player.getTimeResCheck().get(ct.getChapterId()) == null){//资源关卡
-							checkPoint  += ","+ct.getChapterId();
+							checkPoint.append(",").append(ct.getChapterId());
 							player.setCheckPoint(player.getCheckPoint()+"," +String.valueOf(ct.getChapterId()));
 							player.getTimeResCheck().put(ct.getChapterId(), ct.getMaxTime() * 60);
 							RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), ct.getMaxTime() * 60, ct.getMaxTime() * 60);
@@ -205,21 +182,21 @@ public class CheckEndHandler extends BaseHandler{
 					}
 				}
 
-				if(ct != null && !ccs.contains(ct.getCityId()) && !newccs.contains(ct.getCityId())){
+				if(ct != null && !ccs.contains(ct.getCityId())){
 					newccs.add(ct.getCityId());
 				}
 			}
 			if(!newccs.isEmpty()){
 				for(Integer ii : newccs){
-					strC += ","+ii;
+					strC.append(",").append(ii);
 				}
 			}
 			if(strC.length()>0){
-				strC = strC.substring(1);
+				strC = new StringBuilder(strC.substring(1));
 			}
 			if(str.length()>0){
-				str = str.substring(1);
-				if(isTwoRound(str)){
+				str = new StringBuilder(str.substring(1));
+				if(isTwoRound(str.toString())){
 					if(player.getRound() == 1){
 						player.setRound(2);
 					}
@@ -229,9 +206,9 @@ public class CheckEndHandler extends BaseHandler{
 
 		}
 		RetVO vo = new RetVO();
-		vo.addData("unlock", str);
-		vo.addData("unlockCity", strC);
-		vo.addData("checkPoint", checkPoint);
+		vo.addData("unlock", str.toString());
+		vo.addData("unlockCity", strC.toString());
+		vo.addData("checkPoint", checkPoint.toString());
 		vo.addData("round", player.getRound());
 		MessageUtil.sendMessageToPlayer(player, MProtrol.CHECK_UNLOCK, vo);
 

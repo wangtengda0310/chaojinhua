@@ -1,13 +1,11 @@
 package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
@@ -17,14 +15,14 @@ import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.fight.service.FightUtil;
-import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
+import com.igame.work.monster.handler.TuJianHandler;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -32,33 +30,23 @@ import java.util.List;
  * @author Marcus.Z
  *
  */
-public class EndlessEnterHandler extends BaseHandler{
+public class EndlessEnterHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		int buffer = jsonObject.getInt("buffer");
 
-		int ret = 0;
 		int currIndex = 0;
 		List<String> ll = Lists.newArrayList();
 		ll.addAll(player.getWuMap().values());
-		ll.sort((h1, h2) -> Integer.parseInt(h1.split(";")[1]) - Integer.parseInt(h2.split(";")[1]));
+		ll.sort(Comparator.comparingInt(h -> Integer.parseInt(h.split(";")[1])));
 		currIndex = Integer.parseInt(ll.get(0).split(";")[0]);
 		int total = 0;
 		List<MatchMonsterDto> lb = Lists.newArrayList();
@@ -74,8 +62,8 @@ public class EndlessEnterHandler extends BaseHandler{
 		if(total >= ll.size()){//已结全部过关
 			currIndex = 0;
 		}	
-		if(currIndex == 0 || player.getWuZheng().isEmpty() || (currIndex != Integer.parseInt(ll.get(0).split(";")[0]) &&  "101,105,127,107".indexOf(String.valueOf(buffer)) == -1)){
-			ret = ErrorCode.ERROR;
+		if(currIndex == 0 || player.getWuZheng().isEmpty() || (currIndex != Integer.parseInt(ll.get(0).split(";")[0]) && !"101,105,127,107".contains(String.valueOf(buffer)))){
+			return error(ErrorCode.ERROR);
 		}else{
 			String[] ct = player.getWuMap().get(currIndex).split(";");
 			String meetM = ct[3];
@@ -93,14 +81,7 @@ public class EndlessEnterHandler extends BaseHandler{
 			if(!MyUtil.isNullOrEmpty(meetM)){
 				boolean change = false;
 
-				for(String id :meetM.split(",")){
-					int mid = Integer.parseInt(id);
-					if(MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mid) != null && !player.getMeetM().contains(mid)){
-						player.getMeetM().add(mid);
-						change = true;
-					}
-					
-				}
+				change = TuJianHandler.isChange(player, meetM, change);
 				if(change){
 					MessageUtil.notiyMeetM(player);
 				}
@@ -137,16 +118,16 @@ public class EndlessEnterHandler extends BaseHandler{
 
 			
 		}
-		
-		if(ret != 0){
-			vo.setState(1);
-			vo.setErrCode(ret);
-		}
+
 		vo.addData("a", player.getWuZheng().values());
 		vo.addData("m", lb);
 
-		send(MProtrol.toStringProtrol(MProtrol.WU_ENTER), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.WU_ENTER;
+	}
+
 }

@@ -4,12 +4,11 @@ package com.igame.work.checkpoint.guanqia.handler;
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
-import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
@@ -20,7 +19,6 @@ import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.service.RobotService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -33,22 +31,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Marcus.Z
  *
  */
-public class EnterCheckHandler extends BaseHandler{
+public class EnterCheckHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -59,18 +48,16 @@ public class EnterCheckHandler extends BaseHandler{
 		//入参校验
 		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
 		if(ct == null){
-			sendError(ErrorCode.CHECKPOINT_ENTER_ERROR,MProtrol.toStringProtrol(MProtrol.ENTER_CHECK), vo, user);
-			return;
+			return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 		}
 
 		//校验前置关卡
 		if(!MyUtil.isNullOrEmpty(ct.getLimit()) && isLock(player, ct)){
-			sendError(ErrorCode.CHECKPOINT_ENTER_ERROR,MProtrol.toStringProtrol(MProtrol.ENTER_CHECK), vo, user);
-			return;
+			return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 		}
 
 		//return
-		int ctype = 0;
+		int ctype;
 		int todayCount = 0;
 		long playerId = 0;
 		String name = "";
@@ -84,8 +71,7 @@ public class EnterCheckHandler extends BaseHandler{
 
 			Map<String,RobotDto> ro = RobotService.ins().getRobot().get(player.getSeverId());
 			if(ro == null || ro.get(player.getXinMo().get(chapterId).getMid()) == null){
-				sendError(ErrorCode.XINGMO_LEAVEL,MProtrol.toStringProtrol(MProtrol.ENTER_CHECK), vo, user);
-				return;
+				return error(ErrorCode.XINGMO_LEAVEL);
 			}
 
 			ctype = 2;
@@ -120,8 +106,7 @@ public class EnterCheckHandler extends BaseHandler{
 					int front =  chapterId-140;
 					CheckPointTemplate ft = GuanQiaDataManager.CheckPointData.getTemplate(front);
 					if(ft != null && !MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(front))){
-						sendError(ErrorCode.CHECKPOINT_ENTER_ERROR,MProtrol.toStringProtrol(MProtrol.ENTER_CHECK), vo, user);
-						return;
+						return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 					}else{
 						process(player, lb, chapterId,idx);
 						process(player, lb, chapterId-140,idx);
@@ -132,16 +117,13 @@ public class EnterCheckHandler extends BaseHandler{
 					int front =  chapterId-280;
 					CheckPointTemplate ft = GuanQiaDataManager.CheckPointData.getTemplate(front);
 					if(ft != null && !MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(front))){
-						sendError(ErrorCode.CHECKPOINT_ENTER_ERROR,MProtrol.toStringProtrol(MProtrol.ENTER_CHECK), vo, user);
-						return;
+						return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 					}else{
 						process(player, lb, chapterId,idx);
 						process(player, lb, chapterId-140,idx);
 						process(player, lb, chapterId-280,idx);
 					}
 				}
-
-			}else{//资源关卡
 
 			}
 
@@ -157,7 +139,12 @@ public class EnterCheckHandler extends BaseHandler{
 		vo.addData("m", lb);
 		vo.addData("todayCount", todayCount);
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.ENTER_CHECK), vo, user);
+		return vo;
+	}
+
+	@Override
+	protected int protocolId() {
+		return MProtrol.ENTER_CHECK;
 	}
 
 	/**

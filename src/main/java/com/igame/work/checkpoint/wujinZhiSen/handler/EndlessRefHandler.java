@@ -1,51 +1,35 @@
 package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
-
-
-
-import net.sf.json.JSONObject;
-
-import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class EndlessRefHandler extends BaseHandler{
+public class EndlessRefHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
-		int ret = 0;
+		int ret;
 		if(player.getWuReset() >= 1){//免费次数已用完
 			if(player.getDiamond()<100){
-				ret = ErrorCode.DIAMOND_NOT_ENOUGH;
+				return vo;
 			}else{
 				ret = CheckPointService.refEndlessRef(player);
 				ResourceService.ins().addDiamond(player, -100);
@@ -67,8 +51,12 @@ public class EndlessRefHandler extends BaseHandler{
 			MessageUtil.notiyWuResetChange(player);
 		}
 
-		send(MProtrol.toStringProtrol(MProtrol.WU_REF), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.WU_REF;
+	}
+
 }

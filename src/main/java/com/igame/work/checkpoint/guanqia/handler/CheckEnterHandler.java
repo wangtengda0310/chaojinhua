@@ -4,16 +4,14 @@ package com.igame.work.checkpoint.guanqia.handler;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
-import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
+import com.igame.work.monster.handler.TuJianHandler;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -25,22 +23,13 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class CheckEnterHandler extends BaseHandler{
+public class CheckEnterHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -51,38 +40,32 @@ public class CheckEnterHandler extends BaseHandler{
 		//校验关卡ID
 		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
 		if(ct == null){
-			sendError(ErrorCode.CHECKPOINT_ENTER_ERROR,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_ENTER), vo, user);
-			return;
+			return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 		}
 
 		//校验背包空间
 		if (player.getItems().size() >= player.getBagSpace()){
-			sendError(ErrorCode.BAGSPACE_ALREADY_FULL,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_ENTER), vo, user);
-			return;
+			return error(ErrorCode.BAGSPACE_ALREADY_FULL);
 		}
 
 		//校验前置关卡
 		if(!MyUtil.isNullOrEmpty(ct.getLimit()) && isLock(player, ct)){
-			sendError(ErrorCode.CHECKPOINT_ENTER_ERROR,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_ENTER), vo, user);
-			return;
+			return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 		}
 
 		//校验体力
 		if(player.getPhysical() < ct.getPhysical()){
-			sendError(ErrorCode.PHYSICA_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_ENTER), vo, user);
-			return;
+			return error(ErrorCode.PHYSICA_NOT_ENOUGH);
 		}
 
 		//校验心魔
 		if(player.getXinMo().get(chapterId) != null && player.getXinMo().get(chapterId).calLeftTime(System.currentTimeMillis()) > 0){
-			sendError(ErrorCode.XINGMO_EXIT,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_ENTER), vo, user);
-			return;
+			return error(ErrorCode.XINGMO_EXIT);
 		}
 
         //校验挑战次数
         if (player.getPlayerCount().getCheckPoint(ct.getChapterType(),chapterId) <= 0){
-            sendError(ErrorCode.CHECKCOUNT_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_ENTER), vo, user);
-            return;
+            return error(ErrorCode.CHECKCOUNT_NOT_ENOUGH);
         }
 
 
@@ -156,10 +139,15 @@ public class CheckEnterHandler extends BaseHandler{
 		param.put("battleType", 1);
 		param.put("chapterId", chapterId);
 		player.setLastBattleParam(param);
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.CHECKPOINT_ENTER), vo, user);
+		return vo;
 	}
 
-    /**
+	@Override
+	protected int protocolId() {
+		return MProtrol.CHECKPOINT_ENTER;
+	}
+
+	/**
      * 怪兽图鉴
      * @param player 角色
      * @param template 关卡模板
@@ -171,14 +159,8 @@ public class CheckEnterHandler extends BaseHandler{
 
             boolean change = false;
             for(String ids :meetM.split(":")){
-                for(String id :ids.split(",")){
-                    int mid = Integer.parseInt(id);
-                    if(MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mid) != null && !player.getMeetM().contains(mid)){
-                        player.getMeetM().add(mid);
-                        change = true;
-                    }
-                }
-            }
+				change = TuJianHandler.isChange(player, ids, change);
+			}
 
             if(change){
                 MessageUtil.notiyMeetM(player);

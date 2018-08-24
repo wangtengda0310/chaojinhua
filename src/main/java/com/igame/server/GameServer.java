@@ -38,7 +38,6 @@ import com.igame.work.fight.service.ArenaService;
 import com.igame.work.fight.service.FightEffectService;
 import com.igame.work.friend.handler.*;
 import com.igame.work.gm.handler.GMHandler;
-import com.igame.work.gm.handler.TestHandler;
 import com.igame.work.item.handler.*;
 import com.igame.work.monster.handler.*;
 import com.igame.work.quest.handler.QuestRewardHandler;
@@ -90,14 +89,15 @@ public class GameServer extends SFSExtension {
 		addEventHandler(SFSEventType.BUDDY_ADD, BuddyAddEventHandler.class);//加好友
 		addEventHandler(SFSEventType.BUDDY_LIST_INIT, BuddyInitEventHandler.class);//加好友
 
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.LOGOUT), LoginOutHandler.class);//客户端主动登出
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.SERVER_LIST), ServerListHandler.class);//服务器列表
-		addRequestHandler("200", LoginOutHandler.class);//客户端主动登出
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.PLAYER_ENTER), PlayerHandler.class);//选择服务器进入游戏
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.RE_CONN), ReLoginHandler.class);
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.CHANGE_TEAM), MonsterHandler.class);//怪物换阵
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TEST), TestHandler.class);//TEST
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.GM), GMHandler.class);//GM
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.HEART), HeartHandler.class);//心跳
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.REQ_PUSH), ReqPushHndler.class);	// TODO refactor
+
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.CHANGE_TEAM), MonsterHandler.class);//怪物换阵
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.GM), GMHandler.class);//GM
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ITEM_USE), ItemHandler.class);//道具
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MONSTER_EV), MonsterEVHandler.class);//怪物进化
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MONSTER_TUPO_S), MonsterTUPOSHandler.class);//怪物基因单个突破
@@ -209,7 +209,6 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ITEM_ADD_TOPLIMIT), ItemAddToplimitHandler.class);//增加背包上限
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MONSTER_SKILL), MonsterSkillHandler.class);//怪兽技能升级
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ITEM_GROUP), ItemGroupHandler.class);//道具合成
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.REQ_PUSH), ReqPushHndler.class);
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.REPLACE_TEAM), ReplaceTeamHandler.class);//更换出战阵容
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.VIP_FRIST_PACK), VipBuyFristPackHandler.class);//会员购买礼包
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.VIP_DAY_PACK), VipRecDayPackHandler.class);//会员领取每日礼包
@@ -220,7 +219,7 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.LUCKTABLE_LOTTERY_TEN), TenLotteryHandler.class);//幸运大转盘十连抽
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MONSTER_INFO), MonsterListHandler.class);//怪物列表
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.AREA_BUY), AreaBuyHandler.class);//幸运大转盘十连抽
-		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ACTICITY), ShowActivityHandler.class);//幸运大转盘十连抽
+		addRequestHandler(MProtrol.toStringProtrol(MProtrol.ACTICITY), ShowActivityHandler.class);//活动展示
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.SIGN), SignHandler.class);//签到活动
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.MEIRI_LIANGFA), MeiriLiangfaHandler.class);//每日两发活动
 		addRequestHandler(MProtrol.toStringProtrol(MProtrol.TANSUO_ZHI_LU), TansuoZhiLuActivityHandler.class);//探索之路活动

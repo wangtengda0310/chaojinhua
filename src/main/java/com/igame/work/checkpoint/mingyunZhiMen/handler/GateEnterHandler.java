@@ -1,17 +1,11 @@
 package com.igame.work.checkpoint.mingyunZhiMen.handler;
 
 
-
-
-
-
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.mingyunZhiMen.GateDto;
 import com.igame.work.checkpoint.mingyunZhiMen.GateService;
@@ -21,7 +15,6 @@ import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -33,22 +26,13 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class GateEnterHandler extends BaseHandler{
+public class GateEnterHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -57,21 +41,18 @@ public class GateEnterHandler extends BaseHandler{
 
 		//校验等级
 //		if(player.getPlayerLevel() <18){
-//			sendError(ErrorCode.LEVEL_NOT,MProtrol.toStringProtrol(MProtrol.GATE_ENTER), vo, user);
-//			return;
+//			return error(ErrorCode.LEVEL_NOT);
 //		}
 
 		//校验是否领取
 		if(player.getFateData().getGetReward() == 1){
-			sendError(ErrorCode.GATE_NOT,MProtrol.toStringProtrol(MProtrol.GATE_ENTER), vo, user);
-			return;
+			return error(ErrorCode.GATE_NOT);
 		}
 
 		//异常校验
 		GateDto gto = player.getFateData().getGate(gateId);
 		if(gto == null){
-			sendError(ErrorCode.GATE_NOT,MProtrol.toStringProtrol(MProtrol.GATE_ENTER), vo, user);
-			return;
+			return error(ErrorCode.GATE_NOT);
 		}
 
 		player.getFateData().setGateId(gateId);
@@ -79,25 +60,7 @@ public class GateEnterHandler extends BaseHandler{
 		List<MatchMonsterDto> lb = Lists.newArrayList();
 		int act = 0;
 		if(player.getFateData().getTodayFateLevel() < player.getFateData().getFateLevel()){//还在快速选门之中，未达到最高门
-			for(int level = player.getFateData().getTodayFateLevel();level <= player.getFateData().getFateLevel();level++){
-				List<GateDto> temp = GateService.creatGate(player);
-				boolean special = false;
-				for(GateDto gt : temp){
-					if(gt.getType() != 0){//怪物关卡直接获得宝箱
-						special = true;//随机到特殊关卡就展示门
-						break;
-					}
-				}
-				if(special){
-					ls = temp;
-				}else{
-					player.getFateData().addTempBoxCount(2);
-				}
-				player.getFateData().setTodayFateLevel(level);
-				if(!ls.isEmpty()){//随机到特殊关卡就展示门
-					break;
-				}
-			}
+			ls = getGateDtos(player, ls);
 			if(player.getFateData().getTempBoxCount() > 0){
 				MessageUtil.notiyDeInfoChange(player);
 			}
@@ -141,8 +104,35 @@ public class GateEnterHandler extends BaseHandler{
 			vo.addData("a", Lists.newArrayList());
 		}
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.GATE_ENTER), vo, user);
+		return vo;
 	}
 
-	
+	static List<GateDto> getGateDtos(Player player, List<GateDto> ls) {
+		for(int level = player.getFateData().getTodayFateLevel();level <= player.getFateData().getFateLevel();level++){
+			List<GateDto> temp = GateService.creatGate(player);
+			boolean special = false;
+			for(GateDto gt : temp){
+				if(gt.getType() != 0){//怪物关卡直接获得宝箱
+					special = true;//随机到特殊关卡就展示门
+					break;
+				}
+			}
+			if(special){
+				ls = temp;
+			}else{
+				player.getFateData().addTempBoxCount(2);
+			}
+			player.getFateData().setTodayFateLevel(level);
+			if(!ls.isEmpty()){//随机到特殊关卡就展示门
+				break;
+			}
+		}
+		return ls;
+	}
+
+	@Override
+	protected int protocolId() {
+		return MProtrol.GATE_ENTER;
+	}
+
 }

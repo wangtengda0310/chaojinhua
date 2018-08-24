@@ -5,21 +5,19 @@ import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.work.checkpoint.xingheZhiYan.TrialdataTemplate;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.checkpoint.xingheZhiYan.TrialdataTemplate;
 import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanDataManager;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.fight.service.FightUtil;
-import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.handler.TuJianHandler;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -30,35 +28,25 @@ import java.util.List;
  * @author Marcus.Z
  *
  */
-public class TrialEnterHandler extends BaseHandler{
+public class TrialEnterHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
     	List<MatchMonsterDto> lb = Lists.newArrayList();
-		int ret = 0;
 		TrialdataTemplate ct = XingheZhiYanDataManager.TrialData.getTemplate(player.getTowerId() + 1);
 		if(ct == null){
-			ret = ErrorCode.ERROR;
+			return error(ErrorCode.ERROR);
 		}else if (player.getItems().size() >= player.getBagSpace()){
-			ret = ErrorCode.BAGSPACE_ALREADY_FULL;
+			return error(ErrorCode.BAGSPACE_ALREADY_FULL);
 		}else{
 			if(player.getXing() < 1){
-				ret = ErrorCode.XING_NOT_ENOUGH;
+				return error(ErrorCode.XING_NOT_ENOUGH);
 			}else{
 				ResourceService.ins().addXing(player, -1);
 //				player.setEnterCheckpointId(chapterId);
@@ -77,13 +65,7 @@ public class TrialEnterHandler extends BaseHandler{
 				
 				if(!MyUtil.isNullOrEmpty(meetM)){
 					boolean change = false;
-					for(String id :meetM.split(",")){
-						int mid = Integer.parseInt(id);
-						if(MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mid) != null && !player.getMeetM().contains(mid)){
-							player.getMeetM().add(mid);
-							change = true;
-						}
-					}
+					change = TuJianHandler.isChange(player, meetM, change);
 					if(change){
 						MessageUtil.notiyMeetM(player);
 					}
@@ -110,14 +92,14 @@ public class TrialEnterHandler extends BaseHandler{
 			
 		}
 
-		if(ret != 0){
-			vo.setState(1);
-			vo.setErrCode(ret);
-		}
 		vo.addData("m", lb);
 
-		send(MProtrol.toStringProtrol(MProtrol.TRIAL_ENTER), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.TRIAL_ENTER;
+	}
+
 }

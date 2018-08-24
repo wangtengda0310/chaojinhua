@@ -5,8 +5,7 @@ import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.fight.service.ComputeFightService;
@@ -15,7 +14,6 @@ import com.igame.work.item.service.ItemService;
 import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -30,22 +28,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Marcus.Z
  *
  */
-public class MonsterEquipDownAllHandler extends BaseHandler{
+public class MonsterEquipDownAllHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
 
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 		
@@ -58,15 +48,13 @@ public class MonsterEquipDownAllHandler extends BaseHandler{
 
 		//入参校验
 		if (teamId < 1 || 6 < teamId){
-			sendError(ErrorCode.TEAM_NOT,MProtrol.toStringProtrol(MProtrol.ITEM_EQ_ALL), vo, user);
-			return;
+			return error(ErrorCode.TEAM_NOT);
 		}
 
 		//校验怪兽
 		Monster mm = player.getMonsters().get(mid);
 		if(mm == null || MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId()) == null){//没有此怪物
-			sendError(ErrorCode.MONSTER_NOT,MProtrol.toStringProtrol(MProtrol.ITEM_EQ_ALL), vo, user);
-			return;
+			return error(ErrorCode.MONSTER_NOT);
 		}
 
 		String[] eqs = mm.getEquip().split(",");
@@ -106,8 +94,12 @@ public class MonsterEquipDownAllHandler extends BaseHandler{
 		}
 		MessageUtil.notiyTeamChange(player,player.getTeams().get(teamId));
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.ITEM_EQ_ALL), vo, user);
+		return vo;
 	}
 
+	@Override
+	protected int protocolId() {
+		return MProtrol.ITEM_EQ_ALL;
+	}
 
 }

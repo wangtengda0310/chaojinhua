@@ -43,13 +43,13 @@ public class PrivateMessageEventHandler extends BaseEventHandler {
 
 		Player senderPlayer =  SessionManager.ins().getSession(Long.parseLong(sender.getName()));
 		if(senderPlayer == null){
-			sendError(ErrorCode.ERROR, MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
+			sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.ERROR),sender);
 			throw new MessageException("senderPlayer not online : name="+sender.getName());
 		}
 
 		Player recPlayer =  SessionManager.ins().getSession(Long.parseLong(recipient.getName()));
 		if(recPlayer == null){
-			sendError(ErrorCode.RECIPIENT_NOT_ONLINE, MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
+			sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.RECIPIENT_NOT_ONLINE),sender);
 			throw new MessageException("recipient not online : name="+recipient.getName());
 		}
 
@@ -69,21 +69,21 @@ public class PrivateMessageEventHandler extends BaseEventHandler {
 
 		if (!isExist && recPlayer.getIsBanStrangers() == 0){
 			vo.addData("type",type);
-			sendError(ErrorCode.IS_BAN_STRANGERS, MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
-			throw new MessageException("privateMessage send failed : name="+sender.getName()+",errorCode="+ ErrorCode.MESSAGE_TOO_LONG);
+			sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.IS_BAN_STRANGERS),sender);
+			throw new MessageException("privateMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.MESSAGE_TOO_LONG);
 		}
 
 		//校验消息字节
 		byte[] buff = content.getBytes();
 		if(buff.length > MSG_LENGTH_MAX){
 			vo.addData("type",type);
-			sendError(ErrorCode.MESSAGE_TOO_LONG, MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
-			throw new MessageException("privateMessage send failed : name="+sender.getName()+",errorCode="+ ErrorCode.MESSAGE_TOO_LONG);
+			sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.MESSAGE_TOO_LONG),sender);
+			throw new MessageException("privateMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.MESSAGE_TOO_LONG);
 		}
 
 		//放入缓存
 		Message message = PrivateMessageService.ins().addMessage(senderPlayer,recPlayer,type,content);
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
+		sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
 	}
 	
 }

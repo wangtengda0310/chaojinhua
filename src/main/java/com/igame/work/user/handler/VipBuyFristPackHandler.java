@@ -2,16 +2,14 @@ package com.igame.work.user.handler;
 
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.work.user.PlayerDataManager;
-import com.igame.work.user.data.VipPackTemplate;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.gm.service.GMService;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.VipPackTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -22,25 +20,15 @@ import static com.igame.work.user.VIPConstants.KEY_FIRST_PACK;
  *
  * 会员购买礼包
  */
-public class VipBuyFristPackHandler extends BaseHandler{
+public class VipBuyFristPackHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
         RetVO vo = new RetVO();
 
-        if(reviceMessage(user,params,vo)){
-            return;
-        }
-
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         int vipLv = jsonObject.getInt("vipLv");
         vo.addData("vipLv",vipLv);
@@ -48,28 +36,24 @@ public class VipBuyFristPackHandler extends BaseHandler{
         //校验vip等级
         int vip = player.getVip();
         if (vip < vipLv){
-            sendError(ErrorCode.VIP_LV_LACK,MProtrol.toStringProtrol(MProtrol.VIP_FRIST_PACK),vo,user);
-            return;
+            return error(ErrorCode.VIP_LV_LACK);
         }
 
         //校验是否已购买
         String s = (String) player.getVipPrivileges().get(KEY_FIRST_PACK);
         if (!s.contains(String.valueOf(vipLv))){
-            sendError(ErrorCode.PACK_PURCHASED,MProtrol.toStringProtrol(MProtrol.VIP_FRIST_PACK),vo,user);
-            return;
+            return error(ErrorCode.PACK_PURCHASED);
         }
 
         VipPackTemplate template = PlayerDataManager.vipPackData.getTemplate(vipLv);
         if (template == null){
-            sendError(ErrorCode.PARAMS_INVALID,MProtrol.toStringProtrol(MProtrol.VIP_FRIST_PACK),vo,user);
-            return;
+            return error(ErrorCode.PARAMS_INVALID);
         }
 
         //校验钻石
         int gem = template.getGem();
         if (player.getDiamond() < gem){
-            sendError(ErrorCode.DIAMOND_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.VIP_FRIST_PACK),vo,user);
-            return;
+            return error(ErrorCode.DIAMOND_NOT_ENOUGH);
         }
 
         //扣除钻石
@@ -88,6 +72,12 @@ public class VipBuyFristPackHandler extends BaseHandler{
         player.getVipPrivileges().put(KEY_FIRST_PACK,s);
 
         vo.addData("reward",firstPack);
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.VIP_FRIST_PACK),vo,user);
+        return vo;
     }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.VIP_FRIST_PACK;
+    }
+
 }

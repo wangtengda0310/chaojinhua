@@ -40,7 +40,7 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 		//JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		trace("TestEventHandler-----name :"+sender.getName());
-		trace(sender.getName()+" send  message ："+content);
+		trace(sender.getName()+" sendClient  message ："+content);
 		//trace(sender.getName()+" additionalMsg ："+infor);
 
 		Player player = SessionManager.ins().getSession(Long.parseLong(sender.getName()));
@@ -56,8 +56,8 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 		//校验消息字节
 		byte[] buff = content.getBytes();
 		if(buff.length > MSG_LENGTH_MAX){
-			sendError(ErrorCode.MESSAGE_TOO_LONG, MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
-			throw new MessageException("worldMessage send failed : name="+sender.getName()+",errorCode="+ ErrorCode.MESSAGE_TOO_LONG);
+			sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.MESSAGE_TOO_LONG),sender);
+			throw new MessageException("worldMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.MESSAGE_TOO_LONG);
 		}
 
 		int recipient = -1;
@@ -66,8 +66,8 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 			//校验间隔时间
 			Date lastWorldSpeak = player.getLastWorldSpeak();
 			if (lastWorldSpeak != null && System.currentTimeMillis() - lastWorldSpeak.getTime() < 10000){
-				sendError(ErrorCode.SHORT_INTERVAL_TIME, MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
-				throw new MessageException("worldMessage send failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
+				sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.SHORT_INTERVAL_TIME),sender);
+				throw new MessageException("worldMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
 			}
 
 			player.setLastWorldSpeak(new Date());
@@ -77,15 +77,15 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 			//校验间隔时间
 			Date lastHornSpeak = player.getLastHornSpeak();
 			if (lastHornSpeak != null && System.currentTimeMillis() - lastHornSpeak.getTime() < 20000){
-				sendError(ErrorCode.SHORT_INTERVAL_TIME, MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
-				throw new MessageException("hornMessage send failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
+				sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.SHORT_INTERVAL_TIME),sender);
+				throw new MessageException("hornMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
 			}
 
 			//校验钻石
 			int diamond = player.getDiamond();
 			if (diamond < 5){
-				sendError(ErrorCode.DIAMOND_NOT_ENOUGH, MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
-				throw new MessageException("hornMessage send failed : name="+sender.getName()+",errorCode="+ ErrorCode.DIAMOND_NOT_ENOUGH);
+				sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.DIAMOND_NOT_ENOUGH),sender);
+				throw new MessageException("hornMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.DIAMOND_NOT_ENOUGH);
 			}
 
 			//扣除钻石
@@ -98,8 +98,8 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 			//校验间隔时间
 			Date lastClubSpeak = player.getLastClubSpeak();
 			if (lastClubSpeak != null && System.currentTimeMillis() - lastClubSpeak.getTime() < 3000){
-				sendError(ErrorCode.SHORT_INTERVAL_TIME, MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
-				throw new MessageException("clubMessage send failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
+				sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),error(ErrorCode.SHORT_INTERVAL_TIME),sender);
+				throw new MessageException("clubMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
 			}
 
 			//校验玩家是否加入工会
@@ -111,7 +111,7 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 		//放入缓存
 		Message message = PublicMessageService.ins().addMessage(player.getSeverId(),type,player.getPlayerId(),recipient,content);
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
+		sendClient(MProtrol.toStringProtrol(MProtrol.MESSAGE_ERROR),vo,sender);
 	}
 	
 }

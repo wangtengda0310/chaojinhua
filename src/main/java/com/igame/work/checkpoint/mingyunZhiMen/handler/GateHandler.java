@@ -5,8 +5,7 @@ import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.mingyunZhiMen.GateDto;
 import com.igame.work.checkpoint.mingyunZhiMen.GateService;
@@ -14,7 +13,6 @@ import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -25,66 +23,36 @@ import java.util.List;
  * @author Marcus.Z
  *
  */
-public class GateHandler extends BaseHandler{
+public class GateHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		//校验等级
 //		if(player.getPlayerLevel() <18){
-//			sendError(ErrorCode.LEVEL_NOT,MProtrol.toStringProtrol(MProtrol.GATE_INFO), vo, user);
-//			return;
+//			return error(ErrorCode.LEVEL_NOT);
 //		}
 
 		//校验是否可挑战
 		if(player.getFateData().getGetReward() == 1){
-			sendError(ErrorCode.GATE_NOT,MProtrol.toStringProtrol(MProtrol.GATE_INFO), vo, user);
-			return;
+			return error(ErrorCode.GATE_NOT);
 		}
 
 		//合法性校验
 		if(player.getFateData().getTempBoxCount() != -1){
-			sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.GATE_INFO), vo, user);
-			return;
+			return error(ErrorCode.ERROR);
 		}
 
 
 		List<GateDto> ls = Lists.newArrayList();
-		for(int level = player.getFateData().getTodayFateLevel();level <= player.getFateData().getFateLevel();level++){
-			List<GateDto> temp = GateService.creatGate(player);
-			boolean special = false;
-			for(GateDto gto : temp){
-				if(gto.getType() != 0){//怪物关卡直接获得宝箱
-					special = true;//随机到特殊关卡就展示门
-					break;
-				}
-			}
-			if(special){
-				ls = temp;
-			}else{
-				player.getFateData().addTempBoxCount(2);
-			}
-			player.getFateData().setTodayFateLevel(level);
-			if(!ls.isEmpty()){//随机到特殊关卡就展示门
-				break;
-			}
-		}
-		if(player.getFateData().getTempBoxCount() > 0){
+        ls = GateEnterHandler.getGateDtos(player, ls);
+        if(player.getFateData().getTempBoxCount() > 0){
 			MessageUtil.notiyDeInfoChange(player);
 		}
 		if(ls.isEmpty()){//说明已经达到昨天最高门,但都没有随机到特殊门
@@ -102,8 +70,12 @@ public class GateHandler extends BaseHandler{
 
 		vo.addData("gateInfo", ls);
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.GATE_INFO), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.GATE_INFO;
+	}
+
 }

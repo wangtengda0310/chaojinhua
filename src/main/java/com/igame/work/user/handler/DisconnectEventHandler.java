@@ -1,14 +1,7 @@
 package com.igame.work.user.handler;
 
 import com.igame.core.SessionManager;
-import com.igame.core.log.ExceptionLog;
-import com.igame.core.log.GoldLog;
-import com.igame.util.KickIDisconnectionReason;
-import com.igame.util.LoginOutReason;
-import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.load.PlayerLoad;
-import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
 import com.smartfoxserver.v2.entities.User;
@@ -51,7 +44,7 @@ public class DisconnectEventHandler extends BaseServerEventHandler{
 //				PlayerCacheService.ins().cachePlayer(player);
 //				player.getUser().getZone().removeUser(player.getUser());
 //				player.getUser().disconnect(new LoginOutReason());
-//				GoldLog.info(player.getSeverId(), player.getUserId(), player.getPlayerId(), GoldLog.LOGINOUT,"");
+//				GoldLog.info(player.getSeverId(), player.getUserId(), player.getPlayerId(), GoldLog.RELOGIN_NOT_ALLOWED,"");
 //				SessionManager.ins().removeSession(Long.parseLong(user.getName()));
 //			}
 

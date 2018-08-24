@@ -2,19 +2,17 @@ package com.igame.work.shop.handler;
 
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.work.shop.ShopDataManager;
-import com.igame.work.shop.data.ShopTemplate;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.shop.ShopConstants;
+import com.igame.work.shop.ShopDataManager;
+import com.igame.work.shop.data.ShopTemplate;
 import com.igame.work.shop.dto.GeneralShop;
 import com.igame.work.shop.dto.MysticalShop;
 import com.igame.work.shop.dto.ShopInfo;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -23,32 +21,22 @@ import net.sf.json.JSONObject;
  *
  * 刷新商店
  */
-public class ReloadShopHandler extends BaseHandler{
+public class ReloadShopHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         int shopId = jsonObject.getInt("shopId");
 
         vo.addData("shopId",shopId);
 
         if (shopId < 101 || 108 < shopId){
-            sendError(ErrorCode.PARAMS_INVALID, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-            return;
+            return error(ErrorCode.PARAMS_INVALID);
         }
 
         ShopInfo shopInfo = player.getShopInfo();
@@ -56,8 +44,7 @@ public class ReloadShopHandler extends BaseHandler{
 
         //校验刷新次数
         if (shopTemplate.getResestMax() != -1 && shopTemplate.getResestMax() <= shopInfo.getReloadCount(shopId)){
-            sendError(ErrorCode.SHOP_NOT_RELOAD, MProtrol.toStringProtrol(MProtrol.SHOP_Reload),vo,user);
-            return;
+            return error(ErrorCode.SHOP_NOT_RELOAD);
         }
 
         //校验钻石
@@ -73,14 +60,12 @@ public class ReloadShopHandler extends BaseHandler{
         }
 
         if (gem == 0 || player.getDiamond() < gem){
-            sendError(ErrorCode.DIAMOND_NOT_ENOUGH, MProtrol.toStringProtrol(MProtrol.SHOP_Reload),vo,user);
-            return;
+            return error(ErrorCode.DIAMOND_NOT_ENOUGH);
         }
 
         //校验商店是否解锁
         if (shopInfo.isLock(shopId)){
-            sendError(ErrorCode.SHOP_LOCK, MProtrol.toStringProtrol(MProtrol.SHOP_Reload),vo,user);
-            return;
+            return error(ErrorCode.SHOP_LOCK);
         }
 
         //刷新商店
@@ -115,6 +100,12 @@ public class ReloadShopHandler extends BaseHandler{
                 break;
         }
 
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.SHOP_Reload),vo,user);
+        return vo;
     }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.SHOP_Reload;
+    }
+
 }

@@ -2,16 +2,13 @@ package com.igame.work.checkpoint.baozouShike.handler;
 
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.baozouShike.BallisticRank;
 import com.igame.work.checkpoint.baozouShike.BallisticRanker;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.PlayerCacheService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import org.apache.commons.collections.map.HashedMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,27 +22,17 @@ import static com.igame.work.checkpoint.guanqia.CheckPointContants.BALL_RANK_SHO
  *
  * 暴走时刻排行榜
  */
-public class BallisticRankHandler extends BaseHandler{
+public class BallisticRankHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if (player == null) {
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         //校验等级
         int playerLevel = player.getPlayerLevel();
         if (playerLevel < BALL_LOCK_LV){
-            sendError(ErrorCode.BALLISTIC_LOCK, MProtrol.toStringProtrol(MProtrol.BALLISTIC_RANKS), vo, user);
-            return;
+            return error(ErrorCode.BALLISTIC_LOCK);
         }
 
         //return
@@ -83,13 +70,15 @@ public class BallisticRankHandler extends BaseHandler{
 
         //获取玩家排行榜信息
         Map<Long, BallisticRanker> rankerMap = BallisticRank.ins().getRankMap().get(player.getSeverId());
-        if (rankerMap != null && rankerMap.get(player.getPlayerId()) != null){    //玩家在排行榜中
+        if(rankList != null) {
+            if (rankerMap != null && rankerMap.get(player.getPlayerId()) != null) {    //玩家在排行榜中
 
-            BallisticRanker ranker = rankerMap.get(player.getPlayerId());
+                BallisticRanker ranker = rankerMap.get(player.getPlayerId());
 
-            rank = rankList.indexOf(ranker) + 1;
-            round = Math.round(rank/rankList.size() * 100);
-            score = ranker.getScore();
+                rank = rankList.indexOf(ranker) + 1;
+                round = Math.round(rank / rankList.size() * 100);
+                score = ranker.getScore();
+            }
         }
 
         vo.addData("playerScore", score);
@@ -98,26 +87,13 @@ public class BallisticRankHandler extends BaseHandler{
         vo.addData("challengeCount", ballisticCount);
         vo.addData("currentBuff", buff);
         vo.addData("ranks", topFifty);
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.BALLISTIC_RANKS), vo, user);
+        return vo;
 
     }
 
-    private void initRank(){
-        List<BallisticRanker> rankers = new ArrayList<>();
-
-        Map<Integer, Map<Long, BallisticRanker>> rankMap = BallisticRank.ins().getRankMap();
-        rankMap.put(1,new HashedMap());
-        for (int i = 1; i <= 100; i++) {
-            BallisticRanker ranker = new BallisticRanker();
-            ranker.setPlayerId(i);
-            ranker.setName("玩家_"+i);
-            ranker.setTime(i);
-            ranker.setScore(100-i);
-
-            rankers.add(ranker);
-            rankMap.get(1).put(new Long(i),ranker);
-        }
-
-        BallisticRank.ins().getRankList().put(1,rankers);
+    @Override
+    protected int protocolId() {
+        return MProtrol.BALLISTIC_RANKS;
     }
+
 }

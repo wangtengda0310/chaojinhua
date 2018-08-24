@@ -156,7 +156,7 @@ public class MyClient extends JFrame implements IEventListener {
         String pro = proTextField.getText();
         String content = sendTextArea.getText();
 
-        System.out.println("send:"+content);
+        System.out.println("sendClient:"+content);
         System.out.println();
 
         if (pro.equals("800")){

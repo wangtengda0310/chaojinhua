@@ -28,7 +28,7 @@ public class ReLoginHandler extends BaseHandler{
 			player.setUser(user);
 		}
 		RetVO vo = new RetVO();
-		send(MProtrol.toStringProtrol(MProtrol.RE_CONN), vo, user);
+		sendClient(MProtrol.toStringProtrol(MProtrol.RE_CONN), vo, user);
 	}
 
 }

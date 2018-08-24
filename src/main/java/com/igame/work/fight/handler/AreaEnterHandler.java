@@ -1,53 +1,37 @@
 package com.igame.work.fight.handler;
 
 
-
-
-import net.sf.json.JSONObject;
-
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.fight.dto.AreaRanker;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class AreaEnterHandler extends BaseHandler{
+public class AreaEnterHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		long playerId = jsonObject.getLong("playerId");
 		vo.addData("playerId", playerId);
 
 		//校验挑战次数
 		if(player.getAreaCount() >= 5){
-			sendError(ErrorCode.TODAY_COUNT_NOTENOUGH,MProtrol.toStringProtrol(MProtrol.AREA_ENTER), vo, user);
-			return;
+			return error(ErrorCode.TODAY_COUNT_NOTENOUGH);
 		}
 
 		//校验对手
@@ -59,26 +43,27 @@ public class AreaEnterHandler extends BaseHandler{
 			}
 		}
 		if(oter == null){
-			sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.AREA_ENTER), vo, user);
-			return;
+			return error(ErrorCode.ERROR);
 		}
 
 
 		if(oter.getPlayerId() == player.getPlayerId()){
-			sendError(ErrorCode.AREA_NOT_SELF,MProtrol.toStringProtrol(MProtrol.AREA_ENTER), vo, user);
-			return;
+			return error(ErrorCode.AREA_NOT_SELF);
 		}
 
 		if(oter.getRank()>=player.getMyRank()){
-			sendError(ErrorCode.AREA_NOT_LOW,MProtrol.toStringProtrol(MProtrol.AREA_ENTER), vo, user);
-			return;
+			return error(ErrorCode.AREA_NOT_LOW);
 		}
 
 		player.setTempAreaPlayerId(playerId);
 		ResourceService.ins().addAreaCount(player, 1);
 
-		send(MProtrol.toStringProtrol(MProtrol.AREA_ENTER), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.AREA_ENTER;
+	}
+
 }

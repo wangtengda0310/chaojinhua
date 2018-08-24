@@ -1,56 +1,42 @@
 package com.igame.work.item.handler;
 
 
-
-import java.util.List;
-
-import com.igame.work.item.ItemDataManager;
-import com.igame.work.item.service.ItemService;
-import com.igame.work.monster.dto.Monster;
-import net.sf.json.JSONObject;
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.work.item.data.PropGroupTemplate;
-import com.igame.core.handler.BaseHandler;
-import com.igame.core.log.GoldLog;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.core.log.GoldLog;
 import com.igame.util.GameMath;
+import com.igame.work.item.ItemDataManager;
+import com.igame.work.item.data.PropGroupTemplate;
 import com.igame.work.item.dto.Item;
+import com.igame.work.item.service.ItemService;
+import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
+
+import java.util.List;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class ItemHeChengHandler extends BaseHandler{
+public class ItemHeChengHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
 
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		int itemId = jsonObject.getInt("itemId");
 		int type = jsonObject.getInt("type");
@@ -60,27 +46,23 @@ public class ItemHeChengHandler extends BaseHandler{
 
 		//入参校验
 		if(type<1 || type >3){
-			sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.ITEM_HE), vo, user);
-			return;
+			return error(ErrorCode.ERROR);
 		}
 
 		//校验道具
 		Item item = player.getItems().get(itemId);
 		if(item == null){
-			sendError(ErrorCode.ITEM_NOT_EXIT,MProtrol.toStringProtrol(MProtrol.ITEM_HE), vo, user);
-			return;
+			return error(ErrorCode.ITEM_NOT_EXIT);
 		}
 
 		PropGroupTemplate pt = ItemDataManager.PropGroupData.getTemplate(itemId);
 		if(pt == null){
-			sendError(ErrorCode.EQ_HECHENG_CANT,MProtrol.toStringProtrol(MProtrol.ITEM_HE), vo, user);
-			return;
+			return error(ErrorCode.EQ_HECHENG_CANT);
 		}
 
 		//校验纹章可用数量
 		if(item.getUsableCount(player.getCurTeam()) < 3){
-			sendError(ErrorCode.ITEM_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.ITEM_HE), vo, user);
-			return;
+			return error(ErrorCode.ITEM_NOT_ENOUGH);
 		}
 
 		int res;
@@ -90,8 +72,7 @@ public class ItemHeChengHandler extends BaseHandler{
 		if(type == 1){//金币
 
 			if(player.getGold() < pt.getGold()){
-				sendError(ErrorCode.GOLD_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.ITEM_HE), vo, user);
-				return;
+				return error(ErrorCode.GOLD_NOT_ENOUGH);
 			}
 
 			if(GameMath.hitRate(pt.getRate() * 100)){//成功
@@ -115,13 +96,11 @@ public class ItemHeChengHandler extends BaseHandler{
 		}else if(type == 2){//钻石
 
 			if(pt.getGem() == 0){
-				sendError(ErrorCode.EQ_HECHENG_TYPECANT,MProtrol.toStringProtrol(MProtrol.ITEM_HE), vo, user);
-				return;
+				return error(ErrorCode.EQ_HECHENG_TYPECANT);
 			}
 
 			if(player.getDiamond() < pt.getGem()){
-				sendError(ErrorCode.DIAMOND_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.ITEM_HE), vo, user);
-				return;
+				return error(ErrorCode.DIAMOND_NOT_ENOUGH);
 			}
 
 			ResourceService.ins().addDiamond(player, 0-pt.getGem());
@@ -136,14 +115,12 @@ public class ItemHeChengHandler extends BaseHandler{
 		}else {//粉尘
 
 			if(pt.getItem() == 0){
-				sendError(ErrorCode.EQ_HECHENG_TYPECANT,MProtrol.toStringProtrol(MProtrol.ITEM_HE), vo, user);
-				return;
+				return error(ErrorCode.EQ_HECHENG_TYPECANT);
 			}
 
 			Item xiao = player.getItems().get(300001);
 			if(xiao == null || xiao.getUsableCount(-1) < pt.getItem()){
-				sendError(ErrorCode.ITEM_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.ITEM_HE), vo, user);
-				return;
+				return error(ErrorCode.ITEM_NOT_ENOUGH);
 			}
 
 			xiao = ResourceService.ins().addItem(player, xiao.getItemId(), 0-pt.getItem(), false);
@@ -170,8 +147,12 @@ public class ItemHeChengHandler extends BaseHandler{
 		vo.addData("res", res);
 		vo.addData("newItemId", newItemId);
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.ITEM_HE), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.ITEM_HE;
+	}
+
 }

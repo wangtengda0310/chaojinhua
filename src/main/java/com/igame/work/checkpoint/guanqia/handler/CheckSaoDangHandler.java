@@ -1,24 +1,21 @@
 package com.igame.work.checkpoint.guanqia.handler;
 
 
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
-import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
-import com.igame.core.handler.BaseHandler;
-import com.igame.core.log.GoldLog;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
-import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
+import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -29,22 +26,13 @@ import java.util.List;
  * @author Marcus.Z
  *
  */
-public class CheckSaoDangHandler extends BaseHandler{
+public class CheckSaoDangHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -57,26 +45,22 @@ public class CheckSaoDangHandler extends BaseHandler{
 		if(ct == null || !MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(chapterId))){
 	    	GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 	    			+"#act:cheat" + "#type:saoC#chapterId:"+chapterId);
-			sendError(ErrorCode.CHECKPOINT_END_ERROR,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_SAO), vo, user);
-			return;
+			return error(ErrorCode.CHECKPOINT_END_ERROR);
 		}
 
 		//扫荡券校验
 		if(player.getSao() < 1){
-			sendError(ErrorCode.SAO_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_SAO), vo, user);
-			return;
+			return error(ErrorCode.SAO_NOT_ENOUGH);
 		}
 
 		//体力校验
 		if(player.getPhysical() < ct.getPhysical()){
-			sendError(ErrorCode.PHYSICA_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_SAO), vo, user);
-			return;
+			return error(ErrorCode.PHYSICA_NOT_ENOUGH);
 		}
 
 		//校验挑战次数
 		if (player.getPlayerCount().getCheckPoint(ct.getChapterType(),chapterId) <= 0){
-			sendError(ErrorCode.CHECKCOUNT_NOT_ENOUGH,MProtrol.toStringProtrol(MProtrol.CHECKPOINT_ENTER), vo, user);//该关卡今日挑战次数不足
-			return;
+			return error(ErrorCode.CHECKCOUNT_NOT_ENOUGH);//该关卡今日挑战次数不足
 		}
 
 		//扣除扫荡券
@@ -99,21 +83,7 @@ public class CheckSaoDangHandler extends BaseHandler{
 		//增加怪兽经验
 		List<Monster> ll = Lists.newArrayList();
 		String monsterExpStr = "";
-		for(long mid : player.getTeams().get(player.getCurTeam()).getTeamMonster()){
-			if(-1 != mid){
-				Monster mm = player.getMonsters().get(mid);
-				if(mm != null){
-					int mmExp = CheckPointService.getTotalExp(mm, reward.getExp());
-					monsterExpStr += mid;
-					if(ResourceService.ins().addMonsterExp(player, mid, mmExp, false) == 0){
-						ll.add(mm);
-						monsterExpStr += ("," + mmExp +";");
-					}else{
-						monsterExpStr += ",0;";
-					}
-				}
-			}
-		}
+		monsterExpStr = getString(player, reward, ll, monsterExpStr);
 
 		MessageUtil.notiyMonsterChange(player, ll);
 
@@ -129,8 +99,33 @@ public class CheckSaoDangHandler extends BaseHandler{
 		vo.addData("monsterExp", monsterExpStr);
 		vo.addData("reward", rr);
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.CHECKPOINT_SAO), vo, user);
+		return vo;
 	}
 
-	
+	static String getString(Player player, RewardDto reward, List<Monster> ll, String monsterExpStr) {
+		StringBuilder monsterExpStrBuilder = new StringBuilder(monsterExpStr);
+		for(long mid : player.getTeams().get(player.getCurTeam()).getTeamMonster()){
+			if(-1 != mid){
+				Monster mm = player.getMonsters().get(mid);
+				if(mm != null){
+					int mmExp = CheckPointService.getTotalExp(mm, reward.getExp());
+					monsterExpStrBuilder.append(mid);
+					if(ResourceService.ins().addMonsterExp(player, mid, mmExp, false) == 0){
+						ll.add(mm);
+						monsterExpStrBuilder.append(",").append(mmExp).append(";");
+					}else{
+						monsterExpStrBuilder.append(",0;");
+					}
+				}
+			}
+		}
+		monsterExpStr = monsterExpStrBuilder.toString();
+		return monsterExpStr;
+	}
+
+	@Override
+	protected int protocolId() {
+		return MProtrol.CHECKPOINT_SAO;
+	}
+
 }

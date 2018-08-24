@@ -3,17 +3,16 @@ package com.igame.core;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import com.igame.core.log.ExceptionLog;
 import com.igame.core.handler.RetVO;
+import com.igame.core.log.ExceptionLog;
 import com.igame.util.MyUtil;
-import com.igame.work.checkpoint.mingyunZhiMen.FateDto;
-import com.igame.work.checkpoint.guanqia.RewardDto;
-import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
+import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.checkpoint.mingyunZhiMen.FateDto;
+import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.item.dto.Item;
-import com.igame.work.monster.dto.FightProp;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
@@ -135,20 +134,6 @@ public class MessageUtil {
 			MessageUtil.sendMessageToPlayer(player, MProtrol.MONSTER_UPDATE, vo);
 		}
 	}
-	
-	/**
-	 * 
-	 * @param player
-	 */
-	public static void notiyMonsterPropChange(Player player,List<FightProp> props){
-		
-		if(!props.isEmpty()){
-			RetVO vo = new RetVO();		
-	    	vo.addData("props", props);
-			MessageUtil.sendMessageToPlayer(player, MProtrol.TEST, vo);
-		}
-	}
-	
 	
 	/**
 	 * 推送怪兽列表

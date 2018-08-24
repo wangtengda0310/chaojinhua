@@ -1,13 +1,11 @@
 package com.igame.work.chat.handler;
 
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.chat.dto.PublicMessageDto;
 import com.igame.work.chat.service.PublicMessageService;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -19,24 +17,13 @@ import java.util.List;
  *
  * 获取世界消息
  */
-public class PublicMessageHandler extends BaseHandler{
+public class PublicMessageHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
-
-		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         //世界消息
         List<PublicMessageDto> worldMsg = new ArrayList<>();
@@ -46,9 +33,16 @@ public class PublicMessageHandler extends BaseHandler{
         List<PublicMessageDto> hornMsg = new ArrayList<>();
         PublicMessageService.ins().getHornMessage(player.getSeverId()).forEach(message -> hornMsg.add(new PublicMessageDto(message)));
 
+        RetVO vo = new RetVO();
         vo.addData("worldMsg", worldMsg);
         vo.addData("hornMsg", hornMsg);
         vo.addData("clubMsg", new ArrayList<>());
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.MESSAGE_WORLD),vo,user);
+        return vo;
     }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.MESSAGE_WORLD;
+    }
+
 }

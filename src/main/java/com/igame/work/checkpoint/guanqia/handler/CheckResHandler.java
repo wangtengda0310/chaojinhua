@@ -1,48 +1,34 @@
 package com.igame.work.checkpoint.guanqia.handler;
 
 
-
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
-import net.sf.json.JSONObject;
-
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class CheckResHandler extends BaseHandler{
+public class CheckResHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		String chapterIdstr = jsonObject.getString("chapterId");
-		int ret = 0;
 		String reward = "";
 		for(String temp: chapterIdstr.split(",")){
 			int chapterId = Integer.parseInt(temp);
@@ -66,18 +52,18 @@ public class CheckResHandler extends BaseHandler{
 		}
 
 
-		if(ret != 0){
-			vo.setState(1);
-			vo.setErrCode(ret);
-		}
 		if(reward.length() > 0){
 			reward = reward.substring(1);
 		}
 		vo.addData("chapterId", chapterIdstr);
 		vo.addData("reward", reward);
 
-		send(MProtrol.toStringProtrol(MProtrol.CHECKPOINT_RES_GET), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.CHECKPOINT_RES_GET;
+	}
+
 }

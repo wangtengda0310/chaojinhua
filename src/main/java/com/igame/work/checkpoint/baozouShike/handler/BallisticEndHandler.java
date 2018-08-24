@@ -4,17 +4,15 @@ import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
 import com.igame.work.checkpoint.baozouShike.BallisticService;
+import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
 import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardData;
 import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -29,21 +27,12 @@ import static com.igame.work.checkpoint.guanqia.CheckPointContants.BALL_REWARD_E
  *
  * 暴走时刻结束战斗
  */
-public class BallisticEndHandler extends BaseHandler{
+public class BallisticEndHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if (player == null) {
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -54,20 +43,17 @@ public class BallisticEndHandler extends BaseHandler{
 
         //校验杀敌数
         if (player.getBallisticMonsters() < killNum){
-            sendError(ErrorCode.CHECKPOINT_END_ERROR, MProtrol.toStringProtrol(MProtrol.BALLISTIC_END), vo, user);
-            return;
+            return error(ErrorCode.CHECKPOINT_END_ERROR);
         }
 
         //校验上次进入的关卡ID
         /*if (player.getLastCheckpointId() != CHECKPOINT_BALL_ID){
-            sendError(ErrorCode.CHECKPOINT_END_ERROR, MProtrol.toStringProtrol(MProtrol.BALLISTIC_END), vo, user);
-            return;
+            return error(ErrorCode.CHECKPOINT_END_ERROR);
         }*/
 
         //校验暴走时刻挑战时间
         if (player.getBallisticEnter() == null){
-            sendError(ErrorCode.CHECKPOINT_END_ERROR, MProtrol.toStringProtrol(MProtrol.BALLISTIC_END), vo, user);
-            return;
+            return error(ErrorCode.CHECKPOINT_END_ERROR);
         }
 
         //更新暴走时刻排行榜
@@ -99,13 +85,18 @@ public class BallisticEndHandler extends BaseHandler{
         vo.addData("monsterExp", monsterExpStr);
         vo.addData("reward",reward);
 
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.BALLISTIC_END), vo, user);
+        return vo;
+    }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.BALLISTIC_END;
     }
 
     private String settlementExp(Player player) {
 
         //怪兽
-        String monsterExpStr = "";
+        StringBuilder monsterExpStr = new StringBuilder();
 
         List<Monster> ll = Lists.newArrayList();
         List<Long> allMonsters = new ArrayList<>();
@@ -129,25 +120,25 @@ public class BallisticEndHandler extends BaseHandler{
             if(-1 != mid){
                 Monster mm = player.getMonsters().get(mid);
                 if(mm != null){
-                    monsterExpStr += mid;
+                    monsterExpStr.append(mid);
                     if(ResourceService.ins().addMonsterExp(player, mid, BALL_REWARD_EXP, false) == 0){
                         ll.add(mm);
-                        monsterExpStr += ("," + BALL_REWARD_EXP +";");
+                        monsterExpStr.append("," + BALL_REWARD_EXP + ";");
                     }else{
-                        monsterExpStr += ",0;";
+                        monsterExpStr.append(",0;");
                     }
                 }
             }
         }
 
         if(monsterExpStr.lastIndexOf(";") >0){
-            monsterExpStr = monsterExpStr.substring(0,monsterExpStr.lastIndexOf(";"));
+            monsterExpStr = new StringBuilder(monsterExpStr.substring(0, monsterExpStr.lastIndexOf(";")));
         }
 
         //推送怪兽更新
         MessageUtil.notiyMonsterChange(player, ll);
 
-        return monsterExpStr;
+        return monsterExpStr.toString();
     }
 
     private String settlementReward(Player player, int killNum) {

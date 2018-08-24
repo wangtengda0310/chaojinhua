@@ -1,13 +1,11 @@
 package com.igame.work.friend.handler;
 
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.PlayerCacheService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
 import java.util.ArrayList;
@@ -23,22 +21,10 @@ import java.util.stream.Collectors;
  *
  * 离线24小时以内，等级差10级以内的优先抽取推荐
  */
-public class FriendNominateHandler extends BaseHandler{
+public class FriendNominateHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
-
-		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
-
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
         //搜索好友的优先级：离线24小时以内，等级差10级以内的优先抽取推荐
         int playerLevel = player.getPlayerLevel();
@@ -60,8 +46,15 @@ public class FriendNominateHandler extends BaseHandler{
                 .limit(10)
                 .forEach(playerCacheDto->nomFriends.add(new Friend(playerCacheDto)));
 
+
+        RetVO vo = new RetVO();
         vo.addData("nomFriends",nomFriends);
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.FRIEND_NOMINATE),vo,user);
+        return vo;
+    }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.FRIEND_NOMINATE;
     }
 
     private Set<Long> reqFriends(Player player) {

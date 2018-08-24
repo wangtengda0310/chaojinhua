@@ -8,15 +8,15 @@ package com.igame.core;
 public class MProtrol {
 	
 	
+	public static final int LOGOUT = 200;//登出
+
 	public static final int REQ_PUSH = 300;//请求推送历史消息
-	
+
 	public static final int HEART = 400;//心跳
 	
 	public static final int GM = 500;//GM命令
 	
-	public static final int LOGINOUT = 501;//重复登录被下线
-	
-	public static final int TEST = 600;//测试
+	public static final int RELOGIN_NOT_ALLOWED = 501;//重复登录被下线
 	
 	public static final int RE_CONN = 1001;//重连登录
 	

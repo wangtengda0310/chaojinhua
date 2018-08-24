@@ -1,47 +1,34 @@
 package com.igame.work.user.handler;
 
 
-
-
-
-
-import com.igame.work.monster.MonsterDataManager;
-import net.sf.json.JSONObject;
-
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.work.monster.data.ExchangedataTemplate;
-import com.igame.core.handler.BaseHandler;
-import com.igame.core.log.GoldLog;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.core.log.GoldLog;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.data.ExchangedataTemplate;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class ResBuyHandler extends BaseHandler{
+public class ResBuyHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
+
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
+
 		int extype = jsonObject.getInt("extype");
 		int buyCount = 0;		
 		if(extype == 1){
@@ -54,17 +41,16 @@ public class ResBuyHandler extends BaseHandler{
 			buyCount = player.getGoldBuyCount();
 		}
 		int type = buyCount + 1;
-		int ret = 0;
 		ExchangedataTemplate et = MonsterDataManager.ExchangeData.getTemplate(extype+"_"+type);
 		if(et == null){
-			ret = ErrorCode.ERROR;
+			return error(ErrorCode.ERROR);
 		}else{
 			if(player.getDiamond() < et.getGem()){
-				ret = ErrorCode.DIAMOND_NOT_ENOUGH;
+				return error(ErrorCode.DIAMOND_NOT_ENOUGH);
 				
 			}else{
 				if(extype == 1 && player.getPhBuyCount() >= 5 || extype == 2 && player.getTongAdd().getTongBuyCount()>=3 || extype == 3 && player.getXinBuyCount() >= 5 || extype == 4 && player.getGoldBuyCount() >= 5 ){
-					ret = ErrorCode.BUY_COUNT_NOT_ENOUGH;
+					return error(ErrorCode.BUY_COUNT_NOT_ENOUGH);
 				}else{
 					if(extype == 1){
 						ResourceService.ins().addPhysica(player, et.getExchange_value());
@@ -93,15 +79,15 @@ public class ResBuyHandler extends BaseHandler{
 			}
 		}
 
-		if(ret != 0){
-			vo.setState(1);
-			vo.setErrCode(ret);
-		}
 		vo.addData("extype", extype);
 		vo.addData("buyCount", buyCount);
 
-		send(MProtrol.toStringProtrol(MProtrol.BUG_RES), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.BUG_RES;
+	}
+
 }

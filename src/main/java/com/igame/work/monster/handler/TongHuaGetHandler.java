@@ -1,52 +1,40 @@
 package com.igame.work.monster.handler;
 
 
-
-import net.sf.json.JSONObject;
-
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
-import com.igame.core.log.GoldLog;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class TongHuaGetHandler extends BaseHandler{
+public class TongHuaGetHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
+
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
-		long now = System.currentTimeMillis();
+
 		int index = jsonObject.getInt("index");
-		String info = "";
-		int timeIndex = 0;
-		long leftTime = 0;
-		String reward = null;
-		int ret = 0;
-		/**
+		String info;
+		int timeIndex;
+		long leftTime;
+		String reward;
+		/*
 		 *"type,state,rewardtype,rewardId,count;";//如1,0,1,1,1;2,-1,3,200005,100
 		 *
 		 * type:0-普通 1-怪物 2-强化袍子 3-进化袍子 4-神性袍子
@@ -59,20 +47,18 @@ public class TongHuaGetHandler extends BaseHandler{
 		 */
 		TongHuaDto tdo = player.getTonghua();
 		if(tdo == null){
-			ret = ErrorCode.ERROR;
+			return error(ErrorCode.ERROR);
 		}else{
 			String[] tss = tdo.getTongStr().split(";");
 			if(index< 1 || index>tss.length){
-				ret = ErrorCode.ERROR;
+				return error(ErrorCode.ERROR);
 			}else{
 				String[] t = tss[index-1].split(",");//"type,state,rewardtype,rewardId,count"
 				if("1".equals(t[0]) || "-1".equals(t[1]) || "0".equals(t[1]) || "3".equals(t[1])){
-					ret = ErrorCode.TONGHUA_NOTGET;
+					return error(ErrorCode.TONGHUA_NOTGET);
 				}else{
-					timeIndex = tdo.getTimeIndex();
-					leftTime = tdo.calLeftTime();
 					if(index == tdo.getTimeIndex() && tdo.calLeftTime() > 0){
-						ret = ErrorCode.TONGHUA_NOTGET;
+						return error(ErrorCode.TONGHUA_NOTGET);
 					}else{
 						RewardDto rt = new RewardDto();
 						if("3".equals(t[2])){//道具
@@ -108,19 +94,19 @@ public class TongHuaGetHandler extends BaseHandler{
 
 			}
 		}
-		
-		if(ret != 0){
-			vo.setState(1);
-			vo.setErrCode(ret);
-		}
+
 		vo.addData("index", index);
 		vo.addData("info", info);
 		vo.addData("timeIndex", timeIndex);
 		vo.addData("leftTime", leftTime);
 		vo.addData("reward", reward);
 
-		send(MProtrol.toStringProtrol(MProtrol.TONGHUA_GET), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.TONGHUA_GET;
+	}
+
 }

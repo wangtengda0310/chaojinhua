@@ -1,62 +1,50 @@
 package com.igame.work.monster.handler;
 
 
-
-import java.util.List;
-import java.util.Map;
-
-import com.igame.work.fight.FightDataManager;
-import net.sf.json.JSONObject;
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.work.fight.data.GodsdataTemplate;
-import com.igame.core.handler.BaseHandler;
-import com.igame.core.log.GoldLog;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.core.log.GoldLog;
 import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class GodsResetHandler extends BaseHandler{
+public class GodsResetHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
+
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
-		
+
 		int godsType = jsonObject.getInt("godsType");
-		int ret = 0;
-		String reward = "";
+		String reward;
 		Gods gods = player.getGods().get(godsType);
 
 		if(gods == null){
-			ret = ErrorCode.ERROR;
+			return error(ErrorCode.ERROR);
 		}else{
 			List<GodsdataTemplate> preList = FightDataManager.GodsData.getPreList(gods.getGodsType(), gods.getGodsLevel());
 			if(preList == null || preList.isEmpty()){
-				ret = ErrorCode.GODS_ZERO;
+				return error(ErrorCode.GODS_ZERO);
 			}else{
 				RewardDto rt = new RewardDto();
 				for(GodsdataTemplate gt : preList){
@@ -78,15 +66,14 @@ public class GodsResetHandler extends BaseHandler{
 			}
 		}
 
-		if(ret != 0){
-			vo.setState(1);
-			vo.setErrCode(ret);
-		}
 		vo.addData("gods", gods);
 		vo.addData("reward", reward);
 
-		send(MProtrol.toStringProtrol(MProtrol.Gods_RESET), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.Gods_RESET;
+	}
 }

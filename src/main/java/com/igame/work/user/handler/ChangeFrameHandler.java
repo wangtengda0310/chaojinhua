@@ -2,13 +2,11 @@ package com.igame.work.user.handler;
 
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
+import com.igame.core.handler.ReconnectedHandler;
+import com.igame.core.handler.RetVO;
 import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.data.HeadFrameTemplate;
-import com.igame.core.handler.BaseHandler;
-import com.igame.core.handler.RetVO;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -17,24 +15,15 @@ import net.sf.json.JSONObject;
  *
  * 更换头像框
  */
-public class ChangeFrameHandler extends BaseHandler{
+public class ChangeFrameHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         int headFrameId = jsonObject.getInt("headFrameId");
 
@@ -43,19 +32,22 @@ public class ChangeFrameHandler extends BaseHandler{
         //校验头像框是否存在
         HeadFrameTemplate template = PlayerDataManager.headFrameData.getTemplate(headFrameId);
         if (template == null){
-            sendError(ErrorCode.PARAMS_INVALID,MProtrol.toStringProtrol(MProtrol.FRAME_CHANGE),vo,user);
-            return;
+            return error(ErrorCode.PARAMS_INVALID);
         }
 
         //校验头像框是否解锁
         if (!player.getUnlockFrame().contains(headFrameId)){
-            sendError(ErrorCode.FRAME_UNLOCK,MProtrol.toStringProtrol(MProtrol.FRAME_CHANGE),vo,user);
-            return;
+            return error(ErrorCode.FRAME_UNLOCK);
         }
 
         //更换头像框
         player.setPlayerFrameId(headFrameId);
 
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.FRAME_CHANGE),vo,user);
+        return vo;
+    }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.FRAME_CHANGE;
     }
 }

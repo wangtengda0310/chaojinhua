@@ -1,64 +1,50 @@
 package com.igame.work.item.handler;
 
 
-
-import java.util.List;
-
-import com.igame.work.item.ItemDataManager;
-import com.igame.work.user.PlayerDataManager;
-import net.sf.json.JSONObject;
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.work.item.data.PropGroupTemplate;
-import com.igame.core.handler.BaseHandler;
-import com.igame.core.log.GoldLog;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.core.log.GoldLog;
 import com.igame.util.GameMath;
+import com.igame.work.item.ItemDataManager;
+import com.igame.work.item.data.PropGroupTemplate;
 import com.igame.work.item.dto.Item;
 import com.igame.work.item.service.ItemService;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.service.QuestService;
+import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
+
+import java.util.List;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class ItemHeChengAllHandler extends BaseHandler{
+public class ItemHeChengAllHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String effects = jsonObject.getString("effect");
 		int type = jsonObject.getInt("type");
 
 		//入参校验
 		if(effects == null || "".equals(effects)){
-			sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.ITEM_HE_ALL), vo, user);
-			return;
+			return error(ErrorCode.ERROR);
 		}
 
 
@@ -82,7 +68,7 @@ public class ItemHeChengAllHandler extends BaseHandler{
 				}
 			}
 
-			if(item == null || pt == null){//没有符合条件的合成纹章，结束
+			if(item == null){//没有符合条件的合成纹章，结束
 				end = 1;
 				res = 2;
 			}else{
@@ -139,8 +125,12 @@ public class ItemHeChengAllHandler extends BaseHandler{
 //		vo.addData("currItem", currItem);
 //		vo.addData("nextItem", nextItem);
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.ITEM_HE_ALL), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.ITEM_HE_ALL;
+	}
+
 }

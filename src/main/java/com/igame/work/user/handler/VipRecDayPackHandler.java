@@ -2,14 +2,12 @@ package com.igame.work.user.handler;
 
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.work.user.PlayerDataManager;
-import com.igame.work.user.data.VipPackTemplate;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.gm.service.GMService;
+import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.data.VipPackTemplate;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
 import static com.igame.work.user.VIPConstants.KEY_DAY_PACK;
@@ -19,41 +17,26 @@ import static com.igame.work.user.VIPConstants.KEY_DAY_PACK;
  *
  * 会员领取每日礼包
  */
-public class VipRecDayPackHandler extends BaseHandler{
+public class VipRecDayPackHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
-
-        RetVO vo = new RetVO();
-
-        if(reviceMessage(user,params,vo)){
-            return;
-        }
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
         //校验vip等级
         int vip = player.getVip();
         if (vip <= 0){
-            sendError(ErrorCode.VIP_LV_LACK,MProtrol.toStringProtrol(MProtrol.VIP_DAY_PACK),vo,user);
-            return;
+            return error(ErrorCode.VIP_LV_LACK);
         }
 
         //校验是否已领取
         int flag = (int) player.getVipPrivileges().get(KEY_DAY_PACK);
         if (flag == 1){
-            sendError(ErrorCode.PACK_PURCHASED,MProtrol.toStringProtrol(MProtrol.VIP_FRIST_PACK),vo,user);
-            return;
+            return error(ErrorCode.PACK_PURCHASED);
         }
 
         VipPackTemplate template = PlayerDataManager.vipPackData.getTemplate(vip);
         if (template == null){
-            sendError(ErrorCode.PARAMS_INVALID,MProtrol.toStringProtrol(MProtrol.VIP_FRIST_PACK),vo,user);
-            return;
+            return error(ErrorCode.PARAMS_INVALID);
         }
 
         String dayPack = template.getDayPack();
@@ -64,7 +47,15 @@ public class VipRecDayPackHandler extends BaseHandler{
         flag = 1;
         player.getVipPrivileges().put(KEY_DAY_PACK,flag);
 
+        RetVO vo = new RetVO();
+
         vo.addData("reward",dayPack);
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.VIP_DAY_PACK),vo,user);
+        return vo;
     }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.VIP_DAY_PACK;
+    }
+
 }

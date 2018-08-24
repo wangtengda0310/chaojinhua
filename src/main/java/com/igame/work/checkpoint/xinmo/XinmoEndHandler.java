@@ -1,15 +1,11 @@
 package com.igame.work.checkpoint.xinmo;
 
 
-
-
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
 import com.igame.work.checkpoint.guanqia.RewardDto;
@@ -17,45 +13,34 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.load.ResourceService;
 import com.igame.work.user.service.RobotService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class XinmoEndHandler extends BaseHandler{
+public class XinmoEndHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		int win = jsonObject.getInt("win");
 		int chapterId = jsonObject.getInt("chapterId");
-		int ret = 0;
 		String reward = "";
 
 		if(player.getXinMo().get(chapterId) == null){
-			ret = ErrorCode.ERROR;
+			return error(ErrorCode.ERROR);
 		}else{
 			RewardDto rt = new RewardDto();
 			if(win == 1){
@@ -76,7 +61,7 @@ public class XinmoEndHandler extends BaseHandler{
 					Map<String, RobotDto> robs = RobotService.ins().getRobot().get(player.getSeverId());
 
 					if(!robs.isEmpty()){
-						RobotDto rb = robs.values().stream().collect(Collectors.toList()).get(GameMath.getRandInt(robs.size()));
+						RobotDto rb = new ArrayList<>(robs.values()).get(GameMath.getRandInt(robs.size()));
 						xx.setPlayerId(rb.getPlayerId());
 						xx.setMid(rb.getName());
 						xx.setPlayerFrameId(rb.getPlayerFrameId());
@@ -96,16 +81,16 @@ public class XinmoEndHandler extends BaseHandler{
 			}
 		}
 
-		if(ret != 0){
-			vo.setState(1);
-			vo.setErrCode(ret);
-		}
 		vo.addData("chapterId", chapterId);
 		vo.addData("win", win);
 		vo.addData("reward", reward);
 
-		send(MProtrol.toStringProtrol(MProtrol.XINGMO_END), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.XINGMO_END;
+	}
+
 }

@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.MProtrol;
+import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class ServerListHandler extends BaseClientRequestHandler{
+public class ServerListHandler extends BaseHandler {
 	
 	public static Map<Integer,ServerInfo> servers = Maps.newHashMap();
 	

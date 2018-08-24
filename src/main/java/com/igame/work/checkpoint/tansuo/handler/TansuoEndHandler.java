@@ -1,48 +1,35 @@
 package com.igame.work.checkpoint.tansuo.handler;
 
 
-
-import com.igame.work.checkpoint.tansuo.TansuoDataManager;
-import com.igame.work.checkpoint.tansuo.TansuoDto;
-import com.igame.work.checkpoint.tansuo.TansuoTemplate;
-import net.sf.json.JSONObject;
-
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.checkpoint.tansuo.TansuoDataManager;
+import com.igame.work.checkpoint.tansuo.TansuoDto;
+import com.igame.work.checkpoint.tansuo.TansuoTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import net.sf.json.JSONObject;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class TansuoEndHandler extends BaseHandler{
+public class TansuoEndHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -54,21 +41,18 @@ public class TansuoEndHandler extends BaseHandler{
 		TansuoDto dto = player.getTangSuo().get(sid);
 		TansuoTemplate ts = TansuoDataManager.TansuoData.getTemplate(sid);
 		if(dto == null || ts == null || dto.getState() == 0 || dto.getStartTime() == 0){
-			sendError(ErrorCode.ERROR,MProtrol.toStringProtrol(MProtrol.TANGSUO_END), vo, user);
-			return;
+			return error(ErrorCode.ERROR);
 		}
 
 		//校验背包空间
 		if (player.getItems().size() >= player.getBagSpace()){
-			sendError(ErrorCode.BAGSPACE_ALREADY_FULL,MProtrol.toStringProtrol(MProtrol.TANGSUO_END), vo, user);
-			return;
+			return error(ErrorCode.BAGSPACE_ALREADY_FULL);
 		}
 
 		//校验时间
 		dto.calLeftTime(System.currentTimeMillis());
 		if(dto.getLeftTime() > 0 ){
-			sendError(ErrorCode.TANG_TIME_NOT,MProtrol.toStringProtrol(MProtrol.TANGSUO_END), vo, user);
-			return;
+			return error(ErrorCode.TANG_TIME_NOT);
 		}
 
 		//计算怪兽数量与战力
@@ -141,8 +125,12 @@ public class TansuoEndHandler extends BaseHandler{
 		vo.addData("state", dto.getState());
 		vo.addData("reward", reward);
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.TANGSUO_END), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.TANGSUO_END;
+	}
+
 }

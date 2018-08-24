@@ -2,18 +2,16 @@ package com.igame.work.shop.handler;
 
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
+import com.igame.core.handler.ReconnectedHandler;
+import com.igame.core.handler.RetVO;
+import com.igame.work.shop.ShopConstants;
 import com.igame.work.shop.ShopDataManager;
 import com.igame.work.shop.data.ShopOutPutTemplate;
 import com.igame.work.shop.data.ShopRandomTemplate;
-import com.igame.core.handler.BaseHandler;
-import com.igame.core.handler.RetVO;
-import com.igame.work.shop.ShopConstants;
 import com.igame.work.shop.dto.ShopInfo;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -22,24 +20,15 @@ import net.sf.json.JSONObject;
  *
  * 购买商品
  */
-public class ShopBuyHandler extends BaseHandler{
+public class ShopBuyHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         int shopId = jsonObject.getInt("shopId");
         int type = jsonObject.getInt("itemType");
@@ -52,17 +41,14 @@ public class ShopBuyHandler extends BaseHandler{
 
         //入参校验
         if (shopId < 101 || shopId > 108){
-            sendError(ErrorCode.PARAMS_INVALID, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-            return;
+            return error(ErrorCode.PARAMS_INVALID);
         }
         if (type != 2 && type != 3){
-            sendError(ErrorCode.PARAMS_INVALID, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-            return;
+            return error(ErrorCode.PARAMS_INVALID);
         }
 
         if (count <= 0){
-            sendError(ErrorCode.PARAMS_INVALID, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-            return;
+            return error(ErrorCode.PARAMS_INVALID);
         }
 
         ShopInfo shopInfo = player.getShopInfo();
@@ -70,14 +56,12 @@ public class ShopBuyHandler extends BaseHandler{
 
         //校验商店是否解锁
         if (shopInfo.isLock(shopId)){
-            sendError(ErrorCode.SHOP_LOCK, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-            return;
+            return error(ErrorCode.SHOP_LOCK);
         }
 
         //校验库存
         if (count > maxCount){
-            sendError(ErrorCode.SHOP_STOCK, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-            return;
+            return error(ErrorCode.SHOP_STOCK);
         }
 
         //校验积分
@@ -86,94 +70,95 @@ public class ShopBuyHandler extends BaseHandler{
         int price;
 
         switch (shopId){
-            case ShopConstants.ID_MysticalShop:   //神秘商店
+            case ShopConstants.ID_MysticalShop: {   //神秘商店
 
                 price = randomTemplate.getPrice(type, itemId);
                 int sale = shopInfo.getMysticalShop().getSale();
                 int discountedPrice = price / 10 * sale * count;
 
                 if (player.getDiamond() < discountedPrice) {
-                    sendError(ErrorCode.DIAMOND_NOT_ENOUGH, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-                }else {     //减少商品数量，减少钻石
+                    return error(ErrorCode.DIAMOND_NOT_ENOUGH);
+                } else {     //减少商品数量，减少钻石
 
                     //增加神秘商店经验
                     int exp = ShopDataManager.shopRandomLvData.getTemplate(shopInfo.getMysticalShop().getShopLv())
                             .getUnitExp() * discountedPrice;
-                    ShopService.ins().addMysticalExp(player,exp);
+                    ShopService.ins().addMysticalExp(player, exp);
 
-                    shopInfo.addMaxCount(shopId,itemId,-count);
-                    ResourceService.ins().addDiamond(player,-discountedPrice);
+                    shopInfo.addMaxCount(shopId, itemId, -count);
+                    ResourceService.ins().addDiamond(player, -discountedPrice);
 
-                    vo.addData("count",maxCount - count);
-                    sendSucceed(MProtrol.toStringProtrol(MProtrol.SHOP_BUY),vo,user);
+                    vo.addData("count", maxCount - count);
+                    return vo;
                 }
-                break;
 
-            case ShopConstants.ID_WUJINShop:     //无尽商店
+            } case ShopConstants.ID_WUJINShop: {     //无尽商店
 
                 price = outPutTemplate.getPrice(itemId) * count;
 
                 if (player.getWuScore() < price) {
-                    sendError(ErrorCode.WUJIN_NOT_ENOUGH, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-                }else {     //减少商品数量，减少积分
-                    shopInfo.addMaxCount(shopId,itemId,-count);
-                    ResourceService.ins().addWuScore(player,-price);
+                    return error(ErrorCode.WUJIN_NOT_ENOUGH);
+                } else {     //减少商品数量，减少积分
+                    shopInfo.addMaxCount(shopId, itemId, -count);
+                    ResourceService.ins().addWuScore(player, -price);
 
-                    vo.addData("count",maxCount - count);
-                    sendSucceed(MProtrol.toStringProtrol(MProtrol.SHOP_BUY),vo,user);
+                    vo.addData("count", maxCount - count);
+                    return vo;
                 }
-                break;
 
-            case ShopConstants.ID_DOUJIShop:     //斗技商店
+            } case ShopConstants.ID_DOUJIShop: {     //斗技商店
 
                 price = outPutTemplate.getPrice(itemId) * count;
 
                 if (player.getDoujiScore() < price) {
-                    sendError(ErrorCode.DOUJI_NOT_ENOUGH, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-                }else {     //减少商品数量，减少积分
-                    shopInfo.addMaxCount(shopId,itemId,-count);
-                    ResourceService.ins().addDoujiScore(player,-price);
+                    return error(ErrorCode.DOUJI_NOT_ENOUGH);
+                } else {     //减少商品数量，减少积分
+                    shopInfo.addMaxCount(shopId, itemId, -count);
+                    ResourceService.ins().addDoujiScore(player, -price);
 
-                    vo.addData("count",maxCount - count);
-                    sendSucceed(MProtrol.toStringProtrol(MProtrol.SHOP_BUY),vo,user);
+                    vo.addData("count", maxCount - count);
+                    return vo;
                 }
-                break;
 
-            case ShopConstants.ID_QIYUANShop:    //起源商店
+            } case ShopConstants.ID_QIYUANShop: {    //起源商店
 
                 price = outPutTemplate.getPrice(itemId) * count;
 
                 if (player.getQiyuanScore() < price) {
-                    sendError(ErrorCode.QIYUAN_NOT_ENOUGH, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-                }else {     //减少商品数量，减少积分
-                    shopInfo.addMaxCount(shopId,itemId,-count);
-                    ResourceService.ins().addQiyuanScore(player,-price);
+                    return error(ErrorCode.QIYUAN_NOT_ENOUGH);
+                } else {     //减少商品数量，减少积分
+                    shopInfo.addMaxCount(shopId, itemId, -count);
+                    ResourceService.ins().addQiyuanScore(player, -price);
 
-                    vo.addData("count",maxCount - count);
-                    sendSucceed(MProtrol.toStringProtrol(MProtrol.SHOP_BUY),vo,user);
+                    vo.addData("count", maxCount - count);
+                    return vo;
                 }
-                break;
 
-            case ShopConstants.ID_BULUOShop:     //部落商店
+            } case ShopConstants.ID_BULUOShop: {     //部落商店
 
                 price = outPutTemplate.getPrice(itemId) * count;
 
                 if (player.getBuluoScore() < price) {
-                    sendError(ErrorCode.BULUO_NOT_ENOUGH, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-                }else {     //减少商品数量，减少积分
-                    shopInfo.addMaxCount(shopId,itemId,-count);
-                    ResourceService.ins().addBuluoScore(player,-price);
+                    return error(ErrorCode.BULUO_NOT_ENOUGH);
+                } else {     //减少商品数量，减少积分
+                    shopInfo.addMaxCount(shopId, itemId, -count);
+                    ResourceService.ins().addBuluoScore(player, -price);
 
-                    vo.addData("count",maxCount - count);
-                    sendSucceed(MProtrol.toStringProtrol(MProtrol.SHOP_BUY),vo,user);
+                    vo.addData("count", maxCount - count);
+                    return vo;
                 }
-                break;
 
-            default:
-                sendError(ErrorCode.SHOP_LOCK, MProtrol.toStringProtrol(MProtrol.SHOP_BUY), vo, user);
-                break;
+            } default: {
+                return error(ErrorCode.SHOP_LOCK);
+            }
         }
 
 
     }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.SHOP_BUY;
+    }
+
 }

@@ -1,26 +1,22 @@
 package com.igame.work.checkpoint.worldEvent.handler;
 
 
-
 import com.google.common.collect.Lists;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.MessageUtil;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
-import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
-import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
 import com.igame.work.checkpoint.guanqia.RewardDto;
-import com.igame.work.checkpoint.guanqia.CheckPointService;
+import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
+import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -31,22 +27,13 @@ import java.util.List;
  * @author Marcus.Z
  *
  */
-public class WorldEventEndHandler extends BaseHandler{
+public class WorldEventEndHandler extends ReconnectedHandler {
 	
 
 	@Override
-	public void handleClientRequest(User user, ISFSObject params) {
+	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-		if(player == null){
-			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-			return;
-		}
 
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -61,20 +48,17 @@ public class WorldEventEndHandler extends BaseHandler{
 
 		//防作弊校验
 		if (!(eventType+"_"+level).equals(player.getEnterWordEventId())){
-			sendError(ErrorCode.CHECKPOINT_END_ERROR,MProtrol.toStringProtrol(MProtrol.WWORDEVENT_END), vo, user);
-			return;
+			return error(ErrorCode.CHECKPOINT_END_ERROR);
 		}
 
 		WorldEventDto wd = player.getWordEvent().get(eventType);
 		WorldEventTemplate wt = WorldEventDataManager.WorldEventData.getTemplate(eventType+"_"+level);
 		if(wd == null ||wt ==null){
-			sendError(ErrorCode.CHECKPOINT_END_ERROR,MProtrol.toStringProtrol(MProtrol.WWORDEVENT_END), vo, user);
-			return;
+			return error(ErrorCode.CHECKPOINT_END_ERROR);
 		}
 
 		if(win != 1){
-			sendSucceed(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_END), vo, user);
-			return;
+			return vo;
 		}
 
 		if (!wd.getLevel().contains(String.valueOf(level))){	//首次通关
@@ -106,20 +90,8 @@ public class WorldEventEndHandler extends BaseHandler{
 		List<Monster> ll = Lists.newArrayList();
 		String monsterExpStr = "";
 		for (long mid : player.getTeams().get(player.getCurTeam()).getTeamMonster()) {
-			if(-1 != mid){
-				Monster mm = player.getMonsters().get(mid);
-				if(mm != null){
-					int mmExp = CheckPointService.getTotalExp(mm, wt.getPhysical() * 5);
-					monsterExpStr += mid;
-					if(ResourceService.ins().addMonsterExp(player, mid, mmExp, false) == 0){
-						ll.add(mm);
-						monsterExpStr += ("," + mmExp +";");
-					}else{
-						monsterExpStr += ",0;";
-					}
-				}
-			}
-		}
+            monsterExpStr = WorldEventSaoHandler.getString(player, monsterExpStr, wt, ll, mid);
+        }
 
 		MessageUtil.notiyMonsterChange(player, ll);
 
@@ -137,8 +109,12 @@ public class WorldEventEndHandler extends BaseHandler{
 		vo.addData("count", wd.getCount());
 		vo.addData("levelInfo", wd.getLevel());
 
-		sendSucceed(MProtrol.toStringProtrol(MProtrol.WWORDEVENT_END), vo, user);
+		return vo;
 	}
 
-	
+	@Override
+	protected int protocolId() {
+		return MProtrol.WWORDEVENT_END;
+	}
+
 }

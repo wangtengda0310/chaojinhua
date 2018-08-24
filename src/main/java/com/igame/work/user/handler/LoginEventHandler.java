@@ -48,7 +48,7 @@ public class LoginEventHandler extends BaseServerEventHandler{
 				this.getLogger().warn("LoginEventHandler  error", e);
 			}	
 			res.putUtfString("infor", json);
-			send(MProtrol.toStringProtrol(MProtrol.LOGINOUT), res, player.getUser());
+			send(MProtrol.toStringProtrol(MProtrol.RELOGIN_NOT_ALLOWED), res, player.getUser());
 			player.getUser().getZone().removeUser(player.getUser());
 			player.getUser().disconnect(new KickIDisconnectionReason());
 			SessionManager.ins().removeSession(Long.parseLong(name));
@@ -68,7 +68,7 @@ public class LoginEventHandler extends BaseServerEventHandler{
 //				this.getLogger().warn("LoginEventHandler  error", e);
 //			}	
 //			res.putUtfString("infor", json);
-//			send(MProtrol.toStringProtrol(MProtrol.LOGINOUT), res, player.getUser());
+//			sendClient(MProtrol.toStringProtrol(MProtrol.RELOGIN_NOT_ALLOWED), res, player.getUser());
 
 		}
 //		ISFSObject params = (ISFSObject) event.getParameter(SFSEventParam.LOGIN_IN_DATA);

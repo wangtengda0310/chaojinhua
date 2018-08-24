@@ -3,7 +3,7 @@ package com.igame.work.turntable.handler;
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
@@ -15,32 +15,28 @@ import net.sf.json.JSONObject;
  *
  * 获取玩家幸运大转盘
  */
-public class TurntableGetHandler extends BaseHandler{
+public class TurntableGetHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
 
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
-
         //校验等级
         if (player.getPlayerLevel() < 15 || player.getTurntable() == null){
-            sendError(ErrorCode.LEVEL_NOT,MProtrol.toStringProtrol(MProtrol.LUCKTABLE_GET),vo,user);
-            return;
+            return error(ErrorCode.LEVEL_NOT);
         }
 
         vo.addData("turntable",player.transTurntableVo());
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.LUCKTABLE_GET),vo,user);
+        return vo;
     }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.LUCKTABLE_GET;
+    }
+
 }

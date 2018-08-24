@@ -1,12 +1,10 @@
 package com.igame.work.chat.handler;
 
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.chat.service.MessageBoardService;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -15,24 +13,15 @@ import net.sf.json.JSONObject;
  *
  * 修改留言板(点赞、取消点赞、反对、取消反对)
  */
-public class MessageBoardModifyHandler extends BaseHandler{
+public class MessageBoardModifyHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         String likeModify = jsonObject.getString("likeModify");
         String disLikeModify = jsonObject.getString("disLikeModify");
@@ -48,6 +37,12 @@ public class MessageBoardModifyHandler extends BaseHandler{
             MessageBoardService.ins().dislikeMessageBoard(player,messageId);
         }
 
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.MESSAGE_BOARD_MODIFY),vo,user);
+        return vo;
     }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.MESSAGE_BOARD_MODIFY;
+    }
+
 }

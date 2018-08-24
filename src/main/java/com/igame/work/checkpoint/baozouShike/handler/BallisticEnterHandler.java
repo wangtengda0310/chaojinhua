@@ -2,15 +2,13 @@ package com.igame.work.checkpoint.baozouShike.handler;
 
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
 import com.igame.work.checkpoint.baozouShike.BallisticService;
+import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
 import com.igame.work.checkpoint.baozouShike.data.RunTemplate;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -24,21 +22,12 @@ import static com.igame.work.checkpoint.guanqia.CheckPointContants.*;
  *
  * 暴走时刻进入战斗
  */
-public class BallisticEnterHandler extends BaseHandler{
+public class BallisticEnterHandler extends ReconnectedHandler {
 
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
+    protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
-		if(reviceMessage(user,params,vo)){
-			return;
-		}
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if (player == null) {
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -48,22 +37,19 @@ public class BallisticEnterHandler extends BaseHandler{
         //校验等级
         int playerLevel = player.getPlayerLevel();
         if (playerLevel < BALL_LOCK_LV){
-            sendError(ErrorCode.BALLISTIC_LOCK, MProtrol.toStringProtrol(MProtrol.BALLISTIC_ENTER), vo, user);
-            return;
+            return error(ErrorCode.BALLISTIC_LOCK);
         }
 
         //校验挑战次数
         int ballisticCount = player.getBallisticCount();
         if (ballisticCount >= BALL_CHALLENGE_COUNT_MAX){
-            sendError(ErrorCode.BALLISTIC_NOT_ENTER, MProtrol.toStringProtrol(MProtrol.BALLISTIC_ENTER), vo, user);
-            return;
+            return error(ErrorCode.BALLISTIC_NOT_ENTER);
         }
 
         //校验体力
         int physical = player.getPhysical();
         if (physical < ballisticCount*BALL_PHYSICAL){
-            sendError(ErrorCode.PHYSICA_NOT_ENOUGH, MProtrol.toStringProtrol(MProtrol.BALLISTIC_ENTER), vo, user);
-            return;
+            return error(ErrorCode.PHYSICA_NOT_ENOUGH);
         }
 
         //生成怪兽
@@ -80,6 +66,12 @@ public class BallisticEnterHandler extends BaseHandler{
 			mto.reCalGods(player.callFightGods(), null);
         }
         vo.addData("monsters", matchMonsterDtos);
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.BALLISTIC_ENTER), vo, user);
+        return vo;
     }
+
+    @Override
+    protected int protocolId() {
+        return MProtrol.BALLISTIC_ENTER;
+    }
+
 }
