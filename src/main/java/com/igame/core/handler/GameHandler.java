@@ -3,6 +3,12 @@ package com.igame.core.handler;
 import com.smartfoxserver.v2.entities.User;
 
 public interface GameHandler {
+    default RetVO error(int errorCode) {
+        RetVO vo = new RetVO();
+        vo.setState(1);
+        vo.setErrCode(errorCode);
+        return vo;
+    }
     default void sendError(int errorCode, String cmdName, RetVO vo, User user) {
 
         vo.setState(1);

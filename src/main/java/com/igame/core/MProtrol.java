@@ -361,6 +361,7 @@ public class MProtrol {
 	public static final int ACTICITY = 4050;//活动
 	public static final int SIGN = 4051;//签到活动
 	public static final int MEIRI_LIANGFA = 4052;//每日两发活动
+	public static final int TANSUO_ZHI_LU = 4053;//探索之路活动
 
 
 

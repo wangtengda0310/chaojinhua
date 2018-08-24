@@ -1,48 +1,21 @@
 package com.igame.work.activity;
 
-import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
-import net.sf.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ActivityHandler extends BaseHandler {
+public abstract class ActivityHandler extends ReconnectedHandler {
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
-
-        RetVO vo = new RetVO();
-        if(reviceMessage(user,params,vo)){
-            return;
-        }
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if(player == null){
-            this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
-            return;
-        }
-
-        String infor = params.getUtfString("infor");
-        JSONObject jsonObject = JSONObject.fromObject(infor);
-
-        List<JSONObject> data = new ArrayList<>();
-        if (player.getActivityData() == null) {
-            player.setActivityData(new PlayerActivityData());
-        }
-
-        if(player.getActivityData().getSign()!=null) {
-            data.add(player.getActivityData().getSign().toClientData());
-        }
-        if(player.getActivityData().getMeiriLiangfa()!=null) {
-            data.add(player.getActivityData().getMeiriLiangfa().toClientData());
-        }
-
-        vo.addData("activitiesData", data);
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.ACTICITY), vo, user);
+    public RetVO handleClientRequest(Player player, ISFSObject params) {
+        return handleClientRequest(player,player.getActivityData(), params);
     }
+
+    @Override
+    protected int protocolId() {
+        return activityId();
+    }
+
+    protected abstract int activityId();
+    public abstract RetVO handleClientRequest(Player player, PlayerActivityData activityData, ISFSObject params);
 }

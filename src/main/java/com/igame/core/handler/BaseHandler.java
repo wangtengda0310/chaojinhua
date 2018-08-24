@@ -60,7 +60,9 @@ public abstract class BaseHandler extends BaseClientRequestHandler implements Ga
 
 		getApi().setUserVariables(user, Collections.singletonList(new SFSUserVariable("last.event",event, false, true)), false, true);
 	}
-	
+
+	// TODO move to ReconnectedHandler
+	/** 断线重连的消息重发 */
 	protected boolean reviceMessage(User user, ISFSObject params,RetVO vo) {
 		
 		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));

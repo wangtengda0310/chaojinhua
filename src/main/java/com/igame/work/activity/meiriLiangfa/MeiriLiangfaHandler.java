@@ -2,11 +2,10 @@ package com.igame.work.activity.meiriLiangfa;
 
 import com.igame.core.ErrorCode;
 import com.igame.core.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.activity.ActivityHandler;
+import com.igame.work.activity.PlayerActivityData;
 import com.igame.work.user.dto.Player;
-import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -15,20 +14,9 @@ import net.sf.json.JSONObject;
  * 签完30天再读下一个30天的配置
  * 累积签到奖励如果没有领取，到下一个签到周期数据会被清掉
  */
-public class MeiriLiangfaHandler extends BaseHandler {
+public class MeiriLiangfaHandler extends ActivityHandler {
     @Override
-    public void handleClientRequest(User user, ISFSObject params) {
-
-        RetVO vo = new RetVO();
-        if (reviceMessage(user, params, vo)) {
-            return;
-        }
-
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
-        if (player == null) {
-            this.getLogger().error(this.getClass().getSimpleName(), " get player failed Name:" + user.getName());
-            return;
-        }
+    public RetVO handleClientRequest(Player player, PlayerActivityData activityData, ISFSObject params) {
 
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
@@ -42,11 +30,19 @@ public class MeiriLiangfaHandler extends BaseHandler {
         String date = player.getActivityData().getMeiriLiangfa().receive(player, index);
 
         if (date == null) {
-            sendError(ErrorCode.PACK_PURCHASED, MProtrol.toStringProtrol(MProtrol.MEIRI_LIANGFA), vo, user);
-            return;
+            return error(ErrorCode.PACK_PURCHASED);
         }
+
+        RetVO vo = new RetVO();
+
         vo.addData("date", date);
 
-        sendSucceed(MProtrol.toStringProtrol(MProtrol.MEIRI_LIANGFA), vo, user);
+        return vo;
     }
+
+    @Override
+    protected int activityId() {
+        return MProtrol.MEIRI_LIANGFA;
+    }
+
 }
