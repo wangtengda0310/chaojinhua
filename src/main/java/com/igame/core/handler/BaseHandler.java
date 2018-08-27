@@ -2,9 +2,11 @@ package com.igame.core.handler;
 
 import com.igame.core.event.EventListener;
 import com.igame.core.event.EventManager;
+import com.igame.work.ServerEvents;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
 import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
@@ -22,7 +24,7 @@ public abstract class BaseHandler extends BaseClientRequestHandler implements Ga
         }
     }
 
-    private EventListener listenEvent() {
+    protected EventListener listenEvent() {
         return null;
     }
 
@@ -30,8 +32,11 @@ public abstract class BaseHandler extends BaseClientRequestHandler implements Ga
      * 发送用户相关的事件
      * 使用的是setUserVariables 所以会受到用户变量限制 SmartFoxServer默认允许每个玩家使用5个变量
      */
-    protected void fireEvent(Player player, Object event) {
-        SFSUserVariable e = new SFSUserVariable("last.event", event, false, true);
+    protected void fireEvent(Player player, ServerEvents eventType, Object event) {
+        ISFSObject value = new SFSObject();
+        value.putClass("eventType", eventType);
+        value.putClass("event", event);
+        SFSUserVariable e = new SFSUserVariable("last.event", value, false, true);
         // 如果user为null,SmartFoxServer发布出事件，会报空指针，可以点进去看一下代码
         getApi().setUserVariables(player.getUser(), Collections.singletonList(e), false, true);
     }

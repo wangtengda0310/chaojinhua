@@ -4,6 +4,7 @@ import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ServerEvents;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -39,7 +40,7 @@ public class ModifyNicknameHandler extends ReconnectedHandler {
         player.setLastNickname(player.getNickname());
         player.setNickname(nickname);
 
-        fireEvent(player, "diamond");
+        fireEvent(player, ServerEvents.MODIFY_NAME, nickname);
 
         return vo;
     }

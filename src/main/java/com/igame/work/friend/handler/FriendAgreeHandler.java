@@ -5,6 +5,7 @@ import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ServerEvents;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
@@ -14,6 +15,7 @@ import net.sf.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,13 +64,15 @@ public class FriendAgreeHandler extends ReconnectedHandler {
             int state = addFriend(player, delReqFriends, addFriends, playerId);
             states = Collections.singletonList(state);
 
+            fireEvent(player, ServerEvents.AGREE_FRIEND, Collections.singleton(playerId));
         }else { //同意全部
             states = reqFriends.stream()
                     .map(reqFriend->addFriend(player, delReqFriends, addFriends, reqFriend.getPlayerId()))
                     .collect(Collectors.toList());
+
+            fireEvent(player, ServerEvents.AGREE_FRIEND, new HashSet<>(reqFriends));
         }
 
-        fireEvent(player, "agreeFriend");
         //推送当前角色好友更新
         FriendService.ins().pushFriends(player,new ArrayList<>(),addFriends);
 
