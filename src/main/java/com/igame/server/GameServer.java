@@ -41,6 +41,8 @@ import com.igame.work.gm.handler.GMHandler;
 import com.igame.work.item.handler.*;
 import com.igame.work.monster.handler.*;
 import com.igame.work.quest.handler.QuestRewardHandler;
+import com.igame.work.recharge.MockRechargeHandler;
+import com.igame.work.recharge.RechargeListHandler;
 import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.shop.handler.ReloadShopHandler;
 import com.igame.work.shop.handler.ShopBuyHandler;
@@ -223,6 +225,8 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.SIGN, SignHandler.class);//签到活动
 		addRequestHandler(MProtrol.MEIRI_LIANGFA, MeiriLiangfaHandler.class);//每日两发活动
 		addRequestHandler(MProtrol.TANSUO_ZHI_LU, TansuoZhiLuActivityHandler.class);//探索之路活动
+		addRequestHandler(MProtrol.RECHARGE_LIST, RechargeListHandler.class);//充值展示
+		addRequestHandler(MProtrol.MOCK_RECHARGE, MockRechargeHandler.class);//模拟充值
 
 	}
 
