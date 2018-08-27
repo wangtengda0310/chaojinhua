@@ -325,6 +325,7 @@ public class Player extends PlayerDto {
 
     public void setActivityData(PlayerActivityData activityData) {
         this.activityData = activityData;
+        this.activityData.setPlayer(this);
     }
 
     public User getUser() {

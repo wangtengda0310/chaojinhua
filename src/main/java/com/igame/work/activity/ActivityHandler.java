@@ -11,11 +11,6 @@ public abstract class ActivityHandler extends ReconnectedHandler {
         return handleClientRequest(player,player.getActivityData(), params);
     }
 
-    @Override
-    protected int protocolId() {
-        return activityId();
-    }
-
     protected abstract int activityId();
     public abstract RetVO handleClientRequest(Player player, PlayerActivityData activityData, ISFSObject params);
 }

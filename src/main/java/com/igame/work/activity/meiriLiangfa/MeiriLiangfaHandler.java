@@ -1,8 +1,8 @@
 package com.igame.work.activity.meiriLiangfa;
 
+import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
-import com.igame.core.handler.RetVO;
 import com.igame.work.activity.ActivityHandler;
 import com.igame.work.activity.PlayerActivityData;
 import com.igame.work.user.dto.Player;
@@ -42,7 +42,11 @@ public class MeiriLiangfaHandler extends ActivityHandler {
 
     @Override
     protected int activityId() {
-        return MProtrol.MEIRI_LIANGFA;
+        return 1004;
     }
 
+    @Override
+    protected int protocolId() {
+        return MProtrol.MEIRI_LIANGFA;
+    }
 }

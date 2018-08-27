@@ -1,8 +1,8 @@
 package com.igame.work.activity.tansuoZhiLu;
 
+import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
-import com.igame.core.handler.RetVO;
 import com.igame.work.activity.ActivityConfigTemplate;
 import com.igame.work.activity.ActivityHandler;
 import com.igame.work.activity.PlayerActivityData;
@@ -51,7 +51,11 @@ public class TansuoZhiLuActivityHandler extends ActivityHandler {
 
     @Override
     protected int activityId() {
-        return MProtrol.TANSUO_ZHI_LU;
+        return 1005;
     }
 
+    @Override
+    protected int protocolId() {
+        return MProtrol.TANSUO_ZHI_LU;
+    }
 }
