@@ -30,7 +30,7 @@ public class PVPGameLoadHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.F_LOAD_E;
 	}
 

@@ -1,12 +1,12 @@
 package com.igame.core.db;
 
-import java.util.Map;
-
+import com.igame.server.GameServer;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.mongodb.morphia.Datastore;
 
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import java.util.Map;
 
 
 
@@ -22,29 +22,27 @@ public abstract class AbsDao {
 	public abstract String getTableName();
 	
 	public  Datastore getDatastore(String dbName){
-		return DBManager.getInstance().getDatastore(dbName);
+		return GameServer.dbManager.getDatastore(dbName);
 	}
 	
 	/**
 	 * 根据服务器ID获取数据库Datastore对象
-	 * @param serverId
-	 * @return
 	 */
 	public  Datastore getDatastore(int serverId){
-		return DBManager.getInstance().getDatastore(dbPer+serverId);
+		return GameServer.dbManager.getDatastore(dbPer+serverId);
 	}
 	
 	
 	private Map<String,Datastore> getAllDatastore(){
-		return DBManager.getInstance().getDatastores();
+		return GameServer.dbManager.getDatastores();
 	}
 	
 //	public Datastore getDatastore(){
-//		return DBManager.getInstance().getDatastoreOne();
+//		return GameServer.dbManager.getDatastoreOne();
 //	}
 	
 	public MongoDatabase getDB(){
-		return DBManager.getInstance().getGameDBOne();
+		return GameServer.dbManager.getGameDBOne();
 	}
 	
 	public MongoCollection<Document> getTable(){

@@ -1,11 +1,11 @@
 package com.igame.work.checkpoint.baozouShike.handler;
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.checkpoint.baozouShike.BallisticRank;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.baozouShike.BallisticRanker;
+import com.igame.work.checkpoint.baozouShike.BallisticService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -23,6 +23,8 @@ import static com.igame.work.checkpoint.guanqia.CheckPointContants.BALL_RANK_SHO
  * 暴走时刻排行榜
  */
 public class BallisticRankHandler extends ReconnectedHandler {
+
+    private BallisticService ballisticService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -47,10 +49,10 @@ public class BallisticRankHandler extends ReconnectedHandler {
         ballisticCount = player.getBallisticCount();
 
         //获取buff
-        buff = BallisticRank.ins().getBuffMap().get(player.getSeverId());
+        buff = ballisticService.getRank().getBuffMap().get(player.getSeverId());
 
         //排序并取前50
-        List<BallisticRanker> rankList = BallisticRank.ins().getRankList().get(player.getSeverId());
+        List<BallisticRanker> rankList = ballisticService.getRankList().get(player.getSeverId());
         if (rankList == null){
             topFifty = new ArrayList<>();
         }else if (rankList.size() <= BALL_RANK_SHOW){
@@ -65,11 +67,11 @@ public class BallisticRankHandler extends ReconnectedHandler {
         for (int i = 0; i < topFifty.size(); i++) {
             BallisticRanker ballisticRanker = topFifty.get(i);
             ballisticRanker.setRank(i+1);
-            ballisticRanker.setName(PlayerCacheService.ins().getPlayerById(ballisticRanker.getPlayerId()).getNickname());
+            ballisticRanker.setName(PlayerCacheService.getPlayerById(ballisticRanker.getPlayerId()).getNickname());
         }
 
         //获取玩家排行榜信息
-        Map<Long, BallisticRanker> rankerMap = BallisticRank.ins().getRankMap().get(player.getSeverId());
+        Map<Long, BallisticRanker> rankerMap = ballisticService.getRank().getRankMap().get(player.getSeverId());
         if(rankList != null) {
             if (rankerMap != null && rankerMap.get(player.getPlayerId()) != null) {    //玩家在排行榜中
 
@@ -92,7 +94,7 @@ public class BallisticRankHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.BALLISTIC_RANKS;
     }
 

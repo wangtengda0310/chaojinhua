@@ -1,4 +1,4 @@
-package com.client;
+package test;
 
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;

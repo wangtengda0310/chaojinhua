@@ -109,7 +109,7 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 		}
 
 		//放入缓存
-		Message message = PublicMessageService.ins().addMessage(player.getSeverId(),type,player.getPlayerId(),recipient,content);
+		Message message = PublicMessageService.addMessage(player.getSeverId(),type,player.getPlayerId(),recipient,content);
 
 		sendClient(MProtrol.MESSAGE_ERROR,vo,sender);
 	}

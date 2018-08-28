@@ -1,14 +1,10 @@
-package com.igame.work.system;
+package com.igame.core;
 
 
 
 
-import com.google.common.collect.Sets;
 import com.igame.core.db.AbsDao;
-import com.igame.util.SystemService;
 import org.mongodb.morphia.query.UpdateOperations;
-
-import java.util.Set;
 
 /**
  * 
@@ -19,7 +15,7 @@ public class SystemServiceDAO extends AbsDao {
 
 	@Override
 	public String getTableName() {
-		return "SystemService";
+		return "SystemServiceDto";
 	}
 	
     private static final SystemServiceDAO domain = new SystemServiceDAO();
@@ -31,29 +27,21 @@ public class SystemServiceDAO extends AbsDao {
 
     /**
      * 查询
-     * @return
      */
-    public Set<Long> loadData(){
+    public SystemServiceDto loadData(){
     	
-    	Set<Long> clock = Sets.newHashSet();
-    	
-    	SystemService sys = getDatastore("accounts").find(SystemService.class).get();
-    	if(sys != null){
-    		return sys.getClock();
-    	}  	
-    	return clock;
+    	return getDatastore("accounts").find(SystemServiceDto.class).get();
     }
 
     /**
      * 更新
-     * @param m
      */
-    public void update(SystemService m){
-    	SystemService sys = getDatastore("accounts").find(SystemService.class).get();
+    public void update(SystemServiceDto m){
+    	SystemServiceDto sys = getDatastore("accounts").find(SystemServiceDto.class).get();
 		if(sys == null){
     		getDatastore("accounts").save(m);
     	}else{
-	    	UpdateOperations<SystemService> up = getDatastore("accounts").createUpdateOperations(SystemService.class);
+	    	UpdateOperations<SystemServiceDto> up = getDatastore("accounts").createUpdateOperations(SystemServiceDto.class);
 	    	up.set("clock", m.getClock());
 	    	getDatastore("accounts").update(m, up);
     	}

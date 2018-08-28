@@ -2,10 +2,10 @@ package com.igame.work.fight.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.fight.dto.AreaRanker;
 import com.igame.work.fight.service.ArenaService;
 import com.igame.work.user.dto.Player;
@@ -20,7 +20,8 @@ import java.util.List;
  *
  */
 public class AreaRefHandler extends ReconnectedHandler {
-	
+
+	private ArenaService arenaService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -29,12 +30,12 @@ public class AreaRefHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 		
 		List<AreaRanker> opponent = Lists.newArrayList();
-		List<AreaRanker> rank = ArenaService.ins().getRank(player.getAreaType(), player.getSeverId());
+		List<AreaRanker> rank = arenaService.getRank(player.getAreaType(), player.getSeverId());
 		if(player.getAreaType() < 1 || player.getAreaType() > 9 || rank == null){
 			return error(ErrorCode.ERROR);
 		}else{
 			if(!rank.isEmpty()){
-				opponent = ArenaService.ins().getOpponent(rank, player.getMyRank());
+				opponent = ArenaService.getOpponent(rank, player.getMyRank());
 				player.setTempOpponent(opponent);
 			}
 		}
@@ -45,7 +46,7 @@ public class AreaRefHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+	public int protocolId() {
 		return MProtrol.AREA_REF;
 	}
 

@@ -41,7 +41,7 @@ public class MiaSysSendHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.MAIL_NEW_SYS;
 	}
 

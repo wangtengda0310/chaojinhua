@@ -42,7 +42,7 @@ public class GateResetHandler extends ReconnectedHandler {
 				player.getFateData().setTempBoxCount(-1);
 				player.getFateData().setTempSpecialCount(0);
 				player.getFateData().setAddRate(0);
-				ls = GateService.creatGate(player);
+				ls = GateService.createGate(player);
 				player.getFateData().setGate(ls);
 //				MessageUtil.notifyDeInfoChange(player);
 				MessageUtil.notifyGateChange(player);
@@ -63,7 +63,7 @@ public class GateResetHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.GATE_RESET;
 	}
 

@@ -105,7 +105,7 @@ public class MonsterTUPOSHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.MONSTER_TUPO_S;
 	}
 

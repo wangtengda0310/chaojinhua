@@ -105,7 +105,7 @@ public class TongHuaGetHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.TONGHUA_GET;
 	}
 

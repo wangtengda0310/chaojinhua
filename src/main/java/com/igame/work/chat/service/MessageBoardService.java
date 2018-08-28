@@ -83,7 +83,7 @@ public class MessageBoardService {
             }
 
             //cache
-            Player cacheDto = PlayerCacheService.ins().getPlayerById(board.getPlayerId());
+            Player cacheDto = PlayerCacheService.getPlayerById(board.getPlayerId());
             board.setName(cacheDto.getNickname());
             board.setPlayerFrameId(cacheDto.getPlayerFrameId());
             board.setPlayerHeadId(cacheDto.getPlayerHeadId());

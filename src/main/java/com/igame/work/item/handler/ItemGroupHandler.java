@@ -71,7 +71,7 @@ public class ItemGroupHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.ITEM_GROUP;
     }
 

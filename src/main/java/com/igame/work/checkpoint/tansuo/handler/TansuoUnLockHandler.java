@@ -77,7 +77,7 @@ public class TansuoUnLockHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.TANGSUO_MONSTER_UN;
 	}
 

@@ -44,7 +44,7 @@ public class BanStrangersHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.MESSAGE_BAN_STRANGERS;
     }
 

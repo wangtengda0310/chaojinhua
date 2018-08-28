@@ -67,7 +67,7 @@ public class MessageBoardAddHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.MESSAGE_BOARD_ADD;
     }
 

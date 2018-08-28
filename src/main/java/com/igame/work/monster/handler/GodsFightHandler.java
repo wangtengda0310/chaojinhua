@@ -45,7 +45,7 @@ public class GodsFightHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.GODS_FIGHT;
 	}
 }

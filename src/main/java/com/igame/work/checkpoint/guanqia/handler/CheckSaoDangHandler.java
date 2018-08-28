@@ -124,7 +124,7 @@ public class CheckSaoDangHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.CHECKPOINT_SAO;
 	}
 

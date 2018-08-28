@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class RechargeListHandler extends ReconnectedHandler {
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.RECHARGE_LIST;
     }
 

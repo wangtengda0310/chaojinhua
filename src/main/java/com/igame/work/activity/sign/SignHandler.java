@@ -17,7 +17,7 @@ import net.sf.json.JSONObject;
 public class SignHandler extends ActivityHandler {
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.SIGN;
     }
 

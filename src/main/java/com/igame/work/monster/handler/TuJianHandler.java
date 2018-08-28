@@ -50,7 +50,7 @@ public class TuJianHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.MEET_NEW_MONSTER;
 	}
 

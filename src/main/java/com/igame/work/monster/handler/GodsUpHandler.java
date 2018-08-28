@@ -85,7 +85,7 @@ public class GodsUpHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.Gods_UP;
 	}
 

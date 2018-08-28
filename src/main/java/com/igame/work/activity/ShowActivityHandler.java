@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ShowActivityHandler extends ReconnectedHandler {
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.ACTICITY;
     }
 

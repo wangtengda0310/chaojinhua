@@ -27,7 +27,7 @@ public class BallisticMonsterHandler extends ReconnectedHandler {
         int ballisticMonsters = player.getBallisticMonsters();
 
         //生成怪兽
-        List<MatchMonsterDto> matchMonsterDtos = BallisticService.ins().buildMonsterByKillNum(ballisticMonsters, BALL_MONSTER_EVERY);
+        List<MatchMonsterDto> matchMonsterDtos = BallisticService.buildMonsterByKillNum(ballisticMonsters, BALL_MONSTER_EVERY);
 
         //增加怪兽刷新数量
         player.addBallisticMonsters(matchMonsterDtos.size());
@@ -38,7 +38,7 @@ public class BallisticMonsterHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.BALLISTIC_MONSTER;
     }
 

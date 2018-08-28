@@ -1,10 +1,10 @@
 package com.igame.work.checkpoint.xinmo;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.service.RobotService;
@@ -19,7 +19,9 @@ import java.util.Map;
  *
  */
 public class XinmoEnterHandler extends ReconnectedHandler {
-	
+
+
+	private RobotService robotService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -34,7 +36,7 @@ public class XinmoEnterHandler extends ReconnectedHandler {
 		}else if(player.getXinMo().get(chapterId) != null && player.getXinMo().get(chapterId).calLeftTime(System.currentTimeMillis()) <= 0){
 			return error(ErrorCode.XINGMO_LEAVEL);
 		}else{
-			Map<String,RobotDto> ro = RobotService.ins().getRobot().get(player.getSeverId());
+			Map<String,RobotDto> ro = robotService.getRobot().get(player.getSeverId());
 			if(ro == null || ro.get(player.getXinMo().get(chapterId).getMid()) == null){
 				return error(ErrorCode.ERROR);
 			}			
@@ -46,7 +48,7 @@ public class XinmoEnterHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+	public int protocolId() {
 		return MProtrol.XINGMO_ENTER;
 	}
 

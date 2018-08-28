@@ -104,7 +104,7 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.FRIEND_EXPLORE_ACC;
     }
 

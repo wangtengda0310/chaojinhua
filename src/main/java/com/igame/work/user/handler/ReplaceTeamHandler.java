@@ -53,7 +53,7 @@ public class ReplaceTeamHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.REPLACE_TEAM;
     }
 

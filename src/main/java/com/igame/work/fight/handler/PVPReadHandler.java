@@ -28,7 +28,7 @@ public class PVPReadHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.F_P_S;
 	}
 

@@ -27,11 +27,11 @@ public class PublicMessageHandler extends ReconnectedHandler {
 
         //世界消息
         List<PublicMessageDto> worldMsg = new ArrayList<>();
-        PublicMessageService.ins().getWorldMessage(player.getSeverId()).forEach(message -> worldMsg.add(new PublicMessageDto(message)));
+        PublicMessageService.getWorldMessage(player.getSeverId()).forEach(message -> worldMsg.add(new PublicMessageDto(message)));
 
         //喇叭消息
         List<PublicMessageDto> hornMsg = new ArrayList<>();
-        PublicMessageService.ins().getHornMessage(player.getSeverId()).forEach(message -> hornMsg.add(new PublicMessageDto(message)));
+        PublicMessageService.getHornMessage(player.getSeverId()).forEach(message -> hornMsg.add(new PublicMessageDto(message)));
 
         RetVO vo = new RetVO();
         vo.addData("worldMsg", worldMsg);
@@ -41,7 +41,7 @@ public class PublicMessageHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.MESSAGE_WORLD;
     }
 

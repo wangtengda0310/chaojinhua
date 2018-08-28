@@ -54,7 +54,7 @@ public class VipRecDayPackHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.VIP_DAY_PACK;
     }
 

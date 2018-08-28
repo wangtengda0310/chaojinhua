@@ -96,7 +96,7 @@ public class TansuoStartHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.TANGSUO_START;
 	}
 

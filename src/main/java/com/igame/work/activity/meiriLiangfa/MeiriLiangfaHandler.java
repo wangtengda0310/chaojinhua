@@ -46,7 +46,7 @@ public class MeiriLiangfaHandler extends ActivityHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.MEIRI_LIANGFA;
     }
 }

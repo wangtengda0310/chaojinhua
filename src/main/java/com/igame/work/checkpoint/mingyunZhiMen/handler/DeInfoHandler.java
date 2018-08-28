@@ -37,7 +37,7 @@ public class DeInfoHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.DE_INFO;
 	}
 

@@ -34,9 +34,6 @@ public class FightProcessser {
     
     /**
      * 到了范围出手，客户端传双方位移动置信息，根据双方位置信息和出手规则调用此方法，此方法为怪物出手要做的逻辑的主入口
-     * @param fb
-     * @param attacker
-     * @param target
      */
     public List<RetFightCmd> processAction(FightBase fb,long attackerId,long targetId){
     	List<RetFightCmd> retCmd = Lists.newArrayList();
@@ -71,9 +68,6 @@ public class FightProcessser {
     
     /**
      * 处理战斗指令 指令主入口
-     * @param fb
-     * @param fc
-     * @return
      */
     public RetFightCmd processCmd(FightBase fb,FightCmd fc,List<RetFightCmd> retCmd){
     	
@@ -106,8 +100,6 @@ public class FightProcessser {
     
     /**
      * 使用技能触发
-     * @param fb
-     * @param skllId
      */
     public void onSkillUsed(FightBase fb,Monster attacker,int skllId,List<RetFightCmd> retCmd){
     	
@@ -157,8 +149,6 @@ public class FightProcessser {
     
     /**
      * 时间触发技能
-     * @param fb
-     * @param skllId
      */
     public void onOverTime(FightBase fb,List<RetFightCmd> retCmd){
     	
@@ -199,10 +189,6 @@ public class FightProcessser {
     
     /**
      * 处理普通攻击
-     * @param fb
-     * @param fc
-     * @param attacker
-     * @return
      */
     public RetFightCmd processNormalCmd(FightBase fb,FightCmd fc,Monster attacker,List<RetFightCmd> retCmd){
     	
@@ -235,18 +221,13 @@ public class FightProcessser {
 		return rcd;
 		
     }
-    
-    /**
-     * 
-     * @param attacker
-     */
+
     public void onAttack(Monster attacker){
     	
     }
     
     /**
      * 减/加 HP  触发
-     * @param attacker
      */
     public void onReduceHp(FightBase fb,int frontHp,Monster target,List<RetFightCmd> retCmd){
     	
@@ -274,7 +255,6 @@ public class FightProcessser {
     
     /**
      * 死亡触发
-     * @param attacker
      */
     public void onDie(FightBase fb,Monster target,List<RetFightCmd> retCmd){
     	
@@ -323,7 +303,6 @@ public class FightProcessser {
     
     /**
      * 处理被攻击
-     * @param target
      */
     public void onAttacked(FightBase fb,Monster target,List<RetFightCmd> retCmd){
     	if(target.getFightProp().getHp() > 0){
@@ -346,10 +325,6 @@ public class FightProcessser {
     
     /**
      * 处理技能逻辑
-     * @param fb
-     * @param fc
-     * @param attacker
-     * @return
      */
     public RetFightCmd processSkillCmd(FightBase fb,FightCmd fc,Monster attacker,List<RetFightCmd> retCmd){
     	
@@ -407,7 +382,7 @@ public class FightProcessser {
         			retCmd.add(rcd);//先添加到返回指令集合，因为触发BUFFER生效之后有可能再触发技能
         			
         			if(targets.get(2) != null && !MyUtil.isNullOrEmpty(skillTemplate.getEffect())){
-        				FightEffectService.ins().processAddEffect(fb,fc, attacker, skillTemplate, targets.get(2), rcd,retCmd);//处理主动技能BUFFER
+        				FightEffectService.processAddEffect(fb,fc, attacker, skillTemplate, targets.get(2), rcd,retCmd);//处理主动技能BUFFER
         			}
         			processEffectTouch(fb, fc, attacker, skillTemplate.getEffectTouch(), rcd,retCmd);//处理被动技能BUFFER
         			
@@ -423,9 +398,9 @@ public class FightProcessser {
         			
         			retCmd.add(rcd);//先添加到返回指令集合，因为触发BUFFER生效之后有可能再触发技能
         			
-        			FightEffectService.ins().processAddEffect(fb,fc, attacker, skillTemplate, targets.get(1), rcd,retCmd);//处理主动技能BUFFER
+        			FightEffectService.processAddEffect(fb,fc, attacker, skillTemplate, targets.get(1), rcd,retCmd);//处理主动技能BUFFER
         			if(targets.get(2) != null  && effes.length > 1){//第二批
-        				FightEffectService.ins().processAddEffect(fb,fc, attacker, skillTemplate, targets.get(2), rcd,retCmd);//处理主动技能BUFFER
+        				FightEffectService.processAddEffect(fb,fc, attacker, skillTemplate, targets.get(2), rcd,retCmd);//处理主动技能BUFFER
         			}
         			processEffectTouch(fb, fc, attacker, skillTemplate.getEffectTouch(), rcd,retCmd);//处理被动技能BUFFER
         			
@@ -451,11 +426,6 @@ public class FightProcessser {
     
     /**
      * 处理被动技能BUFFER
-     * @param fb
-     * @param fc
-     * @param attacker
-     * @param effectTouch
-     * @param rcd
      */
     public void processEffectTouch(FightBase fb,FightCmd fc,Monster attacker,String effectTouch,RetFightCmd rcd,List<RetFightCmd> retCmd){
     	if(!MyUtil.isNullOrEmpty(effectTouch)){
@@ -468,9 +438,9 @@ public class FightProcessser {
         				continue;
         			}
         			String[] effes = skillTemplate.getEffect().split(";");
-        			FightEffectService.ins().processAddEffect(fb,fc,attacker, skillTemplate, targets.get(1), rcd,retCmd);//处理被动技能BUFFER
+        			FightEffectService.processAddEffect(fb,fc,attacker, skillTemplate, targets.get(1), rcd,retCmd);//处理被动技能BUFFER
         			if(targets.get(2) != null  && effes.length > 1){//第二批
-        				FightEffectService.ins().processAddEffect(fb,fc, attacker, skillTemplate, targets.get(2), rcd,retCmd);//处理被动技能BUFFER
+        				FightEffectService.processAddEffect(fb,fc, attacker, skillTemplate, targets.get(2), rcd,retCmd);//处理被动技能BUFFER
         			}
     			}
     		}
@@ -480,10 +450,6 @@ public class FightProcessser {
     
     /**
      * 获取生效目标
-     * @param fb
-     * @param fc
-     * @param skillTemplate
-     * @return
      */
     public Map<Integer,List<Monster>> getTarget(FightBase fb,FightCmd fc,Monster attacker,SkillTemplate skillTemplate){
     	
@@ -517,13 +483,6 @@ public class FightProcessser {
     
     /**
      * 固定区域类型取值
-     * @param fb
-     * @param sender
-     * @param camp
-     * @param campTarget
-     * @param center
-     * @param range
-     * @return
      */
     public List<Monster> getTargetByFixedRange(FightBase fb,long sender ,String camp,String campTarget,int center,int range){
     	
@@ -542,13 +501,6 @@ public class FightProcessser {
     
     /**
      * 获取范围类型的目标集合
-     * @param fb
-     * @param fc
-     * @param attacker
-     * @param skillTemplate
-     * @param camp
-     * @param campTarget
-     * @return
      */
     private List<Monster> getTargetByRange(FightBase fb,FightCmd fc,Monster attacker,SkillTemplate skillTemplate,String camp,String campTarget){
     	
@@ -581,13 +533,6 @@ public class FightProcessser {
     
     /**
      * 获取非范围类型的目标集合
-     * @param fb
-     * @param fc
-     * @param attacker
-     * @param skillTemplate
-     * @param camp
-     * @param campTarget
-     * @return
      */
     private List<Monster> getTargetByNoRange(FightBase fb,FightCmd fc,Monster attacker,SkillTemplate skillTemplate,String camp,String campTarget){
 
@@ -598,12 +543,6 @@ public class FightProcessser {
     
     /**
      * 根据生效阵营获取目标对象集合
-     * @param fb
-     * @param fc
-     * @param attacker
-     * @param skillTemplate
-     * @param camp
-     * @return
      */
     private List<Monster> getTargetByCamp(FightBase fb,long playerId,String camp){
     	
@@ -632,12 +571,6 @@ public class FightProcessser {
     
     /**
      * 根据生效阵营目标获取对象集合
-     * @param fb
-     * @param fc
-     * @param attacker
-     * @param campTarget
-     * @param ts
-     * @return
      */
     private List<Monster> getTargetByCampTarget(FightBase fb,long targetId,Monster attacker,String campTarget,List<Monster> ts){
     	List<Monster> ret = Lists.newArrayList();
@@ -727,9 +660,6 @@ public class FightProcessser {
     
     /**
      * 根据目标ID获取目标怪物
-     * @param fb
-     * @param fc
-     * @return
      */
     public Monster getMonsterById(FightBase fb,long objectId){
     	
@@ -742,12 +672,9 @@ public class FightProcessser {
     }
     
     
-    /**
-     * 获取攻击者
-     * @param fb
-     * @param fc
-     * @return
-     */
+//    /**
+//     * 获取攻击者
+//     */
 //    public Monster getMonsterByCmd(FightBase fb,FightCmd fc){
 //    	
 //    	if(fc.getAttackerType() == 1){
@@ -761,8 +688,6 @@ public class FightProcessser {
     
     /**
      * 战斗是否结束
-     * @param fb
-     * @return
      */
     public long isEndFight(FightBase fb){
     	boolean allDeaDA = true;
@@ -786,11 +711,7 @@ public class FightProcessser {
     	}
     	return fb.getWinner();
     }
-    
-    /**
-     * 
-     * @param fb
-     */
+
     public void endFight(FightBase fb){
     	ThreadPoolManager.getInstance().execute(new EndFightTask(fb));	
     }
@@ -801,9 +722,6 @@ public class FightProcessser {
 
     /**
      * PVE用 暂且不用
-     * @param fb
-     * @param fcs
-     * @return
      */
     public List<RetFightCmd> processCmdList(FightBase fb,List<FightCmd> fcs){
     	

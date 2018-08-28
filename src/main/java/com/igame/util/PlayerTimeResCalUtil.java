@@ -1,21 +1,21 @@
 package com.igame.util;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Lists;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
-import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.core.log.GoldLog;
+import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.ResCdto;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.load.ResourceService;
 import com.igame.work.user.service.RobotService;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -25,8 +25,9 @@ import com.igame.work.user.service.RobotService;
 public class PlayerTimeResCalUtil {
 	
 	 private static final PlayerTimeResCalUtil domain = new PlayerTimeResCalUtil();
+	private RobotService robotService;
 
-	    public static final PlayerTimeResCalUtil ins() {
+	public static final PlayerTimeResCalUtil ins() {
 	        return domain;
 	    }
 	
@@ -106,7 +107,7 @@ public class PlayerTimeResCalUtil {
 							Integer cid = ls.remove(index);
 							XingMoDto xx = new XingMoDto();
 							xx.setCheckPiontId(cid);
-							Map<String, RobotDto> robs = RobotService.ins().getRobot().get(player.getSeverId());
+							Map<String, RobotDto> robs = robotService.getRobot().get(player.getSeverId());
 							if(!robs.isEmpty()){
 								RobotDto rb = robs.values().stream().collect(Collectors.toList()).get(GameMath.getRandInt(robs.size()));
 								xx.setPlayerId(rb.getPlayerId());

@@ -56,7 +56,7 @@ public class GateHandler extends ReconnectedHandler {
 			MessageUtil.notifyDeInfoChange(player);
 		}
 		if(ls.isEmpty()){//说明已经达到昨天最高门,但都没有随机到特殊门
-			ls = GateService.creatGate(player);
+			ls = GateService.createGate(player);
 		}
 		player.getFateData().setGate(ls);
 
@@ -74,7 +74,7 @@ public class GateHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.GATE_INFO;
 	}
 

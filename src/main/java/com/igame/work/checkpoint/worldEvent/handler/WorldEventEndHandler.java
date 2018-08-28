@@ -113,7 +113,7 @@ public class WorldEventEndHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.WWORDEVENT_END;
 	}
 

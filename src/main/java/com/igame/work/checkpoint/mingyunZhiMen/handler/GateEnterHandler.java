@@ -65,7 +65,7 @@ public class GateEnterHandler extends ReconnectedHandler {
 				MessageUtil.notifyDeInfoChange(player);
 			}
 			if(ls.isEmpty()){//说明已经达到昨天最高门,但都没有随机到特殊门
-				ls = GateService.creatGate(player);
+				ls = GateService.createGate(player);
 			}
 			player.getFateData().setGate(ls);
 		}else{
@@ -74,7 +74,7 @@ public class GateEnterHandler extends ReconnectedHandler {
 				act = 1;
 				player.getFateData().addTempBoxCount(gto.getBoxCount());//加宝箱
 				player.getFateData().addTodayFateLevel();//到下一层
-				List<GateDto> gls = GateService.creatGate(player);//创建新的门
+				List<GateDto> gls = GateService.createGate(player);//创建新的门
 				player.getFateData().setGate(gls);
 				MessageUtil.notifyDeInfoChange(player);
 				MessageUtil.notifyGateChange(player);
@@ -109,7 +109,7 @@ public class GateEnterHandler extends ReconnectedHandler {
 
 	static List<GateDto> getGateDtos(Player player, List<GateDto> ls) {
 		for(int level = player.getFateData().getTodayFateLevel();level <= player.getFateData().getFateLevel();level++){
-			List<GateDto> temp = GateService.creatGate(player);
+			List<GateDto> temp = GateService.createGate(player);
 			boolean special = false;
 			for(GateDto gt : temp){
 				if(gt.getType() != 0){//怪物关卡直接获得宝箱
@@ -131,7 +131,7 @@ public class GateEnterHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.GATE_ENTER;
 	}
 

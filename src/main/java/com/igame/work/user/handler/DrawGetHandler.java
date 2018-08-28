@@ -165,7 +165,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.DRAW_GET;
 	}
 }

@@ -2,9 +2,15 @@ package com.igame.work.checkpoint.baozouShike;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.igame.core.ISFSModule;
+import com.igame.core.event.EventService;
+import com.igame.core.event.EventType;
+import com.igame.core.event.PlayerEventObserver;
+import com.igame.core.quartz.TimeListener;
+import com.igame.server.GameServer;
+import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.baozouShike.data.RunTemplate;
 import com.igame.work.checkpoint.baozouShike.data.RunTypeTemplate;
-import com.igame.core.db.DBManager;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
@@ -17,38 +23,57 @@ import java.util.*;
  *
  * 暴走时刻
  */
-public class BallisticService {
+public class BallisticService extends EventService implements ISFSModule, TimeListener {
+    @Override
+    public void minute5() {
+        saveData();
+    }
 
-    private static final BallisticService domain = new BallisticService();
-
-    public static final BallisticService ins() {
-        return domain;
+    @Override
+    public void zero() {
+        //暴走时刻 结算奖励 && 清空排行榜 && 随机当日buff
+        zeroJob();
     }
 
     private static final int[] killNums = {0,30,50,70,110,150,200,250,300,400,500,600};
+
+    @Override
+    protected PlayerEventObserver observeEvent() {
+        return new PlayerEventObserver() {
+            @Override
+            public EventType interestedType() {
+                return PlayerEvents.UPDATE_BALLISTIC_RANK;
+            }
+
+            @Override
+            public void observe(Player eventOwner, Object event) {
+                updateRank(eventOwner, (int) event);
+            }
+        };
+    }
 
     /**
      * 更新暴走时刻排行榜
      * @param player 要更新的玩家
      * @param killNum 杀敌数
      */
-    public void updateRank(Player player, int killNum) {
+    private void updateRank(Player player, int killNum) {
 
         //统计用时
         long time = new Date().getTime() - player.getBallisticEnter().getTime();
 
         //初始化排行榜
-        Map<Integer, Map<Long, BallisticRanker>> rankMap = BallisticRank.ins().getRankMap();
-        Map<Integer, List<BallisticRanker>> rankList = BallisticRank.ins().getRankList();
+        Map<Integer, Map<Long, BallisticRanker>> rankMap = rank.getRankMap();
+        Map<Integer, List<BallisticRanker>> rankList = getRankList();
         if (rankMap.get(player.getSeverId()) == null){
-            BallisticRank.ins().getRankMap().put(player.getSeverId(), Maps.newHashMap());
+            rank.getRankMap().put(player.getSeverId(), Maps.newHashMap());
         }
         if (rankList.get(player.getSeverId()) == null){
-            BallisticRank.ins().getRankList().put(player.getSeverId(),Lists.newArrayList());
+            getRankList().put(player.getSeverId(),Lists.newArrayList());
         }
 
-        Map<Long, BallisticRanker> rankerMap = BallisticRank.ins().getRankMap().get(player.getSeverId());
-        List<BallisticRanker> rankerList = BallisticRank.ins().getRankList().get(player.getSeverId());
+        Map<Long, BallisticRanker> rankerMap = rank.getRankMap().get(player.getSeverId());
+        List<BallisticRanker> rankerList = getRankList().get(player.getSeverId());
         BallisticRanker ranker = rankerMap.get(player.getPlayerId());
         if (ranker == null){    //新增玩家到排行榜
 
@@ -81,7 +106,7 @@ public class BallisticService {
      * @param killNum 杀敌数
      * @param tocalBuildNum 生成数量
      */
-    public List<MatchMonsterDto> buildMonsterByKillNum(int killNum, int tocalBuildNum){
+    public static List<MatchMonsterDto> buildMonsterByKillNum(int killNum, int tocalBuildNum){
 
         List<MatchMonsterDto> matchMonsterDtos = new ArrayList<>();
 
@@ -106,7 +131,7 @@ public class BallisticService {
      * @param tocalBuildNum 剩余生成怪物个数
      * @param index killNums下标
      */
-    private List<MatchMonsterDto> addMonster(List<MatchMonsterDto> matchMonsterDtos,int curBuildNum,int tocalBuildNum,int index){
+    private static List<MatchMonsterDto> addMonster(List<MatchMonsterDto> matchMonsterDtos,int curBuildNum,int tocalBuildNum,int index){
 
         if (index >= killNums.length)
             return matchMonsterDtos;
@@ -129,7 +154,7 @@ public class BallisticService {
      * @param template 暴走时刻怪兽模板
      * @param buildNum 生成数量
      */
-    public List<MatchMonsterDto> buildMonster(RunTemplate template, int buildNum){
+    public static List<MatchMonsterDto> buildMonster(RunTemplate template, int buildNum){
 
         List<MatchMonsterDto> matchMonsterDtos = new ArrayList<>();
 
@@ -153,13 +178,9 @@ public class BallisticService {
     /**
      * 暴走时刻 结算奖励 && 清空排行榜 && 随机当日buff
      */
-    public void zero() {
+    private void zeroJob() {
 
-        BallisticRank ins = BallisticRank.ins();
-
-        Map<Integer, List<BallisticRanker>> rankList = ins.getRankList();
-        Map<Integer, Map<Long, BallisticRanker>> rankMap = ins.getRankMap();
-        Map<Integer, Integer> buffMap = ins.getBuffMap();
+        Map<Integer, List<BallisticRanker>> rankList = getRankList();
 
         //结算奖励
         for (Map.Entry<Integer, List<BallisticRanker>> entry : rankList.entrySet()) {
@@ -210,14 +231,15 @@ public class BallisticService {
 
         //随机当日buff
         List<RunTypeTemplate> all = BaozouShikeDataManager.runTypeData.getAll();
+        Map<Integer, Integer> buffMap = rank.getBuffMap();
+        Map<Integer, Map<Long, BallisticRanker>> rankMap = rank.getRankMap();
+
         for (Map.Entry<Integer, Integer> entry : buffMap.entrySet()) {
 
             int newValue;
-            while (true){
-                newValue = new Random().nextInt(all.size()+1);
-                if (newValue != entry.getValue())
-                    break;
-            }
+            do {
+                newValue = new Random().nextInt(all.size() + 1);
+            } while (newValue == entry.getValue());
 
             buffMap.put(entry.getKey(),newValue);
         }
@@ -231,17 +253,14 @@ public class BallisticService {
     /**
      * 加载暴走时刻排行榜
      */
-    public void loadData() {
+    public void init() {
 
-        Map<Integer, Map<Long, BallisticRanker>> rankMap = Maps.newHashMap();
-        Map<Integer,List<BallisticRanker>> rankList = Maps.newHashMap();
-        Map<Integer, Integer> buffMap = Maps.newHashMap();
+        rank = BallisticRankDAO.ins().get();
+        if (rank == null){ //创建排行榜
 
-        BallisticRank ballisticRank = BallisticRankDAO.ins().get();
-        if (ballisticRank == null){ //创建排行榜
-
+            Map<Integer, Integer> buffMap = Maps.newHashMap();
             //随机buff
-            String DBName = DBManager.getInstance().p.getProperty("DBName");
+            String DBName = GameServer.dbManager.p.getProperty("DBName");
             String[] DBNames = DBName.split(",");
             for(String db : DBNames){
                 int serverId=Integer.parseInt(db.substring(5));
@@ -250,37 +269,39 @@ public class BallisticService {
                 buffMap.put(serverId,new Random().nextInt(all.size()+1));
             }
 
-            ballisticRank = new BallisticRank();
-            ballisticRank.setBuffMap(buffMap);
-            BallisticRankDAO.ins().save(ballisticRank);
+            rank = new BallisticRank();
+            rank.setBuffMap(buffMap);
+            BallisticRankDAO.ins().save(rank);
+
         }else { //初始化rankList
+            for (Map.Entry<Integer, Map<Long, BallisticRanker>> entry : rank.getRankMap().entrySet()) {
 
-            if (ballisticRank.getBuffMap() != null)
-                buffMap = ballisticRank.getBuffMap();
-            if (ballisticRank.getRankMap() != null)
-                rankMap = ballisticRank.getRankMap();
+                List<BallisticRanker> rankerList = new ArrayList<>(entry.getValue().values());
 
-            for (Map.Entry<Integer, Map<Long, BallisticRanker>> entry : rankMap.entrySet()) {
+                Integer serverId = entry.getKey();
 
-                List<BallisticRanker> rankerList = new ArrayList<>();
-                rankerList.addAll(entry.getValue().values());
+                rankList.put(serverId,rankerList);
 
-                rankList.put(entry.getKey(),rankerList);
             }
         }
+    }
 
-        BallisticRank ins = BallisticRank.ins();
+    private BallisticRank rank;
 
-        ins.set_id(ballisticRank.get_id());
-        ins.setRankMap(rankMap);
-        ins.setBuffMap(buffMap);
-        ins.setRankList(rankList);
+    public BallisticRank getRank() {
+        return rank;
+    }
+
+    private Map<Integer,List<BallisticRanker>> rankList = Maps.newHashMap();//暴走时刻排行榜
+
+    public Map<Integer, List<BallisticRanker>> getRankList() {
+        return rankList;
     }
 
     /**
-     * 保存暴走时刻拍排行榜
+     * 保存暴走时刻排行榜
      */
-    public void saveData() {
-        BallisticRankDAO.ins().update(BallisticRank.ins());
+    private void saveData() {
+        BallisticRankDAO.ins().update(rank);
     }
 }

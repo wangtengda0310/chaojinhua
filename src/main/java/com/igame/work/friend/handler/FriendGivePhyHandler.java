@@ -81,7 +81,7 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.FRIEND_PHY_GIVE;
     }
 

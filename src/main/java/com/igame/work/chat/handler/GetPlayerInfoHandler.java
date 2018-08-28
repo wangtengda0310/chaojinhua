@@ -30,7 +30,7 @@ public class GetPlayerInfoHandler extends ReconnectedHandler {
         vo.addData("playerId", playerId);
 
         Player playerSession = SessionManager.ins().getSessionByPlayerId(playerId);
-        Player playerCache = PlayerCacheService.ins().getPlayerById(playerId);
+        Player playerCache = PlayerCacheService.getPlayerById(playerId);
         if (playerSession == null && playerCache == null){
             return error(ErrorCode.ERROR);
         }
@@ -45,7 +45,7 @@ public class GetPlayerInfoHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.MESSAGE_PLAYERINFO;
     }
 

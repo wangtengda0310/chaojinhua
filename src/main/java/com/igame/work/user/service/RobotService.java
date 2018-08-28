@@ -2,8 +2,11 @@ package com.igame.work.user.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
-import com.igame.core.db.DBManager;
+import com.igame.core.event.EventService;
+import com.igame.core.quartz.TimeListener;
+import com.igame.server.GameServer;
 import com.igame.util.GameMath;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
@@ -28,18 +31,17 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class RobotService {
-	
-    private static final RobotService domain = new RobotService();
+public class RobotService extends EventService implements ISFSModule, TimeListener {
+	@Override
+	public void minute5() {
+		ref();
+		save();
+	}
 
-    public static RobotService ins() {
-        return domain;
-    }
-    
-    private Map<Integer,Map<String,RobotDto>> robot = Maps.newHashMap();
+	private static Map<Integer,Map<String,RobotDto>> robot = Maps.newHashMap();
     
     
-    public void ref(){
+    private void ref(){
     	for(Player player : SessionManager.ins().getSessions().values()){
 			Map<String, RobotDto> map = robot.computeIfAbsent(player.getSeverId(), k -> Maps.newHashMap());
 			RobotDto rb = map.get(player.getNickname());
@@ -73,9 +75,9 @@ public class RobotService {
     	}
     	
     }
-    
-    public void load(){
-		String DBName = DBManager.getInstance().p.getProperty("DBName");
+
+	public void init(){
+		String DBName = GameServer.dbManager.p.getProperty("DBName");
 		String[] DBNames = DBName.split(",");
 		for(String db : DBNames){
 			int serverId=Integer.parseInt(db.substring(5));
@@ -83,7 +85,7 @@ public class RobotService {
 		}
     }
     
-    public void save(){
+    private void save(){
 		for(Map<String,RobotDto> db : robot.values()){
 			try{
 				for(RobotDto m : db.values()){
@@ -100,15 +102,10 @@ public class RobotService {
 		return robot;
 	}
 
-	public void setRobot(Map<Integer, Map<String, RobotDto>> robot) {
-		this.robot = robot;
-	}
-    
-
     /**
      * 生成机器人数据
      */
-    public RobotDto createRobotDto(Player player,long playerId,String name,int level){
+    public static RobotDto createRobotDto(Player player,long playerId,String name,int level){
     	RobotDto rto = null;
     	ArenadataTemplate at = PlayerDataManager.ArenaData.getTemplateByPlayerLevel(player.getPlayerLevel());
     	if(at != null){
@@ -156,7 +153,7 @@ public class RobotService {
     }
     
 
-	public RobotDto createRobotLike(Player player) {
+	public static RobotDto createRobotLike(Player player) {
 		RobotDto rb;
 		rb = new RobotDto();
 		rb.setDtate(1);

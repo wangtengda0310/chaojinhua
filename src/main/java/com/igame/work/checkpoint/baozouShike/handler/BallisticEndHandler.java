@@ -1,12 +1,12 @@
 package com.igame.work.checkpoint.baozouShike.handler;
 
 import com.google.common.collect.Lists;
+import com.igame.core.handler.ReconnectedHandler;
+import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
-import com.igame.core.handler.ReconnectedHandler;
-import com.igame.core.handler.RetVO;
-import com.igame.work.checkpoint.baozouShike.BallisticService;
+import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
 import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardData;
 import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardTemplate;
@@ -57,7 +57,7 @@ public class BallisticEndHandler extends ReconnectedHandler {
         }
 
         //更新暴走时刻排行榜
-        BallisticService.ins().updateRank(player, killNum);
+        fireEvent(player, PlayerEvents.UPDATE_BALLISTIC_RANK, killNum);
 
         //结算并推送奖励
         String reward = settlementReward(player,killNum);
@@ -89,7 +89,7 @@ public class BallisticEndHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.BALLISTIC_END;
     }
 

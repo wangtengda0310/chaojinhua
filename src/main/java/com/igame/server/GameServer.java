@@ -1,12 +1,15 @@
 package com.igame.server;
 
-import com.igame.work.MProtrol;
+import com.igame.core.ISFSModule;
+import com.igame.core.SystemService;
 import com.igame.core.data.DataManager;
 import com.igame.core.db.DBManager;
 import com.igame.core.event.EventManager;
+import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
-import com.igame.util.SystemService;
+import com.igame.core.quartz.TimeListener;
+import com.igame.work.MProtrol;
 import com.igame.work.activity.ShowActivityHandler;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaHandler;
 import com.igame.work.activity.sign.SignHandler;
@@ -20,6 +23,7 @@ import com.igame.work.checkpoint.baozouShike.handler.BallisticEnterHandler;
 import com.igame.work.checkpoint.baozouShike.handler.BallisticMonsterHandler;
 import com.igame.work.checkpoint.baozouShike.handler.BallisticRankHandler;
 import com.igame.work.checkpoint.guanqia.handler.*;
+import com.igame.work.checkpoint.mingyunZhiMen.GateService;
 import com.igame.work.checkpoint.mingyunZhiMen.handler.*;
 import com.igame.work.checkpoint.tansuo.handler.*;
 import com.igame.work.checkpoint.worldEvent.handler.WorldEventEndHandler;
@@ -47,6 +51,7 @@ import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.shop.handler.ReloadShopHandler;
 import com.igame.work.shop.handler.ShopBuyHandler;
 import com.igame.work.shop.handler.ShopInfoHandler;
+import com.igame.work.shop.service.ShopService;
 import com.igame.work.system.RankService;
 import com.igame.work.turntable.handler.OneLotteryHandler;
 import com.igame.work.turntable.handler.TenLotteryHandler;
@@ -56,7 +61,12 @@ import com.igame.work.user.handler.*;
 import com.igame.work.user.service.PlayerCacheService;
 import com.igame.work.user.service.RobotService;
 import com.smartfoxserver.v2.core.SFSEventType;
+import com.smartfoxserver.v2.extensions.IClientRequestHandler;
 import com.smartfoxserver.v2.extensions.SFSExtension;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -66,23 +76,85 @@ import com.smartfoxserver.v2.extensions.SFSExtension;
  */
 public class GameServer extends SFSExtension {
 
+	public static DBManager dbManager;
+
+	private Map<Class, ISFSModule> services = new HashMap<>();
+
+	/**
+	 * 加载ISFSModule的实例
+	 */
+	private <T extends ISFSModule> T initService(Class<T> clazz) {
+		try {
+			T service = clazz.newInstance();
+
+			if (ISFSModule.class.isAssignableFrom(clazz)) {
+				service.init(this);
+				services.put(clazz, service);
+			}
+
+			if (TimeListener.class.isAssignableFrom(clazz)) {
+				JobManager.addJobListener((TimeListener) service);
+			}
+
+			return service;
+		} catch (InstantiationException | IllegalAccessException e) {
+			getLogger().error("init service {} error", clazz.getSimpleName(), e);
+		}
+
+		return null;
+	}
+
+	private void addRequestHandler(int requestId, Class<? extends IClientRequestHandler> clazz) {
+		addRequestHandler(String.valueOf(String.valueOf(requestId)), clazz);
+	}
+
+	/**注册SmartFoxServer的handler并注入ISFSModule属性*/
+	private void addRequestHandler(Class<? extends ReconnectedHandler> clazz) {
+		try {
+			ReconnectedHandler handler = clazz.newInstance();
+
+			for (Field field : clazz.getDeclaredFields()) {
+				Class<?> fieldClass = field.getType();
+				if (services.containsKey(fieldClass)) {
+					field.setAccessible(true);
+					field.set(handler, services.get(fieldClass));
+				} else if (ISFSModule.class.isAssignableFrom(fieldClass)) {
+					ISFSModule service = ((ISFSModule)fieldClass.newInstance());
+					services.put(fieldClass, service);
+					field.setAccessible(true);
+					field.set(handler, services.get(fieldClass));
+				}
+			}
+			addRequestHandler(String.valueOf(handler.protocolId()), handler);
+		} catch (InstantiationException | IllegalAccessException e) {
+			getLogger().error("init handler {} error", clazz.getSimpleName(), e);
+		}
+
+	}
 
 	@Override
 	public void init() {
-		DBManager.init(getConfigProperties());
-		DataManager.load("resource/");
-		JobManager.ins();
-		SystemService.ins().loadData();
-		RankService.ins().loadData();
-		RobotService.ins().load();
-		ArenaService.ins().loadRobot();
-		ArenaService.ins().loadRank(true);
-		BallisticService.ins().loadData();
-		PlayerCacheService.ins().loadData();
-		PublicMessageService.ins().load();
-		FightEffectService.ins().initFightEffect();
+        DataManager dataManager = new DataManager();
+        dataManager.load("resource/");
 
-		addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, EventManager.serverEventListener());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
+		dbManager = initService(DBManager.class);
+		initService(SystemService.class);
+		initService(RankService.class);
+		initService(RobotService.class);
+		initService(ArenaService.class);
+		initService(BallisticService.class);
+		initService(PlayerCacheService.class);
+		initService(PublicMessageService.class);
+		initService(FightEffectService.class);
+		initService(GateService.class);
+
+		initService(JobManager.class);
+
+		JobManager.addJobListener(ShopService.ins());
+
+		addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, EventManager.playerEventObserver());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
+		addEventHandler(SFSEventType.ROOM_VARIABLES_UPDATE, EventManager.serviceEventListener());	// 利用ROOM_VARIABLES_UPDATE实现的服务器事件机制
+
 		addEventHandler(SFSEventType.USER_LOGIN, LoginEventHandler.class);//自定义登录接口
 		addEventHandler(SFSEventType.USER_LOGOUT, LOGINOUTEventHandler.class);
 		addEventHandler(SFSEventType.USER_DISCONNECT, DisconnectEventHandler.class);
@@ -98,146 +170,141 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(MProtrol.HEART, HeartHandler.class);//心跳
 		addRequestHandler(MProtrol.REQ_PUSH, ReqPushHndler.class);	// TODO refactor
 
-		addRequestHandler(MProtrol.CHANGE_TEAM, MonsterHandler.class);//怪物换阵
-		addRequestHandler(MProtrol.GM, GMHandler.class);//GM
-		addRequestHandler(MProtrol.ITEM_USE, ItemHandler.class);//道具
-		addRequestHandler(MProtrol.MONSTER_EV, MonsterEVHandler.class);//怪物进化
-		addRequestHandler(MProtrol.MONSTER_TUPO_S, MonsterTUPOSHandler.class);//怪物基因单个突破
-		addRequestHandler(MProtrol.MONSTER_TUPO_C, MonsterTUPOChangeHandler.class);//怪物基因更换
-		addRequestHandler(MProtrol.MONSTER_TUPO_A, MonsterTUPOAllHandler.class);//怪物基因全部更换
-		addRequestHandler(MProtrol.CHECKPOINT_ENTER, CheckEnterHandler.class);//进入某一关卡
-		addRequestHandler(MProtrol.CHECKPOINT_END, CheckEndHandler.class);//完成某一关卡
-		addRequestHandler(MProtrol.CHECKPOINT_SAO, CheckSaoDangHandler.class);//扫荡某一关卡
-		addRequestHandler(MProtrol.CHECKPOINT_RES_GET, CheckResHandler.class);//金币关卡领取
-		addRequestHandler(MProtrol.MONSTER_NEW, MonsterNewHandler.class);//怪物新生
-		addRequestHandler(MProtrol.MONSTER_LOCK, MonsterLockHandler.class);//怪物锁
-		addRequestHandler(MProtrol.MONSTER_CHANGE, MonsterChangeHandler.class);//怪物互换
-		addRequestHandler(MProtrol.ITEM_EQ, MonsterEquipHandler.class);//文章装备
-		addRequestHandler(MProtrol.ITEM_EQ_ALL, MonsterEquipDownAllHandler.class);//一键下文章
-		addRequestHandler(MProtrol.ITEM_HE, ItemHeChengHandler.class);//装备合成
-		addRequestHandler(MProtrol.ITEM_HE_ALL, ItemHeChengAllHandler.class);//一键合成
-		addRequestHandler(MProtrol.TANGSUO_LIST, TansuoListHandler.class);//探索
-		addRequestHandler(MProtrol.TANGSUO_MONSTER, TansuoMonsterHandler.class);//探索怪物
-		addRequestHandler(MProtrol.TANGSUO_MONSTER_UN, TansuoUnLockHandler.class);//探索怪物
-		addRequestHandler(MProtrol.TANGSUO_START, TansuoStartHandler.class);//探索开始
-		addRequestHandler(MProtrol.TANGSUO_END, TansuoEndHandler.class);//探索结束
-		addRequestHandler(MProtrol.WWORDEVENT_LIST, WorldEventListHandler.class);//世界事件列表
-		addRequestHandler(MProtrol.WWORDEVENT_ENTER, WorldEventEnterHandler.class);//世界事件进入
-		addRequestHandler(MProtrol.WWORDEVENT_END, WorldEventEndHandler.class);//世界事件完成
-		addRequestHandler(MProtrol.WWORDEVENT_SAO, WorldEventSaoHandler.class);//世界事件扫荡
-		addRequestHandler(MProtrol.MONSTER_REF, MonsterDataRefHandler.class);//MONSTER_REF
-		addRequestHandler(MProtrol.TONGHUA_INFO, TongHuaInfoHandler.class);//同化信息
-		addRequestHandler(MProtrol.TONGHUA_OPEN, TongHuaOpenHandler.class);//同化打开
-		addRequestHandler(MProtrol.TONGHUA_GET, TongHuaGetHandler.class);//同化领取
-		addRequestHandler(MProtrol.TONGHUAINFO_BUY, TongHuaBuyHandler.class);//购买同化资源
-		addRequestHandler(MProtrol.TONGHUA_CD_BUY, TongHuaCDHandler.class);//同化CD
-		addRequestHandler(MProtrol.TONGHUA_ENTER_FIGHT, TongHuaEnterFightHandler.class);//同化进入战斗
-		addRequestHandler(MProtrol.TONGHUA_FIGHT, TongHuaFightHandler.class);//同化战斗
-		addRequestHandler(MProtrol.TONGHUA_CD_REF, TongHuaRefHandler.class);//同化刷新
-		addRequestHandler(MProtrol.Gods_UP, GodsUpHandler.class);//神灵升级
-		addRequestHandler(MProtrol.Gods_RESET, GodsResetHandler.class);//神灵重置
-		addRequestHandler(MProtrol.FIGHT_AGAIN, FightAgainHandler.class);//神灵重置
-		addRequestHandler(MProtrol.BUG_RES, ResBuyHandler.class);//资源购买
-		addRequestHandler(MProtrol.MAIL_READ, MialReadHandler.class);//邮件读取
-		addRequestHandler(MProtrol.MAIL_GET, MialGetHandler.class);//邮件领取
-		addRequestHandler(MProtrol.MAIL_NEW, MiaSendHandler.class);//邮件发送好友
-		addRequestHandler(MProtrol.MAIL_DEL, MialDelHandler.class);//邮件删除
-		addRequestHandler(MProtrol.MAIL_NEW_SYS, MiaSysSendHandler.class);//发系统邮件
-		addRequestHandler(MProtrol.MEET_NEW_MONSTER, TuJianHandler.class);//遇到新怪物
-		addRequestHandler(MProtrol.DRAW_GET, DrawGetHandler.class);//造物台造物
-		addRequestHandler(MProtrol.F_P_S, PVPReadHandler.class);//匹配
-		addRequestHandler(MProtrol.F_P_C, PVPChancelHandler.class);//取消匹配
-		addRequestHandler(MProtrol.F_P_D, PVPReadCDHandler.class);//倒计时结束
-		addRequestHandler(MProtrol.F_LOAD_E, PVPGameLoadHandler.class);//加载游戏完毕
-		addRequestHandler(MProtrol.F_CMD, FightCmdHandler.class);//战斗指令
-		addRequestHandler(MProtrol.QUEST_REWARD, QuestRewardHandler.class);//领取任务奖励
-		addRequestHandler(MProtrol.TRIAL_ENTER, TrialEnterHandler.class);//进入星河之眼关卡战斗
-		addRequestHandler(MProtrol.TRIAL_END, TrialEndHandler.class);//结束星河之眼关卡战斗
-		addRequestHandler(MProtrol.TRIAL_WA, WaKuangHandler.class);//星河之眼挖矿
-		addRequestHandler(MProtrol.TRIAL_SALE, TrialSaleHandler.class);//购买星能(即星核之眼挑战次数)
-		addRequestHandler(MProtrol.WU_REF, EndlessRefHandler.class);//无尽之森刷新
-		addRequestHandler(MProtrol.WU_ENTER, EndlessEnterHandler.class);//进入无尽之森战斗
-		addRequestHandler(MProtrol.WU_END, EndlessEndHandler.class);//结束无尽之森战斗
-		addRequestHandler(MProtrol.WUZHENG_YES, EndlessZhenHandler.class);//设置无尽之森自己怪物阵容
-		addRequestHandler(MProtrol.WU_NAI, EndlessNaiHandler.class);//无尽之森奶一口
-		addRequestHandler(MProtrol.WU_BUFFER, EndlessBufferHandler.class);//无尽之森重置BUFFER
-		addRequestHandler(MProtrol.DE_INFO, DeInfoHandler.class);//命运之门信息
-		addRequestHandler(MProtrol.GATE_INFO, GateHandler.class);//快速选门
-		addRequestHandler(MProtrol.GATE_ENTER, GateEnterHandler.class);//命运之门进入
-		addRequestHandler(MProtrol.GATE_END, GateEndHandler.class);//命运之门结束战斗
-		addRequestHandler(MProtrol.GATE_RESET, GateResetHandler.class);//命运之门重新挑战
-		addRequestHandler(MProtrol.GATE_REWARD, GateRewardHandler.class);//命运之门领取
-		addRequestHandler(MProtrol.GATE_RANKS, GateRankHandler.class);//命运之门排行榜
-		addRequestHandler(MProtrol.SHOP_INFO, ShopInfoHandler.class);//获取商店信息
-		addRequestHandler(MProtrol.SHOP_BUY, ShopBuyHandler.class);//购买商品
-		addRequestHandler(MProtrol.SHOP_Reload, ReloadShopHandler.class);//刷新商店
-		addRequestHandler(MProtrol.XINGMO_ENTER, XinmoEnterHandler.class);//进入心魔关卡
-		addRequestHandler(MProtrol.XINGMO_END, XinmoEndHandler.class);//结束心魔关卡战斗
+		addRequestHandler(MonsterHandler.class);//怪物换阵
+		addRequestHandler(GMHandler.class);//GM
+		addRequestHandler(ItemHandler.class);//道具
+		addRequestHandler(MonsterEVHandler.class);//怪物进化
+		addRequestHandler(MonsterTUPOSHandler.class);//怪物基因单个突破
+		addRequestHandler(MonsterTUPOChangeHandler.class);//怪物基因更换
+		addRequestHandler(MonsterTUPOAllHandler.class);//怪物基因全部更换
+		addRequestHandler(CheckEnterHandler.class);//进入某一关卡
+		addRequestHandler(CheckEndHandler.class);//完成某一关卡
+		addRequestHandler(CheckSaoDangHandler.class);//扫荡某一关卡
+		addRequestHandler(CheckResHandler.class);//金币关卡领取
+		addRequestHandler(MonsterNewHandler.class);//怪物新生
+		addRequestHandler(MonsterLockHandler.class);//怪物锁
+		addRequestHandler(MonsterChangeHandler.class);//怪物互换
+		addRequestHandler(MonsterEquipHandler.class);//文章装备
+		addRequestHandler(MonsterEquipDownAllHandler.class);//一键下文章
+		addRequestHandler(ItemHeChengHandler.class);//装备合成
+		addRequestHandler(ItemHeChengAllHandler.class);//一键合成
+		addRequestHandler(TansuoListHandler.class);//探索
+		addRequestHandler(TansuoMonsterHandler.class);//探索怪物
+		addRequestHandler(TansuoUnLockHandler.class);//探索怪物
+		addRequestHandler(TansuoStartHandler.class);//探索开始
+		addRequestHandler(TansuoEndHandler.class);//探索结束
+		addRequestHandler(WorldEventListHandler.class);//世界事件列表
+		addRequestHandler(WorldEventEnterHandler.class);//世界事件进入
+		addRequestHandler(WorldEventEndHandler.class);//世界事件完成
+		addRequestHandler(WorldEventSaoHandler.class);//世界事件扫荡
+		addRequestHandler(MonsterDataRefHandler.class);//MONSTER_REF
+		addRequestHandler(TongHuaInfoHandler.class);//同化信息
+		addRequestHandler(TongHuaOpenHandler.class);//同化打开
+		addRequestHandler(TongHuaGetHandler.class);//同化领取
+		addRequestHandler(TongHuaBuyHandler.class);//购买同化资源
+		addRequestHandler(TongHuaCDHandler.class);//同化CD
+		addRequestHandler(TongHuaEnterFightHandler.class);//同化进入战斗
+		addRequestHandler(TongHuaFightHandler.class);//同化战斗
+		addRequestHandler(TongHuaRefHandler.class);//同化刷新
+		addRequestHandler(GodsUpHandler.class);//神灵升级
+		addRequestHandler(GodsResetHandler.class);//神灵重置
+		addRequestHandler(FightAgainHandler.class);//神灵重置
+		addRequestHandler(ResBuyHandler.class);//资源购买
+		addRequestHandler(MialReadHandler.class);//邮件读取
+		addRequestHandler(MialGetHandler.class);//邮件领取
+		addRequestHandler(MiaSendHandler.class);//邮件发送好友
+		addRequestHandler(MialDelHandler.class);//邮件删除
+		addRequestHandler(MiaSysSendHandler.class);//发系统邮件
+		addRequestHandler(TuJianHandler.class);//遇到新怪物
+		addRequestHandler(DrawGetHandler.class);//造物台造物
+		addRequestHandler(PVPReadHandler.class);//匹配
+		addRequestHandler(PVPChancelHandler.class);//取消匹配
+		addRequestHandler(PVPReadCDHandler.class);//倒计时结束
+		addRequestHandler(PVPGameLoadHandler.class);//加载游戏完毕
+		addRequestHandler(FightCmdHandler.class);//战斗指令
+		addRequestHandler(QuestRewardHandler.class);//领取任务奖励
+		addRequestHandler(TrialEnterHandler.class);//进入星河之眼关卡战斗
+		addRequestHandler(TrialEndHandler.class);//结束星河之眼关卡战斗
+		addRequestHandler(WaKuangHandler.class);//星河之眼挖矿
+		addRequestHandler(TrialSaleHandler.class);//购买星能(即星核之眼挑战次数)
+		addRequestHandler(EndlessRefHandler.class);//无尽之森刷新
+		addRequestHandler(EndlessEnterHandler.class);//进入无尽之森战斗
+		addRequestHandler(EndlessEndHandler.class);//结束无尽之森战斗
+		addRequestHandler(EndlessZhenHandler.class);//设置无尽之森自己怪物阵容
+		addRequestHandler(EndlessNaiHandler.class);//无尽之森奶一口
+		addRequestHandler(EndlessBufferHandler.class);//无尽之森重置BUFFER
+		addRequestHandler(DeInfoHandler.class);//命运之门信息
+		addRequestHandler(GateHandler.class);//快速选门
+		addRequestHandler(GateEnterHandler.class);//命运之门进入
+		addRequestHandler(GateEndHandler.class);//命运之门结束战斗
+		addRequestHandler(GateResetHandler.class);//命运之门重新挑战
+		addRequestHandler(GateRewardHandler.class);//命运之门领取
+		addRequestHandler(GateRankHandler.class);//命运之门排行榜
+		addRequestHandler(ShopInfoHandler.class);//获取商店信息
+		addRequestHandler(ShopBuyHandler.class);//购买商品
+		addRequestHandler(ReloadShopHandler.class);//刷新商店
+		addRequestHandler(XinmoEnterHandler.class);//进入心魔关卡
+		addRequestHandler(XinmoEndHandler.class);//结束心魔关卡战斗
 		//addRequestHandler(MProtrol.JINGJI_ZHENG, MonsterDefendHandler.class);//竞技场防守阵容上阵下阵怪物
-		addRequestHandler(MProtrol.ENTER_CHECK, EnterCheckHandler.class);//获取关卡信息
-		addRequestHandler(MProtrol.HEAD_CHANGE, ChangeHeadHandler.class);//更换头像
-		addRequestHandler(MProtrol.FRAME_CHANGE, ChangeFrameHandler.class);//更换头像框
-		addRequestHandler(MProtrol.MODIFY_NICKNAME, ModifyNicknameHandler.class);//更换昵称
-		addRequestHandler(MProtrol.AREA_INFO, AreaInfoHandler.class);//获取竞技场信息
-		addRequestHandler(MProtrol.BALLISTIC_RANKS, BallisticRankHandler.class);//暴走时刻排行榜
-		addRequestHandler(MProtrol.BALLISTIC_ENTER, BallisticEnterHandler.class);//进入暴走时刻
-		addRequestHandler(MProtrol.BALLISTIC_END, BallisticEndHandler.class);//结束暴走时刻
-		addRequestHandler(MProtrol.BALLISTIC_MONSTER, BallisticMonsterHandler.class);//暴走时刻怪兽
-		addRequestHandler(MProtrol.AREA_P_INFO, AreaPlayerInfoHandler.class);//获取对手信息
-		addRequestHandler(MProtrol.AREA_ENTER, AreaEnterHandler.class);//进入竞技场战斗
-		addRequestHandler(MProtrol.AREA_END, AreaEndHandler.class);//结束竞技场战斗
-		addRequestHandler(MProtrol.AREA_REF, AreaRefHandler.class);//刷新竞技场新对手
-		addRequestHandler(MProtrol.FRIEND_FIND, FriendFindHandler.class);//根据昵称查找好友
-		addRequestHandler(MProtrol.FRIEND_NOMINATE, FriendNominateHandler.class);//好友推荐
-		addRequestHandler(MProtrol.FRIEND_ADD, FriendAddHandler.class);//添加好友
-		addRequestHandler(MProtrol.FRIEND_AGREE, FriendAgreeHandler.class);//同意好友请求
-		addRequestHandler(MProtrol.FRIEND_REFUSE, FriendRefuseHandler.class);//拒绝好友请求
-		addRequestHandler(MProtrol.FRIEND_DELETE, FriendDeleteHandler.class);//删除好友
-		addRequestHandler(MProtrol.FRIEND_PHY_GIVE, FriendGivePhyHandler.class);//赠送体力
-		addRequestHandler(MProtrol.FRIEND_PHY_RECEIVE, FriendReceivePhyHandler.class);//领取体力
-		addRequestHandler(MProtrol.FRIEND_EXPLORE, FriendExploreHandler.class);//获取探索状态列表
-		addRequestHandler(MProtrol.FRIEND_EXPLORE_GET, FriendGetExploreHandler.class);//获取探索详情
-		addRequestHandler(MProtrol.FRIEND_EXPLORE_ACC, FriendExploreAccHandler.class);//探索加速
-		addRequestHandler(MProtrol.FRIEND_TOPLIMIT_ADD, FriendAddToplimitHandler.class);//增加好友上限
-		addRequestHandler(MProtrol.MESSAGE_WORLD, PublicMessageHandler.class);//获取世界消息
-		addRequestHandler(MProtrol.MESSAGE_PRIVATE, PrivateMessageHandler.class);//获取私聊消息
-		addRequestHandler(MProtrol.MESSAGE_BAN_STRANGERS, BanStrangersHandler.class);//拒绝或开放陌生人私聊
-		addRequestHandler(MProtrol.MESSAGE_PLAYERINFO, GetPlayerInfoHandler.class);//拒绝或开放陌生人私聊
-		addRequestHandler(MProtrol.MESSAGE_BOARD_ADD, MessageBoardAddHandler.class);//留言板新增留言
-		addRequestHandler(MProtrol.MESSAGE_BOARD_GET, MessageBoardGetHandler.class);//获取留言板
-		addRequestHandler(MProtrol.MESSAGE_BOARD_MODIFY, MessageBoardModifyHandler.class);//修改留言板(点赞、取消点赞、反对、取消反对)
-		addRequestHandler(MProtrol.ITEM_SALE, ItemSaleHandler.class);//道具出售
-		addRequestHandler(MProtrol.ITEM_SUMMON, ItemSummonHandler.class);//召唤怪兽
-		addRequestHandler(MProtrol.ITEM_ADD_TOPLIMIT, ItemAddToplimitHandler.class);//增加背包上限
-		addRequestHandler(MProtrol.MONSTER_SKILL, MonsterSkillHandler.class);//怪兽技能升级
-		addRequestHandler(MProtrol.ITEM_GROUP, ItemGroupHandler.class);//道具合成
-		addRequestHandler(MProtrol.REPLACE_TEAM, ReplaceTeamHandler.class);//更换出战阵容
-		addRequestHandler(MProtrol.VIP_FRIST_PACK, VipBuyFristPackHandler.class);//会员购买礼包
-		addRequestHandler(MProtrol.VIP_DAY_PACK, VipRecDayPackHandler.class);//会员领取每日礼包
-		addRequestHandler(MProtrol.GODS_FIGHT, GodsFightHandler.class);//神灵出战
-		addRequestHandler(MProtrol.LUCKTABLE_GET, TurntableGetHandler.class);//获取玩家幸运大转盘
-		addRequestHandler(MProtrol.LUCKTABLE_RELOAD, TurntableReloadHandler.class);//刷新幸运大转盘
-		addRequestHandler(MProtrol.LUCKTABLE_LOTTERY_ONE, OneLotteryHandler.class);//幸运大转盘单抽
-		addRequestHandler(MProtrol.LUCKTABLE_LOTTERY_TEN, TenLotteryHandler.class);//幸运大转盘十连抽
-		addRequestHandler(MProtrol.MONSTER_INFO, MonsterListHandler.class);//怪物列表
-		addRequestHandler(MProtrol.AREA_BUY, AreaBuyHandler.class);//幸运大转盘十连抽
-		addRequestHandler(MProtrol.ACTICITY, ShowActivityHandler.class);//活动展示
-		addRequestHandler(MProtrol.SIGN, SignHandler.class);//签到活动
-		addRequestHandler(MProtrol.MEIRI_LIANGFA, MeiriLiangfaHandler.class);//每日两发活动
-		addRequestHandler(MProtrol.TANSUO_ZHI_LU, TansuoZhiLuActivityHandler.class);//探索之路活动
-		addRequestHandler(MProtrol.RECHARGE_LIST, RechargeListHandler.class);//充值展示
-		addRequestHandler(MProtrol.MOCK_RECHARGE, MockRechargeHandler.class);//模拟充值
+		addRequestHandler(EnterCheckHandler.class);//获取关卡信息
+		addRequestHandler(ChangeHeadHandler.class);//更换头像
+		addRequestHandler(ChangeFrameHandler.class);//更换头像框
+		addRequestHandler(ModifyNicknameHandler.class);//更换昵称
+		addRequestHandler(AreaInfoHandler.class);//获取竞技场信息
+		addRequestHandler(BallisticRankHandler.class);//暴走时刻排行榜
+		addRequestHandler(BallisticEnterHandler.class);//进入暴走时刻
+		addRequestHandler(BallisticEndHandler.class);//结束暴走时刻
+		addRequestHandler(BallisticMonsterHandler.class);//暴走时刻怪兽
+		addRequestHandler(AreaPlayerInfoHandler.class);//获取对手信息
+		addRequestHandler(AreaEnterHandler.class);//进入竞技场战斗
+		addRequestHandler(AreaEndHandler.class);//结束竞技场战斗
+		addRequestHandler(AreaRefHandler.class);//刷新竞技场新对手
+		addRequestHandler(FriendFindHandler.class);//根据昵称查找好友
+		addRequestHandler(FriendNominateHandler.class);//好友推荐
+		addRequestHandler(FriendAddHandler.class);//添加好友
+		addRequestHandler(FriendAgreeHandler.class);//同意好友请求
+		addRequestHandler(FriendRefuseHandler.class);//拒绝好友请求
+		addRequestHandler(FriendDeleteHandler.class);//删除好友
+		addRequestHandler(FriendGivePhyHandler.class);//赠送体力
+		addRequestHandler(FriendReceivePhyHandler.class);//领取体力
+		addRequestHandler(FriendExploreHandler.class);//获取探索状态列表
+		addRequestHandler(FriendGetExploreHandler.class);//获取探索详情
+		addRequestHandler(FriendExploreAccHandler.class);//探索加速
+		addRequestHandler(FriendAddToplimitHandler.class);//增加好友上限
+		addRequestHandler(PublicMessageHandler.class);//获取世界消息
+		addRequestHandler(PrivateMessageHandler.class);//获取私聊消息
+		addRequestHandler(BanStrangersHandler.class);//拒绝或开放陌生人私聊
+		addRequestHandler(GetPlayerInfoHandler.class);//拒绝或开放陌生人私聊
+		addRequestHandler(MessageBoardAddHandler.class);//留言板新增留言
+		addRequestHandler(MessageBoardGetHandler.class);//获取留言板
+		addRequestHandler(MessageBoardModifyHandler.class);//修改留言板(点赞、取消点赞、反对、取消反对)
+		addRequestHandler(ItemSaleHandler.class);//道具出售
+		addRequestHandler(ItemSummonHandler.class);//召唤怪兽
+		addRequestHandler(ItemAddToplimitHandler.class);//增加背包上限
+		addRequestHandler(MonsterSkillHandler.class);//怪兽技能升级
+		addRequestHandler(ItemGroupHandler.class);//道具合成
+		addRequestHandler(ReplaceTeamHandler.class);//更换出战阵容
+		addRequestHandler(VipBuyFristPackHandler.class);//会员购买礼包
+		addRequestHandler(VipRecDayPackHandler.class);//会员领取每日礼包
+		addRequestHandler(GodsFightHandler.class);//神灵出战
+		addRequestHandler(TurntableGetHandler.class);//获取玩家幸运大转盘
+		addRequestHandler(TurntableReloadHandler.class);//刷新幸运大转盘
+		addRequestHandler(OneLotteryHandler.class);//幸运大转盘单抽
+		addRequestHandler(TenLotteryHandler.class);//幸运大转盘十连抽
+		addRequestHandler(MonsterListHandler.class);//怪物列表
+		addRequestHandler(AreaBuyHandler.class);//幸运大转盘十连抽
+		addRequestHandler(ShowActivityHandler.class);//活动展示
+		addRequestHandler(SignHandler.class);//签到活动
+		addRequestHandler(MeiriLiangfaHandler.class);//每日两发活动
+		addRequestHandler(TansuoZhiLuActivityHandler.class);//探索之路活动
+		addRequestHandler(RechargeListHandler.class);//充值展示
+		addRequestHandler(MockRechargeHandler.class);//模拟充值
 
 	}
 
-    protected void addRequestHandler(int requestId, Class<?> theClass) {
-        addRequestHandler(String.valueOf(requestId), theClass);
-    }
 	@Override
 	public void destroy(){
-
-		SystemService.ins().saveData();
-
+		services.values().forEach(ISFSModule::destroy);
 		EventManager.clearAllListeners();
 		GoldLog.info("GameServer destroy");
 	}

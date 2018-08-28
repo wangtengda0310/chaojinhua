@@ -42,7 +42,7 @@ import com.igame.work.user.data.*;
 
 public class DataManager {
 
-	public static void load(String resourceFolder)
+	public void load(String resourceFolder)
 	{
 		ClassXmlDataLoader loader = new ClassXmlDataLoader(resourceFolder);
 

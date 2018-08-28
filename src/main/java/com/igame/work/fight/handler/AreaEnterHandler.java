@@ -62,7 +62,7 @@ public class AreaEnterHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.AREA_ENTER;
 	}
 

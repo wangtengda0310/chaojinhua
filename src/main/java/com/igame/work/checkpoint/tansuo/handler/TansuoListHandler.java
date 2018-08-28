@@ -42,7 +42,7 @@ public class TansuoListHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.TANGSUO_LIST;
 	}
 

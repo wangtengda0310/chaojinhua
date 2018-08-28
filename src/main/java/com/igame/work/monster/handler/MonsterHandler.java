@@ -51,7 +51,7 @@ public class MonsterHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.CHANGE_TEAM;
     }
 

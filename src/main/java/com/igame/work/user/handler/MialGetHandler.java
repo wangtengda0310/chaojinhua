@@ -60,7 +60,7 @@ public class MialGetHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.MAIL_GET;
 	}
 

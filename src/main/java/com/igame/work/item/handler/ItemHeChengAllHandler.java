@@ -129,7 +129,7 @@ public class ItemHeChengAllHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.ITEM_HE_ALL;
 	}
 

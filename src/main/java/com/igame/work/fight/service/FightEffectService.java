@@ -1,17 +1,18 @@
 package com.igame.work.fight.service;
 
 import com.google.common.collect.Lists;
+import com.igame.core.ISFSModule;
+import com.igame.core.event.EventService;
+import com.igame.util.ThreadPoolManager;
 import com.igame.work.fight.FightDataManager;
 import com.igame.work.fight.data.EffectTemplate;
 import com.igame.work.fight.data.SkillTemplate;
-import com.igame.util.ThreadPoolManager;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightCmd;
 import com.igame.work.fight.dto.RetFightCmd;
 import com.igame.work.monster.dto.Effect;
 import com.igame.work.monster.dto.Monster;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
@@ -24,31 +25,18 @@ import java.util.concurrent.ScheduledFuture;
  * @author Marcus.Z
  *
  */
-public class FightEffectService {
-	
-	private static final FightEffectService domain = new FightEffectService();
-	
-	public ScheduledFuture<?> sc = null;
+public class FightEffectService extends EventService implements ISFSModule {
 
-    public static final FightEffectService ins() {
-        return domain;
-    }
-    
-    public void initFightEffect(){
+	private ScheduledFuture<?> sc = null;
+
+    public void init(){
     	sc = ThreadPoolManager.getInstance().scheduleAtFixedRate(new SceneEffectTask(), 2000, 200);
     }
     
     /**
      * 处理技能触发的添加BUFFER效果
-     * @param fb
-     * @param fc
-     * @param attacker
-     * @param skillTemplate
-     * @param targets
-     * @param rcd
-     * @return
      */
-    public List<Effect> processAddEffect(FightBase fb,FightCmd fc,Monster attacker,SkillTemplate skillTemplate, List<Monster> targets,RetFightCmd rcd,List<RetFightCmd> retCmd){
+    public static List<Effect> processAddEffect(FightBase fb,FightCmd fc,Monster attacker,SkillTemplate skillTemplate, List<Monster> targets,RetFightCmd rcd,List<RetFightCmd> retCmd){
     	
     	List<Effect> ls = Lists.newArrayList();
 		EffectTemplate et = FightDataManager.EffectData.getTemplate(Integer.parseInt(skillTemplate.getEffect()));
@@ -196,15 +184,9 @@ public class FightEffectService {
     }
 
 
-	private Effect addEffectToHotList(FightBase fb, Effect effect){
+	private static Effect addEffectToHotList(FightBase fb, Effect effect){
 		if(effect.getRepeat() <= 1){//替换
-			Iterator<Effect> efs = fb.scBuffers.iterator();
-			while(efs.hasNext()){
-				Effect ef = efs.next();
-				if(ef.getEffectId() == effect.getEffectId()){
-					efs.remove();
-				}
-			}
+			fb.scBuffers.removeIf(ef -> ef.getEffectId() == effect.getEffectId());
 			fb.scBuffers.add(effect);
 			return effect;
 		}else{

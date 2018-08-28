@@ -34,7 +34,7 @@ public class FriendNominateHandler extends ReconnectedHandler {
 
         List<Friend> nomFriends = new ArrayList<>();
 
-        List<Player> players = PlayerCacheService.ins().getPlayers(player.getSeverId());
+        List<Player> players = PlayerCacheService.getPlayers(player.getSeverId());
 
         long now = new Date().getTime();
         players.stream()
@@ -53,7 +53,7 @@ public class FriendNominateHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.FRIEND_NOMINATE;
     }
 

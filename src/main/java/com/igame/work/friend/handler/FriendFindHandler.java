@@ -48,7 +48,7 @@ public class FriendFindHandler extends ReconnectedHandler {
         }
 
         //检验昵称是否存在
-        Player reqPlayerCache = PlayerCacheService.ins().getPlayerByNickName(nickname);
+        Player reqPlayerCache = PlayerCacheService.getPlayerByNickName(nickname);
         if (reqPlayerCache == null){
             vo.addData("state",FRIEND_STATE_NOTEXIST);
             return vo;
@@ -107,7 +107,7 @@ public class FriendFindHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.FRIEND_FIND;
     }
 

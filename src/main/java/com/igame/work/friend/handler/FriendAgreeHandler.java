@@ -5,7 +5,7 @@ import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.ServerEvents;
+import com.igame.work.PlayerEvents;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
@@ -64,13 +64,13 @@ public class FriendAgreeHandler extends ReconnectedHandler {
             int state = addFriend(player, delReqFriends, addFriends, playerId);
             states = Collections.singletonList(state);
 
-            fireEvent(player, ServerEvents.AGREE_FRIEND, Collections.singleton(playerId));
+            fireEvent(player, PlayerEvents.AGREE_FRIEND, Collections.singleton(playerId));
         }else { //同意全部
             states = reqFriends.stream()
                     .map(reqFriend->addFriend(player, delReqFriends, addFriends, reqFriend.getPlayerId()))
                     .collect(Collectors.toList());
 
-            fireEvent(player, ServerEvents.AGREE_FRIEND, new HashSet<>(reqFriends));
+            fireEvent(player, PlayerEvents.AGREE_FRIEND, new HashSet<>(reqFriends));
         }
 
         //推送当前角色好友更新
@@ -84,7 +84,7 @@ public class FriendAgreeHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.FRIEND_AGREE;
     }
 
@@ -99,7 +99,7 @@ public class FriendAgreeHandler extends ReconnectedHandler {
     private int addFriend(Player player, List<Long> delReqFriends, List<Friend> addFriends, long reqPlayerId) {
 
         Player reqPlayer = SessionManager.ins().getSessionByPlayerId(reqPlayerId);
-        Player reqPlayerCache = PlayerCacheService.ins().getPlayerById(reqPlayerId);
+        Player reqPlayerCache = PlayerCacheService.getPlayerById(reqPlayerId);
 
         //校验对方角色是否存在
         if (reqPlayer == null && reqPlayerCache == null){

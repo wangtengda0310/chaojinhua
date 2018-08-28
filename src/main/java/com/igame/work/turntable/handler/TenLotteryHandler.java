@@ -63,7 +63,7 @@ public class TenLotteryHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.LUCKTABLE_LOTTERY_TEN;
     }
 

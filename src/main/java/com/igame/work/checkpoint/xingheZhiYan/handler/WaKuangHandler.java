@@ -52,7 +52,7 @@ public class WaKuangHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.TRIAL_WA;
 	}
 

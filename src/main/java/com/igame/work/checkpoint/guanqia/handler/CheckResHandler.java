@@ -62,7 +62,7 @@ public class CheckResHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.CHECKPOINT_RES_GET;
 	}
 

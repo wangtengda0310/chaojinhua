@@ -5,7 +5,7 @@ import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.ServerEvents;
+import com.igame.work.PlayerEvents;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
@@ -42,12 +42,12 @@ public class FriendDeleteHandler extends ReconnectedHandler {
 
         //校验要删除的好友
         Player delPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
-        Player delPlayerCache = PlayerCacheService.ins().getPlayerById(playerId);
+        Player delPlayerCache = PlayerCacheService.getPlayerById(playerId);
         if (delPlayer == null && delPlayerCache == null){
             return error(ErrorCode.ERROR);
         }
 
-        fireEvent(player, ServerEvents.DELETE_FRIEND, playerId);
+        fireEvent(player, PlayerEvents.DELETE_FRIEND, playerId);
         //删除好友
         FriendService.ins().delFriend(player,playerId);
 
@@ -60,7 +60,7 @@ public class FriendDeleteHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.FRIEND_DELETE;
     }
 

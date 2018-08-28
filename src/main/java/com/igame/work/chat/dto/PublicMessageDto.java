@@ -24,7 +24,7 @@ public class PublicMessageDto extends Message {
     public PublicMessageDto(Message message) {
 
         super(message);
-        Player cacheDto = PlayerCacheService.ins().getPlayerById(message.getSender());
+        Player cacheDto = PlayerCacheService.getPlayerById(message.getSender());
         this.userId = cacheDto.getUserId();
         this.name = cacheDto.getNickname();
         this.playerFrameId = cacheDto.getPlayerFrameId();

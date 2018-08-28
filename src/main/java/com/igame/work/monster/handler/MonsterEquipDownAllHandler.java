@@ -98,7 +98,7 @@ public class MonsterEquipDownAllHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.ITEM_EQ_ALL;
 	}
 

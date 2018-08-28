@@ -138,7 +138,7 @@ public class FightAgainHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.FIGHT_AGAIN;
     }
 

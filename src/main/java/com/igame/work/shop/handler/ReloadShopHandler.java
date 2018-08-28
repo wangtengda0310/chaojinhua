@@ -104,7 +104,7 @@ public class ReloadShopHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.SHOP_Reload;
     }
 

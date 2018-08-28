@@ -55,7 +55,7 @@ public class TongHuaBuyHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.TONGHUAINFO_BUY;
 	}
 

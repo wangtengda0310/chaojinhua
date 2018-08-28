@@ -51,7 +51,7 @@ public class QuestRewardHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.QUEST_REWARD;
 	}
 

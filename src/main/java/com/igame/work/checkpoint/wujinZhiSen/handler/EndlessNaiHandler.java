@@ -54,7 +54,7 @@ public class EndlessNaiHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.WU_NAI;
 	}
 

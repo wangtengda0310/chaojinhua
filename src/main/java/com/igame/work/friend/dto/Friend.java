@@ -36,6 +36,7 @@ public class Friend{
 	@JsonIgnore
 	private Date givePhyDate;	//对方何时赠送自己体力
 
+	@JsonIgnore
 	private int helpAcc;
 
 	@Transient
@@ -72,7 +73,7 @@ public class Friend{
 
 	public void loadCache(Friend friend, int serverId) {
 
-		Player cacheDto = PlayerCacheService.ins().getPlayerById(friend.getPlayerId());
+		Player cacheDto = PlayerCacheService.getPlayerById(friend.getPlayerId());
 
 		if(cacheDto!=null) {
 			friend.setPlayerLevel(cacheDto.getPlayerLevel());    //玩家等级

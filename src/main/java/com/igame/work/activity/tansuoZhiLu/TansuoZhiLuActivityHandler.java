@@ -55,7 +55,7 @@ public class TansuoZhiLuActivityHandler extends ActivityHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.TANSUO_ZHI_LU;
     }
 }

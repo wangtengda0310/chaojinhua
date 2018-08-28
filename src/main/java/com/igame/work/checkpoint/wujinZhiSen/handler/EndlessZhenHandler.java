@@ -49,7 +49,7 @@ public class EndlessZhenHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.WUZHENG_YES;
 	}
 

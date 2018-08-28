@@ -1,16 +1,13 @@
 package com.igame.work.checkpoint.mingyunZhiMen.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.*;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.mingyunZhiMen.GateDto;
 import com.igame.work.checkpoint.mingyunZhiMen.GateService;
 import com.igame.work.quest.service.QuestService;
-import com.igame.work.system.RankService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -67,7 +64,7 @@ public class GateEndHandler extends ReconnectedHandler {
                 }
                 player.getFateData().addTempBoxCount(gto.getBoxCount());//加宝箱
                 player.getFateData().addTodayFateLevel();//到下一层
-                List<GateDto> gls = GateService.creatGate(player);//创建新的门
+                List<GateDto> gls = GateService.createGate(player);//创建新的门
                 player.getFateData().setGate(gls);
                 MessageUtil.notifyDeInfoChange(player);
                 MessageUtil.notifyGateChange(player);
@@ -78,9 +75,7 @@ public class GateEndHandler extends ReconnectedHandler {
 
             } else {    //失败，即挑战结束
 
-                //加入并刷新排行榜
-                RankService.ins().setMRank(player);
-                RankService.ins().sort();
+                fireEvent(player, PlayerEvents.UPDATE_M_RANK, null);
 
                 MessageUtil.notifyDeInfoChange(player);
             }
@@ -93,7 +88,7 @@ public class GateEndHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.GATE_END;
     }
 

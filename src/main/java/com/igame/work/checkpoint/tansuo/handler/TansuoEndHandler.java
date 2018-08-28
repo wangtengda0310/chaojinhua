@@ -129,7 +129,7 @@ public class TansuoEndHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.TANGSUO_END;
 	}
 

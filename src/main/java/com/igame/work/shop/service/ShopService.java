@@ -1,5 +1,6 @@
 package com.igame.work.shop.service;
 
+import com.igame.core.quartz.TimeListener;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.core.SessionManager;
@@ -23,8 +24,31 @@ import java.util.*;
 /**
  * @author xym
  */
-public class ShopService {
+public class ShopService implements TimeListener {
+    @Override
+    public void twenty() {
+        reloadGeneralOnline();
+    }
 
+    @Override
+    public void fourteen() {
+        reloadGeneralOnline();
+    }
+
+    @Override
+    public void twelve() {
+        reloadMysticalOnline();
+    }
+
+    @Override
+    public void nine() {
+        reloadGeneralOnline();
+    }
+
+    @Override
+    public void zero() {
+        reloadMysticalOnline();
+    }
 
     private static final ShopService domain = new ShopService();
 

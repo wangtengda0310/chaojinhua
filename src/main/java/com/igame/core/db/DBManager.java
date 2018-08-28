@@ -1,5 +1,6 @@
 package com.igame.core.db;
 
+import com.igame.core.ISFSModule;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
@@ -15,7 +16,7 @@ import java.util.*;
  * @author Marcus.Z
  *
  */
-public class DBManager {
+public class DBManager implements ISFSModule {
 	
 	public Properties p = new Properties();
 	private Map<String,MongoDatabase> mongoDBs = new HashMap<String,MongoDatabase>();
@@ -55,7 +56,8 @@ public class DBManager {
 		return datastores.get("igame1");
 	}
 
-	private void init() {
+	public void init() {
+		this.p = holder.SFSExtension.getConfigProperties();
 		String DBName = p.getProperty("DBName");
 		String[] DBNames = DBName.split(",");
 		MongoClient client = getConnect();
@@ -130,20 +132,4 @@ public class DBManager {
 		return p.getProperty(key);
 	}
 
-	
-	public static void init(Properties p) {
-		SingletonHolder.INSTANCE.p = p;
-		SingletonHolder.INSTANCE.init();
-	}
-
-
-	public static DBManager getInstance() {
-		return SingletonHolder.INSTANCE;
-	}
-
-	private static final class SingletonHolder {
-		private static final DBManager INSTANCE = new DBManager();
-	}
-
-	
 }

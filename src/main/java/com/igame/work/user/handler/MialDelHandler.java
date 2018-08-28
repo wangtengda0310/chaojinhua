@@ -39,7 +39,7 @@ public class MialDelHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.MAIL_DEL;
 	}
 

@@ -77,7 +77,7 @@ public class ItemSaleHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.ITEM_SALE;
 	}
 

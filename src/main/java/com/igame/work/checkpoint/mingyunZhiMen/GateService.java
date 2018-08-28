@@ -2,22 +2,30 @@ package com.igame.work.checkpoint.mingyunZhiMen;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.igame.core.ISFSModule;
+import com.igame.core.quartz.TimeListener;
 import com.igame.util.GameMath;
-import com.igame.util.SystemService;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.mingyunZhiMen.data.DestinyrateTemplate;
+import com.igame.work.checkpoint.mingyunZhiMen.data.FatedataTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-public class GateService {
+public class GateService implements ISFSModule, TimeListener {
+    @Override
+    public void zero() {
+        refFateMap();
+    }
+
     /**
      *
      * @return 命运之门
      */
-    public static List<GateDto> creatGate(Player player){
+    public static List<GateDto> createGate(Player player){
         List<GateDto> ls = Lists.newArrayList();
         int type = player.getFateData().getFirst();
         if(type == 0){
@@ -34,23 +42,23 @@ public class GateService {
 
         //生成普通门
         int i = 1;
-        List<Map<Long,Monster>> mms = SystemService.ins().getFateMap().get(player.getFateData().getTodayFateLevel());
+        List<Map<Long,Monster>> mms = fateMap.get(player.getFateData().getTodayFateLevel());
         if(mms != null){
 
             for(Map<Long,Monster> mm : mms){
                 GateDto gd = new GateDto();
                 gd.setGateId(i);
                 gd.setType(0);
-                List<Monster> mons = mm.values().stream().collect(Collectors.toList());
+                List<Monster> mons = new ArrayList<>(mm.values());
                 gd.setLevel(mons.get(0).getLevel());
-                String mId = "";
+                StringBuilder mId = new StringBuilder();
                 for(int j = 0 ;j < 2;j++){
-                    mId += "," + mons.get(j).getMonsterId();
+                    mId.append(",").append(mons.get(j).getMonsterId());
                 }
                 if(mId.length() >1){
-                    mId = mId.substring(1);
+                    mId = new StringBuilder(mId.substring(1));
                 }
-                gd.setMonsterId(mId);
+                gd.setMonsterId(mId.toString());
                 gd.setBoxCount(2);
                 gd.setMons(mm);
                 ls.add(gd);
@@ -63,7 +71,7 @@ public class GateService {
         DestinyrateTemplate dt = MingyunZhiMenDataManager.DestinyData.getTemplate(type);
         if(dt != null){
             if(player.getFateData().getTempSpecialCount() >= dt.getMaxTimes()){//已经最大特殊门次数
-
+                // do nothing
             }else{
                 int rate = dt.getRate() + player.getFateData().getAddRate();//总概率
                 boolean get = GameMath.hitRate100(rate);
@@ -93,4 +101,24 @@ public class GateService {
         }
         return ls;
     }
+
+    private static Map<Integer, List<Map<Long, Monster>>> fateMap = Maps.newHashMap();//命运之门怪物配置
+
+    @Override
+    public void init() {
+        refFateMap();
+    }
+
+    private void refFateMap(){
+
+        fateMap.clear();
+        for(FatedataTemplate ft : MingyunZhiMenDataManager.FateData.getAll()){
+            List<Map<Long,Monster>> ls = Lists.newArrayList();
+            for(int i = 1;i <= 3;i++){
+                ls.add(CheckPointService.getNormalFateMonster(ft.getFloorNum()));
+            }
+            fateMap.put(ft.getFloorNum(), ls);
+        }
+    }
+
 }

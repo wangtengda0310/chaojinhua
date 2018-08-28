@@ -1,9 +1,11 @@
 package com.igame.work.chat.service;
 
-import com.igame.core.db.DBManager;
+import com.igame.core.ISFSModule;
+import com.igame.core.event.EventService;
+import com.igame.core.quartz.TimeListener;
+import com.igame.server.GameServer;
 import com.igame.work.chat.dao.MessageDAO;
 import com.igame.work.chat.dto.Message;
-import com.igame.work.chat.dto.PublicMessageDto;
 import org.apache.commons.collections.map.HashedMap;
 
 import java.util.ArrayList;
@@ -18,25 +20,23 @@ import static com.igame.work.chat.MessageContants.*;
  *
  * 公聊消息服务
  */
-public class PublicMessageService {
-
-    private static final PublicMessageService domain = new PublicMessageService();
-
-    public static final PublicMessageService ins() {
-        return domain;
+public class PublicMessageService extends EventService implements ISFSModule, TimeListener {
+    @Override
+    public void minute5() {
+        save();
     }
 
     //世界频道 <服务器ID,消息列表>
-    private Map<Integer,ArrayBlockingQueue<Message>> worldMessage = new HashedMap();
+    private static Map<Integer,ArrayBlockingQueue<Message>> worldMessage = new HashedMap();
 
     //喇叭频道 <服务器ID,消息列表>
-    private Map<Integer,ArrayBlockingQueue<Message>> hornMessage = new HashedMap();
+    private static Map<Integer,ArrayBlockingQueue<Message>> hornMessage = new HashedMap();
 
     //工会频道 <工会ID,消息列表>
     private Map<Long,ArrayBlockingQueue<Message>> clubMessage = new HashedMap();
 
     //所有删除掉的消息
-    private Map<Integer,List<Message>> delMessages = new HashedMap();
+    private static Map<Integer,List<Message>> delMessages = new HashedMap();
 
     /**
      * 添加消息缓存
@@ -48,7 +48,7 @@ public class PublicMessageService {
      * @param content 内容
      * @return Message
      */
-    public Message addMessage(int serverId, int type, long sender, long recipient, String content){
+    public static Message addMessage(int serverId, int type, long sender, long recipient, String content){
 
         Message message = new Message();
 
@@ -75,7 +75,7 @@ public class PublicMessageService {
         return message;
     }
 
-    private void addQueue(int serverId, Message message, ArrayBlockingQueue<Message> messages, int maxSize) {
+    private static void addQueue(int serverId, Message message, ArrayBlockingQueue<Message> messages, int maxSize) {
 
         if (messages == null || message == null)
             return;
@@ -98,7 +98,7 @@ public class PublicMessageService {
      * 根据服务器ID获取世界消息
      * @param serverId 服务器ID
      */
-    public ArrayBlockingQueue<Message> getWorldMessage(int serverId){
+    public static ArrayBlockingQueue<Message> getWorldMessage(int serverId){
 
         return worldMessage.get(serverId);
     }
@@ -107,7 +107,7 @@ public class PublicMessageService {
      * 根据服务器ID获取世界消息
      * @param serverId 服务器ID
      */
-    public ArrayBlockingQueue<Message> getHornMessage(int serverId){
+    public static ArrayBlockingQueue<Message> getHornMessage(int serverId){
 
         return hornMessage.get(serverId);
     }
@@ -115,9 +115,9 @@ public class PublicMessageService {
     /**
      * 初始化
      */
-    public void load(){
+    public void init(){
 
-        String DBName = DBManager.getInstance().p.getProperty("DBName");
+        String DBName = GameServer.dbManager.p.getProperty("DBName");
         String[] DBNames = DBName.split(",");
         for(String db : DBNames){
 
@@ -179,34 +179,6 @@ public class PublicMessageService {
             }
         }*/
 
-    }
-
-    public static void main(String[] args) {
-        PublicMessageService ins = PublicMessageService.ins();
-        ins.load();
-
-        for (int i = 0; i < 50; i++) {
-            ins.addMessage(1,6,1000120,-1,"test世界"+i);
-            ins.addMessage(1,7,1000120,-1,"test喇叭"+i);
-        }
-
-        //世界消息
-        List<PublicMessageDto> worldMsg = new ArrayList<>();
-        PublicMessageService.ins().getWorldMessage(1).forEach(message -> worldMsg.add(new PublicMessageDto(message)));
-
-        //喇叭消息
-        List<PublicMessageDto> hornMsg = new ArrayList<>();
-        PublicMessageService.ins().getHornMessage(1).forEach(message -> hornMsg.add(new PublicMessageDto(message)));
-
-        ins.save();
-
-        for (int i = 50; i < 100; i++) {
-            ins.addMessage(1,6,1000120,-1,"test世界"+i);
-            ins.addMessage(1,7,1000120,-1,"test喇叭"+i);
-        }
-
-        ins.save();
-        System.out.println();
     }
 
 }

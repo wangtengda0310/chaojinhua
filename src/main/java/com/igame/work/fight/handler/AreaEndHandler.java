@@ -1,10 +1,12 @@
 package com.igame.work.fight.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.google.common.collect.Maps;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.PlayerEvents;
 import com.igame.work.fight.dto.AreaRanker;
 import com.igame.work.fight.service.ArenaService;
 import com.igame.work.user.dto.Player;
@@ -13,6 +15,7 @@ import net.sf.json.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -20,7 +23,15 @@ import java.util.List;
  *
  */
 public class AreaEndHandler extends ReconnectedHandler {
-	
+
+	private Map<Integer, Object> lock = Maps.newHashMap();
+	private ArenaService arenaService;
+
+	private Object getLockByPlayer(int severId) {
+
+		return lock.computeIfAbsent(severId, k -> new Object());
+	}
+
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -39,9 +50,9 @@ public class AreaEndHandler extends ReconnectedHandler {
 
 		//处理排行信息
 		int myRank = player.getMyRank();
-		List<AreaRanker> rank = ArenaService.ins().getRank(player.getAreaType(), player.getSeverId());
+		List<AreaRanker> rank = arenaService.getRank(player.getAreaType(), player.getSeverId());
 		if(win == 1){
-			synchronized (ArenaService.ins().getLockByPlayer(player.getSeverId())) {
+			synchronized (getLockByPlayer(player.getSeverId())) {
 
 				AreaRanker self = null;
 				AreaRanker oter = null;
@@ -73,10 +84,10 @@ public class AreaEndHandler extends ReconnectedHandler {
 					myRank = player.getMyRank();
 
 					Collections.sort(rank);
-					ArenaService.ins().addPlayerRobotDto(player,false);
+					fireEvent(player, PlayerEvents.ARENA_RANK, null);
 
 				}
-				ArenaService.ins().setUp(true);
+				ArenaService.setUp(true);
 			}
 		}
 
@@ -87,7 +98,7 @@ public class AreaEndHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+	public int protocolId() {
 		return MProtrol.AREA_END;
 	}
 

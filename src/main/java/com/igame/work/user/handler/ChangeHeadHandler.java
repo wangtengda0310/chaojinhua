@@ -47,7 +47,7 @@ public class ChangeHeadHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.HEAD_CHANGE;
     }
 

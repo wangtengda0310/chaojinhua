@@ -46,7 +46,7 @@ public class TurntableReloadHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.LUCKTABLE_RELOAD;
     }
 

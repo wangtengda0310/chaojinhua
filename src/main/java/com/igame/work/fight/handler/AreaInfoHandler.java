@@ -2,9 +2,9 @@ package com.igame.work.fight.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.MProtrol;
 import com.igame.work.fight.dto.AreaRanker;
 import com.igame.work.fight.service.ArenaService;
 import com.igame.work.user.dto.Player;
@@ -19,6 +19,8 @@ import java.util.List;
  *
  */
 public class AreaInfoHandler extends ReconnectedHandler {
+
+	private ArenaService arenaService;
 	
 
 	@Override
@@ -32,14 +34,14 @@ public class AreaInfoHandler extends ReconnectedHandler {
 		int atype = jsonObject.getInt("atype");
 
 		List<AreaRanker> opponent = Lists.newArrayList();
-		int myRank = ArenaService.ins().getMRank(atype, player.getSeverId(), player.getPlayerId());
+		int myRank = arenaService.getMRank(atype, player.getSeverId(), player.getPlayerId());
 		player.setMyRank(myRank);
-		List<AreaRanker> rank  = ArenaService.ins().getRank(atype, player.getSeverId());
+		List<AreaRanker> rank  = arenaService.getRank(atype, player.getSeverId());
 		if(rank == null){
 			rank = Lists.newArrayList();
 		}
 		if(!rank.isEmpty()){
-			opponent = ArenaService.ins().getOpponent(rank, myRank);
+			opponent = ArenaService.getOpponent(rank, myRank);
 			player.setTempOpponent(opponent);
 		}
 		if(rank.size()>10){
@@ -61,7 +63,7 @@ public class AreaInfoHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+	public int protocolId() {
 		return MProtrol.AREA_INFO;
 	}
 

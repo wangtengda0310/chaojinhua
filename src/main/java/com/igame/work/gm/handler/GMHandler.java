@@ -37,7 +37,7 @@ public class GMHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.GM;
 	}
 

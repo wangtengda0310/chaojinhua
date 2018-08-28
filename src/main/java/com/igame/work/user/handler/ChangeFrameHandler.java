@@ -47,7 +47,7 @@ public class ChangeFrameHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.FRAME_CHANGE;
     }
 }

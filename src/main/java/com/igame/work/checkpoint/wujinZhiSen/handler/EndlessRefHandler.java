@@ -55,7 +55,7 @@ public class EndlessRefHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.WU_REF;
 	}
 

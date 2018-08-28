@@ -73,7 +73,7 @@ public class GodsResetHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.Gods_RESET;
 	}
 }

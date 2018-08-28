@@ -2,12 +2,12 @@ package com.igame.work.checkpoint.xinmo;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
@@ -26,7 +26,9 @@ import java.util.Map;
  *
  */
 public class XinmoEndHandler extends ReconnectedHandler {
-	
+
+
+	private RobotService robotService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -58,7 +60,7 @@ public class XinmoEndHandler extends ReconnectedHandler {
 				if(player.getXinMo().size() <25 && qiang < 2 && GameMath.hitRate100(5)){ //生成强化心魔
 					XingMoDto xx = new XingMoDto();
 					xx.setCheckPiontId(chapterId);
-					Map<String, RobotDto> robs = RobotService.ins().getRobot().get(player.getSeverId());
+					Map<String, RobotDto> robs = robotService.getRobot().get(player.getSeverId());
 
 					if(!robs.isEmpty()){
 						RobotDto rb = new ArrayList<>(robs.values()).get(GameMath.getRandInt(robs.size()));
@@ -89,7 +91,7 @@ public class XinmoEndHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+	public int protocolId() {
 		return MProtrol.XINGMO_END;
 	}
 

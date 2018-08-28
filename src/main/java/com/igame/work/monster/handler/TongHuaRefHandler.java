@@ -59,7 +59,7 @@ public class TongHuaRefHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.TONGHUA_CD_REF;
 	}
 

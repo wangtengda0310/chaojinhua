@@ -76,7 +76,7 @@ public class VipBuyFristPackHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.VIP_FRIST_PACK;
     }
 

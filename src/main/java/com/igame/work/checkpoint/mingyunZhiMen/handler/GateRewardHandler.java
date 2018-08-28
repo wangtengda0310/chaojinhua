@@ -45,7 +45,7 @@ public class GateRewardHandler extends ReconnectedHandler {
 					if(fl < 1){
 						fl = 1;
 					}
-//					RankService.ins().setMRank(player);//排行榜
+//					RankServiceDto.ins().setMRank(player);//排行榜
 					player.getFateData().setFateLevel(fl);//更新历史最高层数
 					player.getFateData().setTodayFateLevel(player.getFateData().getFateLevel());//设置当天更新层数
 					player.getFateData().setGetReward(1);//更新是否领取宝箱
@@ -73,7 +73,7 @@ public class GateRewardHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.GATE_REWARD;
 	}
 

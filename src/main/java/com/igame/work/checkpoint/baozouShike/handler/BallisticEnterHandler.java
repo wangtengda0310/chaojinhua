@@ -54,7 +54,7 @@ public class BallisticEnterHandler extends ReconnectedHandler {
 
         //生成怪兽
         RunTemplate template = BaozouShikeDataManager.runData.getTemplate(BALL_MONSTER_INIT);
-        List<MatchMonsterDto> matchMonsterDtos = BallisticService.ins().buildMonster(template, BALL_MONSTER_INIT);
+        List<MatchMonsterDto> matchMonsterDtos = BallisticService.buildMonster(template, BALL_MONSTER_INIT);
 
         //记录开始时间
         player.setBallisticEnter(new Date());
@@ -70,7 +70,7 @@ public class BallisticEnterHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected int protocolId() {
+    public int protocolId() {
         return MProtrol.BALLISTIC_ENTER;
     }
 

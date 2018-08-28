@@ -92,7 +92,7 @@ public class TongHuaEnterFightHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.TONGHUA_ENTER_FIGHT;
 	}
 }

@@ -3,29 +3,48 @@ package com.igame.work.user.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.google.common.collect.Maps;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.IDFactory;
-import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
-import com.igame.work.serverList.ServerListHandler;
-import com.igame.work.checkpoint.mingyunZhiMen.FateDto;
+import com.igame.util.PlayerTimeResCalUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.PlayerEvents;
+import com.igame.work.activity.ActivityService;
+import com.igame.work.chat.dao.PlayerMessageDAO;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
+import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
+import com.igame.work.checkpoint.mingyunZhiMen.FateDto;
+import com.igame.work.checkpoint.worldEvent.WordEventDAO;
+import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.data.GodsdataTemplate;
+import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.friend.service.FriendService;
+import com.igame.work.item.service.ItemService;
 import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.dao.GodsDAO;
 import com.igame.work.monster.dao.MonsterDAO;
+import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.quest.dto.TaskDayInfo;
+import com.igame.work.quest.service.QuestService;
+import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.shop.service.ShopService;
+import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.PlayerTop;
 import com.igame.work.user.dto.Team;
-import com.igame.work.user.load.PlayerLoad;
+import com.igame.work.user.load.PlayerService;
 import com.igame.work.user.service.HeadService;
+import com.igame.work.user.service.MailService;
+import com.igame.work.user.service.PlayerCacheService;
 import com.igame.work.user.service.VIPService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -81,13 +100,13 @@ public class PlayerHandler extends BaseHandler{
 				return;
 			}
 		}else{
-			PlayerLoad.ins().loadPlayer(player,serverId);//载入玩家数据
+			loadPlayer(player,serverId);//载入玩家数据
 		}
 
 		try {
 			player.setUser(user);
 			SessionManager.ins().addSession(player);
-			PlayerLoad.ins().afterPlayerLogin(player);
+			afterPlayerLogin(player);
 		} catch (Exception e) {
 			this.getLogger().warn("PlayerHandler load error", e);
 			e.printStackTrace();
@@ -199,6 +218,138 @@ public class PlayerHandler extends BaseHandler{
 		BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
 
 		return PlayerDAO.ins().savePlayer(serverId, player);
+	}
+
+	public void loadPlayer(Player player,int serverId){
+		ItemService.ins().loadPlayer(player, serverId);
+
+		player.setGods(GodsDAO.ins().getByPlayer(serverId, player.getPlayerId()));
+
+		MonsterService.loadPlayer(player,serverId);
+
+		player.setWordEvent(WordEventDAO.ins().getByPlayer(serverId, player.getPlayerId()));
+
+		MailService.ins().loadPlayer(player, serverId);
+		ShopService.ins().loadPlayer(player, serverId);
+		FriendService.ins().loadPlayer(player);
+
+		player.setPrivateMessages(PlayerMessageDAO.ins().getMessageByPlayerId(player.getSeverId(),player.getPlayerId()).getMessages());
+		player.initMessageBoard();
+
+		QuestService.loadPlayer(player, serverId);
+		ActivityService.loadPlayer(player);
+
+		PlayerCacheService.remove(player);
+	}
+
+	/**
+	 * 玩家登录成功后的操作
+	 */
+	public void afterPlayerLogin(Player player) throws Exception {
+
+		if (player.getPrivateMessages().size() <= 0)
+			VIPService.ins().initPrivileges(player.getVipPrivileges());
+
+		//初始化商店或者刷新
+		if (player.getShopInfo() == null)
+			ShopService.ins().initShop(player);
+		else
+			ShopService.ins().reloadAll(player.getShopInfo());
+
+		//初始化头像和头像框
+		if (player.getUnlockHead().size() == 0)
+			HeadService.ins().initHead(player);
+		if (player.getUnlockFrame().size() == 0)
+			HeadService.ins().initFrame(player);
+
+
+		//初始化角色挑战次数上限与剩余挑战次数
+		if (player.getPlayerTop() == null){
+			player.setPlayerTop(new PlayerTop().init());
+			BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
+		}
+
+		if(player.getTimeResCheck() == null){
+			player.setTimeResCheck(Maps.newHashMap());
+		}
+		if(player.getPlayerLevel() >= 30 && player.getTonghua() == null){
+			player.setTonghua(PlayerService.getRandomTongHuaDto());
+			player.getTonghua().setStartRefTime(System.currentTimeMillis());
+		}
+		for(int i = 3;i<=7;i++){
+			if( i == 5){
+				continue;
+			}
+			player.getResMintues().putIfAbsent(i, 0);
+		}
+		for(Integer type : FightDataManager.GodsData.getSets()){
+			GodsdataTemplate gt = FightDataManager.GodsData.getTemplate(type+"_0");
+			if(gt != null && player.getPlayerLevel() >= gt.getUnlockLv() && player.getGods().get(type) == null){
+				Gods gods = new Gods(player.getPlayerId(), type, 0, 1);
+				player.getGods().put(gods.getGodsType(), gods);
+			}
+		}
+		player.setLoginTime(new Date());
+
+		if(!MyUtil.isNullOrEmpty(player.getCheckPoint())){
+			for(String cc :player.getCheckPoint().split(",")){//已过关卡有，但是资源关卡时间计数器没有添加
+				Integer cid = Integer.parseInt(cc);
+				CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(cid);
+				if(ct != null && ct.getChapterType() == 2 && !MyUtil.isNullOrEmpty(ct.getDropPoint())
+						&& !player.getTimeResCheck().containsKey(cid)){
+					player.getTimeResCheck().put(cid, ct.getMaxTime() * 60);
+				}
+			}
+			for(Integer id : player.getTimeResCheck().keySet()){//已过关卡里没有的，资源关卡时间计数器有的删除
+				if(!MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(id))){
+					player.getTimeResCheck().remove(id);
+				}
+			}
+		}
+
+		fireEvent(player, PlayerEvents.RESET_ONCE, null);
+
+		PlayerTimeResCalUtil.ins().calPlayerTimeRes(player);//计算金币关卡的获得数量 和心魔 以及各货币资源的定时更新
+		player.calLeftTime();//算每个心魔剩余时间
+		MonsterService.reCalMonsterExtPre(player,true);//计算图鉴增加属性
+		ComputeFightService.ins().computePlayerFight(player);
+		//player.reCalFightValue();//计算战斗力
+		PlayerService.checkDrawData(player, false);//检测造物台数据
+		QuestService.checkPlayerQuest(player);//检测玩家任务
+		if(player.getWuMap().isEmpty()){
+			CheckPointService.refEndlessRef(player);
+		}
+
+		player.getFateData().setTodayFateLevel(1);
+		player.getFateData().setTodayBoxCount(0);
+		player.getFateData().setTempBoxCount(-1);
+		player.getFateData().setTempSpecialCount(0);
+		player.getFateData().setAddRate(0);
+
+		if(player.getTeams().get(6) == null){
+			long id1 = -1;
+			long id2 = -1;
+			int count = 0;
+			for(Monster mm : player.getMonsters().values()){
+				if(count == 0){
+					id1 = mm.getObjectId();
+				}else{
+					id2 = mm.getObjectId();
+				}
+				count++;
+				if(count >= 2){
+					break;
+				}
+			}
+			player.getTeams().put(6,new Team(6,"竞技场防守阵容",id1,id2));
+		}
+
+		if (player.getTurntable() != null && TurntableService.ins().needRealod(player.getTurntable().getLastUpdate()))
+			TurntableService.ins().reloadTurntable(player);
+
+		if(player.getLastNickname()!=null && !"".equals(player.getLastNickname())) {
+			player.setModifiedName(1);
+		}
 	}
 
 }

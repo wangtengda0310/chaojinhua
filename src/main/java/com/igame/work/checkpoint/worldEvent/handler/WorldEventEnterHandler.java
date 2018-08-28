@@ -100,7 +100,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.WWORDEVENT_ENTER;
 	}
 

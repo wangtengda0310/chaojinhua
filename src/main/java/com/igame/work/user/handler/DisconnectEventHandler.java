@@ -41,7 +41,7 @@ public class DisconnectEventHandler extends BaseServerEventHandler{
 //				player.getFateData().setTempBoxCount(-1);
 //				player.getFateData().setTempSpecialCount(0);
 //				player.getFateData().setAddRate(0);
-//				PlayerCacheService.ins().cachePlayer(player);
+//				PlayerCacheService.cachePlayer(player);
 //				player.getUser().getZone().removeUser(player.getUser());
 //				player.getUser().disconnect(new LoginOutReason());
 //				GoldLog.info(player.getSeverId(), player.getUserId(), player.getPlayerId(), GoldLog.RELOGIN_NOT_ALLOWED,"");

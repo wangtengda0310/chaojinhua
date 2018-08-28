@@ -2,17 +2,14 @@ package com.igame.work.user.dao;
 
 
 
-import java.util.List;
-import java.util.Map;
-
-import org.mongodb.morphia.query.UpdateOperations;
-
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
-import com.igame.work.fight.service.ArenaService;
-import com.igame.work.system.RankService;
-import com.igame.work.system.Ranker;
+import com.igame.work.fight.service.ArenaServiceDto;
 import com.igame.work.user.dto.RobotDto;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -35,9 +32,6 @@ public class AreaRobotDAO extends AbsDao {
 
     /**
      * 查询
-     * @param serverId
-     * @param playerId
-     * @return
      */
     public Map<Long,RobotDto> loadData(int serverId){
     	Map<Long,RobotDto> all = Maps.newHashMap();
@@ -54,9 +48,6 @@ public class AreaRobotDAO extends AbsDao {
     
     /**
      * 保存
-     * @param serverId
-     * @param userId
-     * @return
      */
     public RobotDto saveRobotDto(RobotDto m){
     	getDatastore(m.getSeverId()).save(m);
@@ -65,8 +56,6 @@ public class AreaRobotDAO extends AbsDao {
     
     /**
      * 更新
-     * @param serverId
-     * @param m
      */
     public void updateRobotDto(RobotDto m){
     	UpdateOperations<RobotDto> up = getDatastore(m.getSeverId()).createUpdateOperations(RobotDto.class);
@@ -86,8 +75,6 @@ public class AreaRobotDAO extends AbsDao {
     
     /**
      * 删除
-     * @param serverId
-     * @param m
      */
     public void removeRobotDto(RobotDto m){
     	getDatastore(m.getSeverId()).delete(m);
@@ -95,7 +82,6 @@ public class AreaRobotDAO extends AbsDao {
     
     /**
      * 更新玩家
-     * @param player
      */
     public void update(RobotDto m){
     	
@@ -112,38 +98,16 @@ public class AreaRobotDAO extends AbsDao {
     }
     
     
-    
-    /**
-     * 查询
-     * @return
-     */
-    public  void loadRank(ArenaService as){
-    	
-    	
-    	ArenaService sys = getDatastore("accounts").find(ArenaService.class).get();
-    	if(sys != null){
-    		as.setRank1(sys.getRank1());
-    		as.setRank2(sys.getRank2());
-    		as.setRank3(sys.getRank3());
-    		as.setRank4(sys.getRank4());
-    		as.setRank5(sys.getRank5());
-    		as.setRank6(sys.getRank6());
-    		as.setRank7(sys.getRank7());
-    		as.setRank8(sys.getRank8());
-    	}  	
-    }
 
     /**
      * 更新
-     * @param serverId
-     * @param m
      */
-    public void updateRank(ArenaService m){
-    	ArenaService sys = getDatastore("accounts").find(ArenaService.class).get();
+    public void updateRank(ArenaServiceDto m){
+    	ArenaServiceDto sys = getDatastore("accounts").find(ArenaServiceDto.class).get();
     	if(sys == null){
     		getDatastore("accounts").save(m);
     	}else{
-	    	UpdateOperations<ArenaService> up = getDatastore("accounts").createUpdateOperations(ArenaService.class);
+	    	UpdateOperations<ArenaServiceDto> up = getDatastore("accounts").createUpdateOperations(ArenaServiceDto.class);
 	    	up.set("rank1", m.getRank1());
 	    	up.set("rank2", m.getRank2());
 	    	up.set("rank3", m.getRank3());

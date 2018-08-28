@@ -2,9 +2,11 @@ package com.igame.work.user.service;
 
 
 import com.google.common.collect.Maps;
+import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
-import com.igame.core.db.DBManager;
+import com.igame.core.event.EventService;
 import com.igame.core.log.ExceptionLog;
+import com.igame.core.quartz.TimeListener;
 import com.igame.util.LoginOutReason;
 import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.friend.dao.FriendDAO;
@@ -21,23 +23,21 @@ import java.util.stream.Collectors;
  * @author Marcus.Z
  *
  */
-public class PlayerCacheService {
-	
-    private static final PlayerCacheService domain = new PlayerCacheService();
+public class PlayerCacheService extends EventService implements ISFSModule, TimeListener {
+	@Override
+	public void minute() {
+		checkPlayer();
+	}
 
-    public static PlayerCacheService ins() {
-        return domain;
-    }
+	private static Map<Long,Player> pcd = Maps.newHashMap();
     
-    private Map<Long,Player> pcd = Maps.newHashMap();
-    
-    private Map<String,Player> pcn = Maps.newHashMap();
+    private static Map<String,Player> pcn = Maps.newHashMap();
 
 
     /**
      * 更新玩家
      */
-    public void cachePlayer(Player player){
+    public static void cachePlayer(Player player){
 
 		pcd.put(player.getPlayerId(), player);
     	pcn.put(player.getNickname(), player);
@@ -47,7 +47,7 @@ public class PlayerCacheService {
     /**
      * 根据玩家ID获取
      */
-    public Player getPlayerById(long playerId){
+    public static Player getPlayerById(long playerId){
 
 		Player player  = SessionManager.ins().getSessionByPlayerId(playerId);
 		if(player != null){	//如果玩家在线
@@ -62,7 +62,7 @@ public class PlayerCacheService {
     /**
      * 根据玩家昵称
      */
-    public Player getPlayerByNickName(String nickName){
+    public static Player getPlayerByNickName(String nickName){
 
 		Player player  = SessionManager.ins().getSession(nickName);
 		if(player != null){	//如果玩家在线
@@ -73,13 +73,12 @@ public class PlayerCacheService {
 		}
     }
 
-
 	/**
 	 * 加载所有玩家
 	 */
-	public void loadData() {
+	public void init() {
 
-		String DBName = DBManager.getInstance().p.getProperty("DBName");
+		String DBName = holder.SFSExtension.dbManager.p.getProperty("DBName");
 		String[] DBNames = DBName.split(",");
 		for(String db : DBNames){
 			int serverId=Integer.parseInt(db.substring(5));
@@ -99,7 +98,7 @@ public class PlayerCacheService {
 
 	}
 
-	public List<Player> getPlayers(int serverId) {
+	public static List<Player> getPlayers(int serverId) {
 		return pcd.values().stream().filter(player -> player.getSeverId() == serverId).collect(Collectors.toList());
 	}
 	
@@ -128,7 +127,7 @@ public class PlayerCacheService {
 		}
 	}
 
-	public void remove(Player player) {
+	public static void remove(Player player) {
 		if (player != null) {
 			pcd.remove(player.getPlayerId());
 			pcn.remove(player.getNickname());

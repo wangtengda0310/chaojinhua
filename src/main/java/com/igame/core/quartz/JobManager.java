@@ -1,12 +1,13 @@
 package com.igame.core.quartz;
 
 
+import com.igame.core.ISFSModule;
+import com.igame.core.log.ExceptionLog;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
-import com.igame.core.log.ExceptionLog;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,18 +16,21 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Marcus.Z
  *
  */
-public class JobManager implements IJobManager{
-    private static JobManager domain = new JobManager();
-
-    public static final JobManager ins(){
-        return domain;
-    }
+public class JobManager implements IJobManager, ISFSModule {
 
     private static SchedulerFactory schedulerFactory;
     private static Scheduler scheduler;
 
+    static HashMap<String, TimeListener> listeners = new HashMap<>();
 
-      public JobManager(){
+    public static void addJobListener(TimeListener listener) {
+        listeners.put(listener.getClass().getSimpleName(), listener);
+    }
+    public void destroy() {
+        listeners.clear();
+    }
+
+      public void init(){
           List<MyJob> jobList = initJobList();
           initJobTrigger(jobList);
       }
@@ -36,18 +40,18 @@ public class JobManager implements IJobManager{
         List<MyJob> jobList = new ArrayList<MyJob>();
         AtomicInteger atomicInteger = new AtomicInteger(1);
 
-        String c = "com.igame.core.quartz.GameQuartzListener";
-//        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.seconds", c, "seconds", "0/1 * *  * * ?"));
-        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.minute", c, "minute", "0 0/1 * * * ?"));
-        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.minute5", c, "minute5", "0 0/5 * * * ?"));
-        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.minute180", c, "minute180", "0 0 0/3 * * ? "));
-        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.zero", c, "zero", "0 0 12 * * ?"));
+        String className = "com.igame.core.quartz.GameQuartzListener";
+//        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.seconds", className, "seconds", "0/1 * *  * * ?"));
+        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.minute", className, "minute", "0 0/1 * * * ?"));
+        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.minute5", className, "minute5", "0 0/5 * * * ?"));
+        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.minute180", className, "minute180", "0 0 0/3 * * ? "));
+        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.zero", className, "zero", "0 0 12 * * ?"));
 
-        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.nine", c, "nine", "0 0 9 * * ?"));
-        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.twelve", c, "twelve", "0 0 12 * * ?"));
-        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.fourteen", c, "fourteen", "0 0 14 * * ?"));
-        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.twenty", c, "twenty", "0 0 20 * * ?"));
-        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.week7", c, "week7", "0 0 12 ? * 2"));
+        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.nine", className, "nine", "0 0 9 * * ?"));
+        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.twelve", className, "twelve", "0 0 12 * * ?"));
+        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.fourteen", className, "fourteen", "0 0 14 * * ?"));
+        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.twenty", className, "twenty", "0 0 20 * * ?"));
+        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.week7", className, "week7", "0 0 12 ? * 2"));
         return jobList;
     }
 

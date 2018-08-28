@@ -76,7 +76,7 @@ public class ItemSummonHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+    public int protocolId() {
 		return MProtrol.ITEM_SUMMON;
 	}
 

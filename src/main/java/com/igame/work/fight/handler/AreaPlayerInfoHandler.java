@@ -2,10 +2,10 @@ package com.igame.work.fight.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.fight.dto.AreaRanker;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
@@ -28,7 +28,8 @@ import java.util.Map;
  *
  */
 public class AreaPlayerInfoHandler extends ReconnectedHandler {
-	
+
+	private ArenaService arenaService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -49,8 +50,8 @@ public class AreaPlayerInfoHandler extends ReconnectedHandler {
 		GodsDto gods = new GodsDto();
 		List<MatchMonsterDto> lb = Lists.newArrayList();
 		new RobotDto();
-		Map<Long,RobotDto> map = ArenaService.ins().getRobot().get(player.getSeverId());
-//		List<AreaRanker> rank = ArenaService.ins().getRank(player.getAreaType(), player.getSeverId());
+		Map<Long,RobotDto> map = arenaService.getRobot().get(player.getSeverId());
+//		List<AreaRanker> rank = ArenaServiceDto.ins().getRank(player.getAreaType(), player.getSeverId());
 		AreaRanker oter = null;
 		for(AreaRanker ar : player.getTempOpponent()){
 			if(ar.getPlayerId() == playerId){
@@ -67,7 +68,7 @@ public class AreaPlayerInfoHandler extends ReconnectedHandler {
 		if(opponent != null){	// TODO 监听上下阵事件
 			Map<Long, Monster> mons = MonsterDAO.ins().getMonsterByPlayer(opponent,opponent.getSeverId(), opponent.getPlayerId());
 			opponent.setMonsters(mons);
-			rto = RobotService.ins().createRobotLike(opponent);
+			rto = RobotService.createRobotLike(opponent);
 			
 			gods = rto.getGods();
 			for(MatchMonsterDto mo : rto.getMon()){//处理神灵加成属性
@@ -84,7 +85,7 @@ public class AreaPlayerInfoHandler extends ReconnectedHandler {
 			}
 
 			if(oter != null){
-				rto = RobotService.ins().createRobotDto(player, playerId, oter.getName(), 2);
+				rto = RobotService.createRobotDto(player, playerId, oter.getName(), 2);
 				gods = rto.getGods();
 				for(MatchMonsterDto mo : rto.getMon()){//处理神灵加成属性
 					MatchMonsterDto mto = mo.clonew();
@@ -131,7 +132,7 @@ public class AreaPlayerInfoHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+	public int protocolId() {
 		return MProtrol.AREA_P_INFO;
 	}
 

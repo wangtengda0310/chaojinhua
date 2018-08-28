@@ -2,11 +2,11 @@ package com.igame.work.checkpoint.guanqia.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
@@ -32,6 +32,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  */
 public class EnterCheckHandler extends ReconnectedHandler {
+
+	private RobotService robotService;
 	
 
 	@Override
@@ -69,7 +71,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 
 		if (isExistXinmo(player,chapterId)){	//如果关卡有心魔,返回心魔数据
 
-			Map<String,RobotDto> ro = RobotService.ins().getRobot().get(player.getSeverId());
+			Map<String,RobotDto> ro = robotService.getRobot().get(player.getSeverId());
 			if(ro == null || ro.get(player.getXinMo().get(chapterId).getMid()) == null){
 				return error(ErrorCode.XINGMO_LEAVEL);
 			}
@@ -143,7 +145,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 	}
 
 	@Override
-	protected int protocolId() {
+	public int protocolId() {
 		return MProtrol.ENTER_CHECK;
 	}
 
