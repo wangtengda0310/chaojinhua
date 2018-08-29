@@ -9,8 +9,8 @@ import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.IDFactory;
+import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
-import com.igame.util.PlayerTimeResCalUtil;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.PlayerEvents;
@@ -18,11 +18,14 @@ import com.igame.work.activity.ActivityService;
 import com.igame.work.chat.dao.PlayerMessageDAO;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.mingyunZhiMen.FateDto;
 import com.igame.work.checkpoint.worldEvent.WordEventDAO;
+import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.FightDataManager;
 import com.igame.work.fight.data.GodsdataTemplate;
+import com.igame.work.fight.service.ArenaService;
 import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.item.service.ItemService;
@@ -38,10 +41,9 @@ import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dao.PlayerDAO;
-import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerTop;
-import com.igame.work.user.dto.Team;
+import com.igame.work.user.dto.*;
 import com.igame.work.user.load.PlayerService;
+import com.igame.work.user.load.ResourceService;
 import com.igame.work.user.service.HeadService;
 import com.igame.work.user.service.MailService;
 import com.igame.work.user.service.PlayerCacheService;
@@ -52,8 +54,7 @@ import com.smartfoxserver.v2.entities.data.SFSObject;
 import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 
@@ -63,6 +64,7 @@ import java.util.List;
 public class PlayerHandler extends BaseHandler{
 
 	private ActivityService activityService;
+	private ArenaService robotService;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -310,7 +312,7 @@ public class PlayerHandler extends BaseHandler{
 
 		fireEvent(player, PlayerEvents.RESET_ONCE, null);
 
-		PlayerTimeResCalUtil.ins().calPlayerTimeRes(player);//计算金币关卡的获得数量 和心魔 以及各货币资源的定时更新
+		calPlayerTimeRes(player);//计算金币关卡的获得数量 和心魔 以及各货币资源的定时更新
 		player.calLeftTime();//算每个心魔剩余时间
 		MonsterService.reCalMonsterExtPre(player,true);//计算图鉴增加属性
 		ComputeFightService.ins().computePlayerFight(player);
@@ -352,6 +354,153 @@ public class PlayerHandler extends BaseHandler{
 			player.setModifiedName(1);
 		}
 		ActivityService.loadPlayer(player);
+	}
+
+	public  void calPlayerTimeRes(Player player){
+		synchronized (player.getTimeLock()) {
+			calRes(player);
+			if(!player.getTimeResCheck().isEmpty()){
+				long now = System.currentTimeMillis();
+				for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){
+					CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(m.getKey());
+					if(ct != null && !MyUtil.isNullOrEmpty(ct.getDropPoint())){
+						int total = m.getValue();//原有分钟数
+						if(player.getLoginoutTime() != null){//计算新的
+							int timeAdd = (int)((now - player.getLoginoutTime().getTime())/60000);
+							total += timeAdd;
+							if(total > ct.getMaxTime() * 60){
+								total = ct.getMaxTime()  * 60;
+							}
+							player.getTimeResCheck().put(m.getKey(), total);
+						}
+						RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), total, ct.getMaxTime() * 60);
+//    					MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
+						player.getResC().put(ct.getChapterId(),new ResCdto(ct.getChapterId(), ResourceService.ins().getRewardString(dto)));
+
+					}
+				}
+			}
+			initXinMo(player);
+
+		}
+
+	}
+
+	//登录时候初始化
+	public  void initXinMo(Player player){
+
+		if(!MyUtil.isNullOrEmpty(player.getCheckPoint()) && player.getCheckPoint().split(",").length >= 30){
+
+			long now = System.currentTimeMillis();
+			//先是删掉24小时没打的
+			List<Integer> remove = Lists.newArrayList();
+			for(XingMoDto xin :player.getXinMo().values()){
+				if(xin.getStatTime() == 0 || now - xin.getStatTime()  >= 24 * 3600 * 1000){
+					remove.add(xin.getCheckPiontId());
+				}
+			}
+			if(!remove.isEmpty()){
+				for(Integer id :remove){
+					player.getXinMo().remove(id);
+					GoldLog.info("remove xinMo:" + id);
+				}
+			}
+
+			//判断是否刷新新的
+			if(player.getLoginoutTime() != null){
+				int timeAdd = (int)((now - player.getLoginoutTime().getTime())/60000);//分钟数
+				int total = player.getXinMoMinuts() +  timeAdd;
+				int count  = total /60; //几个小时-可刷几个
+				if(count > 0){
+					String[] ccs =  player.getCheckPoint().split(",");
+					List<Integer> ls = Collections.synchronizedList(Lists.newArrayList());
+					for(String cc : ccs){
+						if(!player.getXinMo().containsKey(Integer.parseInt(cc)) && GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(cc)).getChapterType() != 2 && Integer.parseInt(cc) <=140){//有心魔的关卡不在生成列表中
+							ls.add(Integer.parseInt(cc));
+						}
+					}
+					if(!ls.isEmpty()){
+						if(count > 25-player.getXinMo().size()){
+							count = 25-player.getXinMo().size();
+						}
+						while(!ls.isEmpty() && count > 0){
+							int index = GameMath.getRandInt(ls.size());
+							Integer cid = ls.remove(index);
+							XingMoDto xx = new XingMoDto();
+							xx.setCheckPiontId(cid);
+							Map<Long, RobotDto> robs = robotService.getRobot().get(player.getSeverId());
+							if(!robs.isEmpty()){
+								RobotDto rb = new ArrayList<>(robs.values()).get(GameMath.getRandInt(robs.size()));
+								xx.setPlayerId(rb.getPlayerId());
+								xx.setMid(rb.getName());
+								xx.setPlayerFrameId(rb.getPlayerFrameId());
+								xx.setPlayerHeadId(rb.getPlayerHeadId());
+							}else{
+								xx.setMid("");//待改变和生成具体机器人数据
+							}
+							xx.setStatTime(now);
+							player.getXinMo().put(cid, xx);
+							count--;
+							GoldLog.info("add xinMo:" + cid);
+							if(player.getXinMo().size() >= 25){
+								break;
+							}
+						}
+
+					}
+					player.setXinMoMinuts(total % 60);//保存剩余分钟数
+				}else{
+					player.setXinMoMinuts(total);//保存剩余分钟数
+				}
+
+			}
+		}
+	}
+
+	public  void calRes(Player player){
+		if(player.getLoginoutTime() != null){
+			long now = System.currentTimeMillis();
+			int timeAdd = (int)((now - player.getLoginoutTime().getTime())/60000);
+			for(Map.Entry<Integer, Integer> m : player.getResMintues().entrySet()){
+				player.getResMintues().put(m.getKey(), m.getValue() + timeAdd);
+			}
+			if(player.getResMintues().get(3) != null){
+				if(player.getResMintues().get(3) >=6){
+					ResourceService.ins().addPhysica(player, player.getResMintues().get(3)/6);
+					player.getResMintues().put(3, player.getResMintues().get(3)%6);
+				}
+			}
+			if(player.getResMintues().get(4) != null){
+				if(player.getResMintues().get(4) >=60){
+					ResourceService.ins().addSao(player, player.getResMintues().get(4)/60);
+					player.getResMintues().put(4, player.getResMintues().get(4)%60);
+				}
+
+			}
+			if(player.getResMintues().get(6) != null){
+				if(player.getResMintues().get(6) >=120 && player.getTongRes() < 15){
+					int add = player.getResMintues().get(6)/120;
+					if(add > 15 - player.getTongRes()){
+						add = 15 - player.getTongRes();
+					}
+					ResourceService.ins().addTongRes(player, add);
+					player.getResMintues().put(6, player.getResMintues().get(6)%120);
+				}
+
+			}
+			if(player.getResMintues().get(7) != null){
+				if(player.getResMintues().get(7) >=120 && player.getXing() < 10){
+					int add = player.getResMintues().get(7)/120;
+					if(add > 10 - player.getXing()){
+						add = 10 - player.getXing();
+					}
+					ResourceService.ins().addXing(player, add);
+					player.getResMintues().put(7, player.getResMintues().get(7)%120);
+				}
+
+			}
+		}
+
 	}
 
 }
