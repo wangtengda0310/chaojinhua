@@ -69,7 +69,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 		}
 
 		boolean first = false;
-		if(!MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(chapterId))){	//首次通关
+		if(!player.hasCheckPoint(String.valueOf(chapterId))){	//首次通关
 			first = true;
 		}
 
@@ -166,7 +166,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 			}
 			for(String u : us){
 				CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(u));
-				if(!MyUtil.hasCheckPoint(player.getCheckPoint(), u)){//真正第一次已过关卡更新
+				if(!player.hasCheckPoint(u)){//真正第一次已过关卡更新
 					if(ct.getChapterType()!=2){
 						str.append(",").append(u);
 					}

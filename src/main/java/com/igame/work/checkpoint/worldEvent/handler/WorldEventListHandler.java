@@ -1,10 +1,9 @@
 package com.igame.work.checkpoint.worldEvent.handler;
 
 
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.util.MyUtil;
+import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
@@ -27,7 +26,7 @@ public class WorldEventListHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		for(WorldEventTemplate ts : WorldEventDataManager.WorldEventData.getAll()){
-			if(ts.getLevel() == 1 &&  MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(ts.getUnlock()))){
+			if(ts.getLevel() == 1 &&  player.hasCheckPoint(String.valueOf(ts.getUnlock()))){
 				player.getWordEvent().computeIfAbsent(ts.getEvent_type(),wet -> new WorldEventDto(player.getPlayerId(), ts.getEvent_type(), "", 0,1));
 			}
 		}

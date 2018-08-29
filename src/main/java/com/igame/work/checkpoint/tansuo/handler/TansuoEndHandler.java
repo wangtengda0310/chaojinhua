@@ -1,12 +1,11 @@
 package com.igame.work.checkpoint.tansuo.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
-import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.tansuo.TansuoDataManager;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
@@ -96,7 +95,7 @@ public class TansuoEndHandler extends ReconnectedHandler {
 			}
 		}
 
-		if(ts.getLimit_item()!= null && ts.getLmit() > 0 && MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(ts.getLmit()))){
+		if(ts.getLimit_item()!= null && ts.getLmit() > 0 && player.hasCheckPoint(String.valueOf(ts.getLmit()))){
 			String lrate = ts.getLimitRate(dto.getState());
 			String lvalue = ts.getLimitValue(dto.getState());
 			if(lrate != null && lvalue != null){

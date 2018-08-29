@@ -1,23 +1,23 @@
 package com.igame.work.user.load;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.igame.util.GameMath;
+import com.igame.util.MyUtil;
 import com.igame.work.MessageUtil;
+import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.data.StrengthenplaceTemplate;
+import com.igame.work.monster.data.StrengthenrewardTemplate;
 import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.data.DrawdataTemplate;
 import com.igame.work.user.data.DrawrewardTemplate;
-import com.igame.work.monster.data.StrengthenplaceTemplate;
-import com.igame.work.monster.data.StrengthenrewardTemplate;
-import com.igame.util.GameMath;
-import com.igame.util.MyUtil;
-import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -25,11 +25,7 @@ import com.igame.work.user.dto.TongHuaDto;
  *
  */
 public class PlayerService {
-	
-	/**
-	 * 
-	 * @return
-	 */
+
 	public static TongHuaDto getRandomTongHuaDto(){
 		
 		TongHuaDto td = new TongHuaDto();
@@ -93,13 +89,13 @@ public class PlayerService {
 			}
 		}
 		
-		int mormal = total - points.size();
-		if(mormal > 0){
+		int normal = total - points.size();
+		if(normal > 0){
 			StrengthenrewardTemplate sw = MonsterDataManager.StrengthenrewardData.getTemplate(0);
 			String[] r1 = sw.getStrengthen_reward().split(",");
 			String[] v1 = sw.getValue().split(",");
 			String[] rate1 = sw.getRate().split(",");
-			for(int i = 0;i < mormal;i++){
+			for(int i = 0;i < normal;i++){
 				String temp = "0";
 				if(GameMath.hitRate(5000)){//同化经验
 					temp += ",-1";
@@ -145,44 +141,37 @@ public class PlayerService {
 	
 	/**
 	 * 检测玩家的造物台数据
-	 * @param player
 	 */
-	public static void checkDrawData(Player player,boolean notif){
+	public static void checkDrawData(Player player,boolean notify){
 		
 
 		String tempDraw = player.getDraw().getDrawList();
 		
 		for(DrawdataTemplate dt : PlayerDataManager.DrawdataData.getAll()){
-			if(dt.getLimit().equals("-1") && !MyUtil.hasCheckPoint(player.getDraw().getDrawList(), String.valueOf(dt.getDrawType()))){
+			if(dt.getLimit().equals("-1") && !player.hasCheckPointDraw(String.valueOf(dt.getDrawType()))){
 				player.getDraw().setDrawList(player.getDraw().getDrawList() + ","+String.valueOf(dt.getDrawType()));
 			}
-			if(dt.getLimit().startsWith("1") && player.getDraw().getDrawLv() >= Integer.parseInt(dt.getLimit().split(",")[1]) && !MyUtil.hasCheckPoint(player.getDraw().getDrawList(), String.valueOf(dt.getDrawType()))){
+			if(dt.getLimit().startsWith("1") && player.getDraw().getDrawLv() >= Integer.parseInt(dt.getLimit().split(",")[1]) && !player.hasCheckPointDraw(String.valueOf(dt.getDrawType()))){
 				player.getDraw().setDrawList(player.getDraw().getDrawList() + ","+String.valueOf(dt.getDrawType()));
 			}
-			if(dt.getLimit().startsWith("2") && player.getPlayerLevel() >= Integer.parseInt(dt.getLimit().split(",")[1]) && !MyUtil.hasCheckPoint(player.getDraw().getDrawList(), String.valueOf(dt.getDrawType()))){
+			if(dt.getLimit().startsWith("2") && player.getPlayerLevel() >= Integer.parseInt(dt.getLimit().split(",")[1]) && !player.hasCheckPointDraw(String.valueOf(dt.getDrawType()))){
 				player.getDraw().setDrawList(player.getDraw().getDrawList() + ","+String.valueOf(dt.getDrawType()));
 			}
-			if(dt.getLimit().startsWith("3") && MyUtil.hasCheckPoint(player.getCheckPoint(), dt.getLimit().split(",")[1]) && !MyUtil.hasCheckPoint(player.getDraw().getDrawList(), String.valueOf(dt.getDrawType()))){
+			if(dt.getLimit().startsWith("3") && player.hasCheckPoint(dt.getLimit().split(",")[1]) && !player.hasCheckPointDraw(String.valueOf(dt.getDrawType()))){
 				player.getDraw().setDrawList(player.getDraw().getDrawList() + ","+String.valueOf(dt.getDrawType()));
 			}
 		}
 		if(player.getDraw().getDrawList().startsWith(",")){
 			player.getDraw().setDrawList(player.getDraw().getDrawList().substring(1));
 		}
-		if(notif && !tempDraw.equals(player.getDraw().getDrawList())){
+		if(notify && !tempDraw.equals(player.getDraw().getDrawList())){
 			MessageUtil.notifyDrawData(player);
 		}
 		
 	}
 	
 	
-	
-	/**
-	 * 
-	 * @param rewardId
-	 * @param count
-	 * @return
-	 */
+
 	public static List<RewardDto> couKa(int rewardId,int count){
 		
 		List<RewardDto> rt = Lists.newArrayList();

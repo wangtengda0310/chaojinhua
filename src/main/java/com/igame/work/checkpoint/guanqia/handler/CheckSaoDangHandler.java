@@ -2,13 +2,12 @@ package com.igame.work.checkpoint.guanqia.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
-import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
@@ -42,7 +41,7 @@ public class CheckSaoDangHandler extends ReconnectedHandler {
 
 		//入参校验
 		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
-		if(ct == null || !MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(chapterId))){
+		if(ct == null || !player.hasCheckPoint(String.valueOf(chapterId))){
 	    	GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 	    			+"#act:cheat" + "#type:saoC#chapterId:"+chapterId);
 			return error(ErrorCode.CHECKPOINT_END_ERROR);

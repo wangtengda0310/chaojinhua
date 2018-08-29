@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.igame.util.MyUtil;
 import com.igame.work.activity.PlayerActivityData;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.checkpoint.mingyunZhiMen.FateSelfData;
@@ -23,7 +24,6 @@ import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.shop.dto.ShopInfo;
 import com.igame.work.turntable.dto.Turntable;
 import com.smartfoxserver.v2.entities.User;
-
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
@@ -73,7 +73,7 @@ public class Player extends PlayerDto {
     private TongAddDto tongAdd = new TongAddDto();//同化的属性加成
 
     @JsonIgnore
-    public Map<Integer, Integer> resMintues = Maps.newConcurrentMap();//计算分钟数
+    private Map<Integer, Integer> resMintues = Maps.newConcurrentMap();//计算分钟数
 
     @JsonIgnore
     private Set<Integer> meetM = Sets.newHashSet();
@@ -199,7 +199,7 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    public Object timeLock = new Object();//定时同步锁
+    private Object timeLock = new Object();//定时同步锁
 
     @Transient
     @JsonIgnore
@@ -299,23 +299,23 @@ public class Player extends PlayerDto {
     
     @Transient
     @JsonIgnore
-    private Map<Integer,MessageCache> proMap = new ConcurrentHashMap<Integer, MessageCache>();//消息缓存
+    private Map<Integer,MessageCache> proMap = new ConcurrentHashMap<>();//消息缓存
     
     @Transient
     @JsonIgnore
-    private Map<Integer,MessageCache> proTuiMap = new ConcurrentHashMap<Integer, MessageCache>();//推送消息缓存
+    private Map<Integer,MessageCache> proTuiMap = new ConcurrentHashMap<>();//推送消息缓存
     
     @Transient
     @JsonIgnore
-    public Object proLock = new Object();//消息同步锁
+    private Object proLock = new Object();//消息同步锁
     
     @Transient
     @JsonIgnore
-    public Object proPushLock = new Object();//推送消息同步锁
+    private Object proPushLock = new Object();//推送消息同步锁
     
     @Transient
     @JsonIgnore
-    public long heartTime = System.currentTimeMillis();//心跳刷新时间
+    private long heartTime = System.currentTimeMillis();//心跳刷新时间
 
     @Transient
     @JsonIgnore
@@ -1032,6 +1032,37 @@ public class Player extends PlayerDto {
 		}
 		return null;
     }
-	
-    
+
+    public boolean hasCheckPoint(String cId){
+
+        String checkpoint = getCheckPoint();
+        if (MyUtil.isNullOrEmpty(checkpoint))
+            return false;
+
+        String[] ssc = checkpoint.split(",");
+        for(String ss : ssc){
+            if(ss.equals(cId)){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+
+    public boolean hasCheckPointDraw(String cId){
+        String checkpoint = getDraw().getDrawList();
+        if (MyUtil.isNullOrEmpty(checkpoint))
+            return false;
+
+        String[] ssc = checkpoint.split(",");
+        for(String ss : ssc){
+            if(ss.equals(cId)){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
 }

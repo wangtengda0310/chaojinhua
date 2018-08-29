@@ -224,7 +224,7 @@ public class PlayerHandler extends BaseHandler{
 		return PlayerDAO.ins().savePlayer(serverId, player);
 	}
 
-	public void loadPlayer(Player player,int serverId){
+	private void loadPlayer(Player player, int serverId){
 		ItemService.ins().loadPlayer(player, serverId);
 
 		player.setGods(GodsDAO.ins().getByPlayer(serverId, player.getPlayerId()));
@@ -248,7 +248,7 @@ public class PlayerHandler extends BaseHandler{
 	/**
 	 * 玩家登录成功后的操作
 	 */
-	public void afterPlayerLogin(Player player) throws Exception {
+	private void afterPlayerLogin(Player player) throws Exception {
 
 		if (player.getPrivateMessages().size() <= 0)
 			VIPService.ins().initPrivileges(player.getVipPrivileges());
@@ -304,7 +304,7 @@ public class PlayerHandler extends BaseHandler{
 				}
 			}
 			for(Integer id : player.getTimeResCheck().keySet()){//已过关卡里没有的，资源关卡时间计数器有的删除
-				if(!MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(id))){
+				if(!player.hasCheckPoint(String.valueOf(id))){
 					player.getTimeResCheck().remove(id);
 				}
 			}
@@ -356,7 +356,7 @@ public class PlayerHandler extends BaseHandler{
 		ActivityService.loadPlayer(player);
 	}
 
-	public  void calPlayerTimeRes(Player player){
+	private void calPlayerTimeRes(Player player){
 		synchronized (player.getTimeLock()) {
 			calRes(player);
 			if(!player.getTimeResCheck().isEmpty()){
@@ -387,7 +387,7 @@ public class PlayerHandler extends BaseHandler{
 	}
 
 	//登录时候初始化
-	public  void initXinMo(Player player){
+	private void initXinMo(Player player){
 
 		if(!MyUtil.isNullOrEmpty(player.getCheckPoint()) && player.getCheckPoint().split(",").length >= 30){
 
@@ -457,7 +457,7 @@ public class PlayerHandler extends BaseHandler{
 		}
 	}
 
-	public  void calRes(Player player){
+	private void calRes(Player player){
 		if(player.getLoginoutTime() != null){
 			long now = System.currentTimeMillis();
 			int timeAdd = (int)((now - player.getLoginoutTime().getTime())/60000);

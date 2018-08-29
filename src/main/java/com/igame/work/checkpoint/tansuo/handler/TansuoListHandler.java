@@ -1,10 +1,9 @@
 package com.igame.work.checkpoint.tansuo.handler;
 
 
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.util.MyUtil;
+import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.tansuo.TansuoDataManager;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.checkpoint.tansuo.TansuoTemplate;
@@ -28,7 +27,7 @@ public class TansuoListHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		for(TansuoTemplate ts : TansuoDataManager.TansuoData.getAll()){
-			if(MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(ts.getUnlock())) && player.getTangSuo().get(ts.getNum()) == null){
+			if(player.hasCheckPoint(String.valueOf(ts.getUnlock())) && player.getTangSuo().get(ts.getNum()) == null){
 				player.getTangSuo().put(ts.getNum(), new TansuoDto(ts));
 			}
 		}	

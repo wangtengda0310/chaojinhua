@@ -1,13 +1,12 @@
 package com.igame.work.friend.service;
 
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.RetVO;
-import com.igame.util.MyUtil;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.tansuo.TansuoDataManager;
-import com.igame.work.checkpoint.tansuo.TansuoTemplate;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
+import com.igame.work.checkpoint.tansuo.TansuoTemplate;
 import com.igame.work.friend.dao.FriendDAO;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.dto.FriendInfo;
@@ -44,7 +43,7 @@ public class FriendService {
 
         //计算剩余时间
         for(TansuoTemplate ts : TansuoDataManager.TansuoData.getAll()){
-            if(MyUtil.hasCheckPoint(friendPlayer.getCheckPoint(), String.valueOf(ts.getUnlock())) && friendPlayer.getTangSuo().get(ts.getNum()) == null){
+            if(friendPlayer.hasCheckPoint(String.valueOf(ts.getUnlock())) && friendPlayer.getTangSuo().get(ts.getNum()) == null){
                 friendPlayer.getTangSuo().put(ts.getNum(), new TansuoDto(ts));
             }
         }

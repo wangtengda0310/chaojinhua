@@ -43,8 +43,8 @@ public class DrawGetHandler extends ReconnectedHandler {
 			number = jsonObject.getInt("number");
 		}
 		int drawLv = player.getDraw().getDrawLv();
-		StringBuilder reward = null;
-		if(!MyUtil.hasCheckPoint(player.getDraw().getDrawList(), String.valueOf(drawType)) || (type != 1 && type != 2)){
+		StringBuilder reward;
+		if(!player.hasCheckPointDraw(String.valueOf(drawType)) || (type != 1 && type != 2)){
 			return error(ErrorCode.ERROR);
 		}else if (player.getItems().size() >= player.getBagSpace()){
 			return error(ErrorCode.BAGSPACE_ALREADY_FULL);

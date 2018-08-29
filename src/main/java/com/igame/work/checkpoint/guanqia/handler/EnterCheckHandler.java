@@ -107,7 +107,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 				if(ct.getRound() == 2){
 					int front =  chapterId-140;
 					CheckPointTemplate ft = GuanQiaDataManager.CheckPointData.getTemplate(front);
-					if(ft != null && !MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(front))){
+					if(ft != null && !player.hasCheckPoint(String.valueOf(front))){
 						return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 					}else{
 						process(player, lb, chapterId,idx);
@@ -118,7 +118,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 				if(ct.getRound() == 3){
 					int front =  chapterId-280;
 					CheckPointTemplate ft = GuanQiaDataManager.CheckPointData.getTemplate(front);
-					if(ft != null && !MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(front))){
+					if(ft != null && !player.hasCheckPoint(String.valueOf(front))){
 						return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 					}else{
 						process(player, lb, chapterId,idx);
@@ -163,7 +163,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 
 		boolean isNotExist = true;
 		for(String temp : template.getLimit().split(",")){
-			if(MyUtil.hasCheckPoint(player.getCheckPoint(), temp)){
+			if(player.hasCheckPoint(temp)){
 				isNotExist = false;
 				break;
 			}

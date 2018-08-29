@@ -138,7 +138,7 @@ public class CheckEnterHandler extends ReconnectedHandler {
 		Map<String, Object> param = new HashMap<>();
 		param.put("battleType", 1);
 		param.put("chapterId", chapterId);
-		param.put("nianya", MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(chapterId)) ? 1 : 0);
+		param.put("nianya", player.hasCheckPoint(String.valueOf(chapterId)) ? 1 : 0);
 		player.setLastBattleParam(param);
 		return vo;
 	}
@@ -183,7 +183,7 @@ public class CheckEnterHandler extends ReconnectedHandler {
 
 		boolean isNotExist = true;
 		for(String temp : template.getLimit().split(",")){
-            if(MyUtil.hasCheckPoint(player.getCheckPoint(), temp)){
+            if(player.hasCheckPoint(temp)){
                 isNotExist = false;
                 break;
             }

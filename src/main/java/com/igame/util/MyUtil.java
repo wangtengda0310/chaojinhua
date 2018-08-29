@@ -9,7 +9,7 @@ public class MyUtil {
 	public static int IntParse(Object value)
     {
 
-        if (value != null && value.toString() != "")
+        if (value != null && !value.toString().equals(""))
         {
             return Integer.parseInt(value.toString());
         }
@@ -21,10 +21,7 @@ public class MyUtil {
 	
 	//监测是否为空
 	public static boolean isNullOrEmpty(String str){
-		if(str == null || str.isEmpty()){
-			return true;
-		}
-		return false;
+		return str == null || str.isEmpty();
 	}
 	
 	//String[] 变 int[]
@@ -65,7 +62,7 @@ public class MyUtil {
 			
 		}else{
 			String[] arr = str.split(separator);
-			if (arr == null || arr.length != num){
+			if (arr.length != num){
 
             }else{
                 return arr;
@@ -93,13 +90,13 @@ public class MyUtil {
 		Float[] temp = set.toArray(new Float[]{});
 		float[] floatArray = new float[temp.length];
 		for(int i=0;i<temp.length;i++){
-			floatArray[i] = temp[i].floatValue();
+			floatArray[i] = temp[i];
 		}
 		return floatArray;
 	}
 	//随机n个不重复的float
 	public static float[] ranFloatArr1(int n){
-		HashSet<Float> set = new HashSet<Float>();
+		HashSet<Float> set = new HashSet<>();
 		Random ran = new Random();
 		while(set.size()<n){
 			float d = (ran.nextInt(100000001))/100000000f;
@@ -108,7 +105,7 @@ public class MyUtil {
 		Float[] temp = set.toArray(new Float[]{});
 		float[] floatArray = new float[temp.length];
 		for(int i=0;i<temp.length;i++){
-			floatArray[i] = temp[i].floatValue();
+			floatArray[i] = temp[i];
 		}
 //		System.out.println(floatArray.length);
 		return floatArray;
@@ -124,7 +121,7 @@ public class MyUtil {
 	}
 	
 	public static List<Integer> jaToIntList(JSONArray ja){
-		List<Integer> list = new ArrayList<Integer>();
+		List<Integer> list = new ArrayList<>();
 		for(int i=0;i<ja.size();i++){
 			list.add(ja.getInt(i));
 		}
@@ -132,7 +129,7 @@ public class MyUtil {
 	}
 
 	public static List<String> jaToStrList(JSONArray ja){
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for(int i=0;i<ja.size();i++){
 			list.add(ja.getString(i));
 		}
@@ -141,14 +138,12 @@ public class MyUtil {
 	
 	public static int random(int size){
 		Random ran = new Random();
-		int i = ran.nextInt(size);
-		return i;
+		return ran.nextInt(size);
 	}
 	
 	public static int random(int start, int end){
 		Random ran = new Random();
-		int i = ran.nextInt(end - start) + start;
-		return i;
+		return ran.nextInt(end - start) + start;
 	}
 	
 	/*
@@ -170,7 +165,7 @@ public class MyUtil {
 		if(arr == null|| arr.length == 0){
 			return "";
 		}
-		StringBuilder sb = new StringBuilder("");
+		StringBuilder sb = new StringBuilder();
 		for(String ss : arr){
 			sb.append(spl).append(ss);
 		}
@@ -183,7 +178,7 @@ public class MyUtil {
 		if(arr == null|| arr.isEmpty()){
 			return "";
 		}
-		StringBuilder sb = new StringBuilder("");
+		StringBuilder sb = new StringBuilder();
 		for(Integer ss : arr){
 			sb.append(spl).append(ss);
 		}
@@ -196,7 +191,7 @@ public class MyUtil {
 		if(arr == null || arr.isEmpty()){
 			return "";
 		}
-		StringBuilder sb = new StringBuilder("");
+		StringBuilder sb = new StringBuilder();
 		for(String ss : arr){
 			sb.append(spl).append(ss);
 		}
@@ -209,7 +204,7 @@ public class MyUtil {
 		if(arr == null || arr.isEmpty()){
 			return "";
 		}
-		StringBuilder sb = new StringBuilder("");
+		StringBuilder sb = new StringBuilder();
 		for(Integer ss : arr){
 			sb.append(spl).append(ss);
 		}
@@ -220,7 +215,7 @@ public class MyUtil {
 	
 	public static String toString(Map<Integer,Integer> map){
 		
-		StringBuffer ss = new StringBuffer();
+		StringBuilder ss = new StringBuilder();
 		for(Map.Entry<Integer, Integer> m : map.entrySet()){
 			ss.append(m.getKey()).append(",").append(m.getValue()).append(";");
 		}
@@ -230,21 +225,6 @@ public class MyUtil {
 		}
 		return rr;
 	}
-	
-	public static boolean hasCheckPoint(String checkpoint,String cId){
-
-		if (MyUtil.isNullOrEmpty(checkpoint))
-			return false;
-
-		String[] ssc = checkpoint.split(",");
-		for(String ss : ssc){
-			if(ss.equals(cId)){
-				return true;
-			}
-		}
-		return false;
-		
-	}
 
 	public static boolean vlaidString(String tail,String is){
 		
@@ -253,7 +233,7 @@ public class MyUtil {
 		}
 		String[] tails = tail.split(",");
 		for(String tt : tails){
-			if(is.indexOf(tt) == -1){
+			if(!is.contains(tt)){
 				return false;
 			}
 		}
