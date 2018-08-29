@@ -10,7 +10,6 @@ import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.core.quartz.TimeListener;
 import com.igame.work.MProtrol;
-import com.igame.work.activity.ShowActivityHandler;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaHandler;
 import com.igame.work.activity.sign.SignHandler;
 import com.igame.work.activity.tansuoZhiLu.TansuoZhiLuActivityHandler;
@@ -293,7 +292,6 @@ public class GameServer extends SFSExtension {
 		addRequestHandler(TenLotteryHandler.class);//幸运大转盘十连抽
 		addRequestHandler(MonsterListHandler.class);//怪物列表
 		addRequestHandler(AreaBuyHandler.class);//幸运大转盘十连抽
-		addRequestHandler(ShowActivityHandler.class);//活动展示
 		addRequestHandler(SignHandler.class);//签到活动
 		addRequestHandler(MeiriLiangfaHandler.class);//每日两发活动
 		addRequestHandler(TansuoZhiLuActivityHandler.class);//探索之路活动

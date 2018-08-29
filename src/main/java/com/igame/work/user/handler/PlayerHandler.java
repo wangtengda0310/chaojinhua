@@ -61,7 +61,8 @@ import java.util.List;
  *
  */
 public class PlayerHandler extends BaseHandler{
-	
+
+	private ActivityService activityService;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -146,6 +147,7 @@ public class PlayerHandler extends BaseHandler{
 		vo.addData("friends", player.getFriends());
 		vo.addData("teams",player.getTeams().values());
 		vo.addData("vipPrivileges",player.getVipPrivileges());
+		vo.addData("showActivities", activityService.clientData(player));
 		try {
 			json = mapper.writeValueAsString(vo);
 		} catch (JsonProcessingException e) {
@@ -237,7 +239,6 @@ public class PlayerHandler extends BaseHandler{
 		player.initMessageBoard();
 
 		QuestService.loadPlayer(player, serverId);
-		ActivityService.loadPlayer(player);
 
 		PlayerCacheService.remove(player);
 	}
@@ -350,6 +351,7 @@ public class PlayerHandler extends BaseHandler{
 		if(player.getLastNickname()!=null && !"".equals(player.getLastNickname())) {
 			player.setModifiedName(1);
 		}
+		ActivityService.loadPlayer(player);
 	}
 
 }

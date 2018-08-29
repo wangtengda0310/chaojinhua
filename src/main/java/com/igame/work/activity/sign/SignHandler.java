@@ -4,10 +4,13 @@ import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.activity.ActivityHandler;
+import com.igame.work.activity.ActivityService;
 import com.igame.work.activity.PlayerActivityData;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
+
+import java.util.Map;
 
 /**
  * 玩家创建账号开始算登录时间
@@ -15,6 +18,7 @@ import net.sf.json.JSONObject;
  * 累积签到奖励如果没有领取，到下一个签到周期数据会被清掉
  */
 public class SignHandler extends ActivityHandler {
+    private ActivityService activityService;
 
     @Override
     public int protocolId() {
@@ -41,17 +45,17 @@ public class SignHandler extends ActivityHandler {
         RetVO vo = new RetVO();
 
         if (index == 0) {
-            String date = player.getActivityData().getSign().signToday(player);
-            if (date == null) {
+            Map<String, Object> ret = activityService.signToday(player);
+            if (ret == null) {
                 return error(ErrorCode.PACK_PURCHASED);
             }
-            vo.addData("date", date);
+            vo.setData(ret);
         } else if (index < 5) {
-            int ind = player.getActivityData().getSign().signTotal(player,index);
-            if (ind != index) {
+            Map<String, Object> ret = activityService.signTotal(player,index);
+            if (ret == null) {
                 return error(ErrorCode.PACK_PURCHASED);
             }
-            vo.addData("total", ind);
+            vo.setData(ret);
         } else {
             return error(ErrorCode.PARAMS_INVALID);
         }
