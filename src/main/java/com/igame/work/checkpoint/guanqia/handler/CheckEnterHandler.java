@@ -138,6 +138,7 @@ public class CheckEnterHandler extends ReconnectedHandler {
 		Map<String, Object> param = new HashMap<>();
 		param.put("battleType", 1);
 		param.put("chapterId", chapterId);
+		param.put("nianya", MyUtil.hasCheckPoint(player.getCheckPoint(), String.valueOf(chapterId)) ? 1 : 0);
 		player.setLastBattleParam(param);
 		return vo;
 	}
