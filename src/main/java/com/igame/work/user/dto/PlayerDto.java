@@ -1,12 +1,10 @@
 package com.igame.work.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Sets;
 import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Transient;
 import org.mongodb.morphia.utils.IndexDirection;
 
 import java.util.Date;
@@ -23,15 +21,15 @@ public class PlayerDto extends BasicDto {
 
     protected long playerId;//角色ID
 
-    protected int openId;//平台ID
+    private int openId;//平台ID
 
     protected int severId;//服务器ID
 
-    protected String username;//角色名
+    private String username;//角色名
 
-    protected String nickname;//角色昵称
+    private String nickname;//角色昵称
 
-    protected int gender;//玩家性别
+    private int gender;//玩家性别
 
     protected int playerFrameId;//玩家头像框
 
@@ -41,11 +39,11 @@ public class PlayerDto extends BasicDto {
 
     protected int exp;//玩家经验
 
-    protected int vip;//VIP
+    private int vip;//VIP
 
-    protected int bagSpace;//背包空间
+    int bagSpace;//背包空间
 
-    protected int physical = 100;//体力
+    int physical = 100;//体力
 
     protected long gold;//金币
 
@@ -55,58 +53,53 @@ public class PlayerDto extends BasicDto {
     //protected String[] teams = new String[]{"-1,-1,-1,-1,-1", "-1,-1,-1,-1,-1", "-1,-1,-1,-1,-1", "-1,-1,-1,-1,-1", "-1,-1,-1,-1,-1"};
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", locale = "zh", timezone = "GMT+8")
-    protected Date buildTime;//创建时间
+    private Date buildTime;//创建时间
 
-    protected int battleSpace = 1;//初始站位数量
+    private int battleSpace = 1;//初始站位数量
 
-    protected int lastCheckpointId = -1;//上次打过的关卡
+    private int lastCheckpointId = -1;//上次打过的关卡
 
-    protected String checkPoint = "";//已过关卡列表
+    private String checkPoint = "";//已过关卡列表
 
     protected long fightValue;//战力
 
-    protected int tongRes = 100;//同化资源
+    int tongRes = 100;//同化资源
 
-    protected int sao = 10;//扫荡券
+    int sao = 10;//扫荡券
 
-    protected int xing = 10;//星能
+    int xing = 10;//星能
 
-    protected int phBuyCount;//今日体力购买次数
+    private int phBuyCount;//今日体力购买次数
 
-    protected int xinBuyCount;//今日星能购买次数
+    private int xinBuyCount;//今日星能购买次数
 
-    protected int goldBuyCount;//今日金币购买次数
+    private int goldBuyCount;//今日金币购买次数
 
-    protected int towerId;//当前已过最高星河之眼关卡Id
+    private int towerId;//当前已过最高星河之眼关卡Id
 
-    protected int oreCount;//今日已挖矿次数
+    private int oreCount;//今日已挖矿次数
 
 //	@JsonIgnore
 //	protected Map<Long,Integer> wuHpMap = Maps.newHashMap();//无尽之森保存的怪物HP
 
-    protected int wuNai;//当前已使用奶的次数
+    private int wuNai;//当前已使用奶的次数
 
 
-    protected int wuReset;//当前已使用重置次数
+    private int wuReset;//当前已使用重置次数
 
-    protected int areaCount = 0;// //今日竞技场已用挑战次数
+    int areaCount = 0;// //今日竞技场已用挑战次数
 
-    protected Set<Integer> unlockHead = Sets.newHashSet();    //已解锁头像
+    private Set<Integer> unlockHead = Sets.newHashSet();    //已解锁头像
 
-    protected Set<Integer> unlockFrame = Sets.newHashSet();    //已解锁头像框
+    private Set<Integer> unlockFrame = Sets.newHashSet();    //已解锁头像框
 
-    protected int isBanStrangers = 0;    //拒绝陌生人私聊 0 = 拒绝,1 = 接受
+    private int isBanStrangers = 0;    //拒绝陌生人私聊 0 = 拒绝,1 = 接受
 
-    protected int curTeam = 1;    //当前出战阵容
+    int curTeam = 1;    //当前出战阵容
 
-    protected double totalMoney = 0;    //充值金额
+    double totalMoney = 0;    //充值金额
     
     protected int round = 1;//二周目 1-一周目  2-二周目
-
-    @JsonIgnore
-    private String lastNickname="";//修改前的昵称
-    @Transient
-    private int modifiedName;
 
     public long getUserId() {
         return userId;
@@ -412,19 +405,4 @@ public class PlayerDto extends BasicDto {
 		this.round = round;
 	}
 
-    public String getLastNickname() {
-        return lastNickname;
-    }
-
-    public void setLastNickname(String lastNickname) {
-        this.lastNickname = lastNickname;
-    }
-
-    public int getModifiedName() {
-        return modifiedName;
-    }
-
-    public void setModifiedName(int modifiedName) {
-        this.modifiedName = modifiedName;
-    }
 }

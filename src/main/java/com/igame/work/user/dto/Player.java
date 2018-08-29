@@ -143,6 +143,10 @@ public class Player extends PlayerDto {
     @JsonIgnore
     private PlayerTop playerTop;    //角色挑战次数上限
 
+    @JsonIgnore
+    private String lastNickname="";//修改前的昵称
+
+
 
 
 
@@ -151,6 +155,9 @@ public class Player extends PlayerDto {
     /**
      *  -----------------------       业务字段   -----------------------------------------------
      */
+
+    @Transient
+    private int modifiedName;
 
 
 
@@ -871,6 +878,21 @@ public class Player extends PlayerDto {
         this.lastBattleParam = lastBattleParam;
     }
 
+    public String getLastNickname() {
+        return lastNickname;
+    }
+
+    public void setLastNickname(String lastNickname) {
+        this.lastNickname = lastNickname;
+    }
+
+    public int getModifiedName() {
+        return modifiedName;
+    }
+
+    public void setModifiedName(int modifiedName) {
+        this.modifiedName = modifiedName;
+    }
     /**
      *  -----------------------       自定义方法   -----------------------------------------------
      */
