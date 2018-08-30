@@ -2,6 +2,7 @@ package com.igame.work.activity;
 
 import com.igame.core.ISFSModule;
 import com.igame.util.DateUtil;
+import com.igame.work.activity.meiriLiangfa.MeiriLiangfaData;
 import com.igame.work.activity.sign.SignConfigTemplate;
 import com.igame.work.activity.sign.SignData;
 import com.igame.work.gm.service.GMService;
@@ -39,6 +40,9 @@ public class ActivityService implements ISFSModule {
             }
         }
 
+        if (player.getActivityData().getMeiriLiangfa() == null) {
+            player.getActivityData().setMeiriLiangfa(new MeiriLiangfaData());
+        }
     }
 
     public Map<String, Object> clientData(Player player) {
@@ -54,6 +58,9 @@ public class ActivityService implements ISFSModule {
         signData.put("totalSign", totalSign);
         signData.put("canSign", DateUtil.formatToday().equals(signDataSplit[2]) ? 0 : 1);
         map.put("sign", signData);
+
+        String record = player.getActivityData().getMeiriLiangfa().clientData();
+        map.put("meiriLiangfa", record);
         return map;
     }
 

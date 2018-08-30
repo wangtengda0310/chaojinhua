@@ -324,6 +324,7 @@ public class Player extends PlayerDto {
     @JsonIgnore
     private Map<String, Object> lastBattleParam;//上次战斗的关卡参数
 
+    @JsonIgnore
     private PlayerActivityData activityData;
 
     public PlayerActivityData getActivityData() {

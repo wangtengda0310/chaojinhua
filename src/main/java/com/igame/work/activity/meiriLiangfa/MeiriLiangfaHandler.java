@@ -35,7 +35,7 @@ public class MeiriLiangfaHandler extends ActivityHandler {
 
         RetVO vo = new RetVO();
 
-        vo.addData("date", date);
+        vo.addData("state", date);
 
         return vo;
     }
