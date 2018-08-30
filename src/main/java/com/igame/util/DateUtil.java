@@ -13,20 +13,25 @@ import java.util.Date;
  */
 public class DateUtil {
 	
-	private static final DateFormat mailFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-	private static final DateFormat tiemFormat = new SimpleDateFormat("HH:mm:ss");
+	private static final DateFormat clientDateTimeFormat = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
+	private static final DateFormat dateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private static final DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-	public static String formatMailDate(Date date){
-		return mailFormat.format(date);
+	/**为了方便客户端解析*/
+	public static String formatClientDateTime(Date date) {
+		return clientDateTimeFormat.format(date);
+	}
+	public static String formatDateTime(Date date){
+		return dateTimeFormat.format(date);
 	}
 	
 	public static String formatDate(Date date){
 		return dateFormat.format(date);
 	}
 
-	public static String formatTimeDate(Date date){
-		return tiemFormat.format(date);
+	public static String formatTime(Date date){
+		return timeFormat.format(date);
 	}
 
 	/**
@@ -104,7 +109,7 @@ public class DateUtil {
 	}
 	
 	public static void main(String[] args){
-//		System.out.println(formatMailDate(new Date()));
+//		System.out.println(formatDateTime(new Date()));
 		
 
 		

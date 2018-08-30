@@ -9,6 +9,7 @@ import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.IDFactory;
+import com.igame.util.DateUtil;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
 import com.igame.work.ErrorCode;
@@ -150,6 +151,7 @@ public class PlayerHandler extends BaseHandler{
 		vo.addData("teams",player.getTeams().values());
 		vo.addData("vipPrivileges",player.getVipPrivileges());
 		vo.addData("showActivities", activityService.clientData(player));
+		vo.addData("dateTime", DateUtil.formatClientDateTime(new Date()));
 		try {
 			json = mapper.writeValueAsString(vo);
 		} catch (JsonProcessingException e) {
