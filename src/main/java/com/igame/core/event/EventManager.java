@@ -1,6 +1,7 @@
 package com.igame.core.event;
 
 import com.igame.core.SessionManager;
+import com.igame.work.PlayerEvents;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
@@ -10,7 +11,6 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.variables.SFSRoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
 import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
-import com.sun.media.jfxmedia.events.PlayerEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class EventManager {
                         if (parameter instanceof SFSUserVariable) {
                             Object value = ((SFSUserVariable) parameter).getValue();
                             if (value instanceof ISFSObject) {  // SFS自己封装了ISFSVariable，需要通过ISFSObject存储对象
-                                PlayerEvent eventType = (PlayerEvent) ((ISFSObject) value).getClass("eventType");
+                                PlayerEvents eventType = (PlayerEvents) ((ISFSObject) value).getClass("eventType");
                                 Object param = ((ISFSObject) value).getClass("event");
 
                                 Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
