@@ -22,10 +22,10 @@ public class ActivityConfigTemplate {
 	private int activity_sign;
 		
 	@XmlAttribute(name = "activity_type")
-	private String activity_type;
+	private int activity_type;
 	
 	@XmlAttribute(name = "order")
-	private String order;
+	private int order;
 
 	@XmlAttribute(name = "activity_show")
 	private String activity_show;
@@ -62,19 +62,19 @@ public class ActivityConfigTemplate {
 		this.activity_sign = activity_sign;
 	}
 
-	public String getActivity_type() {
+	public int getActivity_type() {
 		return activity_type;
 	}
 
-	public void setActivity_type(String activity_type) {
+	public void setActivity_type(int activity_type) {
 		this.activity_type = activity_type;
 	}
 
-	public String getOrder() {
+	public int getOrder() {
 		return order;
 	}
 
-	public void setOrder(String order) {
+	public void setOrder(int order) {
 		this.order = order;
 	}
 

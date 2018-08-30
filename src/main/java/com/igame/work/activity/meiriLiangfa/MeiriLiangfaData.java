@@ -26,7 +26,7 @@ public class MeiriLiangfaData {
     public String receive(Player player, int index) {
 
         Optional<ActivityConfigTemplate> config = configs.stream()
-                .filter(c -> String.valueOf(index).equals(c.getOrder()))
+                .filter(c -> c.getOrder() == index)
                 .findAny();
 
         if(!config.isPresent()) {   // 找不到配置

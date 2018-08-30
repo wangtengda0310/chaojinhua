@@ -1,8 +1,7 @@
 package com.igame.work.activity.tansuoZhiLu;
 
 import com.igame.work.activity.ActivityConfigTemplate;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
@@ -11,7 +10,7 @@ import java.util.List;
 
 @Entity(noClassnameStored = true)
 public class TanSuoZhiLuActivityData {
-    private String reveivedLeve;
+    private String receivedLevels;
 
     @Transient
     static List<ActivityConfigTemplate> configs = new ArrayList<>();
@@ -21,25 +20,32 @@ public class TanSuoZhiLuActivityData {
         }
     }
 
-    public String getReveivedLeve() {
-        return reveivedLeve;
+    public String getReceivedLevels() {
+        return receivedLevels;
     }
 
-    public void setReveivedLeve(String reveivedLeve) {
-        this.reveivedLeve = reveivedLeve;
+    public void setReceivedLevels(String receivedLevels) {
+        this.receivedLevels = receivedLevels;
     }
 
-    public JSONObject toClientData() {
-        JSONObject object = new JSONObject();
-        object.put("type", 1005);
-        JSONArray array = new JSONArray();
-        for (ActivityConfigTemplate config : configs) {
-            JSONObject item = new JSONObject();
-            item.put("id", config.getActivity_sign());
-            item.put("needLevel", config.getGet_limit());
-            item.put("state", 0);
-            array.add(item);
+    public String clientData(Player player) {
+        if (receivedLevels == null|| "".equals(receivedLevels)) {
+            receivedLevels = ",";
         }
-        return object;
+        String[] levels = new String[configs.size()];
+        for (ActivityConfigTemplate config : configs) {
+            int index = config.getOrder() - 1;
+            String levelLimit = config.getGet_value();
+            if (player.getPlayerLevel() >= Integer.parseInt(levelLimit)) {
+                if (receivedLevels.contains("," + levelLimit + ",")) {
+                    levels[index] = "2";
+                } else {
+                    levels[index] = "1";
+                }
+            } else {
+                levels[index] = "0";
+            }
+        }
+        return String.join(",",levels);
     }
 }

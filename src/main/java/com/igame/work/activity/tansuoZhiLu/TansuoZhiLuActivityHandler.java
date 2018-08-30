@@ -11,6 +11,8 @@ import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
+import java.util.Optional;
+
 /**
  * 玩家创建账号开始算登录时间
  * 签完30天再读下一个30天的配置
@@ -23,30 +25,35 @@ public class TansuoZhiLuActivityHandler extends ActivityHandler {
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
 
-        int id = jsonObject.getInt("id");
+        int level = jsonObject.getInt("level");
 
         if(player.getActivityData().getTansuo()==null) {
             player.getActivityData().setTansuo(new TanSuoZhiLuActivityData());
         }
 
-        ActivityConfigTemplate config = TanSuoZhiLuActivityData.configs.get(id);
-        if(config==null) {
+        Optional<ActivityConfigTemplate> config = TanSuoZhiLuActivityData.configs.stream().filter(c -> String.valueOf(level).equals(c.getGet_value())).findAny();
+        if (!config.isPresent()) {
             return error(ErrorCode.CAN_NOT_RECEIVE);
         }
-        String levelLimit = config.getGet_limit();
 
+        String levelLimit = config.get().getGet_value();
         if (player.getPlayerLevel() < Integer.valueOf(levelLimit)) {
             return error(ErrorCode.CAN_NOT_RECEIVE);
         }
 
-        if(player.getActivityData().getTansuo().getReveivedLeve().contains(levelLimit)) {
+        TanSuoZhiLuActivityData tansuo = player.getActivityData().getTansuo();
+        String receivedLevel = tansuo.getReceivedLevels();
+        if (receivedLevel.contains("," + levelLimit + ",")) {
             return error(ErrorCode.CAN_NOT_RECEIVE);
         }
-        String reward = config.getGet_value();
+        tansuo.setReceivedLevels(receivedLevel + level + ",");
+        String reward = config.get().getActivity_drop();
 
         GMService.processGM(player, reward);
 
-        return new RetVO();
+        RetVO retVO = new RetVO();
+        retVO.addData("d", tansuo.clientData(player));
+        return retVO;
     }
 
     @Override

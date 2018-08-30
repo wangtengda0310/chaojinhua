@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 @XmlRootElement(name = "activity_data")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -26,15 +25,10 @@ public class ActivityConfig
 
 	void afterUnmarshal(Unmarshaller u, Object parent)
 	{
-		its.forEach(((Consumer<ActivityConfigTemplate>)c->{})
-				.andThen(MeiriLiangfaData::addActivityConfigTemplate)
-				.andThen(ActivityConfig::addActivityConfigTemplate));
-	}
-
-	private static void addActivityConfigTemplate(ActivityConfigTemplate config) {
-		((Consumer<ActivityConfigTemplate>) o -> {})
-				.andThen(MeiriLiangfaData::addActivityConfigTemplate)
-				.andThen(TanSuoZhiLuActivityData::addActivityConfigTemplate);
+		its.forEach((c -> {
+			MeiriLiangfaData.addActivityConfigTemplate(c);
+			TanSuoZhiLuActivityData.addActivityConfigTemplate(c);
+		}));
 	}
 
 	public ActivityConfigTemplate getTemplate(int id)

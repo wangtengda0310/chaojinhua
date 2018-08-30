@@ -5,10 +5,10 @@ import com.igame.util.DateUtil;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaData;
 import com.igame.work.activity.sign.SignConfigTemplate;
 import com.igame.work.activity.sign.SignData;
+import com.igame.work.activity.tansuoZhiLu.TanSuoZhiLuActivityData;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.dto.Player;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +43,10 @@ public class ActivityService implements ISFSModule {
         if (player.getActivityData().getMeiriLiangfa() == null) {
             player.getActivityData().setMeiriLiangfa(new MeiriLiangfaData());
         }
+
+        if (player.getActivityData().getTansuo() == null) {
+            player.getActivityData().setTansuo(new TanSuoZhiLuActivityData());
+        }
     }
 
     public Map<String, Object> clientData(Player player) {
@@ -59,8 +63,9 @@ public class ActivityService implements ISFSModule {
         signData.put("canSign", DateUtil.formatToday().equals(signDataSplit[2]) ? 0 : 1);
         map.put("sign", signData);
 
-        String record = player.getActivityData().getMeiriLiangfa().clientData();
-        map.put("meiriLiangfa", record);
+        map.put("meiriLiangfa", player.getActivityData().getMeiriLiangfa().clientData());
+
+        map.put("tansuoZhiLu", player.getActivityData().getTansuo().clientData(player));
         return map;
     }
 
@@ -140,7 +145,7 @@ public class ActivityService implements ISFSModule {
 
         String[] totalSigns = playerSignData.getTotalSign().split(",");
         totalSigns[index - 1] = "1";
-        playerSignData.setTotalSign(String.join(",", Arrays.asList(totalSigns)));
+        playerSignData.setTotalSign(String.join(",", totalSigns));
 
         SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
         if (index == 1) {
