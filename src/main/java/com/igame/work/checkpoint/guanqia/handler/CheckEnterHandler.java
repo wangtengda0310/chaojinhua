@@ -9,12 +9,14 @@ import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
+import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.handler.TuJianHandler;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -140,7 +142,21 @@ public class CheckEnterHandler extends ReconnectedHandler {
 		param.put("chapterId", chapterId);
 		param.put("nianya", player.hasCheckPoint(String.valueOf(chapterId)) ? 1 : 0);
 		player.setLastBattleParam(param);
+
+		addNianyaBuff(player);
 		return vo;
+	}
+
+	private void addNianyaBuff(Player player) {
+		long[] teamMonster = player.getTeams().get(player.getCurTeam()).getTeamMonster();
+		Arrays.stream(teamMonster).forEach(monsterId->{
+
+			Monster monster = player.getMonsters().get(monsterId);
+			if (monster != null) {
+				monster.setHp(monster.getHp()*2);
+				monster.setAttack(monster.getAttack()*15/10);
+			}
+		});
 	}
 
 	@Override

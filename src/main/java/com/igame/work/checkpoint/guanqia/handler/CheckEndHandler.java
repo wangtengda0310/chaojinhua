@@ -3,13 +3,13 @@ package com.igame.work.checkpoint.guanqia.handler;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
@@ -28,6 +28,7 @@ import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -137,7 +138,20 @@ public class CheckEndHandler extends ReconnectedHandler {
 		vo.addData("monsterExp", monsterExpStr);
 		vo.addData("reward", rr);
 
+		removeNianyaBuff(player);
 		return vo;
+	}
+
+	private void removeNianyaBuff(Player player) {
+		long[] teamMonster = player.getTeams().get(player.getCurTeam()).getTeamMonster();
+		Arrays.stream(teamMonster).forEach(monsterId->{
+
+			Monster monster = player.getMonsters().get(monsterId);
+			if (monster != null) {
+				monster.setHp(monster.getHp()/2);
+				monster.setAttack(monster.getAttack()*10/15);
+			}
+		});
 	}
 
 	@Override
