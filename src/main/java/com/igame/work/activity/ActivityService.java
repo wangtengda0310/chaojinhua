@@ -145,7 +145,7 @@ public class ActivityService implements ISFSModule {
 
         String[] totalSigns = playerSignData.getTotalSign().split(",");
         totalSigns[index - 1] = "1";
-        playerSignData.setTotalSign(String.join(",", totalSigns));
+        playerSignData.setTotalSign(totalSign = String.join(",", totalSigns));
 
         SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
         if (index == 1) {
