@@ -1,6 +1,7 @@
 package com.igame.core.data;
 
 
+import com.igame.core.di.Injectable;
 import com.igame.work.activity.ActivityConfig;
 import com.igame.work.activity.ActivityDataManager;
 import com.igame.work.activity.sign.SignConfig;
@@ -40,7 +41,7 @@ import com.igame.work.turntable.data.LuckTableData;
 import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.data.*;
 
-public class DataManager {
+public class DataManager implements Injectable {
 
 	public void load(String resourceFolder)
 	{

@@ -4,6 +4,8 @@ import com.igame.core.ISFSModule;
 import com.igame.core.SystemService;
 import com.igame.core.data.DataManager;
 import com.igame.core.db.DBManager;
+import com.igame.core.di.Inject;
+import com.igame.core.di.Injectable;
 import com.igame.core.event.EventManager;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.log.GoldLog;
@@ -110,6 +112,11 @@ public class GameServer extends SFSExtension {
 
 			for (Field field : clazz.getDeclaredFields()) {
 				Class<?> fieldClass = field.getType();
+				if(!field.isAnnotationPresent(Inject.class)
+					&& !Injectable.class.isAssignableFrom(fieldClass)) {
+					continue;
+				}
+
 				if (services.containsKey(fieldClass)) {
 					field.setAccessible(true);
 					field.set(handler, services.get(fieldClass));
@@ -310,6 +317,7 @@ public class GameServer extends SFSExtension {
 
 	@Override
 	public void destroy(){
+		super.destroy();
 		services.values().forEach(ISFSModule::destroy);
 		EventManager.clearAllListeners();
 		GoldLog.info("GameServer destroy");
