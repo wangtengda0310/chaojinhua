@@ -1,11 +1,14 @@
 package com.igame.work.activity;
 
 
+import com.igame.util.DateUtil;
+import com.igame.work.user.dto.Player;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 
 
 /**
@@ -37,13 +40,13 @@ public class ActivityConfigTemplate {
 	private  String activity_text;
 	
 	@XmlAttribute(name = "gift_bag")
-	private  String gift_bag;
+	private  int gift_bag;
 
 	@XmlAttribute(name = "start_time")
 	private  String start_time;
 
 	@XmlAttribute(name = "time_limit")
-	private  String time_limit;
+	private  int time_limit;
 
 	@XmlAttribute(name = "get_limit")
 	private  String get_limit;
@@ -102,11 +105,11 @@ public class ActivityConfigTemplate {
 		this.activity_text = activity_text;
 	}
 
-	public String getGift_bag() {
+	public int getGift_bag() {
 		return gift_bag;
 	}
 
-	public void setGift_bag(String gift_bag) {
+	public void setGift_bag(int gift_bag) {
 		this.gift_bag = gift_bag;
 	}
 
@@ -118,11 +121,11 @@ public class ActivityConfigTemplate {
 		this.start_time = start_time;
 	}
 
-	public String getTime_limit() {
+	public int getTime_limit() {
 		return time_limit;
 	}
 
-	public void setTime_limit(String time_limit) {
+	public void setTime_limit(int time_limit) {
 		this.time_limit = time_limit;
 	}
 
@@ -148,5 +151,20 @@ public class ActivityConfigTemplate {
 
 	public void setActivity_drop(String activity_drop) {
 		this.activity_drop = activity_drop;
+	}
+
+	public Date startTime(Player player) {
+		if ("1".equals(getStart_time())) {
+			return player.getBuildTime();
+		}
+		if (getStart_time().startsWith("2,")) {
+			return new Date(Long.parseLong(getStart_time().substring(2)));
+		}
+		return null;
+	}
+
+	public boolean isActive(Player player, Date now) {
+		Date startTime = startTime(player);
+		return startTime.before(now) && DateUtil.getIntervalHours(startTime, now)<getTime_limit();
 	}
 }

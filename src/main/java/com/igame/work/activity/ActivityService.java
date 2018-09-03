@@ -2,7 +2,9 @@ package com.igame.work.activity;
 
 import com.igame.core.ISFSModule;
 import com.igame.util.DateUtil;
-import com.igame.work.activity.QitianDenglu.QitianDengluService;
+import com.igame.work.activity.denglu.DengluDAO;
+import com.igame.work.activity.denglu.DengluDto;
+import com.igame.work.activity.denglu.DengluService;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaData;
 import com.igame.work.activity.sign.SignConfigTemplate;
 import com.igame.work.activity.sign.SignData;
@@ -10,9 +12,26 @@ import com.igame.work.activity.tansuoZhiLu.TanSuoZhiLuActivityData;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.dto.Player;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * activity_type配置1的时候time_limit可能是一个正数 也可能是-1
+ * 配置2的时候time_limit只允许配置为正数
+ *
+ * gift_bag配置为3的时候 活动一定是个登录几天 每天对应不同奖励的活动
+ *
+ * start_time 配置是2的时候后面会跟一个时间戳 如果没有就当做配置错误
+ *
+ * gift_bag 配置为2的时候 才会用到get_limit和get_value
+ *
+ * start_limit和value字段会删掉提取到单独的配置
+ *
+ * 神秘商人的配置提取到单独的配置
+ *
+ * buy_price和sale_picture服务器用不到
+ */
 public class ActivityService implements ISFSModule {
     public static void loadPlayer(Player player) {
         if (player.getActivityData() == null) {
@@ -50,9 +69,10 @@ public class ActivityService implements ISFSModule {
         }
 
         // 七天活动 发邮件
-        QitianDengluService.loadPlayer(player);
+        DengluService.loadPlayer(player);
     }
 
+    /**因为数据库里存的数据跟客户端协议的格式不一样，这里做下转换*/
     public Map<String, Object> clientData(Player player) {
         Map<String, Object> map = new HashMap<>();
 
@@ -70,6 +90,28 @@ public class ActivityService implements ISFSModule {
         map.put("meiriLiangfa", player.getActivityData().getMeiriLiangfa().clientData());
 
         map.put("tansuoZhiLu", player.getActivityData().getTansuo().clientData(player));
+
+        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getSeverId(), player.getPlayerId());
+        Map<Integer, int[]> dengluRecords = new HashMap<>();
+        DengluService.configs.forEach((k,v)->{
+            byPlayer.computeIfAbsent(k,activityId->{
+                DengluDto dto = new DengluDto();
+                dto.setActivityId(activityId);
+                dto.setPlayerId(player.getPlayerId());
+                dto.setRecord(new int[v.size()]);
+                DengluDAO.ins().save(player.getSeverId(), dto);
+                return dto;
+            });
+            v.stream().filter(c->c.getOrder()==DateUtil.getIntervalDays(c.startTime(player), new Date()))
+                    .findAny().ifPresent(c->{
+                DengluDto dengluDto = byPlayer.get(k);
+                dengluDto.getRecord()[c.getOrder()]=1;
+                DengluDAO.ins().save(player.getSeverId(), dengluDto);
+                    });
+            int[] value = new int[v.size()];
+            dengluRecords.put(k, value);
+        });
+        map.put("denglu", dengluRecords);
         return map;
     }
 

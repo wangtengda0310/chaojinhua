@@ -12,6 +12,7 @@ import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.core.quartz.TimeListener;
 import com.igame.work.MProtrol;
+import com.igame.work.activity.denglu.DengluHandler;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaHandler;
 import com.igame.work.activity.sign.SignHandler;
 import com.igame.work.activity.tansuoZhiLu.TansuoZhiLuActivityHandler;
@@ -310,6 +311,7 @@ public class GameServer extends SFSExtension {
 		register(SignHandler.class);//签到活动
 		register(MeiriLiangfaHandler.class);//每日两发活动
 		register(TansuoZhiLuActivityHandler.class);//探索之路活动
+		register(DengluHandler.class);//登录活动
 		register(RechargeListHandler.class);//充值展示
 		register(MockRechargeHandler.class);//模拟充值
 

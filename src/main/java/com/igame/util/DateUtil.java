@@ -37,10 +37,17 @@ public class DateUtil {
 	/**
 	 * 返回的是毫秒
 	 */
-	public static long getIntervalTime(Date date1,Date date2){
+	public static long getIntervalMillis(Date date1,Date date2){
 		return Math.abs(date1.getTime() - date2.getTime());
 	}
-	
+	public static long getIntervalHours(Date date1,Date date2){
+		return Math.abs(date1.getTime() - date2.getTime())/1000/60/60;
+	}
+
+	public static long getIntervalDays(Date date1,Date date2){
+		return getIntervalHours(date1,date2)/24;
+	}
+
 	public static String formatToday() {
 		return formatDate(new Date());
 	}
