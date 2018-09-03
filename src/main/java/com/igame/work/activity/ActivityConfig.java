@@ -2,6 +2,7 @@ package com.igame.work.activity;
 
 
 import com.google.common.collect.Maps;
+import com.igame.work.activity.QitianDenglu.QitianDengluService;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaData;
 import com.igame.work.activity.tansuoZhiLu.TanSuoZhiLuActivityData;
 
@@ -28,6 +29,7 @@ public class ActivityConfig
 		its.forEach((c -> {
 			MeiriLiangfaData.addActivityConfigTemplate(c);
 			TanSuoZhiLuActivityData.addActivityConfigTemplate(c);
+			QitianDengluService.addActivityConfigTemplate(c);
 		}));
 	}
 

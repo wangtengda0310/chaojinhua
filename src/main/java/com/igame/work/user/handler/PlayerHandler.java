@@ -245,6 +245,7 @@ public class PlayerHandler extends BaseHandler{
 		QuestService.loadPlayer(player, serverId);
 
 		PlayerCacheService.remove(player);
+
 	}
 
 	/**

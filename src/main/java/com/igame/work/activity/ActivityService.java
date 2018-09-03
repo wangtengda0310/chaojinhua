@@ -2,6 +2,7 @@ package com.igame.work.activity;
 
 import com.igame.core.ISFSModule;
 import com.igame.util.DateUtil;
+import com.igame.work.activity.QitianDenglu.QitianDengluService;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaData;
 import com.igame.work.activity.sign.SignConfigTemplate;
 import com.igame.work.activity.sign.SignData;
@@ -47,6 +48,9 @@ public class ActivityService implements ISFSModule {
         if (player.getActivityData().getTansuo() == null) {
             player.getActivityData().setTansuo(new TanSuoZhiLuActivityData());
         }
+
+        // 七天活动 发邮件
+        QitianDengluService.loadPlayer(player);
     }
 
     public Map<String, Object> clientData(Player player) {
