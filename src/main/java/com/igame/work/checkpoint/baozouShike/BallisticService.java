@@ -7,7 +7,7 @@ import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.quartz.TimeListener;
-import com.igame.server.GameServer;
+import com.igame.server.GameServerExtension;
 import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.baozouShike.data.RunTemplate;
 import com.igame.work.checkpoint.baozouShike.data.RunTypeTemplate;
@@ -260,7 +260,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
 
             Map<Integer, Integer> buffMap = Maps.newHashMap();
             //随机buff
-            String DBName = GameServer.dbManager.p.getProperty("DBName");
+            String DBName = GameServerExtension.dbManager.p.getProperty("DBName");
             String[] DBNames = DBName.split(",");
             for(String db : DBNames){
                 int serverId=Integer.parseInt(db.substring(5));

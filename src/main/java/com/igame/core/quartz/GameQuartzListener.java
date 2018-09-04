@@ -1,28 +1,16 @@
 package com.igame.core.quartz;
 
 
-import com.google.common.collect.Lists;
 import com.igame.core.SessionManager;
 import com.igame.core.log.ExceptionLog;
-import com.igame.core.log.GoldLog;
-import com.igame.server.GameServer;
-import com.igame.util.GameMath;
-import com.igame.util.MyUtil;
 import com.igame.work.MessageUtil;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
-import com.igame.work.checkpoint.guanqia.RewardDto;
-import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
-import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.RobotDto;
-import com.igame.work.user.load.ResourceService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 

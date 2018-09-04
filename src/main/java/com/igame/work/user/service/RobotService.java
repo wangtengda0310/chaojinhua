@@ -6,7 +6,7 @@ import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.event.EventService;
 import com.igame.core.quartz.TimeListener;
-import com.igame.server.GameServer;
+import com.igame.server.GameServerExtension;
 import com.igame.util.GameMath;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
@@ -77,7 +77,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     }
 
 	public void init(){
-		String DBName = GameServer.dbManager.p.getProperty("DBName");
+		String DBName = GameServerExtension.dbManager.p.getProperty("DBName");
 		String[] DBNames = DBName.split(",");
 		for(String db : DBNames){
 			int serverId=Integer.parseInt(db.substring(5));

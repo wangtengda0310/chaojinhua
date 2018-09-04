@@ -3,7 +3,7 @@ package com.igame.work.chat.service;
 import com.igame.core.ISFSModule;
 import com.igame.core.event.EventService;
 import com.igame.core.quartz.TimeListener;
-import com.igame.server.GameServer;
+import com.igame.server.GameServerExtension;
 import com.igame.work.chat.dao.MessageDAO;
 import com.igame.work.chat.dto.Message;
 import org.apache.commons.collections.map.HashedMap;
@@ -117,7 +117,7 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
      */
     public void init(){
 
-        String DBName = GameServer.dbManager.p.getProperty("DBName");
+        String DBName = GameServerExtension.dbManager.p.getProperty("DBName");
         String[] DBNames = DBName.split(",");
         for(String db : DBNames){
 

@@ -1,6 +1,6 @@
 package com.igame.core.db;
 
-import com.igame.server.GameServer;
+import com.igame.server.GameServerExtension;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
@@ -22,27 +22,27 @@ public abstract class AbsDao {
 	public abstract String getTableName();
 	
 	public  Datastore getDatastore(String dbName){
-		return GameServer.dbManager.getDatastore(dbName);
+		return GameServerExtension.dbManager.getDatastore(dbName);
 	}
 	
 	/**
 	 * 根据服务器ID获取数据库Datastore对象
 	 */
 	public  Datastore getDatastore(int serverId){
-		return GameServer.dbManager.getDatastore(dbPer+serverId);
+		return GameServerExtension.dbManager.getDatastore(dbPer+serverId);
 	}
 	
 	
 	private Map<String,Datastore> getAllDatastore(){
-		return GameServer.dbManager.getDatastores();
+		return GameServerExtension.dbManager.getDatastores();
 	}
 	
 //	public Datastore getDatastore(){
-//		return GameServer.dbManager.getDatastoreOne();
+//		return GameServerExtension.dbManager.getDatastoreOne();
 //	}
 	
 	public MongoDatabase getDB(){
-		return GameServer.dbManager.getGameDBOne();
+		return GameServerExtension.dbManager.getGameDBOne();
 	}
 	
 	public MongoCollection<Document> getTable(){
