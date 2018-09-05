@@ -19,7 +19,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class EndlessBufferHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -39,7 +40,7 @@ public class EndlessBufferHandler extends ReconnectedHandler {
 				if(player.getDiamond() < 20){
 					return error(ErrorCode.DIAMOND_NOT_ENOUGH);
 				}else{
-					ResourceService.ins().addDiamond(player, -20);
+					resourceService.addDiamond(player, -20);
 					player.getWuEffect().clear();
 					for(String bu : buffers){
 						player.getWuEffect().add(new WuEffect(Integer.parseInt(bu)));

@@ -23,7 +23,8 @@ import java.util.List;
  *
  */
 public class ItemSaleHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -61,7 +62,7 @@ public class ItemSaleHandler extends ReconnectedHandler {
 			}
 
 			//减少道具
-			ResourceService.ins().addItem(player,itemId,-count,true);
+			resourceService.addItem(player,itemId,-count,true);
 
 			//增加金币
 			ItemTemplate template = PlayerDataManager.ItemData.getTemplate(itemId);
@@ -69,7 +70,7 @@ public class ItemSaleHandler extends ReconnectedHandler {
 		}
 
 		if (gold != 0)
-			ResourceService.ins().addGold(player,gold);
+			resourceService.addGold(player,gold);
 
 		vo.addData("reward","1,1,"+gold);
 		vo.addData("failed",failed);

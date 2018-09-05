@@ -1,14 +1,9 @@
 package com.igame.work.monster.dto;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.monster.MonsterDataManager;
-import com.igame.work.monster.data.MonsterBreakTemplate;
 import com.igame.util.GameMath;
-import com.igame.work.user.dto.Player;
-import com.igame.work.user.load.ResourceService;
+
+import java.util.List;
 
 /**
  * 
@@ -16,7 +11,7 @@ import com.igame.work.user.load.ResourceService;
  *
  */
 public class JiyinType {
-	
+
 	public static final String TYPE_001 =	"1";//攻击+30
 	public static final String TYPE_002 =	"2";//体力+90
 	
@@ -112,9 +107,6 @@ public class JiyinType {
 	
 	/**
 	 * 随机一种基因
-	 * @param rank
-	 * @param jingzhan
-	 * @return
 	 */
 	public static String getRandType(int rank,boolean jingzhan){
 		
@@ -130,86 +122,6 @@ public class JiyinType {
 		
 	}
 	
-	
-	/**
-	 * 
-	 * @param player
-	 * @param rankType 1-小基因  2-大基因
-	 * @param type 期望类型 1-20 
-	 * @param costType 货币类型 1-金币 2-钻石
-	 * @param rank  当前改造阶数
-	 * @param jingzhan 是否近战
-	 * @return
-	 */
-	public static RandoRes getRandType(Player player,int rankType,int type,int costType,int rank,boolean jingzhan){
-		RandoRes res = new RandoRes();
-		if(costType < 1 || costType > 2){//货币错误
-			return new RandoRes(-1,"-1");
-		}
-		String qitype = String.valueOf(type);//期望类型
-		List<String> randow = null;
-		if(rankType == 2){//大基因
-			if(jingzhan){
-				if(!bigNotJing.contains(qitype)){
-					return new RandoRes(ErrorCode.MONSTER_JIYINGTYPE_ERROR,"-1");
-				}
-				randow = bigNotJing;
-			}else{
-				if(!big.contains(qitype)){
-					return new RandoRes(ErrorCode.MONSTER_JIYINGTYPE_ERROR,"-1");
-				}
-				randow = big;
-			}			
-		}else{//小基因
-			if(!small.contains(qitype)){
-				return new RandoRes(ErrorCode.MONSTER_JIYINGTYPE_ERROR,"-1");
-			}
-			randow = small;
-		}
-		if(randow != null){
-
-			MonsterBreakTemplate mt = MonsterDataManager.MonsterBreakData.getTemplate(rank);
-			if(costType == 1){//金币改造
-				long totalCost = 0;//总花销
-				if(player.getGold() < mt.getChange_gold()){
-					return new RandoRes(ErrorCode.GOLD_NOT_ENOUGH,"-1");
-				}
-				String getType = "-1";
-
-				getType = getRandType(rank, jingzhan);
-				totalCost += mt.getChange_gold();
-				res.setType(getType);
-				res.setTotal(totalCost);
-				if(!getType.equals(String.valueOf(type))){
-					res.setRes(1);
-				}
-				
-				ResourceService.ins().addGold(player, 0-totalCost);
-				return res;
-			}else{//钻石改造
-				int totalCost = 0;
-				if(player.getDiamond() < mt.getDiamond()){
-					return new RandoRes(ErrorCode.DIAMOND_NOT_ENOUGH,"-1");
-				}
-				String getType = "-1";
-
-				getType = getRandType(rank, jingzhan);
-				totalCost += mt.getDiamond();
-				res.setType(getType);
-				res.setTotal(totalCost);
-				if(!getType.equals(String.valueOf(type))){
-					res.setRes(1);
-				}
-				ResourceService.ins().addDiamond(player, 0-totalCost);
-				return res;
-			}
-	
-		}else{
-			return new RandoRes(-1,"-1");
-		}
-		
-	}
-
 
 
 }

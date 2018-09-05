@@ -8,11 +8,11 @@ public interface ISFSModule extends Injectable {
     class ExtensionHolder {
         public GameServerExtension SFSExtension;
     }
-    ExtensionHolder holder = new ExtensionHolder();
+    ExtensionHolder extensionHolder = new ExtensionHolder();
     default void init(GameServerExtension extension) {
-        this.holder.SFSExtension = extension;
+        this.extensionHolder.SFSExtension = extension;
         init();
     }
     default void destroy(){}
-    void init();
+    default void init(){}
 }

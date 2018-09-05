@@ -19,7 +19,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class GateRewardHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -57,8 +58,8 @@ public class GateRewardHandler extends ReconnectedHandler {
 					player.getFateData().setTempSpecialCount(0);//更新临时特殊门刷数
 					player.getFateData().setAddRate(0);//更新临时特殊门几率增长
 					RewardDto rt = new RewardDto();
-					ResourceService.ins().addRewarToPlayer(player, rt);
-					reward = ResourceService.ins().getRewardString(rt);
+					resourceService.addRewarToPlayer(player, rt);
+					reward = resourceService.getRewardString(rt);
 					MessageUtil.notifyDeInfoChange(player);
 					
 //				}                                                                                                                                                                                                                                                                                                             

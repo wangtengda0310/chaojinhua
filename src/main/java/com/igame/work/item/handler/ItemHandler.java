@@ -15,7 +15,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class ItemHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -30,7 +31,7 @@ public class ItemHandler extends ReconnectedHandler {
 		int targetType = jsonObject.getInt("targetType");
 		long targetId = jsonObject.getLong("targetId");
 		
-		int ret = ResourceService.ins().useItem(player, itemId, count, targetType, targetId);
+		int ret = resourceService.useItem(player, itemId, count, targetType, targetId);
 		
 		if(ret != 0){
 			vo.setState(1);

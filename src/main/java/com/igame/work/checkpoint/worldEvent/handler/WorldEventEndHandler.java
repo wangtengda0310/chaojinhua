@@ -12,6 +12,7 @@ import com.igame.util.MyUtil;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
+import com.igame.work.checkpoint.worldEvent.WorldEventService;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.service.QuestService;
@@ -28,7 +29,9 @@ import java.util.List;
  *
  */
 public class WorldEventEndHandler extends ReconnectedHandler {
-	
+	private WorldEventService worldEventService;
+	private ResourceService resourceService;
+	private QuestService questService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -71,26 +74,26 @@ public class WorldEventEndHandler extends ReconnectedHandler {
 		wd.setDtate(2);
 
 		//处理任务埋点
-		QuestService.processTask(player, 3, 1);
+		questService.processTask(player, 3, 1);
 
 		//增加奖励
-		RewardDto rt = ResourceService.ins().getRewardDto(wt.getDrop(), wt.getRate());
+		RewardDto rt = resourceService.getRewardDto(wt.getDrop(), wt.getRate());
 		String[] golds = wt.getGold().split("-");
 		if(golds.length >= 2){
 			rt.setGold(rt.getGold() + GameMath.getRandomCount(Integer.parseInt(golds[0]), Integer.parseInt(golds[1])));
 		}
 
-		ResourceService.ins().addRewarToPlayer(player, rt);
+		resourceService.addRewarToPlayer(player, rt);
 
 		//增加人物经验
 		int playerExp = wt.getPhysical() * 5;
-		ResourceService.ins().addExp(player,playerExp);
+		resourceService.addExp(player,playerExp);
 
 		//增加怪物经验
 		List<Monster> ll = Lists.newArrayList();
 		String monsterExpStr = "";
 		for (long mid : player.getTeams().get(player.getCurTeam()).getTeamMonster()) {
-            monsterExpStr = WorldEventSaoHandler.getString(player, monsterExpStr, wt, ll, mid);
+            monsterExpStr = worldEventService.getString(player, monsterExpStr, wt, ll, mid);
         }
 
 		MessageUtil.notifyMonsterChange(player, ll);
@@ -101,7 +104,7 @@ public class WorldEventEndHandler extends ReconnectedHandler {
 		}
 
 		//奖励字符串
-		String reward = ResourceService.ins().getRewardString(rt);
+		String reward = resourceService.getRewardString(rt);
 
 		vo.addData("playerExp", playerExp);
 		vo.addData("monsterExp", monsterExpStr);

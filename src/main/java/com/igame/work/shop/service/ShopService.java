@@ -1,5 +1,6 @@
 package com.igame.work.shop.service;
 
+import com.igame.core.ISFSModule;
 import com.igame.core.quartz.TimeListener;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -24,7 +25,7 @@ import java.util.*;
 /**
  * @author xym
  */
-public class ShopService implements TimeListener {
+public class ShopService implements ISFSModule, TimeListener {
     @Override
     public void twenty() {
         reloadGeneralOnline();

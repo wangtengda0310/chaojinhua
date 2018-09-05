@@ -13,29 +13,40 @@ import com.smartfoxserver.v2.entities.variables.SFSRoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
 import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
 
+import java.util.Collection;
 import java.util.Collections;
 
 /**
  * @author xym
  */
 public abstract class BaseHandler extends BaseClientRequestHandler implements GameHandler {
+    public abstract int protocolId();
 
     {
-        PlayerEventObserver playerEventObserver = observeEvent();
+        PlayerEventObserver playerEventObserver = playerObserver();
         if (playerEventObserver != null) {
             EventManager.playerEventObservers.put(getClass().getSimpleName(), playerEventObserver);
         }
-        ServiceEventListener playerEventListener = listenEvent();
+        ServiceEventListener playerEventListener = eventListener();
         if (playerEventListener != null) {
             EventManager.serviceEventListeners.put(getClass().getSimpleName(), playerEventListener);
         }
+
+        if (playerObservers() != null) {
+            for (PlayerEventObserver observer : playerObservers()) {
+                EventManager.playerEventObservers.put(observer.getClass().getName(), observer);
+            }
+        }
     }
 
-    protected PlayerEventObserver observeEvent() {
+    protected PlayerEventObserver playerObserver() {
         return null;
     }
+    protected Collection<PlayerEventObserver> playerObservers() {
+        return Collections.emptySet();
+    }
 
-    protected ServiceEventListener listenEvent() {
+    protected ServiceEventListener eventListener() {
         return null;
     }
 

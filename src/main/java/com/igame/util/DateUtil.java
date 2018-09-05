@@ -22,6 +22,9 @@ public class DateUtil {
 	public static String formatClientDateTime(Date date) {
 		return clientDateTimeFormat.format(date);
 	}
+	public static String formatClientDateTime(long timeMillis) {
+		return formatClientDateTime(new Date(timeMillis));
+	}
 	public static String formatDateTime(Date date){
 		return dateTimeFormat.format(date);
 	}

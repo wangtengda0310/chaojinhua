@@ -12,27 +12,31 @@ import com.igame.work.activity.tansuoZhiLu.TanSuoZhiLuActivityData;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.dto.Player;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * activity_type配置1的时候time_limit可能是一个正数 也可能是-1
  * 配置2的时候time_limit只允许配置为正数
- *
+ * <p>
  * gift_bag配置为3的时候 活动一定是个登录几天 每天对应不同奖励的活动
- *
+ * <p>
  * start_time 配置是2的时候后面会跟一个时间戳 如果没有就当做配置错误
- *
+ * <p>
  * gift_bag 配置为2的时候 才会用到get_limit和get_value
- *
+ * <p>
  * start_limit和value字段会删掉提取到单独的配置
- *
+ * <p>
  * 神秘商人的配置提取到单独的配置
- *
+ * <p>
  * buy_price和sale_picture服务器用不到
  */
 public class ActivityService implements ISFSModule {
+    private GMService gMService;
+
     public static void loadPlayer(Player player) {
         if (player.getActivityData() == null) {
             player.setActivityData(new PlayerActivityData());
@@ -68,11 +72,13 @@ public class ActivityService implements ISFSModule {
             player.getActivityData().setTansuo(new TanSuoZhiLuActivityData());
         }
 
-        // 七天活动 发邮件
+        // 七天登录活动
         DengluService.loadPlayer(player);
     }
 
-    /**因为数据库里存的数据跟客户端协议的格式不一样，这里做下转换*/
+    /**
+     * 因为数据库里存的数据跟客户端协议的格式不一样，这里做下转换
+     */
     public Map<String, Object> clientData(Player player) {
         Map<String, Object> map = new HashMap<>();
 
@@ -92,24 +98,31 @@ public class ActivityService implements ISFSModule {
         map.put("tansuoZhiLu", player.getActivityData().getTansuo().clientData(player));
 
         Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getSeverId(), player.getPlayerId());
-        Map<Integer, int[]> dengluRecords = new HashMap<>();
-        DengluService.configs.forEach((k,v)->{
-            byPlayer.computeIfAbsent(k,activityId->{
+        Map<Integer, String> dengluRecords = new HashMap<>();
+        DengluService.configs.forEach((configId, configs) -> {
+
+            byPlayer.computeIfAbsent(configId, activityId -> {
                 DengluDto dto = new DengluDto();
                 dto.setActivityId(activityId);
                 dto.setPlayerId(player.getPlayerId());
-                dto.setRecord(new int[v.size()]);
+                dto.setRecord(new int[configs.size()]);
                 DengluDAO.ins().save(player.getSeverId(), dto);
                 return dto;
             });
-            v.stream().filter(c->c.getOrder()==DateUtil.getIntervalDays(c.startTime(player), new Date()))
-                    .findAny().ifPresent(c->{
-                DengluDto dengluDto = byPlayer.get(k);
-                dengluDto.getRecord()[c.getOrder()]=1;
-                DengluDAO.ins().save(player.getSeverId(), dengluDto);
+
+            DengluDto dengluDto = byPlayer.get(configId);
+
+            configs.stream()
+                    .filter(c -> c.getOrder()-1 == DateUtil.getIntervalDays(c.startTime(player), new Date()))
+                    .findAny()
+                    .ifPresent(c -> {
+                        dengluDto.getRecord()[c.getOrder()-1] = 1;
+                        DengluDAO.ins().save(player.getSeverId(), dengluDto);
                     });
-            int[] value = new int[v.size()];
-            dengluRecords.put(k, value);
+
+            dengluRecords.put(configId, Arrays.stream(dengluDto.getRecord())
+                    .mapToObj(String::valueOf)
+                    .collect(Collectors.joining(",")));
         });
         map.put("denglu", dengluRecords);
         return map;
@@ -126,7 +139,7 @@ public class ActivityService implements ISFSModule {
             playerSignData.setSignData("1,1," + today);
             SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
             String reward = template.getRewardData().split(";")[0];
-            GMService.processGM(player, reward);
+            gMService.processGM(player, reward);
 
             Map<String, Object> map = new HashMap<>();
             map.put("canSign", 0);
@@ -152,7 +165,7 @@ public class ActivityService implements ISFSModule {
                     playerSignData.setTotalSign("0,0,0,0");
                 }
 
-                GMService.processGM(player, reward);
+                gMService.processGM(player, reward);
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("cansign", 0);
@@ -195,25 +208,21 @@ public class ActivityService implements ISFSModule {
 
         SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
         if (index == 1) {
-            GMService.processGM(player, template.getTotalSign3());
+            gMService.processGM(player, template.getTotalSign3());
         }
         if (index == 2) {
-            GMService.processGM(player, template.getTotalSign7());
+            gMService.processGM(player, template.getTotalSign7());
         }
         if (index == 3) {
-            GMService.processGM(player, template.getTotalSign15());
+            gMService.processGM(player, template.getTotalSign15());
         }
         if (index == 4) {
-            GMService.processGM(player, template.getTotalSign30());
+            gMService.processGM(player, template.getTotalSign30());
         }
         Map<String, Object> map = new HashMap<>();
         map.put("round", Integer.parseInt(data[0]));
         map.put("signed", Integer.parseInt(data[1]));
         map.put("totalSign", totalSign);
         return map;
-    }
-    @Override
-    public void init() {
-
     }
 }

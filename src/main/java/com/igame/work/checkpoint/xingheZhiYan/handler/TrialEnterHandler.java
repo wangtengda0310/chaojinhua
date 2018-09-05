@@ -29,7 +29,8 @@ import java.util.List;
  *
  */
 public class TrialEnterHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -48,7 +49,7 @@ public class TrialEnterHandler extends ReconnectedHandler {
 			if(player.getXing() < 1){
 				return error(ErrorCode.XING_NOT_ENOUGH);
 			}else{
-				ResourceService.ins().addXing(player, -1);
+				resourceService.addXing(player, -1);
 //				player.setEnterCheckpointId(chapterId);
 //				player.setEnterCheckPointTime(System.currentTimeMillis());
 				

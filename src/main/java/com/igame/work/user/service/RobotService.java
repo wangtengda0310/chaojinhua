@@ -76,6 +76,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     	
     }
 
+	@Override
 	public void init(){
 		String DBName = GameServerExtension.dbManager.p.getProperty("DBName");
 		String[] DBNames = DBName.split(",");

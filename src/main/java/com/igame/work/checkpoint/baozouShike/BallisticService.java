@@ -38,7 +38,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
     private static final int[] killNums = {0,30,50,70,110,150,200,250,300,400,500,600};
 
     @Override
-    protected PlayerEventObserver observeEvent() {
+    protected PlayerEventObserver playerObserver() {
         return new PlayerEventObserver() {
             @Override
             public EventType interestedType() {
@@ -253,6 +253,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
     /**
      * 加载暴走时刻排行榜
      */
+    @Override
     public void init() {
 
         rank = BallisticRankDAO.ins().get();

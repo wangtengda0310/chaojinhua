@@ -22,6 +22,7 @@ import java.util.stream.Stream;
  * 探索加速
  */
 public class FriendExploreAccHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -92,7 +93,7 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
         String reward = "1,1,2000";
         int gold = 2000;
 
-        ResourceService.ins().addGold(player,gold);
+        resourceService.addGold(player,gold);
 
         //重新计算最新剩余时间
         tansuoDto.calLeftTime(System.currentTimeMillis());

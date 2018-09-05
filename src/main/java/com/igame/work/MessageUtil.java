@@ -96,7 +96,7 @@ public class MessageUtil {
 		
 		RetVO vo = new RetVO();	
     	vo.addData("chapterId", chapterId);
-    	vo.addData("reward", ResourceService.ins().getRewardString(reward));
+    	vo.addData("reward", ResourceService.getRewardString(reward));
     	MessageUtil.sendMessageToPlayer(player, MProtrol.CHECKPOINT_RES_UPDATE, vo);
 		
 	}
@@ -450,18 +450,6 @@ public class MessageUtil {
 		MessageUtil.sendMessageToPlayer(player, MProtrol.VIP_UPDATE, vo);
 	}
 
-
-	/**
-	 * 推送玩家大转盘更新
-	 */
-	public static void notifyTurntableChange(Player player) {
-
-		//推送
-		RetVO vo = new RetVO();
-		vo.addData("turntable", player.transTurntableVo());
-
-		MessageUtil.sendMessageToPlayer(player, MProtrol.TURNTABLE_UPDATE, vo);
-	}
 
 	/**
 	 * 推送玩家好友更新

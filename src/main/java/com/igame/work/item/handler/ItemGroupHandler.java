@@ -20,6 +20,7 @@ import java.util.Map;
  * 道具合成
  */
 public class ItemGroupHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -57,13 +58,13 @@ public class ItemGroupHandler extends ReconnectedHandler {
         }
 
         //新增道具
-        Item addItem = ResourceService.ins().addItem(player, template.getGroupId(), 1, true);
+        Item addItem = resourceService.addItem(player, template.getGroupId(), 1, true);
         if (addItem == null){
             return error(ErrorCode.ERROR);
         }
 
         //减少道具数量
-        ResourceService.ins().addItem(player,itemId,-template.getNum(),true);
+        resourceService.addItem(player,itemId,-template.getNum(),true);
 
         vo.addData("groupItemId",addItem.getItemId());
         return vo;

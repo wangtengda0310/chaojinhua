@@ -26,7 +26,8 @@ import java.util.Map;
  *
  */
 public class CheckEnterHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -130,7 +131,7 @@ public class CheckEnterHandler extends ReconnectedHandler {
 			}*/
 		}
 
-		ResourceService.ins().addPhysica(player, 0-ct.getPhysical());
+		resourceService.addPhysica(player, 0-ct.getPhysical());
 		player.setEnterCheckpointId(chapterId);
 		player.setEnterCheckPointTime(System.currentTimeMillis());
 

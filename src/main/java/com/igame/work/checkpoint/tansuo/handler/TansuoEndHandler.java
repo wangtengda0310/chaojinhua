@@ -23,7 +23,9 @@ import net.sf.json.JSONObject;
  *
  */
 public class TansuoEndHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
+	private QuestService questService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -108,9 +110,9 @@ public class TansuoEndHandler extends ReconnectedHandler {
 		}
 
 		//发放奖励
-		ResourceService.ins().addRewarToPlayer(player, rt);
+		resourceService.addRewarToPlayer(player, rt);
 		//处理任务埋点
-		QuestService.processTask(player, 15, 1);
+		questService.processTask(player, 15, 1);
 
 		//恢复至初始状态
 		dto.setStartTime(0);
@@ -118,7 +120,7 @@ public class TansuoEndHandler extends ReconnectedHandler {
 		dto.clearhelp();
 
 		//奖励字符串
-		String reward = ResourceService.ins().getRewardString(rt);
+		String reward = resourceService.getRewardString(rt);
 
 		vo.addData("leftTime", dto.getLeftTime());
 		vo.addData("state", dto.getState());

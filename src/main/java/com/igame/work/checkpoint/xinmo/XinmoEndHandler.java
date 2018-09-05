@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class XinmoEndHandler extends ReconnectedHandler {
 
-
+	private ResourceService resourceService;
 	private RobotService robotService;
 
 	@Override
@@ -48,8 +48,8 @@ public class XinmoEndHandler extends ReconnectedHandler {
 			if(win == 1){
 				String removeId = "";
 				List<XingMoDto> ls = Lists.newArrayList();
-				ResourceService.ins().addRewarToPlayer(player, rt);
-				reward = ResourceService.ins().getRewardString(rt);
+				resourceService.addRewarToPlayer(player, rt);
+				reward = resourceService.getRewardString(rt);
 				player.getXinMo().remove(chapterId);
 				int qiang = 0;
 				for(XingMoDto xm : player.getXinMo().values()){

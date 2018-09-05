@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * 幸运大转盘
  */
-@Entity(value = "turntable", noClassnameStored = true)
+@Entity(value = "turntables", noClassnameStored = true)
 public class Turntable extends BasicDto {
 	
 	@Indexed

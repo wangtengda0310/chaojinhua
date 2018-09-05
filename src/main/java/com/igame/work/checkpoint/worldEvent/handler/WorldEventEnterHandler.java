@@ -29,7 +29,8 @@ import java.util.Map;
  *
  */
 public class WorldEventEnterHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -72,7 +73,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 		}
 
 		//扣除体力
-		ResourceService.ins().addPhysica(player, 0-wt.getPhysical());
+		resourceService.addPhysica(player, 0-wt.getPhysical());
 
 		//防作弊
 		player.setEnterWordEventTime(System.currentTimeMillis());

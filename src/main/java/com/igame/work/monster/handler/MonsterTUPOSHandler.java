@@ -30,7 +30,9 @@ import java.util.List;
  *
  */
 public class MonsterTUPOSHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
+	private QuestService questService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -79,7 +81,7 @@ public class MonsterTUPOSHandler extends ReconnectedHandler {
 						}
 						type = JiyinType.getRandType(rank, mont.getAtk_type() == 1);
 						jiying[rank - 1] = type;
-						ResourceService.ins().addGold(player, 0-mt.getGold());
+						resourceService.addGold(player, 0-mt.getGold());
 						mm.setBreaklv(MyUtil.toString(jiying, ","));
 						mm.reCalculate(player,true);
 						mm.setDtate(2);
@@ -89,7 +91,7 @@ public class MonsterTUPOSHandler extends ReconnectedHandler {
 						MessageUtil.notifyMonsterChange(player, mons);
 						GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 								+"#act:monsterTUPO" + "#objectId:" + objectId+"#rank:"+rank+"#type:"+type);
-						QuestService.processTask(player, 7, 1);
+						questService.processTask(player, 7, 1);
 
 					}
 				}

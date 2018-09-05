@@ -20,6 +20,8 @@ import java.util.List;
  */
 public class GateEndHandler extends ReconnectedHandler {
 
+    private ResourceService resourceService;
+    private QuestService questService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -69,9 +71,9 @@ public class GateEndHandler extends ReconnectedHandler {
                 MessageUtil.notifyDeInfoChange(player);
                 MessageUtil.notifyGateChange(player);
                 RewardDto rt = new RewardDto();
-                ResourceService.ins().addRewarToPlayer(player, rt);
-                reward = ResourceService.ins().getRewardString(rt);
-                QuestService.processTask(player, 10, 1);
+                resourceService.addRewarToPlayer(player, rt);
+                reward = resourceService.getRewardString(rt);
+                questService.processTask(player, 10, 1);
 
             } else {    //失败，即挑战结束
 

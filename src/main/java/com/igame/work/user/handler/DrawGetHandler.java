@@ -27,7 +27,9 @@ import java.util.List;
  *
  */
 public class DrawGetHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
+	private PlayerService playerService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -73,16 +75,16 @@ public class DrawGetHandler extends ReconnectedHandler {
 //							
 //							for(String ii : dt.getItem().split(";")){
 //								String[] item = ii.split(",");
-//								Item old = ResourceService.ins().addItem(player, Integer.parseInt(item[0]), 0-Integer.parseInt(item[1]), false);
+//								Item old = resourceService.addItem(player, Integer.parseInt(item[0]), 0-Integer.parseInt(item[1]), false);
 //								ll.add(old);
 //							}
 //						}
 //						
-//						RewardDto dto = ResourceService.ins().getRewardDto("1,2,100;3,200001,10", "100");
-//						reward = ResourceService.ins().getRewardString(dto);
-//						ResourceService.ins().addRewarToPlayer(player, dto);
+//						RewardDto dto = resourceService.getRewardDto("1,2,100;3,200001,10", "100");
+//						reward = resourceService.getRewardString(dto);
+//						resourceService.addRewarToPlayer(player, dto);
 //						MessageUtil.notifyItemChange(player, ll);
-//						ResourceService.ins().addDrawExp(player, dt.getDrawExp());
+//						resourceService.addDrawExp(player, dt.getDrawExp());
 //					}
 //				}else 
 				if(type == 1){
@@ -109,45 +111,45 @@ public class DrawGetHandler extends ReconnectedHandler {
 							
 							for(String ii : dt.getItem().split(";")){
 								String[] item = ii.split(",");
-								Item old = ResourceService.ins().addItem(player, Integer.parseInt(item[0]), 0-Integer.parseInt(item[1]) * number, false);
+								Item old = resourceService.addItem(player, Integer.parseInt(item[0]), 0-Integer.parseInt(item[1]) * number, false);
 								ll.add(old);
 							}
 						}
 						RewardDto dto = new RewardDto();
 						reward = new StringBuilder();
 						for(int i = 1;i<=number;i++){
-							List<RewardDto> ls = PlayerService.couKa(dt.getRewardId(), dt.getDrawValue());
+							List<RewardDto> ls = playerService.couKa(dt.getRewardId(), dt.getDrawValue());
 							for(RewardDto temp : ls){
-								reward.append(";").append(ResourceService.ins().getRewardString(temp));
-								ResourceService.ins().getTotalRewardDto(dto, temp);								
+								reward.append(";").append(resourceService.getRewardString(temp));
+								resourceService.getTotalRewardDto(dto, temp);
 							}
 						}
-//						reward = ResourceService.ins().getRewardString(dto);
+//						reward = resourceService.getRewardString(dto);
 						if(reward.length() > 0){
 							reward = new StringBuilder(reward.substring(1));
 						}
-						ResourceService.ins().addRewarToPlayer(player, dto);
+						resourceService.addRewarToPlayer(player, dto);
 						MessageUtil.notifyItemChange(player, ll);
-						ResourceService.ins().addDrawExp(player, dt.getDrawExp() * number);
+						resourceService.addDrawExp(player, dt.getDrawExp() * number);
 					}
 				}else{
 					if(player.getDiamond() < dt.getDiamond()){
 						return error(ErrorCode.DIAMOND_NOT_ENOUGH);//钻石不足
 					}else{
-						ResourceService.ins().addDiamond(player, 0-dt.getDiamond());
+						resourceService.addDiamond(player, 0-dt.getDiamond());
 						RewardDto dto = new RewardDto();
-						List<RewardDto> ls  =  PlayerService.couKa(dt.getRewardId(), dt.getDrawValue());
+						List<RewardDto> ls  =  playerService.couKa(dt.getRewardId(), dt.getDrawValue());
 						reward = new StringBuilder();
 						for(RewardDto temp : ls){
-							reward.append(";").append(ResourceService.ins().getRewardString(temp));
-							ResourceService.ins().getTotalRewardDto(dto, temp);							
+							reward.append(";").append(resourceService.getRewardString(temp));
+							resourceService.getTotalRewardDto(dto, temp);
 						}
-//						reward = ResourceService.ins().getRewardString(dto);
+//						reward = resourceService.getRewardString(dto);
 						if(reward.length() > 0){
 							reward = new StringBuilder(reward.substring(1));
 						}
-						ResourceService.ins().addRewarToPlayer(player, dto);
-						ResourceService.ins().addDrawExp(player, dt.getDrawExp());
+						resourceService.addRewarToPlayer(player, dto);
+						resourceService.addDrawExp(player, dt.getDrawExp());
 					}
 
 				}

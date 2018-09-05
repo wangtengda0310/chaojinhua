@@ -2,6 +2,7 @@ package com.igame.work.checkpoint.guanqia;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.TimeListener;
@@ -37,8 +38,30 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class CheckPointService implements TimeListener {
+public class CheckPointService implements ISFSModule, TimeListener {
 	private RobotService robotService;
+	private ResourceService resourceService;
+
+	public String getString(Player player, RewardDto reward, List<Monster> ll, String monsterExpStr) {
+		StringBuilder monsterExpStrBuilder = new StringBuilder(monsterExpStr);
+		for(long mid : player.getTeams().get(player.getCurTeam()).getTeamMonster()){
+			if(-1 != mid){
+				Monster mm = player.getMonsters().get(mid);
+				if(mm != null){
+					int mmExp = getTotalExp(mm, reward.getExp());
+					monsterExpStrBuilder.append(mid);
+					if(resourceService.addMonsterExp(player, mid, mmExp, false) == 0){
+						ll.add(mm);
+						monsterExpStrBuilder.append(",").append(mmExp).append(";");
+					}else{
+						monsterExpStrBuilder.append(",0;");
+					}
+				}
+			}
+		}
+		monsterExpStr = monsterExpStrBuilder.toString();
+		return monsterExpStr;
+	}
 
 	@Override
 	public void minute() {
@@ -57,12 +80,12 @@ public class CheckPointService implements TimeListener {
 							if(m.getValue() < ct.getMaxTime() * 60){//没到上限
 								player.getTimeResCheck().put(m.getKey(), m.getValue()+ 1);
 								if(m.getValue() >= 60 && m.getValue() % 60 == 0){//到了一小时更新，推送金币数
-									RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), m.getValue(), ct.getMaxTime() * 60);
+									RewardDto dto = resourceService.getResRewardDto(ct.getDropPoint(), m.getValue(), ct.getMaxTime() * 60);
 									MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
 								}
 
 								//零时测试
-//        						RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), m.getValue(), ct.getMaxTime() * 60);
+//        						RewardDto dto = resourceService.getResRewardDto(ct.getDropPoint(), m.getValue(), ct.getMaxTime() * 60);
 //        						MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
 							}
 						}
@@ -85,7 +108,7 @@ public class CheckPointService implements TimeListener {
 		}
 		if(player.getResMintues().get(3) != null){
 			if(player.getResMintues().get(3) >=6){
-				ResourceService.ins().addPhysica(player, 1);
+				resourceService.addPhysica(player, 1);
 				MessageUtil.notifyCDDown(player, 3);
 				player.getResMintues().put(3, 0);
 			}
@@ -93,21 +116,21 @@ public class CheckPointService implements TimeListener {
 		}
 		if(player.getResMintues().get(4) != null){
 			if(player.getResMintues().get(4) >=60){
-				ResourceService.ins().addSao(player, 1);
+				resourceService.addSao(player, 1);
 				player.getResMintues().put(4, 0);
 			}
 
 		}
 		if(player.getResMintues().get(6) != null){
 			if(player.getResMintues().get(6) >=120 && player.getTongRes() < 15){
-				ResourceService.ins().addTongRes(player, 1);
+				resourceService.addTongRes(player, 1);
 				player.getResMintues().put(6, 0);
 			}
 
 		}
 		if(player.getResMintues().get(7) != null){
 			if(player.getResMintues().get(7) >=120  && player.getXing() < 10){
-				ResourceService.ins().addXing(player, 1);
+				resourceService.addXing(player, 1);
 				player.getResMintues().put(7, 0);
 			}
 
@@ -190,7 +213,7 @@ public class CheckPointService implements TimeListener {
 	 * @param win 是否胜利
 	 * @param type 可能的活动ID
 	 */
-	public static RewardDto getReward(Player player,int chapterId,int win,boolean first,int type){
+	public RewardDto getReward(Player player,int chapterId,int win,boolean first,int type){
 		
 		RewardDto reward = new RewardDto();
 		int ret = 0;
@@ -203,9 +226,9 @@ public class CheckPointService implements TimeListener {
 				reward.setGold(dt.getGoldDrop());
 				RewardDto other = null;
 				if(first){
-					other = ResourceService.ins().getRewardDto(dt.getFirstDrop(), "100");
+					other = resourceService.getRewardDto(dt.getFirstDrop(), "100");
 				}else{
-					other = ResourceService.ins().getRewardDto(dt.getItemDrop(), dt.getRate());
+					other = resourceService.getRewardDto(dt.getItemDrop(), dt.getRate());
 				}
 				reward.setGold(reward.getGold() + other.getGold());
 				reward.setDiamond(other.getDiamond());

@@ -26,7 +26,8 @@ import java.util.List;
  *
  */
 public class CheckSaoDangHandler extends ReconnectedHandler {
-	
+	private CheckPointService checkPointService;
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -63,26 +64,26 @@ public class CheckSaoDangHandler extends ReconnectedHandler {
 		}
 
 		//扣除扫荡券
-		ResourceService.ins().addSao(player,1);
+		resourceService.addSao(player,1);
 
 		//扣除体力
-		ResourceService.ins().addPhysica(player, 0-ct.getPhysical());
+		resourceService.addPhysica(player, 0-ct.getPhysical());
 
 		//减少可挑战次数
 		player.getPlayerCount().addCheckPoint(player,ct,-1);
 
 		//增加奖励
-		RewardDto reward = CheckPointService.getReward(player, chapterId, 1,false, 0);
-		ResourceService.ins().addRewarToPlayer(player,reward);
+		RewardDto reward = checkPointService.getReward(player, chapterId, 1,false, 0);
+		resourceService.addRewarToPlayer(player,reward);
 
 		//增加人物经验
 		int playerExp = reward.getExp();
-		ResourceService.ins().addExp(player, playerExp);
+		resourceService.addExp(player, playerExp);
 
 		//增加怪兽经验
 		List<Monster> ll = Lists.newArrayList();
 		String monsterExpStr = "";
-		monsterExpStr = getString(player, reward, ll, monsterExpStr);
+		monsterExpStr = checkPointService.getString(player, reward, ll, monsterExpStr);
 
 		MessageUtil.notifyMonsterChange(player, ll);
 
@@ -92,34 +93,13 @@ public class CheckSaoDangHandler extends ReconnectedHandler {
 		}
 
 		//奖励字符串
-		String rr = ResourceService.ins().getRewardString(reward);
+		String rr = resourceService.getRewardString(reward);
 
 		vo.addData("playerExp", playerExp);
 		vo.addData("monsterExp", monsterExpStr);
 		vo.addData("reward", rr);
 
 		return vo;
-	}
-
-	static String getString(Player player, RewardDto reward, List<Monster> ll, String monsterExpStr) {
-		StringBuilder monsterExpStrBuilder = new StringBuilder(monsterExpStr);
-		for(long mid : player.getTeams().get(player.getCurTeam()).getTeamMonster()){
-			if(-1 != mid){
-				Monster mm = player.getMonsters().get(mid);
-				if(mm != null){
-					int mmExp = CheckPointService.getTotalExp(mm, reward.getExp());
-					monsterExpStrBuilder.append(mid);
-					if(ResourceService.ins().addMonsterExp(player, mid, mmExp, false) == 0){
-						ll.add(mm);
-						monsterExpStrBuilder.append(",").append(mmExp).append(";");
-					}else{
-						monsterExpStrBuilder.append(",0;");
-					}
-				}
-			}
-		}
-		monsterExpStr = monsterExpStrBuilder.toString();
-		return monsterExpStr;
 	}
 
 	@Override

@@ -21,7 +21,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class TrialEndHandler extends ReconnectedHandler {
-	
+	private QuestService questService;
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -37,15 +38,15 @@ public class TrialEndHandler extends ReconnectedHandler {
 			return error(ErrorCode.CHECKPOINT_END_ERROR);
 		}else{
 			if(win == 1){
-				RewardDto rt = ResourceService.ins().getRewardDto(ct.getReward(),"100");
-				ResourceService.ins().addRewarToPlayer(player, rt);
-				reward = ResourceService.ins().getRewardString(rt);
-//				ResourceService.ins().addExp(player, wt.getPhysical() * 5);
+				RewardDto rt = resourceService.getRewardDto(ct.getReward(),"100");
+				resourceService.addRewarToPlayer(player, rt);
+				reward = resourceService.getRewardString(rt);
+//				resourceService.addExp(player, wt.getPhysical() * 5);
 //				playerExp = wt.getPhysical() * 5;
 				player.setTowerId(player.getTowerId() + 1);
 				MessageUtil.notifyTrialChange(player);
 			}
-			QuestService.processTask(player, 12, 1);
+			questService.processTask(player, 12, 1);
 			
 			//怪物经验
 //			List<Monster> ll = Lists.newArrayList();
@@ -56,7 +57,7 @@ public class TrialEndHandler extends ReconnectedHandler {
 //					if(mm != null){	
 //						int mmExp = CheckPointService.getTotalExp(mm, wt.getPhysical() * 5);
 //						monsterExpStr += mid;
-//						if(win == 1 && ResourceService.ins().addMonsterExp(player, Long.parseLong(mid), mmExp, false) == 0){
+//						if(win == 1 && resourceService.addMonsterExp(player, Long.parseLong(mid), mmExp, false) == 0){
 //							ll.add(mm);
 //							monsterExpStr += ("," + mmExp +";");
 //						}else{

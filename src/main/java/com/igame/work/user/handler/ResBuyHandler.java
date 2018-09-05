@@ -20,7 +20,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class ResBuyHandler extends ReconnectedHandler {
-	
+	private QuestService questService;
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -53,24 +54,24 @@ public class ResBuyHandler extends ReconnectedHandler {
 					return error(ErrorCode.BUY_COUNT_NOT_ENOUGH);
 				}else{
 					if(extype == 1){
-						ResourceService.ins().addPhysica(player, et.getExchange_value());
-						ResourceService.ins().addDiamond(player, 0-et.getGem());
+						resourceService.addPhysica(player, et.getExchange_value());
+						resourceService.addDiamond(player, 0-et.getGem());
 						player.setPhBuyCount(player.getPhBuyCount() +1);
 						buyCount = player.getPhBuyCount();
-						QuestService.processTask(player, 13, 1);
+						questService.processTask(player, 13, 1);
 					}else if(extype == 2){
-						ResourceService.ins().addTongRes(player, et.getExchange_value());
-						ResourceService.ins().addDiamond(player, 0-et.getGem());
+						resourceService.addTongRes(player, et.getExchange_value());
+						resourceService.addDiamond(player, 0-et.getGem());
 						player.getTongAdd().setTongBuyCount(player.getTongAdd().getTongBuyCount() +1);
 						buyCount = player.getTongAdd().getTongBuyCount();
 					}else if(extype == 3){
-						ResourceService.ins().addXing(player, et.getExchange_value());
-						ResourceService.ins().addDiamond(player, 0-et.getGem());
+						resourceService.addXing(player, et.getExchange_value());
+						resourceService.addDiamond(player, 0-et.getGem());
 						player.setXinBuyCount(player.getXinBuyCount() +1);
 						buyCount = player.getXinBuyCount();
 					}else if(extype == 4){
-						ResourceService.ins().addGold(player, et.getExchange_value());
-						ResourceService.ins().addDiamond(player, 0-et.getGem());
+						resourceService.addGold(player, et.getExchange_value());
+						resourceService.addDiamond(player, 0-et.getGem());
 						player.setGoldBuyCount(player.getGoldBuyCount() +1);
 						buyCount = player.getGoldBuyCount();
 					}

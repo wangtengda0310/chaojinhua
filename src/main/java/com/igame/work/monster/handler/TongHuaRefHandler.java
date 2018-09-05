@@ -18,7 +18,9 @@ import net.sf.json.JSONObject;
  *
  */
 public class TongHuaRefHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
+	private PlayerService playerService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -35,15 +37,15 @@ public class TongHuaRefHandler extends ReconnectedHandler {
 				if(player.getTonghua().calRefLeftTime() >0){
 					return error(ErrorCode.TONGHUA_CD_NOT);
 				}else{
-					player.setTonghua(PlayerService.getRandomTongHuaDto());
+					player.setTonghua(playerService.getRandomTongHuaDto());
 					player.getTonghua().setStartRefTime(System.currentTimeMillis());
 				}
 			}else{
 				if(player.getDiamond() < 100){
 					return error(ErrorCode.DIAMOND_NOT_ENOUGH);
 				}else{
-					ResourceService.ins().addDiamond(player, -100);
-					player.setTonghua(PlayerService.getRandomTongHuaDto());
+					resourceService.addDiamond(player, -100);
+					player.setTonghua(playerService.getRandomTongHuaDto());
 					player.getTonghua().setStartRefTime(System.currentTimeMillis());
 				}
 			}

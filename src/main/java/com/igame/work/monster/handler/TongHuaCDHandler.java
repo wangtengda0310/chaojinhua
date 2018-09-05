@@ -20,7 +20,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class TongHuaCDHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -75,7 +76,7 @@ public class TongHuaCDHandler extends ReconnectedHandler {
 							timeIndex = tdo.getTimeIndex();
 							leftTime = tdo.calLeftTime();
 							if(type == 1){
-								ResourceService.ins().addDiamond(player, -120);
+								resourceService.addDiamond(player, -120);
 							}							
 							StrengthenRouteTemplate srt = MonsterDataManager.StrengthenRouteData.getTemplate(tdo.getSid());
 							unlocks = getString(index, unlocks, tdo, tss, t, srt);

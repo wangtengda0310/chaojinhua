@@ -27,6 +27,7 @@ import static com.igame.work.chat.MessageContants.*;
  */
 public class PublicMessageEventHandler extends BaseEventHandler {
 
+	private ResourceService resourceService;
 
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
@@ -89,7 +90,7 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 			}
 
 			//扣除钻石
-			ResourceService.ins().addDiamond(player,-5);
+			resourceService.addDiamond(player,-5);
 
 			player.setLastHornSpeak(new Date());
 

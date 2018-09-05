@@ -70,5 +70,9 @@ public class ServerListHandler extends BaseHandler {
 
 		send(MProtrol.toStringProtrol(MProtrol.SERVER_LIST), res, user);
 	}
-	
+
+	@Override
+	public int protocolId() {
+		return MProtrol.SERVER_LIST;
+	}
 }

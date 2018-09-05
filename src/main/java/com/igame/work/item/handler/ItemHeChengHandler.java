@@ -28,7 +28,9 @@ import java.util.List;
  *
  */
 public class ItemHeChengHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
+	private QuestService questService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -76,9 +78,9 @@ public class ItemHeChengHandler extends ReconnectedHandler {
 			}
 
 			if(GameMath.hitRate(pt.getRate() * 100)){//成功
-				ResourceService.ins().addGold(player, 0-pt.getGold());
-				Item old = ResourceService.ins().addItem(player, itemId, -3, false);
-				Item newI = ResourceService.ins().addItem(player, pt.getGroup(), 1, false);
+				resourceService.addGold(player, 0-pt.getGold());
+				Item old = resourceService.addItem(player, itemId, -3, false);
+				Item newI = resourceService.addItem(player, pt.getGroup(), 1, false);
 				List<Monster> monsters = ItemService.ins().processItemGroupSucceed(player, old);
 				mm.addAll(monsters);
 				ll.add(old);
@@ -86,9 +88,9 @@ public class ItemHeChengHandler extends ReconnectedHandler {
 				res = 1;
 				newItemId = newI.getItemId();
 			}else{
-				ResourceService.ins().addGold(player, 0-pt.getGold());
+				resourceService.addGold(player, 0-pt.getGold());
 				if(pt.getItem() > 0){
-					Item newI = ResourceService.ins().addItem(player, 300001,  pt.getGetItem(), false);//返回一定粉尘
+					Item newI = resourceService.addItem(player, 300001,  pt.getGetItem(), false);//返回一定粉尘
 					ll.add(newI);
 				}
 				res = 2;
@@ -103,9 +105,9 @@ public class ItemHeChengHandler extends ReconnectedHandler {
 				return error(ErrorCode.DIAMOND_NOT_ENOUGH);
 			}
 
-			ResourceService.ins().addDiamond(player, 0-pt.getGem());
-			Item old = ResourceService.ins().addItem(player, itemId, -3, false);
-			Item newI = ResourceService.ins().addItem(player, pt.getGroup(), 1, false);
+			resourceService.addDiamond(player, 0-pt.getGem());
+			Item old = resourceService.addItem(player, itemId, -3, false);
+			Item newI = resourceService.addItem(player, pt.getGroup(), 1, false);
 			List<Monster> monsters = ItemService.ins().processItemGroupSucceed(player, old);
 			mm.addAll(monsters);
 			ll.add(old);
@@ -123,9 +125,9 @@ public class ItemHeChengHandler extends ReconnectedHandler {
 				return error(ErrorCode.ITEM_NOT_ENOUGH);
 			}
 
-			xiao = ResourceService.ins().addItem(player, xiao.getItemId(), 0-pt.getItem(), false);
-			Item old = ResourceService.ins().addItem(player, itemId, -3, false);
-			Item newI = ResourceService.ins().addItem(player, pt.getGroup(), 1, false);
+			xiao = resourceService.addItem(player, xiao.getItemId(), 0-pt.getItem(), false);
+			Item old = resourceService.addItem(player, itemId, -3, false);
+			Item newI = resourceService.addItem(player, pt.getGroup(), 1, false);
 			List<Monster> monsters = ItemService.ins().processItemGroupSucceed(player, old);
 			mm.addAll(monsters);
 			ll.add(xiao);
@@ -142,7 +144,7 @@ public class ItemHeChengHandler extends ReconnectedHandler {
 
 		MessageUtil.notifyItemChange(player, ll);
 
-		QuestService.processTask(player, 9, 1);
+		questService.processTask(player, 9, 1);
 
 		vo.addData("res", res);
 		vo.addData("newItemId", newItemId);

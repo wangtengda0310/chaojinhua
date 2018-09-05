@@ -25,7 +25,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class TongHuaFightHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -92,7 +93,7 @@ public class TongHuaFightHandler extends ReconnectedHandler {
 					StrengthenmonsterTemplate mt = MonsterDataManager.StrengthenmonsterData.getTemplate(Integer.parseInt(t[3]));
 					if(win == 1){
 						tongExp = mt.getMonster_rarity() * 5;
-						ResourceService.ins().addTongExp(player, tongExp);
+						resourceService.addTongExp(player, tongExp);
 
 						attackAdd = GameMath.getRandomCount(Integer.parseInt(mt.getAtk_up().split("-")[0]), Integer.parseInt(mt.getAtk_up().split("-")[1]));//攻击加成值
 						hpAdd = GameMath.getRandomCount(Integer.parseInt(mt.getHp_up().split("-")[0]), Integer.parseInt(mt.getHp_up().split("-")[1]));//HP加成值

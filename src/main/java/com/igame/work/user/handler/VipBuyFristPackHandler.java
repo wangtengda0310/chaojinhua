@@ -21,6 +21,8 @@ import static com.igame.work.user.VIPConstants.KEY_FIRST_PACK;
  * 会员购买礼包
  */
 public class VipBuyFristPackHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
+    private GMService gmService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -57,11 +59,11 @@ public class VipBuyFristPackHandler extends ReconnectedHandler {
         }
 
         //扣除钻石
-        ResourceService.ins().addDiamond(player,-gem);
+        resourceService.addDiamond(player,-gem);
 
         //发放礼包
         String firstPack = template.getFirstPack();
-        GMService.processGM(player,firstPack);
+        gmService.processGM(player,firstPack);
 
         //标记已购买
         if (MyUtil.isNullOrEmpty(s)){

@@ -2,6 +2,7 @@ package com.igame.work.monster.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.igame.core.ISFSModule;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -26,16 +27,10 @@ import java.util.Set;
  * @author Marcus.Z
  *
  */
-public class MonsterService {
-	
-	/**
-	 * 
-	 * @param player
-	 * @param objectId
-	 * @param nextObject
-	 * @return
-	 */
-	public static int monsterEV(Player player,long objectId,int nextObject){
+public class MonsterService implements ISFSModule {
+	private ResourceService resourceService;
+
+	public int monsterEV(Player player,long objectId,int nextObject){
 		
 		int ret = 0;
 		Monster mm = player.getMonsters().get(objectId);
@@ -87,9 +82,9 @@ public class MonsterService {
 		mm.reCalculate(player,true);
 		mm.setDtate(2);
 		
-		MonsterService.reCalMonsterExtPre(player, true);
+		reCalMonsterExtPre(player, true);
 		
-		ResourceService.ins().addGold(player, 0-mt.getGold());
+		resourceService.addGold(player, 0-mt.getGold());
 		
 		List<Item> chitems = Lists.newArrayList();
 		
@@ -130,7 +125,7 @@ public class MonsterService {
 	/**
 	 * 计算图鉴增加属性
 	 */
-	public static void reCalMonsterExtPre(Player player,boolean reCalMonsterTotalValue){
+	public void reCalMonsterExtPre(Player player,boolean reCalMonsterTotalValue){
 		
 		for(Monster mm : player.getMonsters().values()){
 			mm.hpExt = 0;
@@ -211,7 +206,7 @@ public class MonsterService {
 		
 	}
 	
-	public static boolean containsMonster(Player player,int mid){
+	public boolean containsMonster(Player player,int mid){
 		for(Monster mm : player.getMonsters().values()){
 			if(mm.getMonsterId() == mid){
 				return true;
@@ -221,7 +216,7 @@ public class MonsterService {
 	}
 	
 	
-	public static List<Monster> getMonster(Player player,String mids){
+	public List<Monster> getMonster(Player player,String mids){
 		List<Monster> mms = Lists.newArrayList();
 		if(!MyUtil.isNullOrEmpty(mids)){
 			Set<Integer> set = Sets.newHashSet();

@@ -20,7 +20,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class TongHuaGetHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -66,8 +67,8 @@ public class TongHuaGetHandler extends ReconnectedHandler {
 						}else if("5".equals(t[2])){//5-同化经验值
 							rt.setTongExp(Integer.parseInt(t[4]));
 						}
-						ResourceService.ins().addRewarToPlayer(player, rt);
-						reward = ResourceService.ins().getRewardString(rt);
+						resourceService.addRewarToPlayer(player, rt);
+						reward = resourceService.getRewardString(rt);
 						t[1] = "3";
 						tdo.setStartTime(0);
 						tdo.setTimeCount(0);

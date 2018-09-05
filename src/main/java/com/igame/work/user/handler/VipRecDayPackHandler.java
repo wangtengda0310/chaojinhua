@@ -19,6 +19,8 @@ import static com.igame.work.user.VIPConstants.KEY_DAY_PACK;
  */
 public class VipRecDayPackHandler extends ReconnectedHandler {
 
+    private GMService gmService;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -41,7 +43,7 @@ public class VipRecDayPackHandler extends ReconnectedHandler {
 
         String dayPack = template.getDayPack();
 
-        GMService.processGM(player,dayPack);
+        gmService.processGM(player,dayPack);
 
         //标记已领取
         flag = 1;

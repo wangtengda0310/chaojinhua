@@ -5,6 +5,7 @@ import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.log.GoldLog;
 import com.igame.util.KickIDisconnectionReason;
+import com.igame.work.MProtrol;
 import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.PlayerLoad;
@@ -51,5 +52,9 @@ public class LoginOutHandler extends BaseHandler {
 		//移除SESSION
 		SessionManager.ins().removeSession(Long.parseLong(user.getName()));
 	}
-	
+
+	@Override
+	public int protocolId() {
+		return MProtrol.LOGOUT;
+	}
 }

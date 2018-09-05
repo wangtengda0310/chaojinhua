@@ -25,7 +25,8 @@ import java.util.Map;
  *
  */
 public class ItemSummonHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -63,13 +64,13 @@ public class ItemSummonHandler extends ReconnectedHandler {
 		}
 
 		//新增怪兽
-		List<Monster> monsters = ResourceService.ins().addMonster(player, template.getMonsterId(), 1, true);
+		List<Monster> monsters = resourceService.addMonster(player, template.getMonsterId(), 1, true);
 		if (monsters.isEmpty()){
 			return error(ErrorCode.ERROR);
 		}
 
 		//减少道具数量
-		ResourceService.ins().addItem(player,itemId,-template.getNum(),true);
+		resourceService.addItem(player,itemId,-template.getNum(),true);
 
 		vo.addData("objectId",monsters.get(0).getObjectId());
 		return vo;

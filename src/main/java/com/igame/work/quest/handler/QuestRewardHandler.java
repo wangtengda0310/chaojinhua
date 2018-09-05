@@ -1,10 +1,10 @@
 package com.igame.work.quest.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.quest.QuestDataManager;
 import com.igame.work.quest.data.QuestTemplate;
 import com.igame.work.quest.dto.TaskDayInfo;
@@ -19,7 +19,9 @@ import net.sf.json.JSONObject;
  *
  */
 public class QuestRewardHandler extends ReconnectedHandler {
-	
+
+
+	private QuestService questService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -43,7 +45,7 @@ public class QuestRewardHandler extends ReconnectedHandler {
 			return error(ErrorCode.BAGSPACE_ALREADY_FULL);
 		}
 
-		String reward = QuestService.getReward(player, td);
+		String reward = questService.getReward(player, td);
 
 		vo.addData("reward", reward);
 

@@ -29,6 +29,8 @@ import static com.igame.work.checkpoint.guanqia.CheckPointContants.BALL_REWARD_E
  */
 public class BallisticEndHandler extends ReconnectedHandler {
 
+    private ResourceService resourceService;
+    
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -63,12 +65,12 @@ public class BallisticEndHandler extends ReconnectedHandler {
         String reward = settlementReward(player,killNum);
 
         //结算人物经验
-        ResourceService.ins().addExp(player,BALL_REWARD_EXP);
+        resourceService.addExp(player,BALL_REWARD_EXP);
         //结算并推送怪兽经验
         String monsterExpStr = settlementExp(player);
 
         //扣除体力
-        ResourceService.ins().addPhysica(player,BALL_PHYSICAL*player.getBallisticCount());
+        resourceService.addPhysica(player,BALL_PHYSICAL*player.getBallisticCount());
 
         //增加挑战次数
         player.addBallisticCount(1);
@@ -121,7 +123,7 @@ public class BallisticEndHandler extends ReconnectedHandler {
                 Monster mm = player.getMonsters().get(mid);
                 if(mm != null){
                     monsterExpStr.append(mid);
-                    if(ResourceService.ins().addMonsterExp(player, mid, BALL_REWARD_EXP, false) == 0){
+                    if(resourceService.addMonsterExp(player, mid, BALL_REWARD_EXP, false) == 0){
                         ll.add(mm);
                         monsterExpStr.append("," + BALL_REWARD_EXP + ";");
                     }else{
@@ -152,7 +154,7 @@ public class BallisticEndHandler extends ReconnectedHandler {
             gold += runBattlerewardDataAll.get(j).getGold();
         }
 
-        ResourceService.ins().addGold(player,gold);
+        resourceService.addGold(player,gold);
 
         return "1,1,"+gold;
     }

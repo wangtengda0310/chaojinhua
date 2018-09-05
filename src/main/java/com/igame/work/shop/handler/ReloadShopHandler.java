@@ -22,6 +22,7 @@ import net.sf.json.JSONObject;
  * 刷新商店
  */
 public class ReloadShopHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -71,7 +72,7 @@ public class ReloadShopHandler extends ReconnectedHandler {
         //刷新商店
         ShopService.ins().reloadShop(shopId,shopInfo,true);
         //减少钻石
-        ResourceService.ins().addDiamond(player,-gem);
+        resourceService.addDiamond(player,-gem);
 
         //return
         vo.addData("mysticalShop",shopInfo.getMysticalShop());

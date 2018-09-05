@@ -18,7 +18,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class GMHandler extends ReconnectedHandler {
-	SystemService systemService;
+	private SystemService systemService;
+	private GMService gmService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -35,7 +36,7 @@ public class GMHandler extends ReconnectedHandler {
 			fireEvent(player, PlayerEvents.RESET_ONCE, null);
 
 		}
-		boolean succ = GMService.processGM(player, gm);
+		boolean succ = gmService.processGM(player, gm);
 
 		if(!succ){
 			vo.setState(1);

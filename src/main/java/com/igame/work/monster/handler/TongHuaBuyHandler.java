@@ -18,7 +18,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class TongHuaBuyHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -40,8 +41,8 @@ public class TongHuaBuyHandler extends ReconnectedHandler {
 				if(player.getDiamond() < et.getGem()){
 					return error(ErrorCode.GOLD_NOT_ENOUGH);
 				}else{
-					ResourceService.ins().addTongRes(player, et.getExchange_value());
-					ResourceService.ins().addDiamond(player, 0-et.getGem());
+					resourceService.addTongRes(player, et.getExchange_value());
+					resourceService.addDiamond(player, 0-et.getGem());
 					player.getTongAdd().setTongBuyCount(player.getTongAdd().getTongBuyCount() +1);
 					tongBuyCount = player.getTongAdd().getTongBuyCount();
 				}

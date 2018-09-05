@@ -361,6 +361,9 @@ public class MProtrol {
 	public static final int SIGN = 4051;//签到活动
 	public static final int MEIRI_LIANGFA = 4052;//每日两发活动
 	public static final int TANSUO_ZHI_LU = 4053;//探索之路活动
+	public static final int DENGLU_ACTICITY = 4054;//登录活动
+	public static final int SHOP_ACTICITY_STATE = 4055;//金币礼包活动开关控制
+	public static final int SHOP_ACTICITY_REWARD = 4056;//金币礼包活动领奖
 
 	public static final int RECHARGE_LIST = 5051;//充值金额列表
 	public static final int MOCK_RECHARGE = 5052;//模拟充值

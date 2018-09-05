@@ -178,5 +178,6 @@ public class ErrorCode {
 
 	public static final int PACK_PURCHASED = 3062;//礼包已购买或已领取
 	public static final int CAN_NOT_RECEIVE = 3063;//不能领取活动奖励
+	public static final int ACTIVITY_CLOSED = 3064;//活动已关闭
 
 }

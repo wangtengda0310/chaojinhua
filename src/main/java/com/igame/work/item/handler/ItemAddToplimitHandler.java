@@ -16,6 +16,7 @@ import net.sf.json.JSONObject;
  *
  */
 public class ItemAddToplimitHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -32,7 +33,7 @@ public class ItemAddToplimitHandler extends ReconnectedHandler {
         player.addBagSpace(5);
 
         //扣除钻石
-        ResourceService.ins().addDiamond(player,-50);
+        resourceService.addDiamond(player,-50);
 
         RetVO vo = new RetVO();
         vo.addData("bagSpace",player.getBagSpace());

@@ -1,9 +1,10 @@
 package com.igame.work.turntable.handler;
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
@@ -16,6 +17,9 @@ import net.sf.json.JSONObject;
  * 刷新幸运大转盘
  */
 public class TurntableReloadHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
+    @Inject
+    private TurntableService turntableService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -24,7 +28,7 @@ public class TurntableReloadHandler extends ReconnectedHandler {
         JSONObject jsonObject = JSONObject.fromObject(infor);
 
         //校验等级
-        if (player.getPlayerLevel() < 15 || player.getTurntable() == null){
+        if (player.getPlayerLevel() < 15 || turntableService.getTurntable(player) == null){
             return error(ErrorCode.LEVEL_NOT);
         }
 
@@ -34,14 +38,14 @@ public class TurntableReloadHandler extends ReconnectedHandler {
         }
 
         //扣除钻石
-        ResourceService.ins().addDiamond(player,-20);
+        resourceService.addDiamond(player,-20);
 
         //刷新大转盘
-        TurntableService.ins().reloadTurntable(player);
+        turntableService.reloadTurntable(player);
 
         RetVO vo = new RetVO();
 
-        vo.addData("turntable",player.transTurntableVo());
+        vo.addData("turntables",turntableService.transTurntableVo(player));
         return vo;
     }
 

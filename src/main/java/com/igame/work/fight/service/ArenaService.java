@@ -61,7 +61,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     }
 
     @Override
-    protected PlayerEventObserver observeEvent() {
+    protected PlayerEventObserver playerObserver() {
         return new PlayerEventObserver() {
             @Override
             public EventType interestedType() {
@@ -156,6 +156,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
         }
     }
 
+    @Override
     public void init() {
 
         String DBName = GameServerExtension.dbManager.p.getProperty("DBName");

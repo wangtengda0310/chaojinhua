@@ -115,6 +115,7 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
     /**
      * 初始化
      */
+    @Override
     public void init(){
 
         String DBName = GameServerExtension.dbManager.p.getProperty("DBName");

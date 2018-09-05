@@ -3,10 +3,8 @@ package com.igame.core.quartz;
 
 import com.igame.core.SessionManager;
 import com.igame.core.log.ExceptionLog;
-import com.igame.work.MessageUtil;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.service.PVPFightService;
-import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dto.Player;
 
 import java.util.ArrayList;
@@ -59,17 +57,16 @@ public class GameQuartzListener {
 	public void minute180(){
 
 		ExceptionLog.error("minute180 execute");
+		JobManager.listeners.values().forEach(jobListener -> {
+			try{
 
-		for(Player player : SessionManager.ins().getSessions().values()){
-
-			if (player.getTurntable() != null){
-				//更新大转盘
-				TurntableService.ins().reloadTurntable(player);
-				//推送更新
-				MessageUtil.notifyTurntableChange(player);
+				//刷新所有在线玩家的一般商店
+				jobListener.zero();
+			}catch (Exception e){
+				ExceptionLog.error("minute180");
+				e.printStackTrace();
 			}
-		}
-
+		});
 	}
 
     //零点执行

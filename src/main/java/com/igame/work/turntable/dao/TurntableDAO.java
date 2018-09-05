@@ -2,8 +2,6 @@ package com.igame.work.turntable.dao;
 
 import com.igame.core.db.AbsDao;
 import com.igame.work.turntable.dto.Turntable;
-import com.igame.work.shop.dto.ShopInfo;
-import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.UpdateOperations;
 
@@ -59,12 +57,4 @@ public class TurntableDAO extends AbsDao {
         ds.update(turntable,up);
     }
 
-    public void updatePlayer(Player player) {
-
-        if(player.getTurntable().getDtate() == 1){
-            saveTurntable(player.getSeverId(), player.getTurntable());
-        }else if(player.getTurntable().getDtate() == 2){
-            updateTurntable(player.getSeverId(), player.getTurntable());
-        }
-    }
 }

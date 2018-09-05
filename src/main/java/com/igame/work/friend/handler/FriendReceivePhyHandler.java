@@ -20,6 +20,7 @@ import java.util.List;
  * 领取体力
  */
 public class FriendReceivePhyHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
 
     private int state_ungive = 0;   //对方未赠送
     private int state_gave = 1;   //已赠送未领取
@@ -86,7 +87,7 @@ public class FriendReceivePhyHandler extends ReconnectedHandler {
 
         long count = player.getFriends().getCurFriends().stream().filter(friend -> friend.getReceivePhy() == state_rec).count();
         //推送体力更新
-        ResourceService.ins().addPhysica(player,(int)count - (int)receivedCount);
+        resourceService.addPhysica(player,(int)count - (int)receivedCount);
 
         //推送体力领取次数更新
         vo.addData("receiveStates",voList);

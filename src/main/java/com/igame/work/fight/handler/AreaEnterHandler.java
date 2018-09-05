@@ -17,7 +17,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class AreaEnterHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -56,7 +57,7 @@ public class AreaEnterHandler extends ReconnectedHandler {
 		}
 
 		player.setTempAreaPlayerId(playerId);
-		ResourceService.ins().addAreaCount(player, 1);
+		resourceService.addAreaCount(player, 1);
 
 		return vo;
 	}

@@ -31,4 +31,8 @@ public class ReLoginHandler extends BaseHandler{
 		sendClient(MProtrol.RE_CONN, vo, user);
 	}
 
+	@Override
+	public int protocolId() {
+		return MProtrol.RE_CONN;
+	}
 }

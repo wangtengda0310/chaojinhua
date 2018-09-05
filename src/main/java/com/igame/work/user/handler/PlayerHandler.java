@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -40,6 +41,8 @@ import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.shop.service.ShopService;
+import com.igame.work.shopActivity.ShopActivityService;
+import com.igame.work.turntable.dto.Turntable;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.*;
@@ -66,6 +69,12 @@ public class PlayerHandler extends BaseHandler{
 
 	private ActivityService activityService;
 	private ArenaService robotService;
+	private ResourceService resourceService;
+	private PlayerService playerService;
+	private MonsterService monsterService;
+	private QuestService questService;
+	private ShopActivityService shopActivityService;
+	@Inject private TurntableService turntableService;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -152,6 +161,7 @@ public class PlayerHandler extends BaseHandler{
 		vo.addData("vipPrivileges",player.getVipPrivileges());
 		vo.addData("showActivities", activityService.clientData(player));
 		vo.addData("dateTime", DateUtil.formatClientDateTime(new Date()));
+		vo.addData("shopActivity",shopActivityService.clientData(player));
 		try {
 			json = mapper.writeValueAsString(vo);
 		} catch (JsonProcessingException e) {
@@ -279,7 +289,7 @@ public class PlayerHandler extends BaseHandler{
 			player.setTimeResCheck(Maps.newHashMap());
 		}
 		if(player.getPlayerLevel() >= 30 && player.getTonghua() == null){
-			player.setTonghua(PlayerService.getRandomTongHuaDto());
+			player.setTonghua(playerService.getRandomTongHuaDto());
 			player.getTonghua().setStartRefTime(System.currentTimeMillis());
 		}
 		for(int i = 3;i<=7;i++){
@@ -317,11 +327,11 @@ public class PlayerHandler extends BaseHandler{
 
 		calPlayerTimeRes(player);//计算金币关卡的获得数量 和心魔 以及各货币资源的定时更新
 		player.calLeftTime();//算每个心魔剩余时间
-		MonsterService.reCalMonsterExtPre(player,true);//计算图鉴增加属性
+		monsterService.reCalMonsterExtPre(player,true);//计算图鉴增加属性
 		ComputeFightService.ins().computePlayerFight(player);
 		//player.reCalFightValue();//计算战斗力
-		PlayerService.checkDrawData(player, false);//检测造物台数据
-		QuestService.checkPlayerQuest(player);//检测玩家任务
+		playerService.checkDrawData(player, false);//检测造物台数据
+		questService.checkPlayerQuest(player);//检测玩家任务
 		if(player.getWuMap().isEmpty()){
 			CheckPointService.refEndlessRef(player);
 		}
@@ -350,8 +360,9 @@ public class PlayerHandler extends BaseHandler{
 			player.getTeams().put(6,new Team(6,"竞技场防守阵容",id1,id2));
 		}
 
-		if (player.getTurntable() != null && TurntableService.ins().needRealod(player.getTurntable().getLastUpdate()))
-			TurntableService.ins().reloadTurntable(player);
+		Turntable turntable = turntableService.getTurntable(player);
+		if (turntable != null && turntableService.needRealod(turntable.getLastUpdate()))
+			turntableService.reloadTurntable(player);
 
 		if(player.getLastNickname()!=null && !"".equals(player.getLastNickname())) {
 			player.setModifiedName(1);
@@ -376,9 +387,9 @@ public class PlayerHandler extends BaseHandler{
 							}
 							player.getTimeResCheck().put(m.getKey(), total);
 						}
-						RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), total, ct.getMaxTime() * 60);
+						RewardDto dto = resourceService.getResRewardDto(ct.getDropPoint(), total, ct.getMaxTime() * 60);
 //    					MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
-						player.getResC().put(ct.getChapterId(),new ResCdto(ct.getChapterId(), ResourceService.ins().getRewardString(dto)));
+						player.getResC().put(ct.getChapterId(),new ResCdto(ct.getChapterId(), ResourceService.getRewardString(dto)));
 
 					}
 				}
@@ -469,13 +480,13 @@ public class PlayerHandler extends BaseHandler{
 			}
 			if(player.getResMintues().get(3) != null){
 				if(player.getResMintues().get(3) >=6){
-					ResourceService.ins().addPhysica(player, player.getResMintues().get(3)/6);
+					resourceService.addPhysica(player, player.getResMintues().get(3)/6);
 					player.getResMintues().put(3, player.getResMintues().get(3)%6);
 				}
 			}
 			if(player.getResMintues().get(4) != null){
 				if(player.getResMintues().get(4) >=60){
-					ResourceService.ins().addSao(player, player.getResMintues().get(4)/60);
+					resourceService.addSao(player, player.getResMintues().get(4)/60);
 					player.getResMintues().put(4, player.getResMintues().get(4)%60);
 				}
 
@@ -486,7 +497,7 @@ public class PlayerHandler extends BaseHandler{
 					if(add > 15 - player.getTongRes()){
 						add = 15 - player.getTongRes();
 					}
-					ResourceService.ins().addTongRes(player, add);
+					resourceService.addTongRes(player, add);
 					player.getResMintues().put(6, player.getResMintues().get(6)%120);
 				}
 
@@ -497,7 +508,7 @@ public class PlayerHandler extends BaseHandler{
 					if(add > 10 - player.getXing()){
 						add = 10 - player.getXing();
 					}
-					ResourceService.ins().addXing(player, add);
+					resourceService.addXing(player, add);
 					player.getResMintues().put(7, player.getResMintues().get(7)%120);
 				}
 
@@ -506,4 +517,8 @@ public class PlayerHandler extends BaseHandler{
 
 	}
 
+	@Override
+	public int protocolId() {
+		return MProtrol.PLAYER_ENTER;
+	}
 }

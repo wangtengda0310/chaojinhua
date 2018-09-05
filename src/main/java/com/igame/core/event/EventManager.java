@@ -12,8 +12,10 @@ import com.smartfoxserver.v2.entities.variables.SFSRoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
 import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class EventManager {
     public static Map<String, PlayerEventObserver> playerEventObservers = new HashMap<>();
@@ -50,8 +52,16 @@ public class EventManager {
                                     // TODO 是否加载缓存或数据库？
                                 }
                                 playerEventObservers.values().stream()
-                                        .filter(listener-> listener.interestedType() == eventType)
-                                        .forEach(listener->listener.observe(player, param));
+                                        .filter(Objects::nonNull)
+                                        .filter(listener-> listener.interestedType() == eventType
+                                                || Arrays.stream(listener.interestedTypes()).anyMatch(type -> type == eventType))
+                                        .forEach(listener->{
+                                            try {
+                                                listener.observe(player, param);
+                                            } catch (Exception e) {
+                                                trace(e);
+                                            }
+                                        });
                             }
                         }
                     }
@@ -77,8 +87,16 @@ public class EventManager {
                                 Object param = ((ISFSObject) value).getClass("event");
 
                                 serviceEventListeners.values().stream()
-                                        .filter(listener-> listener.interestedType() == eventType)
-                                        .forEach(listener->listener.handleEvent(param));
+                                        .filter(Objects::nonNull)
+                                        .filter(listener-> listener.interestedType() == eventType
+                                                || Arrays.stream(listener.interestedTypes()).anyMatch(type -> type == eventType))
+                                        .forEach(listener->{
+                                            try {
+                                                listener.handleEvent(param);
+                                            } catch (Exception e) {
+                                                trace(e);
+                                            }
+                                        });
                             }
                         }
                     }

@@ -20,6 +20,8 @@ import java.util.Map;
 import static com.igame.work.checkpoint.guanqia.CheckPointContants.*;
 
 public class FightAgainHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -64,7 +66,7 @@ public class FightAgainHandler extends ReconnectedHandler {
                 return error(ErrorCode.CHECKCOUNT_NOT_ENOUGH);
             }
 
-            ResourceService.ins().addPhysica(player, -ct.getPhysical());
+            resourceService.addPhysica(player, -ct.getPhysical());
             player.setEnterCheckpointId(chapterId);
             player.setEnterCheckPointTime(System.currentTimeMillis());
 
@@ -104,7 +106,7 @@ public class FightAgainHandler extends ReconnectedHandler {
             }
 
             //扣除体力
-            ResourceService.ins().addPhysica(player, 0-wt.getPhysical());
+            resourceService.addPhysica(player, 0-wt.getPhysical());
 
             //防作弊
             player.setEnterWordEventTime(System.currentTimeMillis());

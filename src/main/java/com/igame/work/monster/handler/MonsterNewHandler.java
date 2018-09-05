@@ -27,7 +27,8 @@ import java.util.Map;
  *
  */
 public class MonsterNewHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -57,7 +58,7 @@ public class MonsterNewHandler extends ReconnectedHandler {
 			if(!can){
 				return error(ErrorCode.MONSTER_CON_NOT);
 			}else{
-				RewardDto rt = ResourceService.ins().getRewardDto(nt.getItem(), "100");
+				RewardDto rt = resourceService.getRewardDto(nt.getItem(), "100");
 				if(rt != null ){
 					if(rt.getGold() > 0 && player.getGold() < rt.getGold()){
 						return error(ErrorCode.GOLD_NOT_ENOUGH);
@@ -70,14 +71,14 @@ public class MonsterNewHandler extends ReconnectedHandler {
 						}
 					}
 					//生成新怪物
-					ResourceService.ins().addMonster(player, newMonster, 1, true);
+					resourceService.addMonster(player, newMonster, 1, true);
 					if(rt.getGold()>0){
-						ResourceService.ins().addGold(player, 0-rt.getGold());
+						resourceService.addGold(player, 0-rt.getGold());
 					}
 					if(!rt.getItems().isEmpty()){
 						List<Item> ll = Lists.newArrayList();
 						for(Map.Entry<Integer, Integer> m :rt.getItems().entrySet()){
-							ll.add(ResourceService.ins().addItem(player, m.getKey(), 0-m.getValue(), false));
+							ll.add(resourceService.addItem(player, m.getKey(), 0-m.getValue(), false));
 						}
 						MessageUtil.notifyItemChange(player, ll);
 					}

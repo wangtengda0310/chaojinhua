@@ -29,7 +29,8 @@ import java.util.List;
  *
  */
 public class ItemHeChengAllHandler extends ReconnectedHandler {
-	
+	private QuestService questService;
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -81,8 +82,8 @@ public class ItemHeChengAllHandler extends ReconnectedHandler {
 					res = 2;
 				}else{
 					if(GameMath.hitRate(pt.getRate() * 100)){//成功
-						Item old = ResourceService.ins().addItem(player, item.getItemId(), -3, false);
-						Item newI = ResourceService.ins().addItem(player, pt.getGroup(), 1, false);
+						Item old = resourceService.addItem(player, item.getItemId(), -3, false);
+						Item newI = resourceService.addItem(player, pt.getGroup(), 1, false);
 						List<Monster> monsters = ItemService.ins().processItemGroupSucceed(player, old);
 						mm.addAll(monsters);
 						ll.add(old);
@@ -91,14 +92,14 @@ public class ItemHeChengAllHandler extends ReconnectedHandler {
 						newItemId = newI.getItemId();
 					}else{
 						if(pt.getItem() > 0){
-							Item newI = ResourceService.ins().addItem(player, 300001, pt.getGetItem(), false);//返回一定粉尘
+							Item newI = resourceService.addItem(player, 300001, pt.getGetItem(), false);//返回一定粉尘
 							ll.add(newI);
 						}
 						res = 2;
 					}
 
-					ResourceService.ins().addGold(player, 0-pt.getGold());
-					QuestService.processTask(player, 9, 1);
+					resourceService.addGold(player, 0-pt.getGold());
+					questService.processTask(player, 9, 1);
 
 					//判断下步是否有可合成的
 					list = PlayerDataManager.ItemData.getByEquip(player.getItems().values(), type, effects);

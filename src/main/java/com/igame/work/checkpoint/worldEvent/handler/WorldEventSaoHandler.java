@@ -8,10 +8,10 @@ import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
-import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
+import com.igame.work.checkpoint.worldEvent.WorldEventService;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
@@ -27,7 +27,8 @@ import java.util.List;
  *
  */
 public class WorldEventSaoHandler extends ReconnectedHandler {
-	
+	private WorldEventService worldEventService;
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -54,17 +55,17 @@ public class WorldEventSaoHandler extends ReconnectedHandler {
 				if(wd.getCount() >= wt.getTimes()){
 					return error(ErrorCode.TODAY_COUNT_NOTENOUGH);
 				}else{
-					RewardDto rt = ResourceService.ins().getRewardDto(wt.getDrop(), wt.getRate());
+					RewardDto rt = resourceService.getRewardDto(wt.getDrop(), wt.getRate());
 					String[] golds = wt.getGold().split("-");
 					if(golds.length >= 2){
 						rt.setGold(rt.getGold() + GameMath.getRandomCount(Integer.parseInt(golds[0]), Integer.parseInt(golds[1])));
 					}
-					ResourceService.ins().addRewarToPlayer(player, rt);
-					reward = ResourceService.ins().getRewardString(rt);
+					resourceService.addRewarToPlayer(player, rt);
+					reward = resourceService.getRewardString(rt);
 					wd.setCount(wd.getCount() + 1);
 					wd.setDtate(2);
 					
-					ResourceService.ins().addExp(player, wt.getPhysical() * 5);
+					resourceService.addExp(player, wt.getPhysical() * 5);
 					playerExp = wt.getPhysical() * 5;
 					List<Monster> ll = Lists.newArrayList();
 					/*String[] monsters = player.getTeams()[0].split(",");
@@ -74,7 +75,7 @@ public class WorldEventSaoHandler extends ReconnectedHandler {
 							if(mm != null){
 								int mmExp = CheckPointService.getTotalExp(mm, wt.getPhysical() * 5);
 								monsterExpStr += mid;
-								if(ResourceService.ins().addMonsterExp(player, Long.parseLong(mid), mmExp, false) == 0){
+								if(resourceService.addMonsterExp(player, Long.parseLong(mid), mmExp, false) == 0){
 									ll.add(mm);
 									monsterExpStr += ("," + mmExp +";");
 								}else{
@@ -85,7 +86,7 @@ public class WorldEventSaoHandler extends ReconnectedHandler {
 					}	*/
 					long[] teamMonster = player.getTeams().get(player.getCurTeam()).getTeamMonster();
 					for (long mid : teamMonster) {
-						monsterExpStr = getString(player, monsterExpStr, wt, ll, mid);
+						monsterExpStr = worldEventService.getString(player, monsterExpStr, wt, ll, mid);
 					}
 					MessageUtil.notifyMonsterChange(player, ll);
 					if(monsterExpStr.lastIndexOf(";") >0){
@@ -104,23 +105,6 @@ public class WorldEventSaoHandler extends ReconnectedHandler {
 		vo.addData("reward", reward);
 
 		return vo;
-	}
-
-	static String getString(Player player, String monsterExpStr, WorldEventTemplate wt, List<Monster> ll, long mid) {
-		if(-1 != mid){
-			Monster mm = player.getMonsters().get(mid);
-			if(mm != null){
-				int mmExp = CheckPointService.getTotalExp(mm, wt.getPhysical() * 5);
-				monsterExpStr += mid;
-				if(ResourceService.ins().addMonsterExp(player, mid, mmExp, false) == 0){
-					ll.add(mm);
-					monsterExpStr += ("," + mmExp +";");
-				}else{
-					monsterExpStr += ",0;";
-				}
-			}
-		}
-		return monsterExpStr;
 	}
 
 	@Override

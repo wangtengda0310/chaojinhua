@@ -22,7 +22,6 @@ import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.shop.dto.ShopInfo;
-import com.igame.work.turntable.dto.Turntable;
 import com.smartfoxserver.v2.entities.User;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
@@ -317,9 +316,6 @@ public class Player extends PlayerDto {
     @JsonIgnore
     private long heartTime = System.currentTimeMillis();//心跳刷新时间
 
-    @Transient
-    @JsonIgnore
-    public Turntable turntable;//幸运大转盘
     @Transient
     @JsonIgnore
     private Map<String, Object> lastBattleParam;//上次战斗的关卡参数
@@ -847,14 +843,6 @@ public class Player extends PlayerDto {
         this.vipPrivileges = vipPrivileges;
     }
 
-    public Turntable getTurntable() {
-        return turntable;
-    }
-
-    public void setTurntable(Turntable turntable) {
-        this.turntable = turntable;
-    }
-
     public PlayerCount getPlayerCount() {
         return playerCount;
     }
@@ -1015,14 +1003,6 @@ public class Player extends PlayerDto {
         this.bagSpace += value;
     }
 
-    public Turntable transTurntableVo() {
-
-        if (turntable != null)
-            turntable.setRewardsStr();
-
-        return turntable;
-    }
-	
     /**
      * 出战神灵
      */

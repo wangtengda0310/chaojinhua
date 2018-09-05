@@ -20,7 +20,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class WaKuangHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -39,8 +40,8 @@ public class WaKuangHandler extends ReconnectedHandler {
 			}else{
 				RewardDto rt = new RewardDto();
 				rt.addGold(ct.getGold());
-				ResourceService.ins().addRewarToPlayer(player, rt);
-				reward = ResourceService.ins().getRewardString(rt);
+				resourceService.addRewarToPlayer(player, rt);
+				reward = resourceService.getRewardString(rt);
 				player.setOreCount(player.getOreCount() + 1);
 				MessageUtil.notifyTrialChange(player);
 			}

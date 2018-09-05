@@ -27,7 +27,9 @@ import java.util.Map;
  *
  */
 public class GodsUpHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
+	private QuestService questService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -52,7 +54,7 @@ public class GodsUpHandler extends ReconnectedHandler {
 				}else{
 					RewardDto rt = null;
 					if(curr.getItem() != null && !"".equals(curr.getItem())){
-						rt = ResourceService.ins().getRewardDto(curr.getItem(), "100");
+						rt = resourceService.getRewardDto(curr.getItem(), "100");
 						if(!rt.getItems().isEmpty()){//道具不足
 							for(Map.Entry<Integer, Integer> m :rt.getItems().entrySet()){
 								if(player.getItems().get(m.getKey()) == null || player.getItems().get(m.getKey()).getUsableCount(-1) < m.getValue()){
@@ -64,17 +66,17 @@ public class GodsUpHandler extends ReconnectedHandler {
 					if(rt != null && !rt.getItems().isEmpty()){
 						List<Item> ll = Lists.newArrayList();
 						for(Map.Entry<Integer, Integer> m :rt.getItems().entrySet()){
-							ll.add(ResourceService.ins().addItem(player, m.getKey(), 0-m.getValue(), false));
+							ll.add(resourceService.addItem(player, m.getKey(), 0-m.getValue(), false));
 						}
 						MessageUtil.notifyItemChange(player, ll);
 					}
-					ResourceService.ins().addGold(player, 0-curr.getGold());
+					resourceService.addGold(player, 0-curr.getGold());
 					gods.setGodsLevel(gt.getGodsLevel());
 					gods.setDtate(2);
 					List<Gods> ll = Lists.newArrayList();
 					ll.add(gods);
 					MessageUtil.notifyGodsChange(player, ll);
-					QuestService.processTask(player, 21, 0);
+					questService.processTask(player, 21, 0);
 				}
 			}
 		}

@@ -57,7 +57,7 @@ public class DBManager implements ISFSModule {
 	}
 
 	public void init() {
-		this.p = holder.SFSExtension.getConfigProperties();
+		this.p = extensionHolder.SFSExtension.getConfigProperties();
 		String DBName = p.getProperty("DBName");
 		String[] DBNames = DBName.split(",");
 		MongoClient client = getConnect();

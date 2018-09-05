@@ -1,10 +1,16 @@
 package com.igame.work.turntable.service;
 
-import com.igame.work.MessageUtil;
-import com.igame.work.turntable.LuckTableDataManager;
-import com.igame.work.turntable.data.LuckTableTemplate;
+import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
+import com.igame.core.handler.RetVO;
+import com.igame.core.quartz.TimeListener;
 import com.igame.util.DateUtil;
 import com.igame.util.GameMath;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
+import com.igame.work.turntable.LuckTableDataManager;
+import com.igame.work.turntable.dao.TurntableDAO;
+import com.igame.work.turntable.data.LuckTableTemplate;
 import com.igame.work.turntable.dto.Turntable;
 import com.igame.work.user.dto.Player;
 
@@ -15,18 +21,30 @@ import java.util.*;
  *
  * 幸运大转盘服务
  */
-public class TurntableService {
+public class TurntableService implements TimeListener {
+    @Inject
+    TurntableDAO dao;
 
+    public Map<Long, Turntable> turntables = new HashMap<>();//幸运大转盘
+    public Turntable getTurntable(Player player) {
+        return turntables.get(player.getPlayerId());
+    }
 
-    private static final TurntableService domain = new TurntableService();
+    public void setTurntable(Player player, Turntable turntable) {
+        turntables.put(player.getPlayerId(), turntable);
+    }
 
-    public static final TurntableService ins() {
-        return domain;
+    public Turntable transTurntableVo(Player player) {
+        Turntable turntable = turntables.get(player.getPlayerId());
+        if (turntable != null) {
+            turntable.setRewardsStr();
+        }
+
+        return turntable;
     }
 
     /**
      * 初始化大转盘
-     * @param player
      */
     public void initTurntable(Player player){
 
@@ -37,13 +55,13 @@ public class TurntableService {
         turntable.setPlayerId(player.getPlayerId());
         turntable.setDtate(1);
 
-        player.setTurntable(turntable);
+        setTurntable(player,turntable);
 
         //刷新道具
         reloadTurntable(player);
 
         //推送更新
-        MessageUtil.notifyTurntableChange(player);
+        notifyTurntableChange(player);
     }
 
     /**
@@ -71,11 +89,10 @@ public class TurntableService {
 
     /**
      * 刷新大转盘
-     * @param player
      */
     public void reloadTurntable(Player player){
 
-        Turntable turntable = player.getTurntable();
+        Turntable turntable = getTurntable(player);
         int playerLevel = player.getPlayerLevel();
 
         Map<Integer, String> rewards = turntable.getRewards();
@@ -98,7 +115,7 @@ public class TurntableService {
                 rates.add(Float.parseFloat(showRate));
             }
 
-            Integer index = GameMath.getRate(rates);
+            int index = GameMath.getRate(rates);
 
             if (index != -1)
                 rewards.put(site,items[index]);
@@ -112,11 +129,10 @@ public class TurntableService {
 
     /**
      * 抽奖
-     * @param player
      */
     public int lottery(Player player){
 
-        Turntable turntable = player.getTurntable();
+        Turntable turntable = getTurntable(player);
         int playerLevel = player.getPlayerLevel();
 
         Map<Integer, String> rewards = turntable.getRewards();
@@ -157,4 +173,39 @@ public class TurntableService {
 
     }
 
+    /**
+     * 推送玩家大转盘更新
+     */
+    private void notifyTurntableChange(Player player) {
+
+        //推送
+        RetVO vo = new RetVO();
+        vo.addData("turntables", transTurntableVo(player));
+
+        MessageUtil.sendMessageToPlayer(player, MProtrol.TURNTABLE_UPDATE, vo);
+    }
+
+    public void updatePlayer(Player player) {
+
+        if(getTurntable(player).getDtate() == 1){
+            dao.saveTurntable(player.getSeverId(), getTurntable(player));
+        }else if(getTurntable(player).getDtate() == 2){
+            dao.updateTurntable(player.getSeverId(), getTurntable(player));
+        }
+    }
+
+    @Override
+    public void minute180() {
+
+        for(Player player : SessionManager.ins().getSessions().values()){
+
+            if (getTurntable(player) != null){
+                //更新大转盘
+                reloadTurntable(player);
+                //推送更新
+                notifyTurntableChange(player);
+            }
+        }
+
+    }
 }

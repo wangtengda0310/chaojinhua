@@ -38,7 +38,10 @@ import java.util.Set;
  *
  */
 public class CheckEndHandler extends ReconnectedHandler {
-	
+	private CheckPointService checkPointService;
+	private ResourceService resourceService;
+	private QuestService questService;
+	private PlayerService playerService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -75,24 +78,24 @@ public class CheckEndHandler extends ReconnectedHandler {
 		}
 
 		//增加奖励
-		RewardDto reward = CheckPointService.getReward(player, chapterId, win,first, 0);
-		ResourceService.ins().addRewarToPlayer(player,reward);
+		RewardDto reward = checkPointService.getReward(player, chapterId, win,first, 0);
+		resourceService.addRewarToPlayer(player,reward);
 
 		//增加人物经验
 		int playerExp = reward.getExp();
-		ResourceService.ins().addExp(player, reward.getExp());
+		resourceService.addExp(player, reward.getExp());
 
 		//增加怪物经验
 		String monsterExpStr = "";
 		List<Monster> ll = Lists.newArrayList();
-        monsterExpStr = CheckSaoDangHandler.getString(player, reward, ll, monsterExpStr);
+        monsterExpStr = checkPointService.getString(player, reward, ll, monsterExpStr);
 
         MessageUtil.notifyMonsterChange(player, ll);
 
 		player.setLastCheckpointId(chapterId);
 
 		//处理任务埋点
-		QuestService.processTask(player, 2, 1);
+		questService.processTask(player, 2, 1);
 
 		if(first){
 
@@ -117,11 +120,11 @@ public class CheckEndHandler extends ReconnectedHandler {
 				}
 			}
 
-			PlayerService.checkDrawData(player, true);//检测造物台数据
+			playerService.checkDrawData(player, true);//检测造物台数据
 
-			QuestService.processTask(player, 17, 0);//击杀BOSS关卡
-			QuestService.processTask(player, 23, 0);//占领金矿数
-			QuestService.processTask(player, 25, 0);//城市占领完成度
+			questService.processTask(player, 17, 0);//击杀BOSS关卡
+			questService.processTask(player, 23, 0);//占领金矿数
+			questService.processTask(player, 25, 0);//城市占领完成度
 
 		}
 
@@ -132,7 +135,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 		}
 
 		//奖励字符串
-		String rr = ResourceService.ins().getRewardString(reward);
+		String rr = resourceService.getRewardString(reward);
 
 		vo.addData("playerExp", playerExp);
 		vo.addData("monsterExp", monsterExpStr);
@@ -190,7 +193,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 							checkPoint.append(",").append(ct.getChapterId());
 							player.setCheckPoint(player.getCheckPoint()+"," +String.valueOf(ct.getChapterId()));
 							player.getTimeResCheck().put(ct.getChapterId(), ct.getMaxTime() * 60);
-							RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), ct.getMaxTime() * 60, ct.getMaxTime() * 60);
+							RewardDto dto = resourceService.getResRewardDto(ct.getDropPoint(), ct.getMaxTime() * 60, ct.getMaxTime() * 60);
 							MessageUtil.notifyTimeResToPlayer(player,ct.getChapterId(), dto);    //推送金币关卡 第一次满
 						}
 					}

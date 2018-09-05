@@ -28,7 +28,8 @@ import java.util.List;
  *
  */
 public class MonsterTUPOChangeHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -70,9 +71,9 @@ public class MonsterTUPOChangeHandler extends ReconnectedHandler {
 					type = JiyinType.getRandType(rank, mont.getAtk_type() == 1);
 					jiying[rank - 1] = type;
 					if(costType == 1){//gold
-						ResourceService.ins().addGold(player, 0-mt.getChange_gold());
+						resourceService.addGold(player, 0-mt.getChange_gold());
 					}else {//diam
-						ResourceService.ins().addDiamond(player, 0-mt.getDiamond());
+						resourceService.addDiamond(player, 0-mt.getDiamond());
 					}
 					mm.setBreaklv(MyUtil.toString(jiying, ","));
 					mm.reCalculate(player,true);

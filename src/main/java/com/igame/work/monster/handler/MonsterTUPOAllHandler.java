@@ -2,19 +2,21 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.data.MonsterBreakTemplate;
 import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.JiyinType;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.RandoRes;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -27,7 +29,9 @@ import java.util.List;
  *
  */
 public class MonsterTUPOAllHandler extends ReconnectedHandler {
-	
+
+
+	private static ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -61,7 +65,7 @@ public class MonsterTUPOAllHandler extends ReconnectedHandler {
 					if(rank%5 == 0 && rank >=5){
 						rankType = 2;
 					}
-					RandoRes res = JiyinType.getRandType(player, rankType, type, costType, rank, mont.getAtk_type() == 1);
+					RandoRes res = getRandType(player, rankType, type, costType, rank, mont.getAtk_type() == 1);
 					if(res.getRes() == 0 || res.getRes() == 1){//此次改造完毕
 						result = res.getRes();
 						rtype = res.getType();
@@ -101,5 +105,83 @@ public class MonsterTUPOAllHandler extends ReconnectedHandler {
     public int protocolId() {
 		return MProtrol.MONSTER_TUPO_A;
 	}
+
+	/**
+	 *
+	 * @param rankType 1-小基因  2-大基因
+	 * @param type 期望类型 1-20
+	 * @param costType 货币类型 1-金币 2-钻石
+	 * @param rank  当前改造阶数
+	 * @param jingzhan 是否近战
+	 */
+	static RandoRes getRandType(Player player,int rankType,int type,int costType,int rank,boolean jingzhan){
+		RandoRes res = new RandoRes();
+		if(costType < 1 || costType > 2){//货币错误
+			return new RandoRes(-1,"-1");
+		}
+		String qitype = String.valueOf(type);//期望类型
+		List<String> randow = null;
+		if(rankType == 2){//大基因
+			if(jingzhan){
+				if(!JiyinType.bigNotJing.contains(qitype)){
+					return new RandoRes(ErrorCode.MONSTER_JIYINGTYPE_ERROR,"-1");
+				}
+				randow = JiyinType.bigNotJing;
+			}else{
+				if(!JiyinType.big.contains(qitype)){
+					return new RandoRes(ErrorCode.MONSTER_JIYINGTYPE_ERROR,"-1");
+				}
+				randow = JiyinType.big;
+			}
+		}else{//小基因
+			if(!JiyinType.small.contains(qitype)){
+				return new RandoRes(ErrorCode.MONSTER_JIYINGTYPE_ERROR,"-1");
+			}
+			randow = JiyinType.small;
+		}
+		if(randow != null){
+
+			MonsterBreakTemplate mt = MonsterDataManager.MonsterBreakData.getTemplate(rank);
+			if(costType == 1){//金币改造
+				long totalCost = 0;//总花销
+				if(player.getGold() < mt.getChange_gold()){
+					return new RandoRes(ErrorCode.GOLD_NOT_ENOUGH,"-1");
+				}
+				String getType = "-1";
+
+				getType = JiyinType.getRandType(rank, jingzhan);
+				totalCost += mt.getChange_gold();
+				res.setType(getType);
+				res.setTotal(totalCost);
+				if(!getType.equals(String.valueOf(type))){
+					res.setRes(1);
+				}
+
+				resourceService.addGold(player, 0-totalCost);
+				return res;
+			}else{//钻石改造
+				int totalCost = 0;
+				if(player.getDiamond() < mt.getDiamond()){
+					return new RandoRes(ErrorCode.DIAMOND_NOT_ENOUGH,"-1");
+				}
+				String getType = "-1";
+
+				getType = JiyinType.getRandType(rank, jingzhan);
+				totalCost += mt.getDiamond();
+				res.setType(getType);
+				res.setTotal(totalCost);
+				if(!getType.equals(String.valueOf(type))){
+					res.setRes(1);
+				}
+				resourceService.addDiamond(player, 0-totalCost);
+				return res;
+			}
+
+		}else{
+			return new RandoRes(-1,"-1");
+		}
+
+	}
+
 
 }

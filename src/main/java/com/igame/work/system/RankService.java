@@ -52,7 +52,7 @@ public class RankService extends EventService implements ISFSModule, TimeListene
     }
 
     @Override
-    protected PlayerEventObserver observeEvent() {
+    protected PlayerEventObserver playerObserver() {
         return new PlayerEventObserver() {
             @Override
             public EventType interestedType() {
@@ -107,6 +107,7 @@ public class RankService extends EventService implements ISFSModule, TimeListene
     }
 
 
+    @Override
     public void init(){
         dto = RankServiceDAO.ins().loadData();
         sort();

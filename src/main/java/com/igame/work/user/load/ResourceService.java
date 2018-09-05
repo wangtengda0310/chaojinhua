@@ -1,9 +1,13 @@
 package com.igame.work.user.load;
 
 import com.google.common.collect.Lists;
+import com.igame.core.ISFSModule;
+import com.igame.core.di.Inject;
+import com.igame.core.event.EventService;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
+import com.igame.work.PlayerEvents;
 import com.igame.work.fight.FightDataManager;
 import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.user.PlayerDataManager;
@@ -39,37 +43,35 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class ResourceService {
-	
-    private static final ResourceService domain = new ResourceService();
+public class ResourceService extends EventService implements ISFSModule {
+	private QuestService questService;
+	private PlayerService playerService;
+	private MonsterService monsterService;
+	@Inject TurntableService turntableService;
 
-    public static final ResourceService ins() {
-        return domain;
-    }
-    
 	
 	//1 - 金币 2-钻石 3-体力 4-扫荡券 5-同化经验 6-同化点 7-星能 8-无尽积分 9-斗技积分 10-起源积分 11-部落积分 12-远征积分 13-悬赏积分 14-充值金额
-    public static final int GOLD = 1;
-    public static final int Diamond = 2;
-    public static final int Physical = 3;
-    public static final int Sao = 4;
+    private static final int GOLD = 1;
+    private static final int Diamond = 2;
+    private static final int Physical = 3;
+    private static final int Sao = 4;
     public static final int TONGHUAEXP = 5;
-    public static final int TONGHUAPOINT= 6;
-    public static final int XING = 7;
+    private static final int TONGHUAPOINT= 6;
+    private static final int XING = 7;
 
     public static final int WUJIN = 8;
-    public static final int DOUJI = 9;
-    public static final int QIYUAN = 10;
-    public static final int BULUO = 11;
+    private static final int DOUJI = 9;
+    private static final int QIYUAN = 10;
+    private static final int BULUO = 11;
     public static final int YUANZHENG = 12;
     public static final int XUANSHANG = 13;
 
-    public static final int MONEY = 14;
+    private static final int MONEY = 14;
 
     
 
-    public String getRewardString(RewardDto reward){
-    	
+    public static String getRewardString(RewardDto reward){
+
     	StringBuffer items = new StringBuffer();
 		if(reward.getGold() >0 ){
 			items.append("1,1,").append(reward.getGold()).append(";");
@@ -107,25 +109,25 @@ public class ResourceService {
 
 		// ADDREWARD
 		if(reward.getGold() >0 ){
-			ResourceService.ins().addGold(player, reward.getGold());	
+			addGold(player, reward.getGold());
 		}
 		if(reward.getDiamond() > 0){
-			ResourceService.ins().addDiamond(player, reward.getDiamond());
+			addDiamond(player, reward.getDiamond());
 		}
 		if(reward.getPhysical() > 0){
-			ResourceService.ins().addPhysica(player, reward.getPhysical());
+			addPhysica(player, reward.getPhysical());
 		}
 		if(reward.getTongExp() > 0){
-			ResourceService.ins().addTongExp(player, reward.getTongExp());
+			addTongExp(player, reward.getTongExp());
 		}
 		if(!reward.getItems().isEmpty()){
 			for(Map.Entry<Integer, Integer> m : reward.getItems().entrySet()){
-				ResourceService.ins().addItem(player, m.getKey(), m.getValue(), true);
+				addItem(player, m.getKey(), m.getValue(), true);
 			}
 		}
 		if(!reward.getMonsters().isEmpty()){
 			for(Map.Entry<Integer, Integer> m : reward.getMonsters().entrySet()){
-				ResourceService.ins().addMonster(player, m.getKey(), m.getValue(), true);
+				addMonster(player, m.getKey(), m.getValue(), true);
 			}
 		}
 		
@@ -144,62 +146,60 @@ public class ResourceService {
 			String[] tels = val.split(";");
 			for(String tel : tels){
 				String[] temp  = tel.split(",");
-				if(temp != null){
-					switch (temp[0]){
-						case "1":
-							if(Integer.parseInt(temp[1]) == 1){//gold
-								dto.setGold(dto.getGold() + (long)(Double.parseDouble(temp[2]) * count));
-								break;
-							} else if(Integer.parseInt(temp[1]) == 2){//Diamond
-								dto.setDiamond(dto.getDiamond() + (int)(Double.parseDouble(temp[2]) * count));
-								break;
-							}else if(Integer.parseInt(temp[1]) == 3){//Physical
-								dto.setPhysical(dto.getPhysical() + (int)(Double.parseDouble(temp[2]) * count));
-								break;
-							}else if(Integer.parseInt(temp[1]) == 5){//TONGHUAEXP
-								dto.setTongExp(dto.getTongExp() + (int)(Double.parseDouble(temp[2]) * count));
-								break;
-							}
-							else{
-								break;
-							}
-						case "2"://mon
-							dto.addMonster(Integer.parseInt(temp[1]), (int)(Double.parseDouble(temp[2]) * count));
+				switch (temp[0]){
+					case "1":
+						if(Integer.parseInt(temp[1]) == 1){//gold
+							dto.setGold(dto.getGold() + (long)(Double.parseDouble(temp[2]) * count));
 							break;
-						case "3"://item
-							dto.addItem(Integer.parseInt(temp[1]), (int)(Double.parseDouble(temp[2]) * count));
+						} else if(Integer.parseInt(temp[1]) == 2){//Diamond
+							dto.setDiamond(dto.getDiamond() + (int)(Double.parseDouble(temp[2]) * count));
 							break;
-						case "4"://monster exp item
-							int totalExp = (int)(Double.parseDouble(temp[2]) * count);
-							ItemTemplate max1 = PlayerDataManager.ItemData.getTemplate(200003);
-							ItemTemplate max2 = PlayerDataManager.ItemData.getTemplate(200002);
-							ItemTemplate max3 = PlayerDataManager.ItemData.getTemplate(200001);
-							if(max1 != null){
-								if(totalExp > (int)max1.getValue()){//大
-									int cl = totalExp/(int)max1.getValue();
-									dto.addItem(200003, cl);
-									totalExp -= cl * (int)max1.getValue();
-								}
-							}
-							if(max2 != null){
-								if(totalExp > (int)max2.getValue()){//中
-									int cl = totalExp/(int)max2.getValue();
-									dto.addItem(200002, cl);
-									totalExp -= cl * (int)max2.getValue();
-								}
-							}
-							if(max3 != null){
-								if(totalExp > (int)max3.getValue()){//小
-									int cl = totalExp/(int)max3.getValue();
-									dto.addItem(200001, cl);
-									totalExp -= cl * (int)max3.getValue();
-								}
-							}
+						}else if(Integer.parseInt(temp[1]) == 3){//Physical
+							dto.setPhysical(dto.getPhysical() + (int)(Double.parseDouble(temp[2]) * count));
 							break;
-						default:
-							break;	
-							
-					}
+						}else if(Integer.parseInt(temp[1]) == 5){//TONGHUAEXP
+							dto.setTongExp(dto.getTongExp() + (int)(Double.parseDouble(temp[2]) * count));
+							break;
+						}
+						else{
+							break;
+						}
+					case "2"://mon
+						dto.addMonster(Integer.parseInt(temp[1]), (int)(Double.parseDouble(temp[2]) * count));
+						break;
+					case "3"://item
+						dto.addItem(Integer.parseInt(temp[1]), (int)(Double.parseDouble(temp[2]) * count));
+						break;
+					case "4"://monster exp item
+						int totalExp = (int)(Double.parseDouble(temp[2]) * count);
+						ItemTemplate max1 = PlayerDataManager.ItemData.getTemplate(200003);
+						ItemTemplate max2 = PlayerDataManager.ItemData.getTemplate(200002);
+						ItemTemplate max3 = PlayerDataManager.ItemData.getTemplate(200001);
+						if(max1 != null){
+							if(totalExp > (int)max1.getValue()){//大
+								int cl = totalExp/(int)max1.getValue();
+								dto.addItem(200003, cl);
+								totalExp -= cl * (int)max1.getValue();
+							}
+						}
+						if(max2 != null){
+							if(totalExp > (int)max2.getValue()){//中
+								int cl = totalExp/(int)max2.getValue();
+								dto.addItem(200002, cl);
+								totalExp -= cl * (int)max2.getValue();
+							}
+						}
+						if(max3 != null){
+							if(totalExp > (int)max3.getValue()){//小
+								int cl = totalExp/(int)max3.getValue();
+								dto.addItem(200001, cl);
+								totalExp -= cl * (int)max3.getValue();
+							}
+						}
+						break;
+					default:
+						break;
+
 				}
 			}
 		}
@@ -227,35 +227,33 @@ public class ResourceService {
 			for(String tel : tels){
 				if(GameMath.hitRate(Integer.parseInt(rateVal[i]) * 100)){
 					String[] temp  = tel.split(",");
-					if(temp != null){
-						switch (temp[0]){
-							case "1":
-								if(Integer.parseInt(temp[1]) == 1){//gold
-									dto.setGold(dto.getGold() + Long.parseLong(temp[2]));
-									break;
-								} else if(Integer.parseInt(temp[1]) == 2){//Diamond
-									dto.setDiamond(dto.getDiamond() + Integer.parseInt(temp[2]));
-									break;
-								}else if(Integer.parseInt(temp[1]) == 3){//Physical
-									dto.setPhysical(dto.getPhysical() + Integer.parseInt(temp[2]));
-									break;
-								}else if(Integer.parseInt(temp[1]) == 5){//tongRes
-									dto.setTongExp(dto.getTongExp() + Integer.parseInt(temp[2]));
-									break;
-								}
-								else{
-									break;
-								}
-							case "2"://mon
-								dto.addMonster(Integer.parseInt(temp[1]), Integer.parseInt(temp[2]));
+					switch (temp[0]){
+						case "1":
+							if(Integer.parseInt(temp[1]) == 1){//gold
+								dto.setGold(dto.getGold() + Long.parseLong(temp[2]));
 								break;
-							case "3"://item
-								dto.addItem(Integer.parseInt(temp[1]), Integer.parseInt(temp[2]));
+							} else if(Integer.parseInt(temp[1]) == 2){//Diamond
+								dto.setDiamond(dto.getDiamond() + Integer.parseInt(temp[2]));
 								break;
-							default:
-								break;	
-								
-						}
+							}else if(Integer.parseInt(temp[1]) == 3){//Physical
+								dto.setPhysical(dto.getPhysical() + Integer.parseInt(temp[2]));
+								break;
+							}else if(Integer.parseInt(temp[1]) == 5){//tongRes
+								dto.setTongExp(dto.getTongExp() + Integer.parseInt(temp[2]));
+								break;
+							}
+							else{
+								break;
+							}
+						case "2"://mon
+							dto.addMonster(Integer.parseInt(temp[1]), Integer.parseInt(temp[2]));
+							break;
+						case "3"://item
+							dto.addItem(Integer.parseInt(temp[1]), Integer.parseInt(temp[2]));
+							break;
+						default:
+							break;
+
 					}
 				}
 				i++;
@@ -382,7 +380,7 @@ public class ResourceService {
 			if(change){
 				mm.setEquip(MyUtil.toString(equs, ","));
 			}
-			QuestService.processTask(player, 1, currLevel - tempLevel);
+			questService.processTask(player, 1, currLevel - tempLevel);
 		}
 
 
@@ -410,6 +408,9 @@ public class ResourceService {
     			+"#act:addRes"+"#stype:" + GOLD + "#count:"+value);
 		MessageUtil.sendMessageToPlayer(player, MProtrol.GOLD_UPDATE, vo);
 
+		if (value < 0) {
+			fireEvent(player, PlayerEvents.CONSUME_GOLD, new Object[]{System.currentTimeMillis(), value});
+		}
     }
     
     
@@ -439,6 +440,9 @@ public class ResourceService {
     			+"#act:addRes"+"#stype:" + Diamond + "#count:"+value);
 		MessageUtil.sendMessageToPlayer(player, MProtrol.GOLD_UPDATE, vo);
 
+		if (value < 0) {
+			fireEvent(player, PlayerEvents.CONSUME_DIAMOND, new Object[]{System.currentTimeMillis(),value});
+		}
     }
     
     
@@ -458,7 +462,7 @@ public class ResourceService {
     	}
     	if(tempLevel < 30 && currLevel >= 30){
         	if(player.getTonghua() == null){
-        		player.setTonghua(PlayerService.getRandomTongHuaDto());
+        		player.setTonghua(playerService.getRandomTongHuaDto());
         		player.getTonghua().setStartRefTime(System.currentTimeMillis());
         	}
     	}
@@ -485,13 +489,13 @@ public class ResourceService {
     		}
     	}
     	MessageUtil.notifyGodsChange(player, ll);
-    	PlayerService.checkDrawData(player, true);//检测造物台数据
-    	QuestService.onLevelUp(player);//任务开放
+    	playerService.checkDrawData(player, true);//检测造物台数据
+    	questService.onLevelUp(player);//任务开放
 
 		//判断是否解锁神秘商店
 		ShopService.ins().initMysticalShop(player);
 		//判断是否解锁幸运大转盘
-		TurntableService.ins().initTurntable(player);
+		turntableService.initTurntable(player);
 		//触发解锁头像
 		HeadService.ins().unlockHead(player, HeadConstants.HEAD_TOUCH_LV);
 		//触发解锁头像框
@@ -562,8 +566,8 @@ public class ResourceService {
     			MessageUtil.notifyMeetM(player);
     		}
     		//重新计算玩家怪物图鉴属性
-    		MonsterService.reCalMonsterExtPre(player,true);
-    		QuestService.processTask(player, 16, count);
+    		monsterService.reCalMonsterExtPre(player,true);
+    		questService.processTask(player, 16, count);
     		//触发解锁头像
 			HeadService.ins().unlockHead(player,HeadConstants.HEAD_TOUCH_MONSTER);
     	}
@@ -626,6 +630,7 @@ public class ResourceService {
     					item.setDtate(3);
     					player.getRemoves().add(player.getItems().remove(item.getItemId()));
     				}
+					fireEvent(player, PlayerEvents.CONSUME_ITEM, new Object[]{itemId,item.getCount()-left});
     	    		RetVO vo = new RetVO();
 	        		List<Item> ll = Lists.newArrayList();
 	        		ll.add(item);
@@ -678,7 +683,7 @@ public class ResourceService {
 		player.getTongAdd().setTongExp(exp);
 		if (currLevel != tempLevel) {
 			player.getTongAdd().setTongLevel(currLevel);
-			QuestService.processTask(player, 19, 0);
+			questService.processTask(player, 19, 0);
 		}
 		MessageUtil.notifyTongHuaAddChange(player);
 		return tongExpAdd;

@@ -17,6 +17,8 @@ import net.sf.json.JSONObject;
  */
 public class ModifyNicknameHandler extends ReconnectedHandler {
 
+    private ResourceService resourceService;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -33,7 +35,7 @@ public class ModifyNicknameHandler extends ReconnectedHandler {
             if (player.getDiamond() < 100) {
                 return error(ErrorCode.DIAMOND_NOT_ENOUGH);
             }
-            ResourceService.ins().addDiamond(player, -100);
+            resourceService.addDiamond(player, -100);
         }
 
         //更换头像框

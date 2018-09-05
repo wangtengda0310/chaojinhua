@@ -6,15 +6,16 @@ import com.igame.work.activity.ActivityConfig;
 import com.igame.work.activity.ActivityDataManager;
 import com.igame.work.activity.sign.SignConfig;
 import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardData;
 import com.igame.work.checkpoint.baozouShike.data.RunData;
 import com.igame.work.checkpoint.baozouShike.data.RunRewardData;
 import com.igame.work.checkpoint.baozouShike.data.RunTypeData;
-import com.igame.work.checkpoint.guanqia.data.*;
+import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.data.CheckPointData;
+import com.igame.work.checkpoint.guanqia.data.DropData;
+import com.igame.work.checkpoint.mingyunZhiMen.MingyunZhiMenDataManager;
 import com.igame.work.checkpoint.mingyunZhiMen.data.DestinyData;
 import com.igame.work.checkpoint.mingyunZhiMen.data.FateData;
-import com.igame.work.checkpoint.mingyunZhiMen.MingyunZhiMenDataManager;
 import com.igame.work.checkpoint.tansuo.TansuoData;
 import com.igame.work.checkpoint.tansuo.TansuoDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventData;
@@ -36,6 +37,8 @@ import com.igame.work.shop.data.ShopData;
 import com.igame.work.shop.data.ShopOutPutData;
 import com.igame.work.shop.data.ShopRandomData;
 import com.igame.work.shop.data.ShopRandomLvData;
+import com.igame.work.shopActivity.ShopActivityData;
+import com.igame.work.shopActivity.ShopActivityDataManager;
 import com.igame.work.turntable.LuckTableDataManager;
 import com.igame.work.turntable.data.LuckTableData;
 import com.igame.work.user.PlayerDataManager;
@@ -113,6 +116,7 @@ public class DataManager implements Injectable {
 
 		ActivityDataManager.signConfig                  =loader.loadData(SignConfig.class,   "signreward.xml" );
 		ActivityDataManager.activityConfig              =loader.loadData(ActivityConfig.class,   "activity.xml" );
+		ShopActivityDataManager.Configs              =loader.loadData(ShopActivityData.class,   "activitylimit.xml" );
 
 	}
 

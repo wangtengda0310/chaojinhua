@@ -52,10 +52,6 @@ public class TaskDayInfo   extends BasicDto {
 		this.questId = questId;
 		this.dtate = 1;
 		this.action = 1;
-		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(questId);
-		if(qt.getQuestType()==2 && qt.getClaim()>1 && qt.getClaim()<=25){
-			QuestService.processTaskDetail(player, Lists.newArrayList(), this, qt.getClaim(), 0);
-		}
 		
 	}
 	

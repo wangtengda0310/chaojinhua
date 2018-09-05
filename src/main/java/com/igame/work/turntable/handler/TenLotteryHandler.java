@@ -1,5 +1,6 @@
 package com.igame.work.turntable.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
@@ -18,6 +19,10 @@ import net.sf.json.JSONObject;
  * 幸运大转盘十连抽
  */
 public class TenLotteryHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
+    private GMService gmService;
+    @Inject
+    private TurntableService turntableService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -28,7 +33,7 @@ public class TenLotteryHandler extends ReconnectedHandler {
         JSONObject jsonObject = JSONObject.fromObject(infor);
 
         //校验等级
-        if (player.getPlayerLevel() < 15 || player.getTurntable() == null){
+        if (player.getPlayerLevel() < 15 || turntableService.getTurntable(player) == null){
             return error(ErrorCode.LEVEL_NOT);
         }
 
@@ -39,17 +44,17 @@ public class TenLotteryHandler extends ReconnectedHandler {
         }
 
         //扣除道具
-        ResourceService.ins().addItem(player,200072,-8,true);
+        resourceService.addItem(player,200072,-8,true);
 
         //抽取奖励
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 10; i++) {
 
-            int site = TurntableService.ins().lottery(player);
+            int site = turntableService.lottery(player);
 
             //发放奖励
-            String reward = player.getTurntable().getRewards().get(site);
-            GMService.processGM(player,reward);
+            String reward = turntableService.getTurntable(player).getRewards().get(site);
+            gmService.processGM(player,reward);
 
             sb.append(reward).append(";");
         }

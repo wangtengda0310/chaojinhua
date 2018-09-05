@@ -2,6 +2,7 @@ package com.igame.work.user.load;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.igame.core.ISFSModule;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
 import com.igame.work.MessageUtil;
@@ -24,9 +25,10 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class PlayerService {
+public class PlayerService implements ISFSModule {
+	private ResourceService resourceService;
 
-	public static TongHuaDto getRandomTongHuaDto(){
+	public TongHuaDto getRandomTongHuaDto(){
 		
 		TongHuaDto td = new TongHuaDto();
 		int id = MonsterDataManager.StrengthenplaceData.getSet().get(GameMath.getRandInt(MonsterDataManager.StrengthenplaceData.getSet().size()));
@@ -142,7 +144,7 @@ public class PlayerService {
 	/**
 	 * 检测玩家的造物台数据
 	 */
-	public static void checkDrawData(Player player,boolean notify){
+	public void checkDrawData(Player player,boolean notify){
 		
 
 		String tempDraw = player.getDraw().getDrawList();
@@ -172,7 +174,7 @@ public class PlayerService {
 	
 	
 
-	public static List<RewardDto> couKa(int rewardId,int count){
+	public List<RewardDto> couKa(int rewardId,int count){
 		
 		List<RewardDto> rt = Lists.newArrayList();
 		DrawrewardTemplate dt = PlayerDataManager.DrawrewardData.getTemplate(rewardId);
@@ -237,8 +239,8 @@ public class PlayerService {
 					}
 				}
 				String[] itemStr = items.get(key).split(";");
-				RewardDto temp = ResourceService.ins().getRewardDto(itemStr[GameMath.getRandInt(itemStr.length)], "100");
-//				ResourceService.ins().getTotalRewardDto(rt, temp);
+				RewardDto temp = resourceService.getRewardDto(itemStr[GameMath.getRandInt(itemStr.length)], "100");
+//				resourceService.getTotalRewardDto(rt, temp);
 				rt.add(temp);
 				if(counts.get(key) >= maxCounts.get(key)){
 					rates.remove(key);

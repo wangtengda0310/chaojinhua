@@ -19,6 +19,7 @@ import net.sf.json.JSONObject;
  */
 public class AreaBuyHandler extends ReconnectedHandler {
 
+	private ResourceService resourceService;
 
 	@Override
     public int protocolId() {
@@ -39,7 +40,7 @@ public class AreaBuyHandler extends ReconnectedHandler {
 		}
 
 		//减少钻石
-		ResourceService.ins().addDiamond(player,-25);
+		resourceService.addDiamond(player,-25);
 
 		//减少已挑战
 		player.addAreaCount(-5);

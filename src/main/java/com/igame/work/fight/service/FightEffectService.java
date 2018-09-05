@@ -29,6 +29,7 @@ public class FightEffectService extends EventService implements ISFSModule {
 
 	private ScheduledFuture<?> sc = null;
 
+	@Override
     public void init(){
     	sc = ThreadPoolManager.getInstance().scheduleAtFixedRate(new SceneEffectTask(), 2000, 200);
     }

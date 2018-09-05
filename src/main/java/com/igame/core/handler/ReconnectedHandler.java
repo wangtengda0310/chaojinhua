@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 public abstract class ReconnectedHandler extends BaseHandler {
 
-    public abstract int protocolId();
     /** 不使用这个方法则需要实现断线重连的消息重发 */
     protected abstract RetVO handleClientRequest(Player player, ISFSObject params) throws Exception;
 

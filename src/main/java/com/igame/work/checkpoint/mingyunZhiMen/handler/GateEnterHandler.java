@@ -27,7 +27,8 @@ import java.util.Map;
  *
  */
 public class GateEnterHandler extends ReconnectedHandler {
-	
+
+	private QuestService questService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -78,7 +79,7 @@ public class GateEnterHandler extends ReconnectedHandler {
 				player.getFateData().setGate(gls);
 				MessageUtil.notifyDeInfoChange(player);
 				MessageUtil.notifyGateChange(player);
-				QuestService.processTask(player, 10, 1);
+				questService.processTask(player, 10, 1);
 			}else {//普通怪物
 				act = 0;
 				Map<Long,Monster> mms = gto.getMons();

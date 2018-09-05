@@ -26,7 +26,8 @@ import java.util.Set;
  *
  */
 public class MonsterSkillHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -123,7 +124,7 @@ public class MonsterSkillHandler extends ReconnectedHandler {
 			monster.setDtate(2);
 
 			//减少道具
-			ResourceService.ins().addItem(player,itemId,-count,true);
+			resourceService.addItem(player,itemId,-count,true);
 
 			skillIds.add(skillId);
 		}

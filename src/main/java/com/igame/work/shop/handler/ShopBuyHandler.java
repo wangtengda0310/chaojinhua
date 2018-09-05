@@ -21,6 +21,7 @@ import net.sf.json.JSONObject;
  * 购买商品
  */
 public class ShopBuyHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -86,7 +87,7 @@ public class ShopBuyHandler extends ReconnectedHandler {
                     ShopService.ins().addMysticalExp(player, exp);
 
                     shopInfo.addMaxCount(shopId, itemId, -count);
-                    ResourceService.ins().addDiamond(player, -discountedPrice);
+                    resourceService.addDiamond(player, -discountedPrice);
 
                     vo.addData("count", maxCount - count);
                     return vo;
@@ -100,7 +101,7 @@ public class ShopBuyHandler extends ReconnectedHandler {
                     return error(ErrorCode.WUJIN_NOT_ENOUGH);
                 } else {     //减少商品数量，减少积分
                     shopInfo.addMaxCount(shopId, itemId, -count);
-                    ResourceService.ins().addWuScore(player, -price);
+                    resourceService.addWuScore(player, -price);
 
                     vo.addData("count", maxCount - count);
                     return vo;
@@ -114,7 +115,7 @@ public class ShopBuyHandler extends ReconnectedHandler {
                     return error(ErrorCode.DOUJI_NOT_ENOUGH);
                 } else {     //减少商品数量，减少积分
                     shopInfo.addMaxCount(shopId, itemId, -count);
-                    ResourceService.ins().addDoujiScore(player, -price);
+                    resourceService.addDoujiScore(player, -price);
 
                     vo.addData("count", maxCount - count);
                     return vo;
@@ -128,7 +129,7 @@ public class ShopBuyHandler extends ReconnectedHandler {
                     return error(ErrorCode.QIYUAN_NOT_ENOUGH);
                 } else {     //减少商品数量，减少积分
                     shopInfo.addMaxCount(shopId, itemId, -count);
-                    ResourceService.ins().addQiyuanScore(player, -price);
+                    resourceService.addQiyuanScore(player, -price);
 
                     vo.addData("count", maxCount - count);
                     return vo;
@@ -142,7 +143,7 @@ public class ShopBuyHandler extends ReconnectedHandler {
                     return error(ErrorCode.BULUO_NOT_ENOUGH);
                 } else {     //减少商品数量，减少积分
                     shopInfo.addMaxCount(shopId, itemId, -count);
-                    ResourceService.ins().addBuluoScore(player, -price);
+                    resourceService.addBuluoScore(player, -price);
 
                     vo.addData("count", maxCount - count);
                     return vo;

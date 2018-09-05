@@ -21,6 +21,7 @@ import net.sf.json.JSONObject;
  */
 public class MialGetHandler extends ReconnectedHandler {
 
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -39,8 +40,8 @@ public class MialGetHandler extends ReconnectedHandler {
 			return error(ErrorCode.BAGSPACE_ALREADY_FULL);
 		}else{
 			
-			RewardDto rto = ResourceService.ins().getRewardDto(mail.getAttach(), "100");
-			ResourceService.ins().addRewarToPlayer(player, rto);
+			RewardDto rto = resourceService.getRewardDto(mail.getAttach(), "100");
+			resourceService.addRewarToPlayer(player, rto);
 			reward = mail.getAttach();
 			mail.setState(2);
 			if(type == 1){

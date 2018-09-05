@@ -26,7 +26,8 @@ import java.util.Map;
  *
  */
 public class GodsResetHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -49,15 +50,15 @@ public class GodsResetHandler extends ReconnectedHandler {
 				RewardDto rt = new RewardDto();
 				for(GodsdataTemplate gt : preList){
 					rt.addGold(gt.getGold());
-					for(Map.Entry<Integer,Integer> m : ResourceService.ins().getRewardDto(gt.getItem(), "100").getItems().entrySet()){
+					for(Map.Entry<Integer,Integer> m : resourceService.getRewardDto(gt.getItem(), "100").getItems().entrySet()){
 						rt.addItem(m.getKey(), m.getValue());
 					}
 				}
 				int lvl = gods.getGodsLevel();
-				ResourceService.ins().addRewarToPlayer(player, rt);
+				resourceService.addRewarToPlayer(player, rt);
 				gods.setGodsLevel(0);
 				gods.setDtate(2);
-				reward = ResourceService.ins().getRewardString(rt);
+				reward = resourceService.getRewardString(rt);
 				List<Gods> ll = Lists.newArrayList();
 				ll.add(gods);
 				MessageUtil.notifyGodsChange(player, ll);

@@ -19,6 +19,7 @@ import java.util.Optional;
  * 累积签到奖励如果没有领取，到下一个签到周期数据会被清掉
  */
 public class TansuoZhiLuActivityHandler extends ActivityHandler {
+    private GMService gmService;
     @Override
     public RetVO handleClientRequest(Player player, PlayerActivityData activityData, ISFSObject params) {
 
@@ -49,7 +50,7 @@ public class TansuoZhiLuActivityHandler extends ActivityHandler {
         tansuo.setReceivedLevels(receivedLevel + level + ",");
         String reward = config.get().getActivity_drop();
 
-        GMService.processGM(player, reward);
+        gmService.processGM(player, reward);
 
         RetVO retVO = new RetVO();
         retVO.addData("d", tansuo.clientData(player));

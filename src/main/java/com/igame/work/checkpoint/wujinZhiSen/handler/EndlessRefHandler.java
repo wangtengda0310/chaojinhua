@@ -17,7 +17,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class EndlessRefHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -32,7 +33,7 @@ public class EndlessRefHandler extends ReconnectedHandler {
 				return vo;
 			}else{
 				ret = CheckPointService.refEndlessRef(player);
-				ResourceService.ins().addDiamond(player, -100);
+				resourceService.addDiamond(player, -100);
 			}
 		}else{
 			ret = CheckPointService.refEndlessRef(player);

@@ -21,7 +21,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class TongHuaOpenHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -75,7 +76,7 @@ public class TongHuaOpenHandler extends ReconnectedHandler {
 						info = tss[index-1];
 						tdo.setTongStr(MyUtil.toString(tss, ";"));
 //						MessageUtil.notiyTongHuaDtoChange(player);
-						ResourceService.ins().addTongRes(player, -1);
+						resourceService.addTongRes(player, -1);
 					}
 
 				}

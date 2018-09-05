@@ -1,9 +1,10 @@
 package com.igame.work.turntable.handler;
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.item.dto.Item;
 import com.igame.work.turntable.service.TurntableService;
@@ -18,6 +19,10 @@ import net.sf.json.JSONObject;
  * 幸运大转盘单抽
  */
 public class OneLotteryHandler extends ReconnectedHandler {
+    private ResourceService resourceService;
+    private GMService gmService;
+    @Inject
+    private TurntableService turntableService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -28,7 +33,7 @@ public class OneLotteryHandler extends ReconnectedHandler {
         JSONObject jsonObject = JSONObject.fromObject(infor);
 
         //校验等级
-        if (player.getPlayerLevel() < 15 || player.getTurntable() == null){
+        if (player.getPlayerLevel() < 15 || turntableService.getTurntable(player) == null){
             return error(ErrorCode.LEVEL_NOT);
         }
 
@@ -39,14 +44,14 @@ public class OneLotteryHandler extends ReconnectedHandler {
         }
 
         //扣除道具
-        ResourceService.ins().addItem(player,200072,-1,true);
+        resourceService.addItem(player,200072,-1,true);
 
         //抽取奖励
-        int site = TurntableService.ins().lottery(player);
+        int site = turntableService.lottery(player);
 
         //发放奖励
-        String reward = player.getTurntable().getRewards().get(site);
-        GMService.processGM(player,reward);
+        String reward = turntableService.getTurntable(player).getRewards().get(site);
+        gmService.processGM(player,reward);
 
         vo.addData("site",site);
         vo.addData("reward",reward);

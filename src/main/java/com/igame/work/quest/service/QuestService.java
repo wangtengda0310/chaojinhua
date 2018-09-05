@@ -1,6 +1,7 @@
 package com.igame.work.quest.service;
 
 import com.google.common.collect.Lists;
+import com.igame.core.ISFSModule;
 import com.igame.work.MessageUtil;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
@@ -23,14 +24,14 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class QuestService {
-	
-	
+public class QuestService implements ISFSModule {
+	private ResourceService resourceService;
+	private QuestService questService;
+
 	/**
 	 * 检测玩家任务
-	 * @param player
 	 */
-	public static void checkPlayerQuest(Player player){
+	public void checkPlayerQuest(Player player){
 			
 		for(TaskDayInfo td :player.getAchievement().values()){
 			if(QuestDataManager.QuestData.getTemplate(td.getQuestId()) == null){
@@ -43,7 +44,11 @@ public class QuestService {
 			TaskDayInfo tf = player.getAchievement().get(qt.getQuestId());
 			if(tf == null){
 				if(canOpenQuest(player,player.getAchievement(),qt)){
-					player.getAchievement().put(qt.getQuestId(), new TaskDayInfo(player, qt.getQuestId()));//添加新任务
+					TaskDayInfo value = new TaskDayInfo(player, qt.getQuestId());
+					if(qt.getQuestType()==2 && qt.getClaim()>1 && qt.getClaim()<=25){
+						questService.processTaskDetail(player, Lists.newArrayList(), value, qt.getClaim(), 0);
+					}
+					player.getAchievement().put(qt.getQuestId(), value);//添加新任务
 				}
 			}else{
 //				if((qt.getClaim() == 17 && tf.getVars() == qt.getFinish() 
@@ -57,7 +62,7 @@ public class QuestService {
 					}
 					if(qt.getClaim() == 17||qt.getClaim() == 19||qt.getClaim() == 21
 							||qt.getClaim() == 23||qt.getClaim() == 24|qt.getClaim() == 25){
-						QuestService.processTaskDetail(player, Lists.newArrayList(), tf, qt.getClaim(), 0);
+						processTaskDetail(player, Lists.newArrayList(), tf, qt.getClaim(), 0);
 					}
 //				}
 
@@ -66,7 +71,7 @@ public class QuestService {
 		
 	}
 	
-	public static boolean canOpenQuest(Player player,Map<Integer, TaskDayInfo> qs,QuestTemplate qt){
+	public boolean canOpenQuest(Player player,Map<Integer, TaskDayInfo> qs,QuestTemplate qt){
 		if(MyUtil.isNullOrEmpty(qt.getUnlock())){
 			return true;
 		}
@@ -87,14 +92,12 @@ public class QuestService {
 	
 	/**
 	 * 领取任务奖励
-	 * @param player
-	 * @param td
 	 */
-	public static String getReward(Player player,TaskDayInfo td){
+	public String getReward(Player player,TaskDayInfo td){
 		
 		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(td.getQuestId());
-		RewardDto reward = ResourceService.ins().getRewardDto(qt.getReward(), "100");
-		ResourceService.ins().addRewarToPlayer(player, reward);
+		RewardDto reward = resourceService.getRewardDto(qt.getReward(), "100");
+		resourceService.addRewarToPlayer(player, reward);
 		td.setStatus(3);
 		td.setDtate(2);
 		td.setAction(2);
@@ -103,17 +106,14 @@ public class QuestService {
 		qList.addAll(endQuest(player, td));//判断是否有新开启任务
 		MessageUtil.notifyQuestChange(player, qList);
 		GoldLog.info(player.getSeverId(), player.getUserId(), player.getPlayerId(), GoldLog.QUESTREWARD, "#questId:" + td.getQuestId());
-		return ResourceService.ins().getRewardString(reward);
+		return resourceService.getRewardString(reward);
 				
 	}
 	
 	/**
 	 * 完成任务
-	 * @param player
-	 * @param td
-	 * @return
 	 */
-	public static List<TaskDayInfo> endQuest(Player player,TaskDayInfo td){
+	public List<TaskDayInfo> endQuest(Player player,TaskDayInfo td){
 		
 		List<TaskDayInfo> qs = Lists.newArrayList();
 		for(QuestTemplate qt : QuestDataManager.QuestData.getAll()){
@@ -121,7 +121,12 @@ public class QuestService {
 				String[] uc = qt.getUnlock().split(",");
 				if("2".equals(uc[0])){
 					if(td.getQuestId() == Integer.parseInt(uc[1]) && player.getAchievement().get(Integer.parseInt(uc[1])) == null){
-						qs.add(new TaskDayInfo(player,Integer.parseInt(uc[1])));
+						TaskDayInfo e = new TaskDayInfo(player, Integer.parseInt(uc[1]));
+						QuestTemplate qtt = QuestDataManager.QuestData.getTemplate(e.getQuestId());
+						if(qtt.getQuestType()==2 && qtt.getClaim()>1 && qtt.getClaim()<=25){
+							questService.processTaskDetail(player, Lists.newArrayList(), e, qtt.getClaim(), 0);
+						}
+						qs.add(e);
 					}
 				}
 			}
@@ -132,9 +137,8 @@ public class QuestService {
 	
 	/**
 	 * 人物升级
-	 * @param player
 	 */
-	public static void onLevelUp(Player player){
+	public void onLevelUp(Player player){
 		
 		List<TaskDayInfo> qList = Lists.newArrayList();
 		for(QuestTemplate qt : QuestDataManager.QuestData.getAll()){
@@ -146,6 +150,9 @@ public class QuestService {
 					if("1".equals(uc[0])){
 						if(player.getPlayerLevel() >= Integer.parseInt(uc[1])){
 							TaskDayInfo tt = new TaskDayInfo(player,qt.getQuestId());
+							if(qt.getQuestType()==2 && qt.getClaim()>1 && qt.getClaim()<=25){
+								questService.processTaskDetail(player, Lists.newArrayList(), tt, qt.getClaim(), 0);
+							}
 							qList.add(tt);
 							player.getAchievement().put(tt.getQuestId(), tt);
 						}
@@ -158,11 +165,8 @@ public class QuestService {
 	
 	/**
 	 * 任务埋点处理
-	 * @param player
-	 * @param count
-	 * @return
 	 */
-	public static List<TaskDayInfo> processTask(Player player,int claim,int count){
+	public List<TaskDayInfo> processTask(Player player,int claim,int count){
 		
 		List<TaskDayInfo> qList = Lists.newArrayList();
 		for(TaskDayInfo td : player.getAchievement().values()){
@@ -174,7 +178,7 @@ public class QuestService {
 		
 	}
 	
-	public static void processTaskDetail(Player player,List<TaskDayInfo> qList,TaskDayInfo td,int claim,int count){
+	public void processTaskDetail(Player player,List<TaskDayInfo> qList,TaskDayInfo td,int claim,int count){
 		if(td.getStatus() != 3){
 			QuestTemplate qt = QuestDataManager.QuestData.getTemplate(td.getQuestId());
 			if(qt != null && qt.getClaim() == claim){
@@ -314,7 +318,7 @@ public class QuestService {
 	}
 	
 	
-	private static void processVars(Player player,TaskDayInfo td,QuestTemplate qt,int count){
+	private void processVars(Player player,TaskDayInfo td,QuestTemplate qt,int count){
 		if(qt.getQuestType() == 1){
 			td.setVars(td.getVars() + count);
 		}else if(qt.getQuestType() == 2){
@@ -325,7 +329,7 @@ public class QuestService {
 		}	
 	}
 		
-	private static void processInfoStatus(Player player,List<TaskDayInfo> qList,TaskDayInfo td,QuestTemplate qt){
+	private void processInfoStatus(Player player,List<TaskDayInfo> qList,TaskDayInfo td,QuestTemplate qt){
 		
 		td.setDtate(2);
 		td.setAction(2);

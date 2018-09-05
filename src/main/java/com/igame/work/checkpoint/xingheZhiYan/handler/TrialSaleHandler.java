@@ -18,7 +18,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class TrialSaleHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -34,10 +35,10 @@ public class TrialSaleHandler extends ReconnectedHandler {
 		}
 
 		//扣除钻石
-		ResourceService.ins().addDiamond(player,-50);
+		resourceService.addDiamond(player,-50);
 
 		//增加星能
-		ResourceService.ins().addXing(player,5);
+		resourceService.addXing(player,5);
 
 		vo.addData("xing",player.getXing());
 

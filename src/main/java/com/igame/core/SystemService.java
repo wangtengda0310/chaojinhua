@@ -40,7 +40,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
     public SystemServiceDto dto;
 
     @Override
-    protected PlayerEventObserver observeEvent() {
+    protected PlayerEventObserver playerObserver() {
         return new PlayerEventObserver() {
             @Override
             public EventType interestedType() {
@@ -130,6 +130,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
         }
     }
 
+    @Override
     public void init(){
         dto = SystemServiceDAO.ins().loadData();
     }

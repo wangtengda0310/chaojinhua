@@ -76,9 +76,10 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 	/**
 	 * 加载所有玩家
 	 */
+	@Override
 	public void init() {
 
-		String DBName = holder.SFSExtension.dbManager.p.getProperty("DBName");
+		String DBName = extensionHolder.SFSExtension.dbManager.p.getProperty("DBName");
 		String[] DBNames = DBName.split(",");
 		for(String db : DBNames){
 			int serverId=Integer.parseInt(db.substring(5));

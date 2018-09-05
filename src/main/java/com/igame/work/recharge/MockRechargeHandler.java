@@ -14,6 +14,8 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
 public class MockRechargeHandler extends ReconnectedHandler {
+    private GMService gmService;
+
     @Override
     public int protocolId() {
         return MProtrol.MOCK_RECHARGE;
@@ -27,13 +29,13 @@ public class MockRechargeHandler extends ReconnectedHandler {
         int id = jsonObject.getInt("id");
 
         if (id == 1) {
-            GMService.processGM(player, "1,2,1");
+            gmService.processGM(player, "1,2,1");
             fireEvent(player, PlayerEvents.RECHARGE, 1);
         } else if (id == 2) {
-            GMService.processGM(player, "1,2,5");
+            gmService.processGM(player, "1,2,5");
             fireEvent(player, PlayerEvents.RECHARGE, 5);
         } else if (id == 3) {
-            GMService.processGM(player, "1,2,10");
+            gmService.processGM(player, "1,2,10");
             fireEvent(player, PlayerEvents.RECHARGE, 10);
         }
 
@@ -41,7 +43,7 @@ public class MockRechargeHandler extends ReconnectedHandler {
     }
 
     @Override
-    protected PlayerEventObserver observeEvent() {
+    protected PlayerEventObserver playerObserver() {
         return new PlayerEventObserver() {
             @Override
             public EventType interestedType() {
@@ -57,7 +59,7 @@ public class MockRechargeHandler extends ReconnectedHandler {
                 }
                 int rechargeLimit = Integer.parseInt(template.getGet_value());
                 if ((int) event > rechargeLimit) {
-                    GMService.processGM(player, template.getActivity_drop());
+                    gmService.processGM(player, template.getActivity_drop());
                 }
             }
         };

@@ -27,7 +27,8 @@ import java.util.Map;
  *
  */
 public class MonsterChangeHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -112,7 +113,7 @@ public class MonsterChangeHandler extends ReconnectedHandler {
 						ll.add(mm2);
 						MessageUtil.notifyMonsterChange(player, ll);
 
-						Item xiao = ResourceService.ins().addItem(player, 300001, -1, false);//消耗道具
+						Item xiao = resourceService.addItem(player, 300001, -1, false);//消耗道具
 						items.add(xiao);
 						MessageUtil.notifyItemChange(player, items);
 						
@@ -131,7 +132,7 @@ public class MonsterChangeHandler extends ReconnectedHandler {
 	private void addItem(Player player, List<Item> items, String[] eqs) {
 		for(int i = 0;i < eqs.length;i++){
 			if(!"-1".equals(eqs[i]) && !"0".equals(eqs[i])){
-				Item old = ResourceService.ins().addItem(player, Integer.parseInt(eqs[i]), 1, false);
+				Item old = resourceService.addItem(player, Integer.parseInt(eqs[i]), 1, false);
 				items.add(old);
 				eqs[i] = "0";
 

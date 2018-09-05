@@ -19,7 +19,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class TansuoUnLockHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -52,7 +53,7 @@ public class TansuoUnLockHandler extends ReconnectedHandler {
 									return error(ErrorCode.GOLD_NOT_ENOUGH);
 								}else{
 									ls[index -1] = "0";
-									ResourceService.ins().addGold(player, 0-Long.parseLong(need[1]));
+									resourceService.addGold(player, 0-Long.parseLong(need[1]));
 									dto.setMons(MyUtil.toString(ls,","));
 								}
 							}else if("2".equals(need[0])){
@@ -60,7 +61,7 @@ public class TansuoUnLockHandler extends ReconnectedHandler {
 									return error(ErrorCode.DIAMOND_NOT_ENOUGH);
 								}else{
 									ls[index -1] = "0";
-									ResourceService.ins().addDiamond(player, 0-Integer.parseInt(need[1]));
+									resourceService.addDiamond(player, 0-Integer.parseInt(need[1]));
 									dto.setMons(MyUtil.toString(ls,","));
 								}
 							}

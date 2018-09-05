@@ -41,4 +41,9 @@ public class HeartHandler extends BaseHandler{
         timer.put(player.getPlayerId(), times);
         sendClient(MProtrol.HEART,vo,user);
     }
+
+    @Override
+    public int protocolId() {
+        return MProtrol.HEART;
+    }
 }

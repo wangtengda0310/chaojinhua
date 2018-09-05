@@ -19,7 +19,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class EndlessNaiHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -37,7 +38,7 @@ public class EndlessNaiHandler extends ReconnectedHandler {
 					return error(ErrorCode.WUZHENG_HPFULL);
 				}else{
 					player.setWuNai(1);
-					ResourceService.ins().addDiamond(player, -50);
+					resourceService.addDiamond(player, -50);
 			    	for(MatchMonsterDto mto : player.getWuZheng().values()){
 			    		mto.setHp(mto.getHpInit());
 			    	}

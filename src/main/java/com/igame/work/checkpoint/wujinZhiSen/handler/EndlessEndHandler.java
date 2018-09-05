@@ -25,7 +25,9 @@ import java.util.List;
  *
  */
 public class EndlessEndHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
+	private QuestService questService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -63,11 +65,11 @@ public class EndlessEndHandler extends ReconnectedHandler {
 		}else{
 			RewardDto rt = new RewardDto();
 			if(win == 1){
-//				rt = ResourceService.ins().getRewardDto(ct.getReward(),"100");
+//				rt = resourceService.getRewardDto(ct.getReward(),"100");
 				
 				rt.addItem(200006, 2 * (total + 1));
-				ResourceService.ins().addRewarToPlayer(player, rt);
-				ResourceService.ins().addWuScore(player, 20 + 5 * total);
+				resourceService.addRewarToPlayer(player, rt);
+				resourceService.addWuScore(player, 20 + 5 * total);
 				String[] ct = player.getWuMap().get(currIndex).split(";");
 				for(String mh : monsHp.split(";")){
 					long oId = Long.parseLong(mh.split(",")[0]);
@@ -76,7 +78,7 @@ public class EndlessEndHandler extends ReconnectedHandler {
 						player.getWuZheng().get(oId).setHp(hp);
 					}
 				}
-				reward = ResourceService.ins().getRewardString(rt);
+				reward = resourceService.getRewardString(rt);
 				ct[2] = "1";
 				player.getWuMap().put(currIndex, MyUtil.toString(ct, ";"));
 				MessageUtil.notifyWuZhengChange(player);
@@ -88,7 +90,7 @@ public class EndlessEndHandler extends ReconnectedHandler {
 			}else{
 				MessageUtil.notifyWuBufferChange(player,player.getWuEffect());
 			}
-			QuestService.processTask(player, 11, 1);
+			questService.processTask(player, 11, 1);
 
 		}
 

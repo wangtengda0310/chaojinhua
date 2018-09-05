@@ -19,7 +19,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class CheckResHandler extends ReconnectedHandler {
-	
+
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -41,9 +42,9 @@ public class CheckResHandler extends ReconnectedHandler {
 					if(timeCount < 60){
 //						ret = ErrorCode.CHECKPOINT_RESNOT_EXIT;
 					}else{
-						RewardDto dto = ResourceService.ins().getResRewardDto(ct.getDropPoint(), timeCount, ct.getMaxTime() * 60);
-						reward += ";"+ ResourceService.ins().getRewardString(dto);//返回字符串
-						ResourceService.ins().addRewarToPlayer(player, dto);//真实给玩家加东西
+						RewardDto dto = resourceService.getResRewardDto(ct.getDropPoint(), timeCount, ct.getMaxTime() * 60);
+						reward += ";"+ resourceService.getRewardString(dto);//返回字符串
+						resourceService.addRewarToPlayer(player, dto);//真实给玩家加东西
 						player.getTimeResCheck().put(chapterId, timeCount % 60);
 						MessageUtil.notifyTimeResToPlayer(player, chapterId, new RewardDto());
 					}

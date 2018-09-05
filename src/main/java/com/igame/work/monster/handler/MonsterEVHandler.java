@@ -16,7 +16,10 @@ import net.sf.json.JSONObject;
  *
  */
 public class MonsterEVHandler extends ReconnectedHandler {
-	
+
+
+	private QuestService questService;
+	private MonsterService monsterService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -29,13 +32,13 @@ public class MonsterEVHandler extends ReconnectedHandler {
 		long objectId = jsonObject.getLong("objectId");
 		int nextObject = jsonObject.getInt("nextObject");
 
-		int ret = MonsterService.monsterEV(player, objectId, nextObject);
+		int ret = monsterService.monsterEV(player, objectId, nextObject);
 		
 		if(ret != 0){
 			vo.setState(1);
 			vo.setErrCode(ret);
 		}else{
-			QuestService.processTask(player, 8, 1);
+			questService.processTask(player, 8, 1);
 		}
 		vo.addData("objectId", objectId);
 		vo.addData("nextObject", nextObject);
