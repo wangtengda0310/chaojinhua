@@ -6,6 +6,7 @@ import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.handler.RetVO;
+import com.igame.util.DateUtil;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.PlayerEvents;
@@ -27,28 +28,23 @@ public class ShopActivityService extends EventService implements ISFSModule {
         return dto;
     }
 
-    private void recordGoldData(Player player, long timeMillis, long amount, ShopActivityDataTemplate c) {
-        dto.computeIfAbsent(c.getNum(), this::createShopActivityDto)
-                .computeIfAbsent(player.getPlayerId(), k -> new ShopActivityPlayDto(){
-            {
-                this.goldActivityInfo = new LinkedHashMap<Long, Long>() {
-                    @Override
-                    protected boolean removeEldestEntry(Map.Entry<Long, Long> eldest) {
+    private ShopActivityPlayerDto createShopActivityPlayerDto() {
+        ShopActivityPlayerDto dto = new ShopActivityPlayerDto();
+        dto.openMillis=System.currentTimeMillis();
+        return dto;
+    }
 
-                        Optional<Integer> max = ShopActivityDataManager.Configs.getAll()
-                                .stream()
-                                .map(ShopActivityDataTemplate::getTime_range)
-                                .map(rangeHour -> rangeHour * HOUR_MILLIS)
-                                .max(Comparator.comparingInt(rangeMillis -> rangeMillis));
-                        return !max.isPresent() || Math.abs(eldest.getKey() - timeMillis) > max.get();
-                    }
-                };
-            }
-        }).goldActivityInfo.put(timeMillis, amount);
+    private void recordGoldData(Player player, long timeMillis, long amount, ShopActivityDataTemplate c) {
+        dto.computeIfAbsent(c.getNum(), this::createShopActivityDto).players
+                .computeIfAbsent(player.getPlayerId(), k -> {
+                    ShopActivityPlayerDto dto = createShopActivityPlayerDto();
+                    dto.goldActivityInfo.put(timeMillis, amount);
+                    return dto;
+                });
     }
 
     private boolean canOpenGoldActivityForPlayer(Player player, ShopActivityDataTemplate c) {
-        Map<Long, Long> records = dto.get(c.getNum()).get(player.getPlayerId()).goldActivityInfo;
+        Map<Long, Long> records = dto.get(c.getNum()).players.get(player.getPlayerId()).goldActivityInfo;
         int rangeMillis = c.getTime_range() * HOUR_MILLIS;
         LinkedList<Long> timestamps = new LinkedList<>(records.keySet());
         do {
@@ -67,27 +63,27 @@ public class ShopActivityService extends EventService implements ISFSModule {
     }
 
     private void openGoldActivity(Player player, ShopActivityDataTemplate c) {
-        dto.get(c.getNum()).remove(player.getPlayerId());
+        dto.get(c.getNum()).players.get(player.getPlayerId()).goldActivityInfo.clear();
         dto.computeIfAbsent(c.getNum(), this::createShopActivityDto)
-                .put(player.getPlayerId(), new ShopActivityPlayDto());
+                .players.put(player.getPlayerId(), createShopActivityPlayerDto());
     }
 
     private void recordItemData(Player player, int itemId, int amount, ShopActivityDataTemplate c) {
         dto
                 .computeIfAbsent(c.getNum(), this::createShopActivityDto)
-                .computeIfAbsent(player.getPlayerId(), k -> new ShopActivityPlayDto()).itemActivityInfo
+                .players.computeIfAbsent(player.getPlayerId(), k -> createShopActivityPlayerDto()).itemActivityInfo
                 .merge(itemId, amount, (i, j) -> i + j);
     }
 
     private boolean canOpenItemActivityForPlayer(Player player, ShopActivityDataTemplate c) {
-        int itemCount = dto.get(c.getNum()).get(player.getPlayerId()).itemActivityInfo.get(c.getItem_id());
+        int itemCount = dto.get(c.getNum()).players.get(player.getPlayerId()).itemActivityInfo.get(c.getItem_id());
         return itemCount >= c.getTouch_value();
     }
 
     private void openItemActivity(Player player, ShopActivityDataTemplate c) {
-        dto.get(c.getNum()).remove(player.getPlayerId());
+        dto.get(c.getNum()).players.get(player.getPlayerId()).itemActivityInfo.clear();
         dto.computeIfAbsent(c.getNum(), this::createShopActivityDto)
-                .put(player.getPlayerId(), new ShopActivityPlayDto());
+                .players.put(player.getPlayerId(), createShopActivityPlayerDto());
     }
 
     @Override
@@ -119,6 +115,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
                         .peek(c -> openGoldActivity(player, c))                     // 活动状态改为开启
                         .forEach(c -> notifyClient(player, c));                        // 通知客户端    todo 合并发送
 
+                save(player);
 
             }
         });
@@ -156,14 +153,14 @@ public class ShopActivityService extends EventService implements ISFSModule {
 
     private boolean notCd(Player player, ShopActivityDataTemplate config) {
         return !dto.containsKey(config.getNum())
-                || !dto.get(config.getNum()).containsKey(player.getPlayerId())
-                || dto.get(config.getNum()).get(player.getPlayerId()).openMillis + config.getCd() * HOUR_MILLIS <= System.currentTimeMillis();
+                || !dto.get(config.getNum()).players.containsKey(player.getPlayerId())
+                || dto.get(config.getNum()).players.get(player.getPlayerId()).openMillis + config.getCd() * HOUR_MILLIS <= System.currentTimeMillis();
     }
 
     private boolean isOpen(Player player, ShopActivityDataTemplate config) {
         return dto.containsKey(config.getNum())
-                && dto.get(config.getNum()).containsKey(player.getPlayerId())
-                && dto.get(config.getNum()).get(player.getPlayerId()).openMillis + config.getTime_limit() * HOUR_MILLIS > System.currentTimeMillis();
+                && dto.get(config.getNum()).players.containsKey(player.getPlayerId())
+                && dto.get(config.getNum()).players.get(player.getPlayerId()).openMillis + config.getTime_limit() * HOUR_MILLIS > System.currentTimeMillis();
 
     }
 
@@ -172,21 +169,21 @@ public class ShopActivityService extends EventService implements ISFSModule {
             return;
         }
         RetVO vo = new RetVO();
-        Map<Integer, Long> result = new HashMap<>();
-        result.put(config.getNum(), dto.get(config.getNum()).get(player.getPlayerId()).openMillis);
+        Map<Integer, String> result = new HashMap<>();
+        result.put(config.getNum(), DateUtil.formatClientDateTime(dto.get(config.getNum()).players.get(player.getPlayerId()).openMillis));
         vo.addData("open", result);
         MessageUtil.sendMessageToPlayer(player, MProtrol.SHOP_ACTICITY_STATE, vo);
-        save(player);
     }
 
-    public Map<Integer,Long> clientData(Player player) {
+    public Map<Integer,String> clientData(Player player) {
         shopActivityDAO.listAll(player.getSeverId()).forEach(e->dto.put(e.get_id(),e));
         ShopActivityDataManager.Configs.getAll().forEach(c->dto.computeIfAbsent(c.getNum(), this::createShopActivityDto));
 
         return ShopActivityDataManager.Configs.getAll().stream()
                 .filter(c -> dto.containsKey(c.getNum()))
                 .filter(c -> isOpen(player, c))
-                .collect(Collectors.toMap(ShopActivityDataTemplate::getNum,c->dto.get(c.getNum()).get(player.getPlayerId()).openMillis))
+                .filter(c -> dto.get(c.getNum()).players.get(player.getPlayerId()).openMillis >0)
+                .collect(Collectors.toMap(ShopActivityDataTemplate::getNum,c-> DateUtil.formatClientDateTime(dto.get(c.getNum()).players.get(player.getPlayerId()).openMillis)))
                 ;
     }
 

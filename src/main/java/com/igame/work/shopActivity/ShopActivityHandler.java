@@ -31,12 +31,14 @@ public class ShopActivityHandler extends ReconnectedHandler {
         }
 
         if(!shopActivityService.dto.containsKey(id)
-        ||!shopActivityService.dto.get(id).containsKey(player.getPlayerId())) {
+        ||!shopActivityService.dto.get(id).players.containsKey(player.getPlayerId())) {
             return error(ErrorCode.CAN_NOT_RECEIVE);
         }
 
-        if (shopActivityService.dto.get(id).get(player.getPlayerId()).openMillis + config.getTime_limit() * ShopActivityService.HOUR_MILLIS < System.currentTimeMillis()) {
+        ShopActivityPlayerDto dto = shopActivityService.dto.get(id).players.get(player.getPlayerId());
+        if (dto.openMillis + config.getTime_limit() * ShopActivityService.HOUR_MILLIS < System.currentTimeMillis()) {
             // todo close and remove
+            dto.openMillis=0;
             return error(ErrorCode.ACTIVITY_CLOSED);
         }
 
