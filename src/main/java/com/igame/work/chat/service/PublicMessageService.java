@@ -18,6 +18,8 @@ import static com.igame.work.chat.MessageContants.*;
  * 公聊消息服务
  */
 public class PublicMessageService extends EventService implements ISFSModule, TimeListener {
+    private MessageDAO dao;
+
     @Override
     public void minute5() {
         save();
@@ -116,7 +118,7 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
         ArrayBlockingQueue<Message> worldMsg = new ArrayBlockingQueue<>(CACHE_MAX);
         ArrayBlockingQueue<Message> hornMsg = new ArrayBlockingQueue<>(CACHE_MAX);
 
-        List<Message> messages = MessageDAO.ins().getMessageByServerId();
+        List<Message> messages = dao.getMessageByServerId();
         for (Message message : messages) {
             int type = message.getType();
 
@@ -139,17 +141,17 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
     public void save(){
 
         //删除
-        delMessages.forEach(message -> MessageDAO.ins().delMessage(message));
+        delMessages.forEach(message -> dao.delMessage(message));
         delMessages.clear();
 
         //世界新增
         worldMessage.stream()
                 .filter(message -> message.get_id() == null)
-                .forEach(message -> MessageDAO.ins().saveMessage(message));
+                .forEach(message -> dao.saveMessage(message));
         /*for (ArrayBlockingQueue<Message> messages : worldMessage.values()) {
             for (Message message : messages) {
                 if (message.get_id() == null)
-                    MessageDAO.ins().saveMessage(message);
+                    dao.saveMessage(message);
                     //System.out.println("世界新增："+message.getContent());
             }
         }*/
@@ -157,7 +159,7 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
         //喇叭新增
         hornMessage.stream()
                 .filter(message -> message.get_id() == null)
-                .forEach(message -> MessageDAO.ins().saveMessage(message));
+                .forEach(message -> dao.saveMessage(message));
         /*for (ArrayBlockingQueue<Message> messages : hornMessage.values()) {
             for (Message message : messages) {
                 if (message.get_id() == null)

@@ -13,13 +13,6 @@ import java.util.List;
  */
 public class MessageDAO extends AbsDao {
 
-    private static final MessageDAO domain = new MessageDAO();
-
-    public static MessageDAO ins() {
-        return domain;
-    }
-
-
     /**
      * 根据 服务器ID 获取 消息
      */
@@ -76,7 +69,6 @@ public class MessageDAO extends AbsDao {
 
     /**
      * 更新 消息
-     * @param serverId 服务器ID
      * @param message 消息
      */
     public void updateMessage(Message message){
