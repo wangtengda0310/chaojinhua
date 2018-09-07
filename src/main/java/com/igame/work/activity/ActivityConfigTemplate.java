@@ -165,6 +165,6 @@ public class ActivityConfigTemplate {
 
 	public boolean isActive(Player player, Date now) {
 		Date startTime = startTime(player);
-		return startTime.before(now) && DateUtil.getIntervalHours(startTime, now)<getTime_limit();
+		return startTime.before(now) && (-1 == getTime_limit() || DateUtil.getIntervalHours(startTime, now)<getTime_limit());
 	}
 }

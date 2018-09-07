@@ -23,14 +23,25 @@ public class DengluService {
         // 配置中没找到 认为是活动下线 把数据清掉
         Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getSeverId(), player.getPlayerId());
         byPlayer.values().stream()
-                .filter(a -> !configs.containsKey(a.getActivityId()))
+                .filter(a -> !configs.containsKey(a.getActivityId())
+                        || configs.get(a.getActivityId()).stream().anyMatch(c->!c.isActive(player, now)))
                 .forEach(a -> DengluDAO.ins().remove(player.getSeverId(), a));
 
         // 新的登录活动开始后 删除上轮的数据
         // id相同id时间有修改的话 认为是新一轮活动 把上一轮活动数据清掉
+        // todo 修改数据库以活动为主数据后 统一在加载数据的地方处理
         byPlayer.values().stream()
                 .filter(a -> configs.containsKey(a.getActivityId()))
-                .filter(a -> configs.get(a.getActivityId()).stream().noneMatch(c -> c.isActive(player, now)))
+                .filter(a -> configs.get(a.getActivityId()).stream()
+                        .anyMatch(c ->
+                                    !String.valueOf(c.startTime(player).getTime()).equals(a.getOpenTime())))
+                .peek(a->
+                        configs.get(a.getActivityId()).stream().findAny()
+                                .ifPresent(c->{
+                                    if(a.getOpenTime()==null || c.startTime(player).getTime()>Long.parseLong(a.getOpenTime())) {
+                                        a.setOpenTime(String.valueOf(c.startTime(player).getTime()));
+                                    }
+                                }))
                 .forEach(a -> a.setRecord(new int[configs.get(a.getActivityId()).size()]));
 
         configs.keySet().forEach(configId -> {
@@ -38,8 +49,9 @@ public class DengluService {
                 DengluDto dto = new DengluDto();
                 dto.setActivityId(activityId);
                 dto.setPlayerId(player.getPlayerId());
-                dto.setRecord(new int[configs.size()]);
-
+                dto.setRecord(new int[configs.get(activityId).size()]);
+                configs.get(activityId).stream().findAny()
+                        .ifPresent(c->dto.setOpenTime(String.valueOf(c.startTime(player).getTime())));
                 DengluDAO.ins().save(player.getSeverId(), dto);
                 return dto;
             });
@@ -47,7 +59,9 @@ public class DengluService {
 
         byPlayer.forEach((configId,a) -> {
             configs.get(a.getActivityId()).stream()
-                    .filter(c -> c.getOrder() - 1 <= DateUtil.getIntervalDays(c.startTime(player), new Date()))  // order从1开始 interval days从0开始
+                    .filter(c->c.isActive(player, now))
+                    .filter(c -> a.getRecord()[c.getOrder()-1] != 2)
+                    .filter(c -> c.getOrder() - 1 <= DateUtil.getIntervalDays(c.startTime(player), now))  // order从1开始 interval days从0开始
                     .forEach(c -> a.getRecord()[c.getOrder()-1] = 1);
             DengluDAO.ins().update(player.getSeverId(), a);
         });

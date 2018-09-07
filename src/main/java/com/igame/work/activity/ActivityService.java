@@ -16,18 +16,20 @@ import java.util.Map;
 /**
  * activity_type配置1的时候time_limit可能是一个正数 也可能是-1
  * 配置2的时候time_limit只允许配置为正数
- * <p>
+ * <br/>
  * gift_bag配置为3的时候 活动一定是个登录几天 每天对应不同奖励的活动
- * <p>
+ * <br/>
  * start_time 配置是2的时候后面会跟一个时间戳 如果没有就当做配置错误
- * <p>
+ * <br/>
  * gift_bag 配置为2的时候 才会用到get_limit和get_value
- * <p>
+ * <br/>
  * start_limit和value字段会删掉提取到单独的配置
- * <p>
+ * <br/>
  * 神秘商人的配置提取到单独的配置
- * <p>
+ * <br/>
  * buy_price和sale_picture服务器用不到
+ * <br/>
+ * 所有活动记录一下配置的开始时间戳，如果时间戳有变化就当做是新活动
  */
 public class ActivityService implements ISFSModule {
     private GMService gMService;

@@ -10,6 +10,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,14 @@ public class DengluHandler extends ReconnectedHandler {
 
         if (dengluDto == null) {
             return error(ErrorCode.ERROR);
+        }
+
+        if (DengluService.configs.get(id) == null) {
+            return error(ErrorCode.ERROR);
+        }
+
+        if (!DengluService.configs.get(id).get(index).isActive(player, new Date())) {
+            return error(ErrorCode.CAN_NOT_RECEIVE);
         }
 
         if (dengluDto.getRecord()[index - 1]!=1) {
