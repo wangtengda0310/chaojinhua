@@ -24,7 +24,7 @@ public class GameQuartzListener {
 		//ExceptionLog.error("minute execute");
 
 //    	for(Player player : SessionManager.ins().getSessions().values()){
-//			PlayerLoad.ins().savePlayer(player,false);
+//			fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
 //		}
 
 		ExceptionLog.error("minute");

@@ -6,9 +6,9 @@ import com.igame.core.log.ExceptionLog;
 import com.igame.core.log.GoldLog;
 import com.igame.util.KickIDisconnectionReason;
 import com.igame.work.MProtrol;
+import com.igame.work.PlayerEvents;
 import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.load.PlayerLoad;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
@@ -27,7 +27,7 @@ public class LoginOutHandler extends BaseHandler {
 		Player player =  SessionManager.ins().getSession(Long.parseLong(user.getName()));
 		if(player != null){//保存角色数据
 			try{
-				PlayerLoad.ins().savePlayer(player,true);
+				fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
 			}catch(Exception e){
 				trace("palyer leave save error----- :",e);
 				ExceptionLog.error("palyer leave save error----- :",e);

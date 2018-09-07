@@ -24,7 +24,7 @@ public class DisconnectEventHandler extends BaseServerEventHandler{
 		if(player != null){//保存角色数据
 //			if(player.getHeartTime()>0 && System.currentTimeMillis() - player.getHeartTime() > 5 * 60 * 1000){
 //				try{
-//					PlayerLoad.ins().savePlayer(player,true);
+//					fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
 //				}catch(Exception e){
 //					trace("palyer leave save error----- :",e);
 //					ExceptionLog.error("palyer leave save error----- :",e);

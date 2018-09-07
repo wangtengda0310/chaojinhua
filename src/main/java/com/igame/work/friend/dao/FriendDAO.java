@@ -8,13 +8,6 @@ import org.mongodb.morphia.query.UpdateOperations;
 
 public class FriendDAO extends AbsDao {
 
-    private static final FriendDAO domain = new FriendDAO();
-
-    public static FriendDAO ins() {
-        return domain;
-    }
-
-
     /**
      * 根据 玩家ID 获取 玩家好友信息
      * @param playerId 玩家ID

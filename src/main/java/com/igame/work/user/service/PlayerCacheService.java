@@ -4,15 +4,16 @@ package com.igame.work.user.service;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.LoginOutReason;
+import com.igame.work.PlayerEvents;
 import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.friend.dao.FriendDAO;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.load.PlayerLoad;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,8 @@ import java.util.stream.Collectors;
  *
  */
 public class PlayerCacheService extends EventService implements ISFSModule, TimeListener {
+	@Inject private FriendDAO dao;
+
 	@Override
 	public void minute() {
 		checkPlayer();
@@ -84,7 +87,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 
 		allPlayer.forEach(player ->
 				//加载好友
-				player.setFriends(FriendDAO.ins().getFriendInfoByPlayerId(player.getPlayerId()))
+				player.setFriends(dao.getFriendInfoByPlayerId(player.getPlayerId()))
 		);
 	}
 
@@ -92,11 +95,11 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 		return pcd.values().stream().filter(player -> player.getSeverId() == serverId).collect(Collectors.toList());
 	}
 	
-	public static void checkPlayer(){
+	public void checkPlayer(){
     	for(Player player : SessionManager.ins().getSessions().values()){
 			if(player.getHeartTime()>0 && System.currentTimeMillis() - player.getHeartTime() > 5 * 60 * 1000){
 				try{
-					PlayerLoad.ins().savePlayer(player,true);
+					fireEvent(player, PlayerEvents.OFF_LINE,System.currentTimeMillis());
 				}catch(Exception e){
 					ExceptionLog.error("palyer leave save error----- :",e);
 				}

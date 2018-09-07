@@ -1,5 +1,6 @@
 package com.igame.work.friend.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
@@ -26,6 +27,7 @@ import static com.igame.work.friend.FriendConstants.*;
 public class FriendAddHandler extends ReconnectedHandler {
 
     private static final int max = 20;
+    @Inject private FriendDAO dao;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -81,7 +83,7 @@ public class FriendAddHandler extends ReconnectedHandler {
         if (reqPlayer != null){
             reqFriends = reqPlayer.getFriends().getReqFriends();
         }else {
-            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(playerId);
+            FriendInfo friendInfo = dao.getFriendInfoByPlayerId(playerId);
             reqFriends = friendInfo.getReqFriends();
         }
         //判断自己是否在对方的请求列表中

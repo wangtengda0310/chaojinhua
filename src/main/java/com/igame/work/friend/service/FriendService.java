@@ -1,6 +1,7 @@
 package com.igame.work.friend.service;
 
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.RetVO;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -29,6 +30,7 @@ public class FriendService {
 
 
     private static final FriendService domain = new FriendService();
+    @Inject private FriendDAO dao;
 
     public static FriendService ins() {
         return domain;
@@ -107,18 +109,18 @@ public class FriendService {
         }else{ //不在线
 
             //存库
-            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(recPlayerId);
+            FriendInfo friendInfo = dao.getFriendInfoByPlayerId(recPlayerId);
             if (friendInfo == null){    //todo 处理老数据
 
                 friendInfo = new FriendInfo(recPlayerId);
 
                 friendInfo.getReqFriends().add(friend);
 
-                FriendDAO.ins().saveFriendInfo(friendInfo);
+                dao.saveFriendInfo(friendInfo);
             }else {
                 if (!friendInfo.getReqFriends().contains(friend)){  //自己不存在于对方好友列表中
                     friendInfo.getReqFriends().add(friend);
-                    FriendDAO.ins().updateFriends(friendInfo);
+                    dao.updateFriends(friendInfo);
                 }
             }
         }
@@ -184,7 +186,7 @@ public class FriendService {
 
         }else { //不在线,更新缓存并存库
 
-            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(reqPlayerId);
+            FriendInfo friendInfo = dao.getFriendInfoByPlayerId(reqPlayerId);
 
             if (friendInfo == null){
 
@@ -192,13 +194,13 @@ public class FriendService {
 
                 friendInfo.getCurFriends().add(new Friend(player));
 
-                FriendDAO.ins().saveFriendInfo(friendInfo);
+                dao.saveFriendInfo(friendInfo);
             }else {
 
                 //添加好友并增加当前好友数量
                 friendInfo.getCurFriends().add(new Friend(player));
 
-                FriendDAO.ins().updateFriends(friendInfo);
+                dao.updateFriends(friendInfo);
             }
         }
     }
@@ -246,10 +248,10 @@ public class FriendService {
         } else {
 
             //删除好友并减少当前好友数量
-            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(delPlayerId);
+            FriendInfo friendInfo = dao.getFriendInfoByPlayerId(delPlayerId);
 
             friendInfo.getCurFriends().remove(new Friend(player));
-            FriendDAO.ins().updateFriends(friendInfo);
+            dao.updateFriends(friendInfo);
         }
 
     }
@@ -333,7 +335,7 @@ public class FriendService {
     }
 
     public void loadPlayer(Player player) {
-        player.setFriends(FriendDAO.ins().getFriendInfoByPlayerId(player.getPlayerId()));
+        player.setFriends(dao.getFriendInfoByPlayerId(player.getPlayerId()));
         long explorerCount = player.getFriends().getCurFriends().stream().filter(friend -> friend.getHelpAcc() == 1).count();
         player.getFriends().setExploreCount((int) explorerCount);
         player.getFriends().setMaxFriendCount(20);

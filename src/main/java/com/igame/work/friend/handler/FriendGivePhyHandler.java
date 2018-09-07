@@ -1,5 +1,6 @@
 package com.igame.work.friend.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
@@ -27,6 +28,7 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
 
     private int state_unGive = 0;   //未赠送
     private int state_gave = 1;   //已赠送
+    @Inject private FriendDAO dao;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -120,7 +122,7 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
 
         }else { //存库
 
-            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(recPlayerId);
+            FriendInfo friendInfo = dao.getFriendInfoByPlayerId(recPlayerId);
             List<Friend> curFriends = friendInfo.getCurFriends();
             for (Friend friend : curFriends) {
                 if (friend.getPlayerId() == sendPlayer.getPlayerId()){
@@ -129,7 +131,7 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
                 }
             }
 
-            FriendDAO.ins().updateFriends(friendInfo);
+            dao.updateFriends(friendInfo);
         }
 
     }

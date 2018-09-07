@@ -3,18 +3,31 @@ package com.igame.work.user.load;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
+import com.igame.core.di.Inject;
+import com.igame.core.log.DebugLog;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
 import com.igame.work.MessageUtil;
+import com.igame.work.chat.dao.PlayerMessageDAO;
+import com.igame.work.chat.service.MessageBoardService;
 import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.checkpoint.worldEvent.WordEventDAO;
+import com.igame.work.item.dao.ItemDAO;
 import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.dao.GodsDAO;
+import com.igame.work.monster.dao.MonsterDAO;
 import com.igame.work.monster.data.StrengthenplaceTemplate;
 import com.igame.work.monster.data.StrengthenrewardTemplate;
+import com.igame.work.quest.dao.QuestDAO;
+import com.igame.work.shop.dao.ShopDAO;
 import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.dao.MailDAO;
+import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.data.DrawdataTemplate;
 import com.igame.work.user.data.DrawrewardTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
+import com.igame.work.user.service.PlayerCacheService;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +40,7 @@ import java.util.Map;
  */
 public class PlayerService implements ISFSModule {
 	private ResourceService resourceService;
+	@Inject private PlayerMessageDAO friendDAO;
 
 	public TongHuaDto getRandomTongHuaDto(){
 		
@@ -252,6 +266,25 @@ public class PlayerService implements ISFSModule {
 		}
 		return rt;
 	}
-	
 
+
+	public void savePlayer(Player player,boolean loginOutTime){
+		synchronized(player.dbLock){
+			DebugLog.debug("palyer leave save---- serverId:" + player.getSeverId() + "," +"userId:" + player.getUserId() + "," +"playerId:" + player.getPlayerId() + "," +"playerName:" + player.getNickname());
+			PlayerDAO.ins().updatePlayer(player,loginOutTime);
+			MonsterDAO.ins().updatePlayer(player);
+			ItemDAO.ins().updatePlayer(player);
+			WordEventDAO.ins().updatePlayer(player);
+			GodsDAO.ins().updatePlayer(player);
+			MailDAO.ins().updatePlayer(player);
+			QuestDAO.ins().updatePlayer(player);
+			ShopDAO.ins().updatePlayer(player);
+			friendDAO.updatePlayer(player);
+			PlayerMessageDAO.ins().updatePlayer(player);
+			MessageBoardService.ins().saveMessageBoard(player);
+			PlayerCacheService.cachePlayer(player);
+
+			PlayerCacheService.cachePlayer(player);
+		}
+	}
 }

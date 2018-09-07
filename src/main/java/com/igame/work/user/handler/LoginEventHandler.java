@@ -3,12 +3,13 @@ package com.igame.work.user.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.RetVO;
+import com.igame.sfsAdaptor.EventDispatcherHandler;
 import com.igame.util.KickIDisconnectionReason;
+import com.igame.work.MProtrol;
+import com.igame.work.PlayerEvents;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.load.PlayerLoad;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
 import com.smartfoxserver.v2.entities.User;
@@ -18,14 +19,13 @@ import com.smartfoxserver.v2.exceptions.SFSErrorCode;
 import com.smartfoxserver.v2.exceptions.SFSErrorData;
 import com.smartfoxserver.v2.exceptions.SFSException;
 import com.smartfoxserver.v2.exceptions.SFSLoginException;
-import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class LoginEventHandler extends BaseServerEventHandler{
+public class LoginEventHandler extends EventDispatcherHandler {
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
 		
@@ -37,7 +37,7 @@ public class LoginEventHandler extends BaseServerEventHandler{
 
 		Player player = SessionManager.ins().getSession(Long.parseLong(name));
 		if(player != null && !isRepeat.getBool("isRepeat")){
-			PlayerLoad.ins().savePlayer(player,true);
+			fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
 			RetVO vo = new RetVO();
 			ObjectMapper mapper = new ObjectMapper();
 			String json = null;

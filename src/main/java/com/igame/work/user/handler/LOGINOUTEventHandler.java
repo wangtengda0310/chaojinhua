@@ -3,24 +3,22 @@ package com.igame.work.user.handler;
 import com.igame.core.SessionManager;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.log.GoldLog;
-import com.igame.util.KickIDisconnectionReason;
+import com.igame.sfsAdaptor.EventDispatcherHandler;
 import com.igame.util.LoginOutReason;
+import com.igame.work.PlayerEvents;
 import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.load.PlayerLoad;
-import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.exceptions.SFSException;
-import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class LOGINOUTEventHandler extends BaseServerEventHandler{
+public class LOGINOUTEventHandler extends EventDispatcherHandler {
 
 
 	@Override
@@ -30,7 +28,7 @@ public class LOGINOUTEventHandler extends BaseServerEventHandler{
 		Player player =  SessionManager.ins().getSession(Long.parseLong(user.getName()));
 		if(player != null){//保存角色数据
 			try{
-				PlayerLoad.ins().savePlayer(player,true);
+				fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
 			}catch(Exception e){
 				trace("palyer leave save error----- :",e);
 				ExceptionLog.error("palyer leave save error----- :",e);
