@@ -4,8 +4,6 @@ package com.igame.work.system;
 
 
 import com.igame.core.db.AbsDao;
-import com.igame.core.db.AccountDbDao;
-import com.igame.core.di.Inject;
 import org.mongodb.morphia.query.UpdateOperations;
 
 /**
@@ -14,8 +12,6 @@ import org.mongodb.morphia.query.UpdateOperations;
  *
  */
 public class RankServiceDAO extends AbsDao {
-	@Inject
-	private AccountDbDao accountDbDao;
 
     private static final RankServiceDAO domain = new RankServiceDAO();
 
@@ -28,23 +24,23 @@ public class RankServiceDAO extends AbsDao {
      * 查询
      */
     public  RankServiceDto loadData(){
-    	return accountDbDao.getAccountDatastore().find(RankServiceDto.class).get();
+    	return getDatastore().find(RankServiceDto.class).get();
     }
 
     /**
      * 更新
      */
     public void update(RankServiceDto m){
-    	RankServiceDto sys = accountDbDao.getAccountDatastore().find(RankServiceDto.class).get();
+    	RankServiceDto sys = getDatastore().find(RankServiceDto.class).get();
     	if(sys == null){
-			accountDbDao.getAccountDatastore().save(m);
+			getDatastore().save(m);
     	}else{
-	    	UpdateOperations<RankServiceDto> up = accountDbDao.getAccountDatastore().createUpdateOperations(RankServiceDto.class);
+	    	UpdateOperations<RankServiceDto> up = getDatastore().createUpdateOperations(RankServiceDto.class);
 	    	up.set("rankMap", m.getRankMap());
 //	    	for(Map<Long, Ranker> rr : m.getRankDto().values()){
 //	    		int ss = rr.size();
 //	    	}
-			accountDbDao.getAccountDatastore().update(m, up);
+			getDatastore().update(m, up);
     	}
 //    	GoldLog.info("RankServiceDAO save:" + m.getRankMaps().size());
     }

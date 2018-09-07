@@ -4,8 +4,6 @@ package com.igame.core;
 
 
 import com.igame.core.db.AbsDao;
-import com.igame.core.db.AccountDbDao;
-import com.igame.core.di.Inject;
 import org.mongodb.morphia.query.UpdateOperations;
 
 /**
@@ -14,8 +12,6 @@ import org.mongodb.morphia.query.UpdateOperations;
  *
  */
 public class SystemServiceDAO extends AbsDao {
-	@Inject
-	private AccountDbDao accountDbDao;
 
     private static final SystemServiceDAO domain = new SystemServiceDAO();
 
@@ -29,20 +25,20 @@ public class SystemServiceDAO extends AbsDao {
      */
     public SystemServiceDto loadData(){
     	
-    	return accountDbDao.getAccountDatastore().find(SystemServiceDto.class).get();
+    	return getDatastore().find(SystemServiceDto.class).get();
     }
 
     /**
      * 更新
      */
     public void update(SystemServiceDto m){
-    	SystemServiceDto sys = accountDbDao.getAccountDatastore().find(SystemServiceDto.class).get();
+    	SystemServiceDto sys = getDatastore().find(SystemServiceDto.class).get();
 		if(sys == null){
-			accountDbDao.getAccountDatastore().save(m);
+			getDatastore().save(m);
     	}else{
-	    	UpdateOperations<SystemServiceDto> up = accountDbDao.getAccountDatastore().createUpdateOperations(SystemServiceDto.class);
+	    	UpdateOperations<SystemServiceDto> up = getDatastore().createUpdateOperations(SystemServiceDto.class);
 	    	up.set("clock", m.getClock());
-			accountDbDao.getAccountDatastore().update(m, up);
+			getDatastore().update(m, up);
     	}
 //    	GoldLog.info("SystemServiceDAO save:" + m.getClock().size());
     }
