@@ -17,16 +17,15 @@ public class FriendDAO extends AbsDao {
 
     /**
      * 根据 玩家ID 获取 玩家好友信息
-     * @param severId 服务器ID
      * @param playerId 玩家ID
      */
-    public FriendInfo getFriendInfoByPlayerId(int severId, long playerId){
+    public FriendInfo getFriendInfoByPlayerId(long playerId){
 
         FriendInfo friendInfo = getDatastore().find(FriendInfo.class, "playerId", playerId).get();
 
         if (friendInfo != null){
-            friendInfo.getCurFriends().forEach(friend -> friend.loadCache(friend,severId));
-            friendInfo.getReqFriends().forEach(friend -> friend.loadCache(friend,severId));
+            friendInfo.getCurFriends().forEach(friend -> friend.loadCache(friend));
+            friendInfo.getReqFriends().forEach(friend -> friend.loadCache(friend));
         }else {
 
             friendInfo = new FriendInfo(playerId);

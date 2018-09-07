@@ -79,24 +79,13 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 	@Override
 	public void init() {
 
-		String DBName = extensionHolder.SFSExtension.dbManager.p.getProperty("DBName");
-		String[] DBNames = DBName.split(",");
-		for(String db : DBNames){
-			int serverId=Integer.parseInt(db.substring(5));
+		List<Player> allPlayer = PlayerDAO.ins().getALLPlayer();
+		allPlayer.forEach(PlayerCacheService::cachePlayer);
 
-			List<Player> allPlayer = PlayerDAO.ins().getALLPlayer();
-			for (Player player : allPlayer) {
-
-                cachePlayer(player);
-
-            }
-
-            allPlayer.forEach(player ->
-					//加载好友
-					player.setFriends(FriendDAO.ins().getFriendInfoByPlayerId(serverId, player.getPlayerId()))
-			);
-		}
-
+		allPlayer.forEach(player ->
+				//加载好友
+				player.setFriends(FriendDAO.ins().getFriendInfoByPlayerId(player.getPlayerId()))
+		);
 	}
 
 	public static List<Player> getPlayers(int serverId) {

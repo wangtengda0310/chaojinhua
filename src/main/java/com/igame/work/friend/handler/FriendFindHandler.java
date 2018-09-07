@@ -88,7 +88,7 @@ public class FriendFindHandler extends ReconnectedHandler {
         if (reqPlayer != null){
             reqFriends = reqPlayer.getFriends().getReqFriends();
         }else {
-            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(player.getSeverId(),reqPlayerCache.getPlayerId());
+            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(reqPlayerCache.getPlayerId());
             reqFriends = friendInfo.getReqFriends();
         }
         //判断自己是否在对方的请求列表中

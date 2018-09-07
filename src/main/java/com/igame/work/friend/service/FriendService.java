@@ -107,7 +107,7 @@ public class FriendService {
         }else{ //不在线
 
             //存库
-            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(sendPlayer.getSeverId(), recPlayerId);
+            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(recPlayerId);
             if (friendInfo == null){    //todo 处理老数据
 
                 friendInfo = new FriendInfo(recPlayerId);
@@ -184,7 +184,7 @@ public class FriendService {
 
         }else { //不在线,更新缓存并存库
 
-            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(player.getSeverId(), reqPlayerId);
+            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(reqPlayerId);
 
             if (friendInfo == null){
 
@@ -246,7 +246,7 @@ public class FriendService {
         } else {
 
             //删除好友并减少当前好友数量
-            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(player.getSeverId(), delPlayerId);
+            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(delPlayerId);
 
             friendInfo.getCurFriends().remove(new Friend(player));
             FriendDAO.ins().updateFriends(friendInfo);
@@ -333,7 +333,7 @@ public class FriendService {
     }
 
     public void loadPlayer(Player player) {
-        player.setFriends(FriendDAO.ins().getFriendInfoByPlayerId(player.getSeverId(), player.getPlayerId()));
+        player.setFriends(FriendDAO.ins().getFriendInfoByPlayerId(player.getPlayerId()));
         long explorerCount = player.getFriends().getCurFriends().stream().filter(friend -> friend.getHelpAcc() == 1).count();
         player.getFriends().setExploreCount((int) explorerCount);
         player.getFriends().setMaxFriendCount(20);

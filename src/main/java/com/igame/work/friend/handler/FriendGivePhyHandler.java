@@ -120,7 +120,7 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
 
         }else { //存库
 
-            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(sendPlayer.getSeverId(), recPlayerId);
+            FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(recPlayerId);
             List<Friend> curFriends = friendInfo.getCurFriends();
             for (Friend friend : curFriends) {
                 if (friend.getPlayerId() == sendPlayer.getPlayerId()){

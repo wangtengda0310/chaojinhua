@@ -71,7 +71,7 @@ public class Friend{
 		this.helpAcc = 0;
 	}
 
-	public void loadCache(Friend friend, int serverId) {
+	public void loadCache(Friend friend) {
 
 		Player cacheDto = PlayerCacheService.getPlayerById(friend.getPlayerId());
 
