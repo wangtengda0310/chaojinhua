@@ -3,14 +3,11 @@ package com.igame.work.chat.service;
 import com.igame.core.ISFSModule;
 import com.igame.core.event.EventService;
 import com.igame.core.quartz.TimeListener;
-import com.igame.server.GameServerExtension;
 import com.igame.work.chat.dao.MessageDAO;
 import com.igame.work.chat.dto.Message;
-import org.apache.commons.collections.map.HashedMap;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import static com.igame.work.chat.MessageContants.*;
@@ -27,16 +24,16 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
     }
 
     //世界频道 <服务器ID,消息列表>
-    private static Map<Integer,ArrayBlockingQueue<Message>> worldMessage = new HashedMap();
+    private static ArrayBlockingQueue<Message> worldMessage;
 
     //喇叭频道 <服务器ID,消息列表>
-    private static Map<Integer,ArrayBlockingQueue<Message>> hornMessage = new HashedMap();
+    private static ArrayBlockingQueue<Message> hornMessage;
 
     //工会频道 <工会ID,消息列表>
-    private Map<Long,ArrayBlockingQueue<Message>> clubMessage = new HashedMap();
+    private ArrayBlockingQueue<Message> clubMessage = new ArrayBlockingQueue<>(Integer.MAX_VALUE);
 
     //所有删除掉的消息
-    private static Map<Integer,List<Message>> delMessages = new HashedMap();
+    private static LinkedList<Message> delMessages = new LinkedList<>();
 
     /**
      * 添加消息缓存
@@ -60,11 +57,11 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
 
         if (type == MSG_TYPE_WORLD){    //世界
 
-            addQueue(serverId, message, worldMessage.get(serverId),CACHE_MAX);
+            addQueue(message, worldMessage);
 
         }else if (type == MSG_TYPE_HORN){    //喇叭
 
-            addQueue(serverId, message, hornMessage.get(serverId),CACHE_MAX);
+            addQueue(message, hornMessage);
 
         }else if (type == MSG_TYPE_CLUB){    //工会
 
@@ -75,12 +72,12 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
         return message;
     }
 
-    private static void addQueue(int serverId, Message message, ArrayBlockingQueue<Message> messages, int maxSize) {
+    private static void addQueue(Message message, ArrayBlockingQueue<Message> messages) {
 
         if (messages == null || message == null)
             return;
 
-        if (messages.size() < maxSize){
+        if (messages.size() < com.igame.work.chat.MessageContants.CACHE_MAX){
 
             messages.add(message);
 
@@ -88,7 +85,7 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
 
             Message remove = messages.remove();
             if (remove.get_id() != null)
-                delMessages.get(serverId).add(remove);
+                delMessages.add(remove);
 
             messages.add(message);
         }
@@ -96,20 +93,18 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
 
     /**
      * 根据服务器ID获取世界消息
-     * @param serverId 服务器ID
      */
-    public static ArrayBlockingQueue<Message> getWorldMessage(int serverId){
+    public static ArrayBlockingQueue<Message> getWorldMessage(){
 
-        return worldMessage.get(serverId);
+        return worldMessage;
     }
 
     /**
      * 根据服务器ID获取世界消息
-     * @param serverId 服务器ID
      */
-    public static ArrayBlockingQueue<Message> getHornMessage(int serverId){
+    public static ArrayBlockingQueue<Message> getHornMessage(){
 
-        return hornMessage.get(serverId);
+        return hornMessage;
     }
 
     /**
@@ -118,31 +113,24 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
     @Override
     public void init(){
 
-        String DBName = GameServerExtension.dbManager.p.getProperty("DBName");
-        String[] DBNames = DBName.split(",");
-        for(String db : DBNames){
+        ArrayBlockingQueue<Message> worldMsg = new ArrayBlockingQueue<>(CACHE_MAX);
+        ArrayBlockingQueue<Message> hornMsg = new ArrayBlockingQueue<>(CACHE_MAX);
 
-            int serverId=Integer.parseInt(db.substring(5));
-            ArrayBlockingQueue<Message> worldMsg = new ArrayBlockingQueue<>(CACHE_MAX);
-            ArrayBlockingQueue<Message> hornMsg = new ArrayBlockingQueue<>(CACHE_MAX);
+        List<Message> messages = MessageDAO.ins().getMessageByServerId();
+        for (Message message : messages) {
+            int type = message.getType();
 
-            List<Message> messages = MessageDAO.ins().getMessageByServerId();
-            for (Message message : messages) {
-                int type = message.getType();
-
-                if (type == MSG_TYPE_WORLD && worldMsg.size() < CACHE_MAX)
-                    worldMsg.add(message);
-                if (type == MSG_TYPE_HORN && hornMsg.size() < CACHE_MAX)
-                    hornMsg.add(message);
-            }
-
-            worldMessage.put(serverId,worldMsg);
-            hornMessage.put(serverId,hornMsg);
-
-            //初始化删除数组
-            delMessages.put(serverId,new ArrayList<>());
+            if (type == MSG_TYPE_WORLD && worldMsg.size() < CACHE_MAX)
+                worldMsg.add(message);
+            if (type == MSG_TYPE_HORN && hornMsg.size() < CACHE_MAX)
+                hornMsg.add(message);
         }
 
+        worldMessage=worldMsg;
+        hornMessage=hornMsg;
+
+        //初始化删除数组
+        delMessages=new LinkedList<>();
     }
 
     /**
@@ -151,15 +139,13 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
     public void save(){
 
         //删除
-        for (List<Message> messages : delMessages.values()) {
-            messages.forEach(message -> MessageDAO.ins().delMessage(message));
-            messages.clear();
-        }
+        delMessages.forEach(message -> MessageDAO.ins().delMessage(message));
+        delMessages.clear();
 
         //世界新增
-        worldMessage.values().forEach(
-                messages -> messages.forEach(
-                        message -> message = message.get_id() == null? MessageDAO.ins().saveMessage(message):message));
+        worldMessage.stream()
+                .filter(message -> message.get_id() == null)
+                .forEach(message -> MessageDAO.ins().saveMessage(message));
         /*for (ArrayBlockingQueue<Message> messages : worldMessage.values()) {
             for (Message message : messages) {
                 if (message.get_id() == null)
@@ -169,9 +155,9 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
         }*/
 
         //喇叭新增
-        hornMessage.values().forEach(
-                messages -> messages.forEach(
-                        message -> message = message.get_id() == null? MessageDAO.ins().saveMessage(message):message));
+        hornMessage.stream()
+                .filter(message -> message.get_id() == null)
+                .forEach(message -> MessageDAO.ins().saveMessage(message));
         /*for (ArrayBlockingQueue<Message> messages : hornMessage.values()) {
             for (Message message : messages) {
                 if (message.get_id() == null)

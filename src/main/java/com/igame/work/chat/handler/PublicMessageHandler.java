@@ -27,11 +27,11 @@ public class PublicMessageHandler extends ReconnectedHandler {
 
         //世界消息
         List<PublicMessageDto> worldMsg = new ArrayList<>();
-        PublicMessageService.getWorldMessage(player.getSeverId()).forEach(message -> worldMsg.add(new PublicMessageDto(message)));
+        PublicMessageService.getWorldMessage().forEach(message -> worldMsg.add(new PublicMessageDto(message)));
 
         //喇叭消息
         List<PublicMessageDto> hornMsg = new ArrayList<>();
-        PublicMessageService.getHornMessage(player.getSeverId()).forEach(message -> hornMsg.add(new PublicMessageDto(message)));
+        PublicMessageService.getHornMessage().forEach(message -> hornMsg.add(new PublicMessageDto(message)));
 
         RetVO vo = new RetVO();
         vo.addData("worldMsg", worldMsg);
