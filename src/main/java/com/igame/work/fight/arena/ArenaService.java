@@ -3,13 +3,11 @@ package com.igame.work.fight.arena;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
-import com.igame.core.db.DBManager;
 import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.quartz.TimeListener;
-import com.igame.server.GameServerExtension;
 import com.igame.util.GameMath;
 import com.igame.work.PlayerEvents;
 import com.igame.work.user.dto.Player;
@@ -105,10 +103,9 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     }
 
     private void loadRank(boolean loadDB) {
-        DBManager dbManager = GameServerExtension.dbManager;
 
         if (loadDB) {
-            as = dbManager.getDatastore("accounts").find(ArenaServiceDto.class).get();
+            as = dao.getDatastore().find(ArenaServiceDto.class).get();
         }
 
         List<List<ArenaRanker>> allRank = new ArrayList<>();
