@@ -58,7 +58,7 @@ public class MessageBoardService {
      */
     public List<MessageBoard> getMessageBoard(Player player, String type){
 
-        List<MessageBoard> messageBoard = MessageBoardDAO.ins().getMessageBoard(player.getSeverId(), type);
+        List<MessageBoard> messageBoard = MessageBoardDAO.ins().getMessageBoard(type);
         for (MessageBoard board : messageBoard) {
 
             board.setObjectId(board.get_id().toHexString());
@@ -109,7 +109,7 @@ public class MessageBoardService {
         messageBoard.setContent(content);
         messageBoard.setTime(new Date());
 
-        return MessageBoardDAO.ins().saveMessageBoard(serverId,messageBoard);
+        return MessageBoardDAO.ins().saveMessageBoard(messageBoard);
     }
 
     /**
@@ -164,26 +164,26 @@ public class MessageBoardService {
 
         List<String> likes = messageBoardOpe.get(MSG_BOARD_OPE_LIKE);
         for (String oId : likes) {
-            MessageBoard messageBoard = MessageBoardDAO.ins().getMessageBoardById(player.getSeverId(), oId);
+            MessageBoard messageBoard = MessageBoardDAO.ins().getMessageBoardById(oId);
             if (messageBoard.getLike().contains(player.getPlayerId())){ //取消点赞
                 messageBoard.getLike().remove(player.getPlayerId());
             }else { //点赞
                 messageBoard.getLike().add(player.getPlayerId());
                 //todo 解锁成就
             }
-            MessageBoardDAO.ins().updateMessageBoard(player.getSeverId(),messageBoard);
+            MessageBoardDAO.ins().updateMessageBoard(messageBoard);
         }
 
         List<String> disLikes = messageBoardOpe.get(MSG_BOARD_OPE_DISLIKE);
 
         for (String oId : disLikes) {
-            MessageBoard messageBoard = MessageBoardDAO.ins().getMessageBoardById(player.getSeverId(), oId);
+            MessageBoard messageBoard = MessageBoardDAO.ins().getMessageBoardById(oId);
             if (messageBoard.getDislike().contains(player.getPlayerId())){  //取消反对
                 messageBoard.getDislike().remove(player.getPlayerId());
             }else { //反对
                 messageBoard.getDislike().add(player.getPlayerId());
             }
-            MessageBoardDAO.ins().updateMessageBoard(player.getSeverId(),messageBoard);
+            MessageBoardDAO.ins().updateMessageBoard(messageBoard);
         }
     }
 

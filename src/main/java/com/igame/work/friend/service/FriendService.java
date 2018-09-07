@@ -114,11 +114,11 @@ public class FriendService {
 
                 friendInfo.getReqFriends().add(friend);
 
-                FriendDAO.ins().saveFriendInfo(sendPlayer.getSeverId(), friendInfo);
+                FriendDAO.ins().saveFriendInfo(friendInfo);
             }else {
                 if (!friendInfo.getReqFriends().contains(friend)){  //自己不存在于对方好友列表中
                     friendInfo.getReqFriends().add(friend);
-                    FriendDAO.ins().updateFriends(sendPlayer.getSeverId(),friendInfo);
+                    FriendDAO.ins().updateFriends(friendInfo);
                 }
             }
         }
@@ -192,13 +192,13 @@ public class FriendService {
 
                 friendInfo.getCurFriends().add(new Friend(player));
 
-                FriendDAO.ins().saveFriendInfo(player.getSeverId(), friendInfo);
+                FriendDAO.ins().saveFriendInfo(friendInfo);
             }else {
 
                 //添加好友并增加当前好友数量
                 friendInfo.getCurFriends().add(new Friend(player));
 
-                FriendDAO.ins().updateFriends(player.getSeverId(), friendInfo);
+                FriendDAO.ins().updateFriends(friendInfo);
             }
         }
     }
@@ -249,7 +249,7 @@ public class FriendService {
             FriendInfo friendInfo = FriendDAO.ins().getFriendInfoByPlayerId(player.getSeverId(), delPlayerId);
 
             friendInfo.getCurFriends().remove(new Friend(player));
-            FriendDAO.ins().updateFriends(player.getSeverId(), friendInfo);
+            FriendDAO.ins().updateFriends(friendInfo);
         }
 
     }

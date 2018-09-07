@@ -38,7 +38,7 @@ public class FriendExploreHandler extends ReconnectedHandler {
             //校验对方角色是否存在
             Player friendPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
             if (friendPlayer == null)//不在线取库
-                friendPlayer = PlayerDAO.ins().getPlayerByPlayerId(player.getSeverId(), playerId);
+                friendPlayer = PlayerDAO.ins().getPlayerByPlayerId(playerId);
 
             //获取探索列表
             List<TansuoDto> exploreList = FriendService.ins().getExploreList(friendPlayer);

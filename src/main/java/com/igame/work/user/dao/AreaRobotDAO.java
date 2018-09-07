@@ -32,7 +32,7 @@ public class AreaRobotDAO extends AbsDao {
     /**
      * 查询
      */
-    public Map<Long,RobotDto> loadData(int serverId){
+    public Map<Long,RobotDto> loadData(){
     	Map<Long,RobotDto> all = Maps.newHashMap();
     	
     	List<RobotDto> ls = getDatastore().find(RobotDto.class,"type",1).asList();

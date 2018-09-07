@@ -22,9 +22,8 @@ public class MessageDAO extends AbsDao {
 
     /**
      * 根据 服务器ID 获取 消息
-     * @param severId 服务器ID
      */
-    public List<Message> getMessageByServerId(int severId){
+    public List<Message> getMessageByServerId(){
 
         return getDatastore().find(Message.class).asList();
     }
@@ -32,7 +31,7 @@ public class MessageDAO extends AbsDao {
     /**
      * 获取俩人的聊天记录
      */
-    public List<Message> getMessageByPlayerId(int serverId, long sender) {
+    public List<Message> getMessageByPlayerId(long sender) {
 
         Datastore ds = getDatastore();
         Query<Message> q = ds.createQuery(Message.class);
@@ -80,7 +79,7 @@ public class MessageDAO extends AbsDao {
      * @param serverId 服务器ID
      * @param message 消息
      */
-    public void updateMessage(int serverId, Message message){
+    public void updateMessage(Message message){
 
         Datastore ds = getDatastore();
         UpdateOperations<Message> up = ds.createUpdateOperations(Message.class);

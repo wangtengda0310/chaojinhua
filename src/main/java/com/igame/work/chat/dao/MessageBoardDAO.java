@@ -23,10 +23,9 @@ public class MessageBoardDAO extends AbsDao {
 
     /**
      * 根据 服务器ID 获取 消息
-     * @param severId 服务器ID
      * @param type 留言板类型
      */
-    public List<MessageBoard> getMessageBoard(int severId, String type){
+    public List<MessageBoard> getMessageBoard(String type){
         Datastore ds = getDatastore();
         Query<MessageBoard> q = ds.createQuery(MessageBoard.class)
                 .field("type").equal(type);
@@ -37,10 +36,9 @@ public class MessageBoardDAO extends AbsDao {
 
     /**
      * 根据 服务器ID 获取 消息
-     * @param severId 服务器ID
      * @param id 留言板ID
      */
-    public MessageBoard getMessageBoardById(int severId, String id){
+    public MessageBoard getMessageBoardById(String id){
         Datastore ds = getDatastore();
         Query<MessageBoard> q = ds.createQuery(MessageBoard.class)
                 .field("_id").equal(new ObjectId(id));
@@ -52,7 +50,7 @@ public class MessageBoardDAO extends AbsDao {
      * 保存 消息
      * @param message 消息
      */
-    public MessageBoard saveMessageBoard(int serverId,MessageBoard message){
+    public MessageBoard saveMessageBoard(MessageBoard message){
         getDatastore().save(message);
         return message;
     }
@@ -68,10 +66,9 @@ public class MessageBoardDAO extends AbsDao {
 
     /**
      * 更新 消息
-     * @param serverId 服务器ID
      * @param message 消息
      */
-    public void updateMessageBoard(int serverId, MessageBoard message){
+    public void updateMessageBoard(MessageBoard message){
 
         Datastore ds = getDatastore();
         UpdateOperations<MessageBoard> up = ds.createUpdateOperations(MessageBoard.class)

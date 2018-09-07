@@ -178,7 +178,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
     }
 
     public Map<Integer,String> clientData(Player player) {
-        shopActivityDAO.listAll(player.getSeverId()).forEach(e->dto.put(e.getActivityId(),e));
+        shopActivityDAO.listAll().forEach(e->dto.put(e.getActivityId(),e));
         ShopActivityDataManager.Configs.getAll().forEach(c->dto.computeIfAbsent(c.getNum(), this::createShopActivityDto));
 
         return ShopActivityDataManager.Configs.getAll().stream()
@@ -190,7 +190,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
     }
 
     void save(Player player) {
-        dto.values().forEach(e->shopActivityDAO.save(player.getSeverId(),e));
+        dto.values().forEach(e->shopActivityDAO.save(e));
     }
 
     // todo remove database that config not exists

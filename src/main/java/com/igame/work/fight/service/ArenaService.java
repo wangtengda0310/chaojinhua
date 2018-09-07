@@ -163,7 +163,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
         String[] DBNames = DBName.split(",");
         for (String db : DBNames) {
             int serverId = Integer.parseInt(db.substring(5));
-            robot.put(serverId, AreaRobotDAO.ins().loadData(serverId));
+            robot.put(serverId, AreaRobotDAO.ins().loadData());
         }
 
         loadRank(true);

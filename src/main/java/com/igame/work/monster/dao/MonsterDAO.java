@@ -1,18 +1,17 @@
 package com.igame.work.monster.dao;
 
 
-import java.util.List;
-import java.util.Map;
-
-import com.igame.work.monster.MonsterDataManager;
-import org.mongodb.morphia.query.UpdateOperations;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.core.db.AbsDao;
+import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 怪物DAO
@@ -27,7 +26,7 @@ public class MonsterDAO extends AbsDao {
         return domain;
     }
 
-    public List<Monster> getALLMonster(int serverId){
+    public List<Monster> getALLMonster(){
     	return getDatastore().find(Monster.class).asList();
     }
 
@@ -39,7 +38,7 @@ public class MonsterDAO extends AbsDao {
     /**
      * 根据角色ID查询所有怪物列表
      */
-    public Map<Long,Monster> getMonsterByPlayer(Player player,int serverId,long playerId){
+    public Map<Long,Monster> getMonsterByPlayer(Player player, long playerId){
     	Map<Long,Monster> all = Maps.newHashMap();
     	
     	List<Monster> ls = getDatastore().find(Monster.class, "playerId", playerId).asList();
@@ -79,12 +78,12 @@ public class MonsterDAO extends AbsDao {
     /**
      * 保存新的怪物
      */
-    public Monster saveNewMonster(int serverId,Monster m){
+    public Monster saveNewMonster(Monster m){
     	getDatastore().save(m);
     	return m;
     }
     
-    public void updateMonster(int serverId,Monster m){
+    public void updateMonster(Monster m){
     	UpdateOperations<Monster> up = getDatastore().createUpdateOperations(Monster.class)
         		.set("hp", m.getHp())
         		.set("isLock", m.getIsLock())
@@ -99,7 +98,7 @@ public class MonsterDAO extends AbsDao {
     	getDatastore().update(m, up);
     }
     
-    public void removeMonster(int serverId,Monster m){
+    public void removeMonster(Monster m){
     	getDatastore().delete(m);
     }
     
@@ -110,11 +109,11 @@ public class MonsterDAO extends AbsDao {
     	
     	for(Monster m : player.getMonsters().values()){
     		if(m.getDtate() == 1){
-    			saveNewMonster(player.getSeverId(), m);
+    			saveNewMonster(m);
     		}else if(m.getDtate() == 2){
-    			updateMonster(player.getSeverId(), m);
+    			updateMonster(m);
     		}else if(m.getDtate() == 3){
-    			removeMonster(player.getSeverId(), m);
+    			removeMonster(m);
     		}
     		m.setDtate(0);
     	}

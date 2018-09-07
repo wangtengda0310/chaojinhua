@@ -98,7 +98,7 @@ public class PlayerHandler extends BaseHandler{
 			return;
 		}
 		
-		Player player = PlayerDAO.ins().getPlayerByUserId(serverId, userId);
+		Player player = PlayerDAO.ins().getPlayerByUserId(userId);
 		if(player == null){//不存在就默认创建一个
 			try {
 				player = newPlayer(userId, serverId);
@@ -197,8 +197,8 @@ public class PlayerHandler extends BaseHandler{
 		m1.reCalculate(player,true);
 		m2.reCalculate(player,true);
 
-		MonsterDAO.ins().saveNewMonster(serverId, m1);
-		MonsterDAO.ins().saveNewMonster(serverId, m2);
+		MonsterDAO.ins().saveNewMonster(m1);
+		MonsterDAO.ins().saveNewMonster(m2);
 		player.getMonsters().put(m1.getObjectId(),m1);
 		player.getMonsters().put(m2.getObjectId(),m2);
 
@@ -233,23 +233,23 @@ public class PlayerHandler extends BaseHandler{
 		//初始化角色剩余挑战次数
 		BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
 
-		return PlayerDAO.ins().savePlayer(serverId, player);
+		return PlayerDAO.ins().savePlayer(player);
 	}
 
 	private void loadPlayer(Player player, int serverId){
 		ItemService.ins().loadPlayer(player, serverId);
 
-		player.setGods(GodsDAO.ins().getByPlayer(serverId, player.getPlayerId()));
+		player.setGods(GodsDAO.ins().getByPlayer(player.getPlayerId()));
 
 		MonsterService.loadPlayer(player,serverId);
 
-		player.setWordEvent(WordEventDAO.ins().getByPlayer(serverId, player.getPlayerId()));
+		player.setWordEvent(WordEventDAO.ins().getByPlayer(player.getPlayerId()));
 
 		MailService.ins().loadPlayer(player, serverId);
 		ShopService.ins().loadPlayer(player, serverId);
 		FriendService.ins().loadPlayer(player);
 
-		player.setPrivateMessages(PlayerMessageDAO.ins().getMessageByPlayerId(player.getSeverId(),player.getPlayerId()).getMessages());
+		player.setPrivateMessages(PlayerMessageDAO.ins().getMessageByPlayerId(player.getPlayerId()).getMessages());
 		player.initMessageBoard();
 
 		QuestService.loadPlayer(player, serverId);

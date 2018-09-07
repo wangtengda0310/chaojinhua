@@ -23,15 +23,15 @@ public class PlayerDAO extends AbsDao {
     /**
      * 获取角色对象
      */
-    public Player getPlayerByUserId(int serverId,long userId){
+    public Player getPlayerByUserId(long userId){
 		return getDatastore().find(Player.class, "userId", userId).get();
     }
     
-    public Player getPlayerByPlayerId(int serverId,long playerId){
+    public Player getPlayerByPlayerId(long playerId){
 		return getDatastore().find(Player.class, "playerId", playerId).get();
     }
     
-    public Player getPlayerByPlayerNickName(int serverId,String nickname){
+    public Player getPlayerByPlayerNickName(String nickname){
 		return getDatastore().find(Player.class, "nickname", nickname).get();
     }
     
@@ -56,12 +56,12 @@ public class PlayerDAO extends AbsDao {
     /**
      * 默认创建一个新玩家
      */
-    public Player savePlayer(int serverId, Player player){
+    public Player savePlayer(Player player){
 		getDatastore().save(player);
     	return player;
     }
     
-    public List<Player> getALLPlayer(int serverId){
+    public List<Player> getALLPlayer(){
     	return getDatastore().find(Player.class).asList();
     }
     
@@ -144,7 +144,7 @@ public class PlayerDAO extends AbsDao {
     
     
 
-    public void updatePlayerTest(Player player,int severId){
+    public void updatePlayerTest(Player player){
     	Datastore ds = getDatastore();
     	UpdateOperations<Player> up = ds.createUpdateOperations(Player.class);
     	up.set("wuMap", player.getWuMap());

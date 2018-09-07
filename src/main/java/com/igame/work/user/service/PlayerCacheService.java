@@ -84,7 +84,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 		for(String db : DBNames){
 			int serverId=Integer.parseInt(db.substring(5));
 
-			List<Player> allPlayer = PlayerDAO.ins().getALLPlayer(serverId);
+			List<Player> allPlayer = PlayerDAO.ins().getALLPlayer();
 			for (Player player : allPlayer) {
 
                 cachePlayer(player);

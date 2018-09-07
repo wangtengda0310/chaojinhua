@@ -22,16 +22,16 @@ public class DengluDAO extends AbsDao {
     }
 
 
-	public List<DengluDto> listByPlayer(int serverId,long playerId){
+	public List<DengluDto> listByPlayer(long playerId){
 		return getDatastore().find(DengluDto.class, "playerId", playerId).asList();
 	}
     /**
      * 查询
      */
-    public Map<Integer,DengluDto> getByPlayer(int serverId,long playerId){
+    public Map<Integer,DengluDto> getByPlayer(long playerId){
     	Map<Integer,DengluDto> all = Maps.newHashMap();
 
-		List<DengluDto> ls = listByPlayer(serverId, playerId);
+		List<DengluDto> ls = listByPlayer(playerId);
     	if(ls != null){
     		for(DengluDto mm : ls){
     			all.put(mm.getActivityId(), mm);
@@ -44,7 +44,7 @@ public class DengluDAO extends AbsDao {
     /**
      * 保存
      */
-    public DengluDto save(int serverId,DengluDto m){
+    public DengluDto save(DengluDto m){
     	getDatastore().save(m);
     	return m;
     }
@@ -52,7 +52,7 @@ public class DengluDAO extends AbsDao {
     /**
      * 更新
      */
-    public void update(int serverId,DengluDto m){
+    public void update(DengluDto m){
     	UpdateOperations<DengluDto> up = getDatastore().createUpdateOperations(DengluDto.class);
     	up.set("playerId", m.getActivityId());
     	up.set("activityId", m.getActivityId());
@@ -63,7 +63,7 @@ public class DengluDAO extends AbsDao {
     /**
      * 删除
      */
-    public void remove(int serverId,DengluDto m){
+    public void remove(DengluDto m){
     	getDatastore().delete(m);
     }
 

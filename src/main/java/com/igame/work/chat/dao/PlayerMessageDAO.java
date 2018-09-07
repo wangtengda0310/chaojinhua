@@ -21,14 +21,14 @@ public class PlayerMessageDAO extends AbsDao {
     /**
      * 获取某人的私聊记录
      */
-    public PlayerMessage getMessageByPlayerId(int serverId, long playerId) {
+    public PlayerMessage getMessageByPlayerId(long playerId) {
 
         PlayerMessage playerMessage = getDatastore().find(PlayerMessage.class, "playerId", playerId).get();
         if (playerMessage == null){
             playerMessage = new PlayerMessage();
             playerMessage.setPlayerId(playerId);
 
-            saveMessage(serverId,playerMessage);
+            saveMessage(playerMessage);
         }
 
         return playerMessage;
@@ -36,10 +36,9 @@ public class PlayerMessageDAO extends AbsDao {
 
     /**
      * 保存 消息
-     * @param serverId 服务器ID
      * @param message 消息
      */
-    public PlayerMessage saveMessage(int serverId, PlayerMessage message){
+    public PlayerMessage saveMessage(PlayerMessage message){
 
         getDatastore().save(message);
 
@@ -48,10 +47,9 @@ public class PlayerMessageDAO extends AbsDao {
 
     /**
      * 更新 消息
-     * @param serverId 服务器ID
      * @param message 消息
      */
-    public void updateMessage(int serverId, PlayerMessage message){
+    public void updateMessage(PlayerMessage message){
 
         Datastore ds = getDatastore();
         UpdateOperations<PlayerMessage> up = ds.createUpdateOperations(PlayerMessage.class)
@@ -62,9 +60,9 @@ public class PlayerMessageDAO extends AbsDao {
 
     public void updatePlayer(Player player) {
 
-        PlayerMessage playerMessage = getMessageByPlayerId(player.getSeverId(), player.getPlayerId());
+        PlayerMessage playerMessage = getMessageByPlayerId(player.getPlayerId());
         playerMessage.setMessages(player.getPrivateMessages());
 
-        updateMessage(player.getSeverId(),playerMessage);
+        updateMessage(playerMessage);
     }
 }

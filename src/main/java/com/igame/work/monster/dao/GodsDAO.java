@@ -2,15 +2,14 @@ package com.igame.work.monster.dao;
 
 
 
-import java.util.List;
-import java.util.Map;
-
-import org.mongodb.morphia.query.UpdateOperations;
-
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.user.dto.Player;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -29,7 +28,7 @@ public class GodsDAO extends AbsDao {
     /**
      * 查询
      */
-    public Map<Integer,Gods> getByPlayer(int serverId,long playerId){
+    public Map<Integer,Gods> getByPlayer(long playerId){
     	Map<Integer,Gods> all = Maps.newHashMap();
     	
     	List<Gods> ls = getDatastore().find(Gods.class, "playerId", playerId).asList();
@@ -44,7 +43,7 @@ public class GodsDAO extends AbsDao {
     /**
      * 保存
      */
-    public Gods save(int serverId,Gods m){
+    public Gods save(Gods m){
     	getDatastore().save(m);
     	return m;
     }
@@ -52,7 +51,7 @@ public class GodsDAO extends AbsDao {
     /**
      * 更新
      */
-    public void update(int serverId,Gods m){
+    public void update(Gods m){
     	UpdateOperations<Gods> up = getDatastore().createUpdateOperations(Gods.class);
     	up.set("godsLevel", m.getGodsLevel());
     	getDatastore().update(m, up);
@@ -61,7 +60,7 @@ public class GodsDAO extends AbsDao {
     /**
      * 删除
      */
-    public void remove(int serverId,Gods m){
+    public void remove(Gods m){
     	getDatastore().delete(m);
     }
     
@@ -72,11 +71,11 @@ public class GodsDAO extends AbsDao {
     	
     	for(Gods m : player.getGods().values()){
     		if(m.getDtate() == 1){
-    			save(player.getSeverId(), m);
+    			save(m);
     		}else if(m.getDtate() == 2){
-    			update(player.getSeverId(), m);
+    			update(m);
     		}else if(m.getDtate() == 3){
-    			remove(player.getSeverId(), m);
+    			remove(m);
     		}
     		m.setDtate(0);
     	}

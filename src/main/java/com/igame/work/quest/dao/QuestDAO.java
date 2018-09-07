@@ -28,7 +28,7 @@ public class QuestDAO extends AbsDao {
     /**
      * 查询
      */
-    public void getByPlayer(int serverId,Player player){
+    public void getByPlayer(Player player){
     	
     	List<TaskDayInfo> ls = getDatastore().find(TaskDayInfo.class, "playerId", player.getPlayerId()).asList();
     	for(TaskDayInfo tk :ls){
@@ -48,7 +48,7 @@ public class QuestDAO extends AbsDao {
     /**
      * 保存
      */
-    public TaskDayInfo save(int serverId,TaskDayInfo m){
+    public TaskDayInfo save(TaskDayInfo m){
     	getDatastore().save(m);
     	return m;
     }
@@ -56,7 +56,7 @@ public class QuestDAO extends AbsDao {
     /**
      * 更新
      */
-    public void update(int serverId,TaskDayInfo m){
+    public void update(TaskDayInfo m){
     	UpdateOperations<TaskDayInfo> up = getDatastore().createUpdateOperations(TaskDayInfo.class);
     	up.set("status", m.getStatus());
     	up.set("vars", m.getVars());
@@ -66,7 +66,7 @@ public class QuestDAO extends AbsDao {
     /**
      * 删除
      */
-    public void remove(int serverId,TaskDayInfo m){
+    public void remove(TaskDayInfo m){
     	getDatastore().delete(m);
     }
     
@@ -77,11 +77,11 @@ public class QuestDAO extends AbsDao {
     	
     	for(TaskDayInfo m : player.getAchievement().values()){
     		if(m.getDtate() == 1){
-    			save(player.getSeverId(), m);
+    			save(m);
     		}else if(m.getDtate() == 2){
-    			update(player.getSeverId(), m);
+    			update(m);
     		}else if(m.getDtate() == 3){
-    			remove(player.getSeverId(), m);
+    			remove(m);
     		}
     		m.setDtate(0);
     	}

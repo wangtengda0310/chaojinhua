@@ -64,9 +64,9 @@ public class AreaPlayerInfoHandler extends ReconnectedHandler {
 		}
 		RobotDto rto = map.get(playerId);
 
-		Player opponent = PlayerDAO.ins().getPlayerByPlayerId(player.getSeverId(), playerId);
+		Player opponent = PlayerDAO.ins().getPlayerByPlayerId(playerId);
 		if(opponent != null){	// TODO 监听上下阵事件
-			Map<Long, Monster> mons = MonsterDAO.ins().getMonsterByPlayer(opponent,opponent.getSeverId(), opponent.getPlayerId());
+			Map<Long, Monster> mons = MonsterDAO.ins().getMonsterByPlayer(opponent, opponent.getPlayerId());
 			opponent.setMonsters(mons);
 			rto = RobotService.createRobotLike(opponent);
 			

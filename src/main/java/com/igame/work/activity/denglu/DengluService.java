@@ -21,11 +21,11 @@ public class DengluService {
 
         Date now = new Date();
         // 配置中没找到 认为是活动下线 把数据清掉
-        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getSeverId(), player.getPlayerId());
+        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getPlayerId());
         byPlayer.values().stream()
                 .filter(a -> !configs.containsKey(a.getActivityId())
                         || configs.get(a.getActivityId()).stream().anyMatch(c->!c.isActive(player, now)))
-                .forEach(a -> DengluDAO.ins().remove(player.getSeverId(), a));
+                .forEach(a -> DengluDAO.ins().remove(a));
 
         // 新的登录活动开始后 删除上轮的数据
         // id相同id时间有修改的话 认为是新一轮活动 把上一轮活动数据清掉
@@ -52,7 +52,7 @@ public class DengluService {
                 dto.setRecord(new int[configs.get(activityId).size()]);
                 configs.get(activityId).stream().findAny()
                         .ifPresent(c->dto.setOpenTime(String.valueOf(c.startTime(player).getTime())));
-                DengluDAO.ins().save(player.getSeverId(), dto);
+                DengluDAO.ins().save(dto);
                 return dto;
             });
         });
@@ -63,13 +63,13 @@ public class DengluService {
                     .filter(c -> a.getRecord()[c.getOrder()-1] != 2)
                     .filter(c -> c.getOrder() - 1 <= DateUtil.getIntervalDays(c.startTime(player), now))  // order从1开始 interval days从0开始
                     .forEach(c -> a.getRecord()[c.getOrder()-1] = 1);
-            DengluDAO.ins().update(player.getSeverId(), a);
+            DengluDAO.ins().update(a);
         });
 
     }
 
     public static Object clientData(Player player) {
-        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getSeverId(), player.getPlayerId());
+        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getPlayerId());
         Map<Integer, String> dengluRecords = new HashMap<>();
         configs.forEach((configId, configs) -> {
 

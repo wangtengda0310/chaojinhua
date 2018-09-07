@@ -35,7 +35,7 @@ public class DengluHandler extends ReconnectedHandler {
             return error(ErrorCode.ERROR);
         }
 
-        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getSeverId(), player.getPlayerId());
+        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getPlayerId());
         DengluDto dengluDto = byPlayer.get(id);
 
         if (dengluDto == null) {
@@ -54,7 +54,7 @@ public class DengluHandler extends ReconnectedHandler {
             return error(ErrorCode.PACK_PURCHASED);
         }
         dengluDto.getRecord()[index - 1] = 2;
-        DengluDAO.ins().save(player.getSeverId(), dengluDto);
+        DengluDAO.ins().save(dengluDto);
 
         DengluService.configs.get(id).stream()
                 .filter(c -> c.getOrder() == index)

@@ -82,7 +82,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 		String[] DBNames = DBName.split(",");
 		for(String db : DBNames){
 			int serverId=Integer.parseInt(db.substring(5));
-			robot.put(serverId, RobotDAO.ins().loadData(serverId));
+			robot.put(serverId, RobotDAO.ins().loadData());
 		}
     }
     

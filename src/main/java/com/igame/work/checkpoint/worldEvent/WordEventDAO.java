@@ -27,7 +27,7 @@ public class WordEventDAO extends AbsDao {
     /**
      * 查询
      */
-    public Map<Integer, WorldEventDto> getByPlayer(int serverId, long playerId){
+    public Map<Integer, WorldEventDto> getByPlayer(long playerId){
     	Map<Integer, WorldEventDto> all = Maps.newHashMap();
     	
     	List<WorldEventDto> ls = getDatastore().find(WorldEventDto.class, "playerId", playerId).asList();
@@ -42,7 +42,7 @@ public class WordEventDAO extends AbsDao {
     /**
      * 保存
      */
-    public WorldEventDto save(int serverId, WorldEventDto m){
+    public WorldEventDto save(WorldEventDto m){
     	getDatastore().save(m);
     	return m;
     }
@@ -50,7 +50,7 @@ public class WordEventDAO extends AbsDao {
     /**
      * 更新
      */
-    public void update(int serverId, WorldEventDto m){
+    public void update(WorldEventDto m){
     	UpdateOperations<WorldEventDto> up = getDatastore().createUpdateOperations(WorldEventDto.class)
         		.set("count", m.getCount())
         		.set("level", m.getLevel())
@@ -61,7 +61,7 @@ public class WordEventDAO extends AbsDao {
     /**
      * 删除
      */
-    public void remove(int serverId, WorldEventDto m){
+    public void remove(WorldEventDto m){
     	getDatastore().delete(m);
     }
     
@@ -72,11 +72,11 @@ public class WordEventDAO extends AbsDao {
     	
     	for(WorldEventDto m : player.getWordEvent().values()){
     		if(m.getDtate() == 1){
-    			save(player.getSeverId(), m);
+    			save(m);
     		}else if(m.getDtate() == 2){
-    			update(player.getSeverId(), m);
+    			update(m);
     		}else if(m.getDtate() == 3){
-    			remove(player.getSeverId(), m);
+    			remove(m);
     		}
     		m.setDtate(0);
     	}

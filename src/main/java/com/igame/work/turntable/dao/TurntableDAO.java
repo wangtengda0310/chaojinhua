@@ -16,20 +16,18 @@ public class TurntableDAO extends AbsDao {
 
     /**
      * 根据 玩家ID 获取 玩家转盘信息
-     * @param severId 服务器ID
      * @param playerId 玩家ID
      */
-    public Turntable getTurntableByPlayerId(int severId, long playerId){
+    public Turntable getTurntableByPlayerId(long playerId){
 
         return getDatastore().find(Turntable.class,"playerId",playerId).get();
     }
 
     /**
      * 保存 玩家转盘信息
-     * @param serverId 服务器ID
      * @param turntable 转盘信息
      */
-    public Turntable saveTurntable(int serverId, Turntable turntable){
+    public Turntable saveTurntable(Turntable turntable){
 
         getDatastore().save(turntable);
 
@@ -38,10 +36,9 @@ public class TurntableDAO extends AbsDao {
 
     /**
      * 更新 玩家转盘信息
-     * @param serverId 服务器ID
      * @param turntable 玩家
      */
-    public void updateTurntable(int serverId, Turntable turntable){
+    public void updateTurntable(Turntable turntable){
 
         Datastore ds = getDatastore();
         UpdateOperations<Turntable> up = ds.createUpdateOperations(Turntable.class)

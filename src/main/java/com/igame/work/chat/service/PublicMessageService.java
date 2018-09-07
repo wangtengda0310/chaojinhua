@@ -126,7 +126,7 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
             ArrayBlockingQueue<Message> worldMsg = new ArrayBlockingQueue<>(CACHE_MAX);
             ArrayBlockingQueue<Message> hornMsg = new ArrayBlockingQueue<>(CACHE_MAX);
 
-            List<Message> messages = MessageDAO.ins().getMessageByServerId(serverId);
+            List<Message> messages = MessageDAO.ins().getMessageByServerId();
             for (Message message : messages) {
                 int type = message.getType();
 

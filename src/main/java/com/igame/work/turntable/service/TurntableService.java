@@ -188,9 +188,9 @@ public class TurntableService implements TimeListener {
     public void updatePlayer(Player player) {
 
         if(getTurntable(player).getDtate() == 1){
-            dao.saveTurntable(player.getSeverId(), getTurntable(player));
+            dao.saveTurntable(getTurntable(player));
         }else if(getTurntable(player).getDtate() == 2){
-            dao.updateTurntable(player.getSeverId(), getTurntable(player));
+            dao.updateTurntable(getTurntable(player));
         }
     }
 

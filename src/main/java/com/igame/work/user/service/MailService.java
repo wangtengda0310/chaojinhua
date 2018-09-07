@@ -77,12 +77,12 @@ public class MailService {
 //	    			break;
 //	    		}
 //	    	}	    	
-    		String maxId = String.valueOf(getMaxId(MailDAO.ins().getByPlayer(serverId, target)));
+    		String maxId = String.valueOf(getMaxId(MailDAO.ins().getByPlayer(target)));
     		if(maxId.length() < 5){
     			maxId = String.valueOf(serverId * 100000 + Integer.parseInt(maxId));
     		}
     		mail.setId(serverId * 100000 + Integer.parseInt(maxId.substring(maxId.length() - 5)));
-    		MailDAO.ins().save(serverId, mail);
+    		MailDAO.ins().save(mail);
     	}
 
     	if (exttype == 1 && type == 1){	//如果是系统发的奖励邮件
@@ -124,20 +124,20 @@ public class MailService {
 //	    		}
 //	    	}
 
-    		player = PlayerDAO.ins().getPlayerByPlayerNickName(serverId, username);
-    		String maxId = String.valueOf(getMaxId(MailDAO.ins().getByPlayer(serverId, player.getPlayerId())));
+    		player = PlayerDAO.ins().getPlayerByPlayerNickName(username);
+    		String maxId = String.valueOf(getMaxId(MailDAO.ins().getByPlayer(player.getPlayerId())));
     		if(maxId.length() < 5){
     			maxId = String.valueOf(serverId * 100000 + Integer.parseInt(maxId));
     		}
     		mail.setPlayerId(player.getPlayerId());
     		mail.setId(serverId * 100000 + Integer.parseInt(maxId.substring(maxId.length() - 5)));
-    		MailDAO.ins().save(serverId, mail);
+    		MailDAO.ins().save(mail);
     	}
     	return mail;
     }
 
 
     public void loadPlayer(Player player, int serverId) {
-		player.setMail(MailDAO.ins().getByPlayer(serverId, player.getPlayerId()));
+		player.setMail(MailDAO.ins().getByPlayer(player.getPlayerId()));
     }
 }

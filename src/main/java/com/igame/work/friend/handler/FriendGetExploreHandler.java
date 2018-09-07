@@ -49,7 +49,7 @@ public class FriendGetExploreHandler extends ReconnectedHandler {
         //校验对方角色是否存在
         Player friendPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
         if (friendPlayer == null)//不在线取库
-            friendPlayer = PlayerDAO.ins().getPlayerByPlayerId(player.getSeverId(), playerId);
+            friendPlayer = PlayerDAO.ins().getPlayerByPlayerId(playerId);
         if (friendPlayer == null){
             return error(ErrorCode.ERROR);
         }

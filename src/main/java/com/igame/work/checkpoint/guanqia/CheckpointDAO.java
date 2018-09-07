@@ -2,12 +2,12 @@ package com.igame.work.checkpoint.guanqia;
 
 
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
 import com.igame.work.user.dto.Player;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -26,7 +26,7 @@ public class CheckpointDAO extends AbsDao {
     /**
      * 查询
      */
-    public Map<Integer,Checkpoint> getByPlayer(int serverId,long playerId){
+    public Map<Integer,Checkpoint> getByPlayer(long playerId){
     	Map<Integer,Checkpoint> all = Maps.newHashMap();
     	
     	List<Checkpoint> ls = getDatastore().find(Checkpoint.class, "playerId", playerId).asList();
@@ -41,7 +41,7 @@ public class CheckpointDAO extends AbsDao {
     /**
      * 保存
      */
-    public Checkpoint save(int serverId,Checkpoint m){
+    public Checkpoint save(Checkpoint m){
     	getDatastore().save(m);
     	return m;
     }
@@ -49,7 +49,7 @@ public class CheckpointDAO extends AbsDao {
     /**
      * 更新
      */
-    public void update(int serverId,Checkpoint m){
+    public void update(Checkpoint m){
 //    	UpdateOperations<Checkpoint> up = getAccountDatastore(serverId).createUpdateOperations(Checkpoint.class)
 //        		.set("count", m.getCount())
 //        		;
@@ -59,7 +59,7 @@ public class CheckpointDAO extends AbsDao {
     /**
      * 删除
      */
-    public void remove(int serverId,Checkpoint m){
+    public void remove(Checkpoint m){
     	getDatastore().delete(m);
     }
     

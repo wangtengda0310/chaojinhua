@@ -2,14 +2,13 @@ package com.igame.work.user.dao;
 
 
 
-import java.util.List;
-import java.util.Map;
-
-import org.mongodb.morphia.query.UpdateOperations;
-
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
 import com.igame.work.user.dto.RobotDto;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -28,7 +27,7 @@ public class RobotDAO extends AbsDao {
     /**
      * 查询
      */
-    public Map<String,RobotDto> loadData(int serverId){
+    public Map<String,RobotDto> loadData(){
     	Map<String,RobotDto> all = Maps.newHashMap();
     	
     	List<RobotDto> ls = getDatastore().find(RobotDto.class,"type", 0).asList();

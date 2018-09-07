@@ -28,7 +28,7 @@ public class MailDAO extends AbsDao {
     /**
      * 查询
      */
-    public Map<Integer,Mail> getByPlayer(int serverId,long playerId){
+    public Map<Integer,Mail> getByPlayer(long playerId){
     	Map<Integer,Mail> all = Maps.newHashMap();
     	
     	List<Mail> ls = getDatastore().find(Mail.class, "playerId", playerId).asList();
@@ -44,7 +44,7 @@ public class MailDAO extends AbsDao {
     /**
      * 保存
      */
-    public Mail save(int serverId,Mail m){
+    public Mail save(Mail m){
     	getDatastore().save(m);
     	return m;
     }
@@ -52,7 +52,7 @@ public class MailDAO extends AbsDao {
     /**
      * 更新
      */
-    public void update(int serverId,Mail m){
+    public void update(Mail m){
     	UpdateOperations<Mail> up = getDatastore().createUpdateOperations(Mail.class);
     	up.set("state", m.getState());
     	getDatastore().update(m, up);
@@ -61,7 +61,7 @@ public class MailDAO extends AbsDao {
     /**
      * 删除
      */
-    public void remove(int serverId,Mail m){
+    public void remove(Mail m){
     	getDatastore().delete(m);
     }
     
@@ -72,11 +72,11 @@ public class MailDAO extends AbsDao {
     	
     	for(Mail m : player.getMail().values()){
     		if(m.getDtate() == 1){
-    			save(player.getSeverId(), m);
+    			save(m);
     		}else if(m.getDtate() == 2){
-    			update(player.getSeverId(), m);
+    			update(m);
     		}else if(m.getDtate() == 3){
-    			remove(player.getSeverId(), m);
+    			remove(m);
     		}
     		m.setDtate(0);
     	}

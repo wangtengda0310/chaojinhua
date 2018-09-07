@@ -17,20 +17,18 @@ public class ShopDAO extends AbsDao {
 
     /**
      * 根据 玩家ID 获取 玩家商店信息
-     * @param severId 服务器ID
      * @param playerId 玩家ID
      */
-    public ShopInfo getShopInfoByPlayerId(int severId,long playerId){
+    public ShopInfo getShopInfoByPlayerId(long playerId){
 
         return getDatastore().find(ShopInfo.class,"playerId",playerId).get();
     }
 
     /**
      * 初始化 玩家商店信息
-     * @param serverId 服务器ID
      * @param shopInfo 商店信息
      */
-    public ShopInfo saveShopInfo(int serverId, ShopInfo shopInfo){
+    public ShopInfo saveShopInfo(ShopInfo shopInfo){
 
         getDatastore().save(shopInfo);
 
@@ -39,10 +37,9 @@ public class ShopDAO extends AbsDao {
 
     /**
      * 更新 玩家商店信息
-     * @param serverId 服务器ID
      * @param shopInfo 玩家
      */
-    public void updateShopInfo(int serverId, ShopInfo shopInfo){
+    public void updateShopInfo(ShopInfo shopInfo){
 
         Datastore ds = getDatastore();
         UpdateOperations<ShopInfo> up = ds.createUpdateOperations(ShopInfo.class)
@@ -58,9 +55,9 @@ public class ShopDAO extends AbsDao {
     public void updatePlayer(Player player) {
 
         if(player.getShopInfo().getDtate() == 1){
-            saveShopInfo(player.getSeverId(), player.getShopInfo());
+            saveShopInfo(player.getShopInfo());
         }else if(player.getShopInfo().getDtate() == 2){
-            updateShopInfo(player.getSeverId(), player.getShopInfo());
+            updateShopInfo(player.getShopInfo());
         }
     }
 }

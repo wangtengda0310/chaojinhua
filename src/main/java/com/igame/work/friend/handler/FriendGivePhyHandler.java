@@ -129,7 +129,7 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
                 }
             }
 
-            FriendDAO.ins().updateFriends(sendPlayer.getSeverId(), friendInfo);
+            FriendDAO.ins().updateFriends(friendInfo);
         }
 
     }

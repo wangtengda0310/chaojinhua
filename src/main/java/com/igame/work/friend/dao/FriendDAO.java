@@ -31,7 +31,7 @@ public class FriendDAO extends AbsDao {
 
             friendInfo = new FriendInfo(playerId);
 
-            saveFriendInfo(severId,friendInfo);
+            saveFriendInfo(friendInfo);
         }
 
         return friendInfo;
@@ -39,10 +39,9 @@ public class FriendDAO extends AbsDao {
 
     /**
      * 初始化 玩家好友信息
-     * @param serverId 服务器ID
      * @param friendInfo 好友信息
      */
-    public FriendInfo saveFriendInfo(int serverId, FriendInfo friendInfo){
+    public FriendInfo saveFriendInfo(FriendInfo friendInfo){
 
         getDatastore().save(friendInfo);
 
@@ -51,10 +50,9 @@ public class FriendDAO extends AbsDao {
 
     /**
      * 更新 玩家好友信息
-     * @param serverId 服务器ID
      * @param friendInfo 好友信息
      */
-    public void updateFriends(int serverId, FriendInfo friendInfo){
+    public void updateFriends(FriendInfo friendInfo){
 
         Datastore ds = getDatastore();
         UpdateOperations<FriendInfo> up = ds.createUpdateOperations(FriendInfo.class)
@@ -67,9 +65,9 @@ public class FriendDAO extends AbsDao {
     public void updatePlayer(Player player) {
 
         if(player.getFriends().get_id() == null){
-            saveFriendInfo(player.getSeverId(), player.getFriends());
+            saveFriendInfo(player.getFriends());
         }else{
-            updateFriends(player.getSeverId(), player.getFriends());
+            updateFriends(player.getFriends());
         }
 
     }

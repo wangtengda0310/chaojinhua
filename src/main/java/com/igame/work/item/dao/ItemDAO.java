@@ -2,14 +2,14 @@ package com.igame.work.item.dao;
 
 
 
-import java.util.List;
-import java.util.Map;
-import org.mongodb.morphia.query.UpdateOperations;
-
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
 import com.igame.work.item.dto.Item;
 import com.igame.work.user.dto.Player;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -28,7 +28,7 @@ public class ItemDAO extends AbsDao {
     /**
      * 查询
      */
-    public Map<Integer,Item> getItemByPlayer(int serverId,long playerId){
+    public Map<Integer,Item> getItemByPlayer(long playerId){
     	Map<Integer,Item> all = Maps.newHashMap();
     	
     	List<Item> ls = getDatastore().find(Item.class, "playerId", playerId).asList();
@@ -43,7 +43,7 @@ public class ItemDAO extends AbsDao {
     /**
      * 保存
      */
-    public Item saveItem(int serverId,Item m){
+    public Item saveItem(Item m){
     	getDatastore().save(m);
     	return m;
     }
@@ -51,7 +51,7 @@ public class ItemDAO extends AbsDao {
     /**
      * 更新
      */
-    public void updateItem(int serverId,Item m){
+    public void updateItem(Item m){
     	UpdateOperations<Item> up = getDatastore().createUpdateOperations(Item.class)
         		.set("count", m.getCount())
         		.set("equipCounts", m.getEquipCounts())
@@ -62,7 +62,7 @@ public class ItemDAO extends AbsDao {
     /**
      * 删除
      */
-    public void removeItem(int serverId,Item m){
+    public void removeItem(Item m){
     	getDatastore().delete(m);
     }
     
@@ -73,17 +73,17 @@ public class ItemDAO extends AbsDao {
     	
     	for(Item m : player.getItems().values()){
     		if(m.getDtate() == 1){
-    			saveItem(player.getSeverId(), m);
+    			saveItem(m);
     		}else if(m.getDtate() == 2){
-    			updateItem(player.getSeverId(), m);
+    			updateItem(m);
     		}else if(m.getDtate() == 3){
-    			removeItem(player.getSeverId(), m);
+    			removeItem(m);
     		}
     		m.setDtate(0);
     	}
     	
     	for(Item m : player.getRemoves()){
-    		removeItem(player.getSeverId(), m);
+    		removeItem(m);
     		m.setDtate(0);
     	}
 	

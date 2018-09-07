@@ -58,7 +58,7 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
         Player friendPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
         if (friendPlayer == null){  //不在线取库
             isOnline = false;
-            friendPlayer = PlayerDAO.ins().getPlayerByPlayerId(player.getSeverId(), playerId);
+            friendPlayer = PlayerDAO.ins().getPlayerByPlayerId(playerId);
         }
         if (friendPlayer == null){
             return error(ErrorCode.ERROR);
