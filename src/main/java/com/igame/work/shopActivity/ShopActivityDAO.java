@@ -35,7 +35,7 @@ public class ShopActivityDAO extends AbsDao {
 		List<ShopActivityDto> ls = listByPlayer(serverId, playerId);
     	if(ls != null){
     		for(ShopActivityDto mm : ls){
-    			all.put(mm.get_id(), mm);
+    			all.put(mm.getActivityId(), mm);
     		}
     	}   	
     	return all;

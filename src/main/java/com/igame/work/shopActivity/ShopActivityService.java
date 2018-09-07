@@ -24,7 +24,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
 
     private ShopActivityDto createShopActivityDto(int activityId) {
         ShopActivityDto dto = new ShopActivityDto();
-        dto.set_id(activityId);
+        dto.setActivityId(activityId);
         return dto;
     }
 
@@ -176,7 +176,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
     }
 
     public Map<Integer,String> clientData(Player player) {
-        shopActivityDAO.listAll(player.getSeverId()).forEach(e->dto.put(e.get_id(),e));
+        shopActivityDAO.listAll(player.getSeverId()).forEach(e->dto.put(e.getActivityId(),e));
         ShopActivityDataManager.Configs.getAll().forEach(c->dto.computeIfAbsent(c.getNum(), this::createShopActivityDto));
 
         return ShopActivityDataManager.Configs.getAll().stream()

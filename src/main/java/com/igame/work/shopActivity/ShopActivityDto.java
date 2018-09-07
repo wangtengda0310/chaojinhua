@@ -1,24 +1,21 @@
 package com.igame.work.shopActivity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.mongodb.morphia.annotations.Id;
+import com.igame.core.db.BasicDto;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShopActivityDto {
-    @Id
-    @JsonIgnore
-    public int _id;
+public class ShopActivityDto extends BasicDto {
 
-    public int get_id() {
-        return _id;
-    }
-
-    public void set_id(int _id) {
-        this._id = _id;
-    }
+    public int activityId;
 
     public Map<Long, ShopActivityPlayerDto> players = new HashMap<>();
 
+    public int getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(int activityId) {
+        this.activityId = activityId;
+    }
 }
