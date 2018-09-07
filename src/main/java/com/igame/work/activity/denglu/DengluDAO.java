@@ -62,7 +62,7 @@ public class DengluDAO extends AbsDao {
     	up.set("playerId", m.getActivityId());
     	up.set("activityId", m.getActivityId());
     	up.set("record", m.getRecord());
-    	getDatastore(serverId).update(m, up);
+    	getDatastore(serverId).save(m);
     }
     
     /**

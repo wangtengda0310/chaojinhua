@@ -2,8 +2,6 @@ package com.igame.work.activity;
 
 import com.igame.core.ISFSModule;
 import com.igame.util.DateUtil;
-import com.igame.work.activity.denglu.DengluDAO;
-import com.igame.work.activity.denglu.DengluDto;
 import com.igame.work.activity.denglu.DengluService;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaData;
 import com.igame.work.activity.sign.SignConfigTemplate;
@@ -12,11 +10,8 @@ import com.igame.work.activity.tansuoZhiLu.TanSuoZhiLuActivityData;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.dto.Player;
 
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * activity_type配置1的时候time_limit可能是一个正数 也可能是-1
@@ -97,34 +92,7 @@ public class ActivityService implements ISFSModule {
 
         map.put("tansuoZhiLu", player.getActivityData().getTansuo().clientData(player));
 
-        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getSeverId(), player.getPlayerId());
-        Map<Integer, String> dengluRecords = new HashMap<>();
-        DengluService.configs.forEach((configId, configs) -> {
-
-            byPlayer.computeIfAbsent(configId, activityId -> {
-                DengluDto dto = new DengluDto();
-                dto.setActivityId(activityId);
-                dto.setPlayerId(player.getPlayerId());
-                dto.setRecord(new int[configs.size()]);
-                DengluDAO.ins().save(player.getSeverId(), dto);
-                return dto;
-            });
-
-            DengluDto dengluDto = byPlayer.get(configId);
-
-            configs.stream()
-                    .filter(c -> c.getOrder()-1 == DateUtil.getIntervalDays(c.startTime(player), new Date()))
-                    .findAny()
-                    .ifPresent(c -> {
-                        dengluDto.getRecord()[c.getOrder()-1] = 1;
-                        DengluDAO.ins().save(player.getSeverId(), dengluDto);
-                    });
-
-            dengluRecords.put(configId, Arrays.stream(dengluDto.getRecord())
-                    .mapToObj(String::valueOf)
-                    .collect(Collectors.joining(",")));
-        });
-        map.put("denglu", dengluRecords);
+        map.put("denglu", DengluService.clientData(player));
         return map;
     }
 
