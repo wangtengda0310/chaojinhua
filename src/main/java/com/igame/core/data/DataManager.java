@@ -25,6 +25,7 @@ import com.igame.work.checkpoint.wujinZhiSen.WujinZhiSenDataManager;
 import com.igame.work.checkpoint.xingheZhiYan.TrialData;
 import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanDataManager;
 import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.arena.ArenaData;
 import com.igame.work.fight.data.*;
 import com.igame.work.item.ItemDataManager;
 import com.igame.work.item.data.PropGroupData;

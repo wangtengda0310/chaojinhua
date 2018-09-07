@@ -1,12 +1,10 @@
-package com.igame.work.fight.handler;
+package com.igame.work.fight.arena;
 
 
 import com.google.common.collect.Lists;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.MProtrol;
-import com.igame.work.fight.dto.AreaRanker;
-import com.igame.work.fight.service.ArenaService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
@@ -18,7 +16,7 @@ import java.util.List;
  * @author Marcus.Z
  *
  */
-public class AreaInfoHandler extends ReconnectedHandler {
+public class ArenaInfoHandler extends ReconnectedHandler {
 
 	private ArenaService arenaService;
 	
@@ -33,10 +31,10 @@ public class AreaInfoHandler extends ReconnectedHandler {
 
 		int atype = jsonObject.getInt("atype");
 
-		List<AreaRanker> opponent = Lists.newArrayList();
-		int myRank = arenaService.getMRank(atype, player.getSeverId(), player.getPlayerId());
-		player.setMyRank(myRank);
-		List<AreaRanker> rank  = arenaService.getRank(atype, player.getSeverId());
+		List<ArenaRanker> opponent = Lists.newArrayList();
+		int myRank = arenaService.getMRank(atype, player.getPlayerId());
+		arenaService.setPlayerRank(player.getPlayerId(), myRank);
+		List<ArenaRanker> rank  = arenaService.getRank(atype);
 		if(rank == null){
 			rank = Lists.newArrayList();
 		}
@@ -47,7 +45,7 @@ public class AreaInfoHandler extends ReconnectedHandler {
 		if(rank.size()>10){
 			rank = rank.subList(0, 10);
 		}
-		for(AreaRanker ar : rank) {	// TODO 可以重构成监听上下阵事件
+		for(ArenaRanker ar : rank) {	// TODO 可以重构成监听上下阵事件
 			if(ar.getPlayerId() == player.getPlayerId()) {
 				ar.setFightValue(player.getTeams().get(6).getFightValue());
 				break;

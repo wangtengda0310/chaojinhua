@@ -1,4 +1,4 @@
-package com.igame.work.fight.handler;
+package com.igame.work.fight.arena;
 
 
 import com.igame.work.ErrorCode;
@@ -17,7 +17,7 @@ import net.sf.json.JSONObject;
  * 	购买竞技场挑战次数
  *
  */
-public class AreaBuyHandler extends ReconnectedHandler {
+public class ArenaBuyHandler extends ReconnectedHandler {
 
 	private ResourceService resourceService;
 

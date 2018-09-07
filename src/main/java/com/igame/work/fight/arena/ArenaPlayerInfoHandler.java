@@ -1,4 +1,4 @@
-package com.igame.work.fight.handler;
+package com.igame.work.fight.arena;
 
 
 import com.google.common.collect.Lists;
@@ -6,10 +6,8 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
-import com.igame.work.fight.dto.AreaRanker;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.fight.service.ArenaService;
 import com.igame.work.monster.dao.MonsterDAO;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dao.PlayerDAO;
@@ -27,7 +25,7 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class AreaPlayerInfoHandler extends ReconnectedHandler {
+public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 
 	private ArenaService arenaService;
 
@@ -51,9 +49,9 @@ public class AreaPlayerInfoHandler extends ReconnectedHandler {
 		List<MatchMonsterDto> lb = Lists.newArrayList();
 		new RobotDto();
 		Map<Long,RobotDto> map = arenaService.getRobot().get(player.getSeverId());
-//		List<AreaRanker> rank = ArenaServiceDto.ins().getRankDto(player.getAreaType(), player.getSeverId());
-		AreaRanker oter = null;
-		for(AreaRanker ar : player.getTempOpponent()){
+//		List<ArenaRanker> rank = ArenaServiceDto.ins().getRankDto(player.getAreaType(), player.getSeverId());
+		ArenaRanker oter = null;
+		for(ArenaRanker ar : player.getTempOpponent()){
 			if(ar.getPlayerId() == playerId){
 				oter = ar;
 				break;

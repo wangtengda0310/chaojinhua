@@ -16,7 +16,7 @@ import com.igame.work.chat.handler.PublicMessageEventHandler;
 import com.igame.work.chat.service.PublicMessageService;
 import com.igame.work.checkpoint.baozouShike.BallisticService;
 import com.igame.work.checkpoint.mingyunZhiMen.GateService;
-import com.igame.work.fight.service.ArenaService;
+import com.igame.work.fight.arena.ArenaService;
 import com.igame.work.fight.service.FightEffectService;
 import com.igame.work.friend.handler.BuddyAddEventHandler;
 import com.igame.work.friend.handler.BuddyInitEventHandler;
@@ -28,7 +28,6 @@ import com.igame.work.user.handler.LoginEventHandler;
 import com.igame.work.user.service.PlayerCacheService;
 import com.igame.work.user.service.RobotService;
 import com.smartfoxserver.v2.core.SFSEventType;
-import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
 import com.smartfoxserver.v2.extensions.IClientRequestHandler;
 import com.smartfoxserver.v2.extensions.SFSExtension;
 

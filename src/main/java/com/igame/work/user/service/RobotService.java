@@ -18,7 +18,7 @@ import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.dao.RobotDAO;
-import com.igame.work.user.data.ArenadataTemplate;
+import com.igame.work.fight.arena.ArenadataTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.dto.Team;

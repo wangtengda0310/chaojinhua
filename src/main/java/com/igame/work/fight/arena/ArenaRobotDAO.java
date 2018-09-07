@@ -1,12 +1,9 @@
-package com.igame.work.user.dao;
+package com.igame.work.fight.arena;
 
 
 
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
-import com.igame.core.db.AccountDbDao;
-import com.igame.core.di.Inject;
-import com.igame.work.fight.service.ArenaServiceDto;
 import com.igame.work.user.dto.RobotDto;
 import org.mongodb.morphia.query.UpdateOperations;
 
@@ -18,16 +15,7 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class AreaRobotDAO extends AbsDao {
-
-	@Inject private AccountDbDao accountDbDao;
-
-    private static final AreaRobotDAO domain = new AreaRobotDAO();
-
-    public static AreaRobotDAO ins() {
-        return domain;
-    }
-    
+public class ArenaRobotDAO extends AbsDao {
 
     /**
      * 查询
@@ -102,11 +90,11 @@ public class AreaRobotDAO extends AbsDao {
      * 更新
      */
     public void updateRank(ArenaServiceDto m){
-    	ArenaServiceDto sys = accountDbDao.getAccountDatastore().find(ArenaServiceDto.class).get();
+    	ArenaServiceDto sys = getDatastore().find(ArenaServiceDto.class).get();
     	if(sys == null){
-			accountDbDao.getAccountDatastore().save(m);
+			getDatastore().save(m);
     	}else{
-	    	UpdateOperations<ArenaServiceDto> up = accountDbDao.getAccountDatastore().createUpdateOperations(ArenaServiceDto.class);
+	    	UpdateOperations<ArenaServiceDto> up = getDatastore().createUpdateOperations(ArenaServiceDto.class);
 	    	up.set("rank1", m.getRank1());
 	    	up.set("rank2", m.getRank2());
 	    	up.set("rank3", m.getRank3());
@@ -116,7 +104,7 @@ public class AreaRobotDAO extends AbsDao {
 	    	up.set("rank7", m.getRank7());
 	    	up.set("rank8", m.getRank8());
 
-			accountDbDao.getAccountDatastore().update(m, up);
+			getDatastore().update(m, up);
     	}
     }
 

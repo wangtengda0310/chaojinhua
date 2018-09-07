@@ -6,7 +6,7 @@ public class PlayerDataManager {
     /**
      * 竞技场数据
      */
-    public static com.igame.work.user.data.ArenaData ArenaData;
+    public static com.igame.work.fight.arena.ArenaData ArenaData;
     /**
      * 造物台数据
      */

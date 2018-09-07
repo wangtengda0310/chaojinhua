@@ -27,7 +27,7 @@ import com.igame.work.checkpoint.worldEvent.WordEventDAO;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.FightDataManager;
 import com.igame.work.fight.data.GodsdataTemplate;
-import com.igame.work.fight.service.ArenaService;
+import com.igame.work.fight.arena.ArenaService;
 import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.item.service.ItemService;

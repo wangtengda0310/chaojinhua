@@ -11,7 +11,7 @@ import com.igame.work.checkpoint.mingyunZhiMen.FateSelfData;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
-import com.igame.work.fight.dto.AreaRanker;
+import com.igame.work.fight.arena.ArenaRanker;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
@@ -258,12 +258,8 @@ public class Player extends PlayerDto {
     
     @Transient
     @JsonIgnore
-    private List<AreaRanker> tempOpponent = Lists.newArrayList();
-    
-    @Transient
-    @JsonIgnore
-    private int myRank=5001;
-    
+    private List<ArenaRanker> tempOpponent = Lists.newArrayList();
+
     @Transient
     @JsonIgnore
     private Map<Long, MatchMonsterDto> mingZheng = Maps.newHashMap();//命运之门当前阵容
@@ -683,20 +679,12 @@ public class Player extends PlayerDto {
         this.tempAreaPlayerId = tempAreaPlayerId;
     }
 
-    public List<AreaRanker> getTempOpponent() {
+    public List<ArenaRanker> getTempOpponent() {
         return tempOpponent;
     }
 
-    public void setTempOpponent(List<AreaRanker> tempOpponent) {
+    public void setTempOpponent(List<ArenaRanker> tempOpponent) {
         this.tempOpponent = tempOpponent;
-    }
-
-    public int getMyRank() {
-        return myRank;
-    }
-
-    public void setMyRank(int myRank) {
-        this.myRank = myRank;
     }
 
     public int getBallisticMonsters() {

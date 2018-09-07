@@ -1,4 +1,4 @@
-package com.igame.work.fight.handler;
+package com.igame.work.fight.arena;
 
 
 import com.google.common.collect.Maps;
@@ -7,8 +7,6 @@ import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.PlayerEvents;
-import com.igame.work.fight.dto.AreaRanker;
-import com.igame.work.fight.service.ArenaService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
@@ -22,7 +20,7 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class AreaEndHandler extends ReconnectedHandler {
+public class ArenaEndHandler extends ReconnectedHandler {
 
 	private Map<Integer, Object> lock = Maps.newHashMap();
 	private ArenaService arenaService;
@@ -49,21 +47,21 @@ public class AreaEndHandler extends ReconnectedHandler {
 		}
 
 		//处理排行信息
-		int myRank = player.getMyRank();
-		List<AreaRanker> rank = arenaService.getRank(player.getAreaType(), player.getSeverId());
+		int myRank = arenaService.getPlayerRank(player.getPlayerId());
+		List<ArenaRanker> rank = arenaService.getRank(player.getAreaType());
 		if(win == 1){
 			synchronized (getLockByPlayer(player.getSeverId())) {
 
-				AreaRanker self = null;
-				AreaRanker oter = null;
-				for(AreaRanker ar : player.getTempOpponent()){
+				ArenaRanker self = null;
+				ArenaRanker oter = null;
+				for(ArenaRanker ar : player.getTempOpponent()){
 					if(ar.getPlayerId() == player.getTempAreaPlayerId()){
 						oter = ar;
 						break;
 					}
 				}
 
-				for(AreaRanker ar : rank){
+				for(ArenaRanker ar : rank){
 					if(ar.getPlayerId() == player.getPlayerId()){
 						self = ar;
 						break;
@@ -71,17 +69,16 @@ public class AreaEndHandler extends ReconnectedHandler {
 				}
 
 				if(oter != null){
-					int selfRank = player.getMyRank();
+					int selfRank = arenaService.getPlayerRank(player.getPlayerId());
 					int otherRank = oter.getRank();
 					if(self == null){
-						self = new AreaRanker(player.getPlayerId(), selfRank, player.getNickname(), player.getTeams().get(6).getFightValue(),
-								player.getSeverId());
+						self = new ArenaRanker(player.getPlayerId(), selfRank, player.getNickname(), player.getTeams().get(6).getFightValue());
 						rank.add(self);
 					}
 					self.setRank(otherRank);
 					oter.setRank(selfRank);
-					player.setMyRank(self.getRank());
-					myRank = player.getMyRank();
+					arenaService.setPlayerRank(player.getPlayerId(), self.getRank());
+					myRank = arenaService.getPlayerRank(player.getPlayerId());
 
 					Collections.sort(rank);
 					fireEvent(player, PlayerEvents.ARENA_RANK, null);
