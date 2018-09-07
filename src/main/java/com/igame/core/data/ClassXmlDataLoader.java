@@ -31,7 +31,7 @@ public class ClassXmlDataLoader {
 			URL systemResource = ClassLoader.getSystemResource(resource);
 			return (D) un.unmarshal(systemResource);
 		} catch (Exception e) {
-			ExceptionLog.error(e);
+			ExceptionLog.error("",e);
 			throw new Error("Error while loading data:[" + dataClass.getName() + "]", e);
 		}
 	}
