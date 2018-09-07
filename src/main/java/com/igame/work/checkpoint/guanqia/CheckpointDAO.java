@@ -16,11 +16,6 @@ import com.igame.work.user.dto.Player;
  */
 public class CheckpointDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Checkpoint";
-	}
-	
     private static final CheckpointDAO domain = new CheckpointDAO();
 
     public static final CheckpointDAO ins() {
@@ -30,14 +25,11 @@ public class CheckpointDAO extends AbsDao {
 
     /**
      * 查询
-     * @param serverId
-     * @param playerId
-     * @return
      */
     public Map<Integer,Checkpoint> getByPlayer(int serverId,long playerId){
     	Map<Integer,Checkpoint> all = Maps.newHashMap();
     	
-    	List<Checkpoint> ls = getDatastore(serverId).find(Checkpoint.class, "playerId", playerId).asList();
+    	List<Checkpoint> ls = getDatastore().find(Checkpoint.class, "playerId", playerId).asList();
     	if(ls != null){
     		for(Checkpoint mm : ls){
     			all.put(mm.getChapterId(), mm);
@@ -48,39 +40,31 @@ public class CheckpointDAO extends AbsDao {
     
     /**
      * 保存
-     * @param serverId
-     * @param userId
-     * @return
      */
     public Checkpoint save(int serverId,Checkpoint m){
-    	getDatastore(serverId).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
     /**
      * 更新
-     * @param serverId
-     * @param m
      */
     public void update(int serverId,Checkpoint m){
-//    	UpdateOperations<Checkpoint> up = getDatastore(serverId).createUpdateOperations(Checkpoint.class)
+//    	UpdateOperations<Checkpoint> up = getAccountDatastore(serverId).createUpdateOperations(Checkpoint.class)
 //        		.set("count", m.getCount())
 //        		;
-//    	getDatastore(serverId).update(m, up);
+//    	getAccountDatastore(serverId).update(m, up);
     }
     
     /**
      * 删除
-     * @param serverId
-     * @param m
      */
     public void remove(int serverId,Checkpoint m){
-    	getDatastore(serverId).delete(m);
+    	getDatastore().delete(m);
     }
     
     /**
      * 更新玩家
-     * @param player
      */
     public void updatePlayer(Player player){
     	

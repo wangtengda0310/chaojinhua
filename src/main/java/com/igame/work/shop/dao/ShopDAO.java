@@ -1,24 +1,16 @@
 package com.igame.work.shop.dao;
 
-import com.igame.core.data.DataManager;
 import com.igame.core.db.AbsDao;
-import com.igame.work.shop.ShopConstants;
 import com.igame.work.shop.dto.ShopInfo;
-import com.igame.work.shop.service.ShopService;
 import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.UpdateOperations;
 
 public class ShopDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Shops";
-	}
-	
     private static final ShopDAO domain = new ShopDAO();
 
-    public static final ShopDAO ins() {
+    public static ShopDAO ins() {
         return domain;
     }
 
@@ -30,7 +22,7 @@ public class ShopDAO extends AbsDao {
      */
     public ShopInfo getShopInfoByPlayerId(int severId,long playerId){
 
-        return getDatastore(severId).find(ShopInfo.class,"playerId",playerId).get();
+        return getDatastore().find(ShopInfo.class,"playerId",playerId).get();
     }
 
     /**
@@ -40,7 +32,7 @@ public class ShopDAO extends AbsDao {
      */
     public ShopInfo saveShopInfo(int serverId, ShopInfo shopInfo){
 
-        getDatastore(serverId).save(shopInfo);
+        getDatastore().save(shopInfo);
 
         return shopInfo;
     }
@@ -52,7 +44,7 @@ public class ShopDAO extends AbsDao {
      */
     public void updateShopInfo(int serverId, ShopInfo shopInfo){
 
-        Datastore ds = getDatastore(serverId);
+        Datastore ds = getDatastore();
         UpdateOperations<ShopInfo> up = ds.createUpdateOperations(ShopInfo.class)
                 .set("mysticalShop",shopInfo.getMysticalShop())
                 .set("wujinShop",shopInfo.getWujinShop())

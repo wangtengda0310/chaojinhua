@@ -2,15 +2,14 @@ package com.igame.work.quest.dao;
 
 
 
-import java.util.List;
-
-import com.igame.work.quest.QuestDataManager;
-import org.mongodb.morphia.query.UpdateOperations;
-
-import com.igame.work.quest.data.QuestTemplate;
 import com.igame.core.db.AbsDao;
+import com.igame.work.quest.QuestDataManager;
+import com.igame.work.quest.data.QuestTemplate;
 import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.user.dto.Player;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import java.util.List;
 
 /**
  * 
@@ -19,11 +18,6 @@ import com.igame.work.user.dto.Player;
  */
 public class QuestDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Quest";
-	}
-	
     private static final QuestDAO domain = new QuestDAO();
 
     public static final QuestDAO ins() {
@@ -33,13 +27,10 @@ public class QuestDAO extends AbsDao {
 
     /**
      * 查询
-     * @param serverId
-     * @param playerId
-     * @return
      */
     public void getByPlayer(int serverId,Player player){
     	
-    	List<TaskDayInfo> ls = getDatastore(serverId).find(TaskDayInfo.class, "playerId", player.getPlayerId()).asList();
+    	List<TaskDayInfo> ls = getDatastore().find(TaskDayInfo.class, "playerId", player.getPlayerId()).asList();
     	for(TaskDayInfo tk :ls){
     		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(tk.getQuestId());
     		if(qt!= null){
@@ -56,39 +47,31 @@ public class QuestDAO extends AbsDao {
     
     /**
      * 保存
-     * @param serverId
-     * @param userId
-     * @return
      */
     public TaskDayInfo save(int serverId,TaskDayInfo m){
-    	getDatastore(serverId).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
     /**
      * 更新
-     * @param serverId
-     * @param m
      */
     public void update(int serverId,TaskDayInfo m){
-    	UpdateOperations<TaskDayInfo> up = getDatastore(serverId).createUpdateOperations(TaskDayInfo.class);
+    	UpdateOperations<TaskDayInfo> up = getDatastore().createUpdateOperations(TaskDayInfo.class);
     	up.set("status", m.getStatus());
     	up.set("vars", m.getVars());
-    	getDatastore(serverId).update(m, up);
+    	getDatastore().update(m, up);
     }
     
     /**
      * 删除
-     * @param serverId
-     * @param m
      */
     public void remove(int serverId,TaskDayInfo m){
-    	getDatastore(serverId).delete(m);
+    	getDatastore().delete(m);
     }
     
     /**
      * 更新玩家
-     * @param player
      */
     public void updatePlayer(Player player){
     	

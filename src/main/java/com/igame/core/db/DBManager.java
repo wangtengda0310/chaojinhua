@@ -19,10 +19,16 @@ import java.util.*;
 public class DBManager implements ISFSModule {
 	
 	public Properties p = new Properties();
-	private Map<String,MongoDatabase> mongoDBs = new HashMap<String,MongoDatabase>();
-	private Map<String,Datastore> datastores = new HashMap<String,Datastore>();
+	private Map<String,MongoDatabase> mongoDBs = new HashMap<>();
+	private Map<String,Datastore> datastores = new HashMap<>();
 	private MongoClient mclient = null;
-	
+
+	private final String dbPer = "igame";
+
+	public Datastore getDatastore(){
+		String dbName = dbPer+p.getProperty("serverId");
+		return getDatastore(dbName);
+	}
 	public Datastore getDatastore(String dbName){
 		if(datastores.containsKey(dbName)){
 			return datastores.get(dbName);
@@ -36,24 +42,6 @@ public class DBManager implements ISFSModule {
 			return datastores.get(dbName);
 		}
 
-	}
-
-	public Map<String,MongoDatabase> getGameDBS(){
-		return mongoDBs;
-		
-	}
-	
-	public MongoDatabase getGameDBOne(){
-		return mongoDBs.get("igame1");
-		
-	}
-	
-	public Map<String,Datastore> getDatastores() {
-		return datastores;
-	}
-	
-	public Datastore getDatastoreOne() {
-		return datastores.get("igame1");
 	}
 
 	public void init() {
@@ -125,11 +113,6 @@ public class DBManager implements ISFSModule {
         credentials.add(credential);  
         
         return new MongoClient(addrs,credentials,myOptions);  
-	}
-
-	
-	public String getSystemParamKeyValue(String key){
-		return p.getProperty(key);
 	}
 
 }

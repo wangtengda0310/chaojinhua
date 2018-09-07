@@ -2,15 +2,14 @@ package com.igame.work.user.dao;
 
 
 
-import java.util.List;
-import java.util.Map;
-
-import org.mongodb.morphia.query.UpdateOperations;
-
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
 import com.igame.work.user.dto.Mail;
 import com.igame.work.user.dto.Player;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -19,11 +18,6 @@ import com.igame.work.user.dto.Player;
  */
 public class MailDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Mail";
-	}
-	
     private static final MailDAO domain = new MailDAO();
 
     public static final MailDAO ins() {
@@ -33,14 +27,11 @@ public class MailDAO extends AbsDao {
 
     /**
      * 查询
-     * @param serverId
-     * @param playerId
-     * @return
      */
     public Map<Integer,Mail> getByPlayer(int serverId,long playerId){
     	Map<Integer,Mail> all = Maps.newHashMap();
     	
-    	List<Mail> ls = getDatastore(serverId).find(Mail.class, "playerId", playerId).asList();
+    	List<Mail> ls = getDatastore().find(Mail.class, "playerId", playerId).asList();
     	if(ls != null){
     		for(Mail mm : ls){
     			all.put(mm.getId(), mm);
@@ -52,38 +43,30 @@ public class MailDAO extends AbsDao {
     
     /**
      * 保存
-     * @param serverId
-     * @param userId
-     * @return
      */
     public Mail save(int serverId,Mail m){
-    	getDatastore(serverId).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
     /**
      * 更新
-     * @param serverId
-     * @param m
      */
     public void update(int serverId,Mail m){
-    	UpdateOperations<Mail> up = getDatastore(serverId).createUpdateOperations(Mail.class);
+    	UpdateOperations<Mail> up = getDatastore().createUpdateOperations(Mail.class);
     	up.set("state", m.getState());
-    	getDatastore(serverId).update(m, up);
+    	getDatastore().update(m, up);
     }
     
     /**
      * 删除
-     * @param serverId
-     * @param m
      */
     public void remove(int serverId,Mail m){
-    	getDatastore(serverId).delete(m);
+    	getDatastore().delete(m);
     }
     
     /**
      * 更新玩家
-     * @param player
      */
     public void updatePlayer(Player player){
     	

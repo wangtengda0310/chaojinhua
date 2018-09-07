@@ -9,7 +9,6 @@ import org.mongodb.morphia.query.UpdateOperations;
 
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
-import com.igame.core.log.GoldLog;
 import com.igame.work.user.dto.RobotDto;
 
 /**
@@ -19,30 +18,22 @@ import com.igame.work.user.dto.RobotDto;
  */
 public class RobotDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Robot";
-	}
-	
     private static final RobotDAO domain = new RobotDAO();
 
-    public static final RobotDAO ins() {
+    public static RobotDAO ins() {
         return domain;
     }
     
 
     /**
      * 查询
-     * @param serverId
-     * @param playerId
-     * @return
      */
     public Map<String,RobotDto> loadData(int serverId){
     	Map<String,RobotDto> all = Maps.newHashMap();
     	
-    	List<RobotDto> ls = getDatastore(serverId).find(RobotDto.class,"type", 0).asList();
+    	List<RobotDto> ls = getDatastore().find(RobotDto.class,"type", 0).asList();
     	
-//    	List<RobotDto> ls = getDatastore(serverId).find(RobotDto.class).asList();
+//    	List<RobotDto> ls = getAccountDatastore(serverId).find(RobotDto.class).asList();
 //    	GoldLog.info("loadDataloadData:"+ls.size());
     	if(ls != null){
     		for(RobotDto mm : ls){
@@ -55,22 +46,17 @@ public class RobotDAO extends AbsDao {
     
     /**
      * 保存
-     * @param serverId
-     * @param userId
-     * @return
      */
     public RobotDto saveRobotDto(RobotDto m){
-    	getDatastore(m.getSeverId()).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
     /**
      * 更新
-     * @param serverId
-     * @param m
      */
     public void updateRobotDto(RobotDto m){
-    	UpdateOperations<RobotDto> up = getDatastore(m.getSeverId()).createUpdateOperations(RobotDto.class);
+    	UpdateOperations<RobotDto> up = getDatastore().createUpdateOperations(RobotDto.class);
     	up.set("severId", m.getSeverId())
           .set("playerId", m.getPlayerId())
           .set("name", m.getName())
@@ -82,21 +68,18 @@ public class RobotDAO extends AbsDao {
           .set("type", m.getType())
           .set("fightValue", m.getFightValue())
           ;
-    	getDatastore(m.getSeverId()).update(m,up);
+    	getDatastore().update(m,up);
     }
     
     /**
      * 删除
-     * @param serverId
-     * @param m
      */
     public void removeRobotDto(RobotDto m){
-    	getDatastore(m.getSeverId()).delete(m);
+    	getDatastore().delete(m);
     }
     
     /**
      * 更新玩家
-     * @param player
      */
     public void update(RobotDto m){
     	

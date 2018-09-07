@@ -8,14 +8,9 @@ import org.mongodb.morphia.query.UpdateOperations;
 
 public class FriendDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Friends";
-	}
-	
     private static final FriendDAO domain = new FriendDAO();
 
-    public static final FriendDAO ins() {
+    public static FriendDAO ins() {
         return domain;
     }
 
@@ -27,7 +22,7 @@ public class FriendDAO extends AbsDao {
      */
     public FriendInfo getFriendInfoByPlayerId(int severId, long playerId){
 
-        FriendInfo friendInfo = getDatastore(severId).find(FriendInfo.class, "playerId", playerId).get();
+        FriendInfo friendInfo = getDatastore().find(FriendInfo.class, "playerId", playerId).get();
 
         if (friendInfo != null){
             friendInfo.getCurFriends().forEach(friend -> friend.loadCache(friend,severId));
@@ -49,7 +44,7 @@ public class FriendDAO extends AbsDao {
      */
     public FriendInfo saveFriendInfo(int serverId, FriendInfo friendInfo){
 
-        getDatastore(serverId).save(friendInfo);
+        getDatastore().save(friendInfo);
 
         return friendInfo;
     }
@@ -61,7 +56,7 @@ public class FriendDAO extends AbsDao {
      */
     public void updateFriends(int serverId, FriendInfo friendInfo){
 
-        Datastore ds = getDatastore(serverId);
+        Datastore ds = getDatastore();
         UpdateOperations<FriendInfo> up = ds.createUpdateOperations(FriendInfo.class)
                 .set("curFriends",friendInfo.getCurFriends())
                 .set("reqFriends",friendInfo.getReqFriends());

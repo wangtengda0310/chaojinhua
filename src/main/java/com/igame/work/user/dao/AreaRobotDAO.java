@@ -4,6 +4,8 @@ package com.igame.work.user.dao;
 
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
+import com.igame.core.db.AccountDbDao;
+import com.igame.core.di.Inject;
 import com.igame.work.fight.service.ArenaServiceDto;
 import com.igame.work.user.dto.RobotDto;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -18,14 +20,11 @@ import java.util.Map;
  */
 public class AreaRobotDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Robot";
-	}
-	
+	@Inject private AccountDbDao accountDbDao;
+
     private static final AreaRobotDAO domain = new AreaRobotDAO();
 
-    public static final AreaRobotDAO ins() {
+    public static AreaRobotDAO ins() {
         return domain;
     }
     
@@ -36,7 +35,7 @@ public class AreaRobotDAO extends AbsDao {
     public Map<Long,RobotDto> loadData(int serverId){
     	Map<Long,RobotDto> all = Maps.newHashMap();
     	
-    	List<RobotDto> ls = getDatastore(serverId).find(RobotDto.class,"type",1).asList();
+    	List<RobotDto> ls = getDatastore().find(RobotDto.class,"type",1).asList();
     	if(ls != null){
     		for(RobotDto mm : ls){
     			all.put(mm.getPlayerId(), mm);
@@ -50,7 +49,7 @@ public class AreaRobotDAO extends AbsDao {
      * 保存
      */
     public RobotDto saveRobotDto(RobotDto m){
-    	getDatastore(m.getSeverId()).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
@@ -58,7 +57,7 @@ public class AreaRobotDAO extends AbsDao {
      * 更新
      */
     public void updateRobotDto(RobotDto m){
-    	UpdateOperations<RobotDto> up = getDatastore(m.getSeverId()).createUpdateOperations(RobotDto.class);
+    	UpdateOperations<RobotDto> up = getDatastore().createUpdateOperations(RobotDto.class);
     	up.set("severId", m.getSeverId())
           .set("playerId", m.getPlayerId())
           .set("name", m.getName())
@@ -70,14 +69,14 @@ public class AreaRobotDAO extends AbsDao {
           .set("type", m.getType())
           .set("fightValue", m.getFightValue())
           ;
-    	getDatastore(m.getSeverId()).update(m,up);
+    	getDatastore().update(m,up);
     }
     
     /**
      * 删除
      */
     public void removeRobotDto(RobotDto m){
-    	getDatastore(m.getSeverId()).delete(m);
+    	getDatastore().delete(m);
     }
     
     /**
@@ -103,11 +102,11 @@ public class AreaRobotDAO extends AbsDao {
      * 更新
      */
     public void updateRank(ArenaServiceDto m){
-    	ArenaServiceDto sys = getDatastore("accounts").find(ArenaServiceDto.class).get();
+    	ArenaServiceDto sys = accountDbDao.getAccountDatastore().find(ArenaServiceDto.class).get();
     	if(sys == null){
-    		getDatastore("accounts").save(m);
+			accountDbDao.getAccountDatastore().save(m);
     	}else{
-	    	UpdateOperations<ArenaServiceDto> up = getDatastore("accounts").createUpdateOperations(ArenaServiceDto.class);
+	    	UpdateOperations<ArenaServiceDto> up = accountDbDao.getAccountDatastore().createUpdateOperations(ArenaServiceDto.class);
 	    	up.set("rank1", m.getRank1());
 	    	up.set("rank2", m.getRank2());
 	    	up.set("rank3", m.getRank3());
@@ -117,7 +116,7 @@ public class AreaRobotDAO extends AbsDao {
 	    	up.set("rank7", m.getRank7());
 	    	up.set("rank8", m.getRank8());
 
-	    	getDatastore("accounts").update(m, up);
+			accountDbDao.getAccountDatastore().update(m, up);
     	}
     }
 

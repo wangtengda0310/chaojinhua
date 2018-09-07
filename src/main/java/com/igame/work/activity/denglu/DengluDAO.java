@@ -15,11 +15,6 @@ import java.util.Map;
  */
 public class DengluDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "DengluActivity";
-	}
-	
     private static final DengluDAO domain = new DengluDAO();
 
     public static DengluDAO ins() {
@@ -28,7 +23,7 @@ public class DengluDAO extends AbsDao {
 
 
 	public List<DengluDto> listByPlayer(int serverId,long playerId){
-		return getDatastore(serverId).find(DengluDto.class, "playerId", playerId).asList();
+		return getDatastore().find(DengluDto.class, "playerId", playerId).asList();
 	}
     /**
      * 查询
@@ -50,7 +45,7 @@ public class DengluDAO extends AbsDao {
      * 保存
      */
     public DengluDto save(int serverId,DengluDto m){
-    	getDatastore(serverId).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
@@ -58,18 +53,18 @@ public class DengluDAO extends AbsDao {
      * 更新
      */
     public void update(int serverId,DengluDto m){
-    	UpdateOperations<DengluDto> up = getDatastore(serverId).createUpdateOperations(DengluDto.class);
+    	UpdateOperations<DengluDto> up = getDatastore().createUpdateOperations(DengluDto.class);
     	up.set("playerId", m.getActivityId());
     	up.set("activityId", m.getActivityId());
     	up.set("record", m.getRecord());
-    	getDatastore(serverId).save(m);
+    	getDatastore().save(m);
     }
     
     /**
      * 删除
      */
     public void remove(int serverId,DengluDto m){
-    	getDatastore(serverId).delete(m);
+    	getDatastore().delete(m);
     }
 
 }

@@ -14,14 +14,9 @@ import java.util.Map;
 
 public class PlayerDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "players";
-	}
-	
     private static final PlayerDAO domain = new PlayerDAO();
 
-    public static final PlayerDAO ins() {
+    public static PlayerDAO ins() {
         return domain;
     }
     
@@ -29,15 +24,15 @@ public class PlayerDAO extends AbsDao {
      * 获取角色对象
      */
     public Player getPlayerByUserId(int serverId,long userId){
-		return getDatastore(serverId).find(Player.class, "userId", userId).get();
+		return getDatastore().find(Player.class, "userId", userId).get();
     }
     
     public Player getPlayerByPlayerId(int serverId,long playerId){
-		return getDatastore(serverId).find(Player.class, "playerId", playerId).get();
+		return getDatastore().find(Player.class, "playerId", playerId).get();
     }
     
     public Player getPlayerByPlayerNickName(int serverId,String nickname){
-		return getDatastore(serverId).find(Player.class, "nickname", nickname).get();
+		return getDatastore().find(Player.class, "nickname", nickname).get();
     }
     
     public Map<Integer,Player> getAllUser(long userId){
@@ -46,7 +41,7 @@ public class PlayerDAO extends AbsDao {
     	for(Integer serverId :ServerListHandler.servers.keySet()){
     		Player p = null;
     		try{
-    			p = getDatastore(serverId).find(Player.class, "userId", userId).get();
+    			p = getDatastore().find(Player.class, "userId", userId).get();
     		} catch (Exception e){
     			ExceptionLog.error("PlayerDAO.getAllUser ERROR,serverId:" + serverId+",userId:" + userId);
     		}
@@ -62,19 +57,19 @@ public class PlayerDAO extends AbsDao {
      * 默认创建一个新玩家
      */
     public Player savePlayer(int serverId, Player player){
-		getDatastore(serverId).save(player);
+		getDatastore().save(player);
     	return player;
     }
     
     public List<Player> getALLPlayer(int serverId){
-    	return getDatastore(serverId).find(Player.class).asList();
+    	return getDatastore().find(Player.class).asList();
     }
     
     /**
      * 更新玩家
      */
     public void updatePlayer(Player player,boolean loginOutTime){
-    	Datastore ds = getDatastore(player.getSeverId());
+    	Datastore ds = getDatastore();
     	UpdateOperations<Player> up = ds.createUpdateOperations(Player.class)
     		.set("nickname", player.getNickname())
     		.set("lastNickname", player.getLastNickname())
@@ -150,7 +145,7 @@ public class PlayerDAO extends AbsDao {
     
 
     public void updatePlayerTest(Player player,int severId){
-    	Datastore ds = getDatastore(severId);
+    	Datastore ds = getDatastore();
     	UpdateOperations<Player> up = ds.createUpdateOperations(Player.class);
     	up.set("wuMap", player.getWuMap());
     	ds.update(player, up);

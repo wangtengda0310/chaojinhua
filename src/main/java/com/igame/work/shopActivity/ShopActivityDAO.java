@@ -14,17 +14,11 @@ import java.util.Map;
  */
 public class ShopActivityDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "ShopActivity";
-	}
-
-
 	public List<ShopActivityDto> listByPlayer(int serverId,long playerId){
-		return getDatastore(serverId).find(ShopActivityDto.class, "playerId", playerId).asList();
+		return getDatastore().find(ShopActivityDto.class, "playerId", playerId).asList();
 	}
 	public List<ShopActivityDto> listAll(int serverId){
-		return getDatastore(serverId).find(ShopActivityDto.class).asList();
+		return getDatastore().find(ShopActivityDto.class).asList();
 	}
     /**
      * 查询
@@ -46,7 +40,7 @@ public class ShopActivityDAO extends AbsDao {
      * 保存
      */
     public ShopActivityDto save(int serverId,ShopActivityDto m){
-    	getDatastore(serverId).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
@@ -54,18 +48,18 @@ public class ShopActivityDAO extends AbsDao {
      * 更新
      */
     public void update(int serverId,ShopActivityDto m){
-//    	UpdateOperations<ShopActivityDto> up = getDatastore(serverId).createUpdateOperations(ShopActivityDto.class);
+//    	UpdateOperations<ShopActivityDto> up = getAccountDatastore(serverId).createUpdateOperations(ShopActivityDto.class);
 //    	up.set("playerId", m.getActivityId());
 //    	up.set("activityId", m.getActivityId());
 //    	up.set("record", m.getRecord());
-//    	getDatastore(serverId).update(m, up);
+//    	getAccountDatastore(serverId).update(m, up);
     }
     
     /**
      * 删除
      */
     public void remove(int serverId,ShopActivityDto m){
-    	getDatastore(serverId).delete(m);
+    	getDatastore().delete(m);
     }
 
 }

@@ -13,14 +13,9 @@ import java.util.List;
  */
 public class MessageDAO extends AbsDao {
 
-    @Override
-    public String getTableName() {
-        return "Messages";
-    }
-
     private static final MessageDAO domain = new MessageDAO();
 
-    public static final MessageDAO ins() {
+    public static MessageDAO ins() {
         return domain;
     }
 
@@ -31,7 +26,7 @@ public class MessageDAO extends AbsDao {
      */
     public List<Message> getMessageByServerId(int severId){
 
-        return getDatastore(severId).find(Message.class).asList();
+        return getDatastore().find(Message.class).asList();
     }
 
     /**
@@ -39,7 +34,7 @@ public class MessageDAO extends AbsDao {
      */
     public List<Message> getMessageByPlayerId(int serverId, long sender) {
 
-        Datastore ds = getDatastore(serverId);
+        Datastore ds = getDatastore();
         Query<Message> q = ds.createQuery(Message.class);
         q.field("sender").equal(sender);
         q.or(q.criteria("recipient").equal(sender));
@@ -52,7 +47,7 @@ public class MessageDAO extends AbsDao {
 
     public List<Message> getMessageByPlayerId(int serverId, long sender, long recipient) {
 
-        Datastore ds = getDatastore(serverId);
+        Datastore ds = getAccountDatastore(serverId);
         Query<Message> q = ds.createQuery(Message.class).field("sender").equal(sender)
                 .field("recipient").equal(recipient);
 
@@ -65,7 +60,7 @@ public class MessageDAO extends AbsDao {
      */
     public Message saveMessage(Message message){
 
-        getDatastore(message.getServerId()).save(message);
+        getDatastore().save(message);
 
         return message;
     }
@@ -76,7 +71,7 @@ public class MessageDAO extends AbsDao {
      */
     public void delMessage(Message message){
 
-        getDatastore(message.getServerId()).delete(message);
+        getDatastore().delete(message);
 
     }
 
@@ -87,7 +82,7 @@ public class MessageDAO extends AbsDao {
      */
     public void updateMessage(int serverId, Message message){
 
-        Datastore ds = getDatastore(serverId);
+        Datastore ds = getDatastore();
         UpdateOperations<Message> up = ds.createUpdateOperations(Message.class);
 
         ds.update(message,up);

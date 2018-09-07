@@ -2,6 +2,8 @@ package com.igame.work.checkpoint.baozouShike;
 
 
 import com.igame.core.db.AbsDao;
+import com.igame.core.db.AccountDbDao;
+import com.igame.core.di.Inject;
 import org.mongodb.morphia.query.UpdateOperations;
 
 /**
@@ -10,15 +12,11 @@ import org.mongodb.morphia.query.UpdateOperations;
  *
  */
 public class BallisticRankDAO extends AbsDao {
+	@Inject private AccountDbDao accountDbDao;
 
-	@Override
-	public String getTableName() {
-		return "ballisticRank";
-	}
-	
     private static final BallisticRankDAO domain = new BallisticRankDAO();
 
-    public static final BallisticRankDAO ins() {
+    public static BallisticRankDAO ins() {
         return domain;
     }
     
@@ -28,7 +26,7 @@ public class BallisticRankDAO extends AbsDao {
      */
     public BallisticRank get(){
 
-    	return getDatastore("accounts").find(BallisticRank.class).get();
+    	return accountDbDao.getAccountDatastore().find(BallisticRank.class).get();
     }
 
 	/**
@@ -36,20 +34,19 @@ public class BallisticRankDAO extends AbsDao {
 	 */
 	public BallisticRank save(BallisticRank m){
 
-		getDatastore("accounts").save(m);
+		accountDbDao.getAccountDatastore().save(m);
 
 		return m;
 	}
 
     /**
      * 更新
-     * @param m
      */
     public void update(BallisticRank m){
-		UpdateOperations<BallisticRank> up = getDatastore("accounts").createUpdateOperations(BallisticRank.class)
+		UpdateOperations<BallisticRank> up = accountDbDao.getAccountDatastore().createUpdateOperations(BallisticRank.class)
 				.set("rankMap", m.getRankMap())
 				.set("buffMap", m.getBuffMap());
-		getDatastore("accounts").update(m, up);
+		accountDbDao.getAccountDatastore().update(m, up);
     }
 
 }

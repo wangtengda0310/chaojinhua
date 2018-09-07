@@ -7,14 +7,9 @@ import org.mongodb.morphia.query.UpdateOperations;
 
 public class TurntableDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Shops";
-	}
-	
     private static final TurntableDAO domain = new TurntableDAO();
 
-    public static final TurntableDAO ins() {
+    public static TurntableDAO ins() {
         return domain;
     }
 
@@ -26,7 +21,7 @@ public class TurntableDAO extends AbsDao {
      */
     public Turntable getTurntableByPlayerId(int severId, long playerId){
 
-        return getDatastore(severId).find(Turntable.class,"playerId",playerId).get();
+        return getDatastore().find(Turntable.class,"playerId",playerId).get();
     }
 
     /**
@@ -36,7 +31,7 @@ public class TurntableDAO extends AbsDao {
      */
     public Turntable saveTurntable(int serverId, Turntable turntable){
 
-        getDatastore(serverId).save(turntable);
+        getDatastore().save(turntable);
 
         return turntable;
     }
@@ -48,7 +43,7 @@ public class TurntableDAO extends AbsDao {
      */
     public void updateTurntable(int serverId, Turntable turntable){
 
-        Datastore ds = getDatastore(serverId);
+        Datastore ds = getDatastore();
         UpdateOperations<Turntable> up = ds.createUpdateOperations(Turntable.class)
                 .set("lastUpdate",turntable.getLastUpdate())
                 .set("rewards",turntable.getRewards())

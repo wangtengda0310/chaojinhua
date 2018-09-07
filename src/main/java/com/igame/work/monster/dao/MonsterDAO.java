@@ -21,46 +21,28 @@ import com.igame.work.user.dto.Player;
  */
 public class MonsterDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Monster";
-	}
-	
     private static final MonsterDAO domain = new MonsterDAO();
 
-    public static final MonsterDAO ins() {
+    public static MonsterDAO ins() {
         return domain;
     }
-    
-    /**
-     * 
-     * @param serverId
-     * @return
-     */
+
     public List<Monster> getALLMonster(int serverId){
-    	return getDatastore(serverId).find(Monster.class).asList();
+    	return getDatastore().find(Monster.class).asList();
     }
 
-	/**
-	 *
-	 * @param serverId
-	 * @return
-	 */
 	public Monster getMonsterByOid(int serverId,long objectId){
-		return getDatastore(serverId).find(Monster.class,"objectId", objectId).get();
+		return getDatastore().find(Monster.class,"objectId", objectId).get();
 	}
     
 
     /**
      * 根据角色ID查询所有怪物列表
-     * @param serverId
-     * @param playerId
-     * @return
      */
     public Map<Long,Monster> getMonsterByPlayer(Player player,int serverId,long playerId){
     	Map<Long,Monster> all = Maps.newHashMap();
     	
-    	List<Monster> ls = getDatastore(serverId).find(Monster.class, "playerId", playerId).asList();
+    	List<Monster> ls = getDatastore().find(Monster.class, "playerId", playerId).asList();
     	if(ls != null){
     		for(Monster mm : ls){
     			MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
@@ -96,17 +78,14 @@ public class MonsterDAO extends AbsDao {
     
     /**
      * 保存新的怪物
-     * @param serverId
-     * @param userId
-     * @return
      */
     public Monster saveNewMonster(int serverId,Monster m){
-    	getDatastore(serverId).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
     public void updateMonster(int serverId,Monster m){
-    	UpdateOperations<Monster> up = getDatastore(serverId).createUpdateOperations(Monster.class)
+    	UpdateOperations<Monster> up = getDatastore().createUpdateOperations(Monster.class)
         		.set("hp", m.getHp())
         		.set("isLock", m.getIsLock())
         		.set("level", m.getLevel())
@@ -117,16 +96,15 @@ public class MonsterDAO extends AbsDao {
         		.set("equip", m.getEquip())
         		.set("skillExp", m.getSkillExp())		
         		;
-    	getDatastore(serverId).update(m, up);
+    	getDatastore().update(m, up);
     }
     
     public void removeMonster(int serverId,Monster m){
-    	getDatastore(serverId).delete(m);
+    	getDatastore().delete(m);
     }
     
     /**
      * 更新玩家
-     * @param player
      */
     public void updatePlayer(Player player){
     	

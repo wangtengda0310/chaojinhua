@@ -14,14 +14,9 @@ import java.util.List;
  */
 public class MessageBoardDAO extends AbsDao {
 
-    @Override
-    public String getTableName() {
-        return "MessageBoard";
-    }
-
     private static final MessageBoardDAO domain = new MessageBoardDAO();
 
-    public static final MessageBoardDAO ins() {
+    public static MessageBoardDAO ins() {
         return domain;
     }
 
@@ -32,7 +27,7 @@ public class MessageBoardDAO extends AbsDao {
      * @param type 留言板类型
      */
     public List<MessageBoard> getMessageBoard(int severId, String type){
-        Datastore ds = getDatastore(severId);
+        Datastore ds = getDatastore();
         Query<MessageBoard> q = ds.createQuery(MessageBoard.class)
                 .field("type").equal(type);
 
@@ -46,7 +41,7 @@ public class MessageBoardDAO extends AbsDao {
      * @param id 留言板ID
      */
     public MessageBoard getMessageBoardById(int severId, String id){
-        Datastore ds = getDatastore(severId);
+        Datastore ds = getDatastore();
         Query<MessageBoard> q = ds.createQuery(MessageBoard.class)
                 .field("_id").equal(new ObjectId(id));
 
@@ -58,7 +53,7 @@ public class MessageBoardDAO extends AbsDao {
      * @param message 消息
      */
     public MessageBoard saveMessageBoard(int serverId,MessageBoard message){
-        getDatastore(serverId).save(message);
+        getDatastore().save(message);
         return message;
     }
 
@@ -78,7 +73,7 @@ public class MessageBoardDAO extends AbsDao {
      */
     public void updateMessageBoard(int serverId, MessageBoard message){
 
-        Datastore ds = getDatastore(serverId);
+        Datastore ds = getDatastore();
         UpdateOperations<MessageBoard> up = ds.createUpdateOperations(MessageBoard.class)
                 .set("like",message.getLike())
                 .set("dislike",message.getDislike());

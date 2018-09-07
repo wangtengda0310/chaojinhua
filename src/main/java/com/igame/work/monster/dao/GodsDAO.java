@@ -19,11 +19,6 @@ import com.igame.work.user.dto.Player;
  */
 public class GodsDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Gods";
-	}
-	
     private static final GodsDAO domain = new GodsDAO();
 
     public static final GodsDAO ins() {
@@ -33,14 +28,11 @@ public class GodsDAO extends AbsDao {
 
     /**
      * 查询
-     * @param serverId
-     * @param playerId
-     * @return
      */
     public Map<Integer,Gods> getByPlayer(int serverId,long playerId){
     	Map<Integer,Gods> all = Maps.newHashMap();
     	
-    	List<Gods> ls = getDatastore(serverId).find(Gods.class, "playerId", playerId).asList();
+    	List<Gods> ls = getDatastore().find(Gods.class, "playerId", playerId).asList();
     	if(ls != null){
     		for(Gods mm : ls){
     			all.put(mm.getGodsType(), mm);
@@ -51,38 +43,30 @@ public class GodsDAO extends AbsDao {
     
     /**
      * 保存
-     * @param serverId
-     * @param userId
-     * @return
      */
     public Gods save(int serverId,Gods m){
-    	getDatastore(serverId).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
     /**
      * 更新
-     * @param serverId
-     * @param m
      */
     public void update(int serverId,Gods m){
-    	UpdateOperations<Gods> up = getDatastore(serverId).createUpdateOperations(Gods.class);
+    	UpdateOperations<Gods> up = getDatastore().createUpdateOperations(Gods.class);
     	up.set("godsLevel", m.getGodsLevel());
-    	getDatastore(serverId).update(m, up);
+    	getDatastore().update(m, up);
     }
     
     /**
      * 删除
-     * @param serverId
-     * @param m
      */
     public void remove(int serverId,Gods m){
-    	getDatastore(serverId).delete(m);
+    	getDatastore().delete(m);
     }
     
     /**
      * 更新玩家
-     * @param player
      */
     public void updatePlayer(Player player){
     	

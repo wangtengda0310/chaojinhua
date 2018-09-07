@@ -2,14 +2,13 @@ package com.igame.work.checkpoint.worldEvent;
 
 
 
-import java.util.List;
-import java.util.Map;
-
-import org.mongodb.morphia.query.UpdateOperations;
-
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
 import com.igame.work.user.dto.Player;
+import org.mongodb.morphia.query.UpdateOperations;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -18,28 +17,20 @@ import com.igame.work.user.dto.Player;
  */
 public class WordEventDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "WorldEventDto";
-	}
-	
     private static final WordEventDAO domain = new WordEventDAO();
 
-    public static final WordEventDAO ins() {
+    public static WordEventDAO ins() {
         return domain;
     }
     
 
     /**
      * 查询
-     * @param serverId
-     * @param playerId
-     * @return
      */
     public Map<Integer, WorldEventDto> getByPlayer(int serverId, long playerId){
     	Map<Integer, WorldEventDto> all = Maps.newHashMap();
     	
-    	List<WorldEventDto> ls = getDatastore(serverId).find(WorldEventDto.class, "playerId", playerId).asList();
+    	List<WorldEventDto> ls = getDatastore().find(WorldEventDto.class, "playerId", playerId).asList();
     	if(ls != null){
     		for(WorldEventDto mm : ls){
     			all.put(mm.getEventType(), mm);
@@ -50,40 +41,32 @@ public class WordEventDAO extends AbsDao {
     
     /**
      * 保存
-     * @param serverId
-     * @param userId
-     * @return
      */
     public WorldEventDto save(int serverId, WorldEventDto m){
-    	getDatastore(serverId).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
     /**
      * 更新
-     * @param serverId
-     * @param m
      */
     public void update(int serverId, WorldEventDto m){
-    	UpdateOperations<WorldEventDto> up = getDatastore(serverId).createUpdateOperations(WorldEventDto.class)
+    	UpdateOperations<WorldEventDto> up = getDatastore().createUpdateOperations(WorldEventDto.class)
         		.set("count", m.getCount())
         		.set("level", m.getLevel())
         		;
-    	getDatastore(serverId).update(m, up);
+    	getDatastore().update(m, up);
     }
     
     /**
      * 删除
-     * @param serverId
-     * @param m
      */
     public void remove(int serverId, WorldEventDto m){
-    	getDatastore(serverId).delete(m);
+    	getDatastore().delete(m);
     }
     
     /**
      * 更新玩家
-     * @param player
      */
     public void updatePlayer(Player player){
     	

@@ -1,28 +1,19 @@
 package com.igame.work.chat.dao;
 
 import com.igame.core.db.AbsDao;
-import com.igame.work.chat.dto.Message;
 import com.igame.work.chat.dto.PlayerMessage;
 import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
-
-import java.util.List;
 
 /**
  * @author xym
  */
 public class PlayerMessageDAO extends AbsDao {
 
-    @Override
-    public String getTableName() {
-        return "PlayerMessages";
-    }
-
     private static final PlayerMessageDAO domain = new PlayerMessageDAO();
 
-    public static final PlayerMessageDAO ins() {
+    public static PlayerMessageDAO ins() {
         return domain;
     }
 
@@ -32,7 +23,7 @@ public class PlayerMessageDAO extends AbsDao {
      */
     public PlayerMessage getMessageByPlayerId(int serverId, long playerId) {
 
-        PlayerMessage playerMessage = getDatastore(serverId).find(PlayerMessage.class, "playerId", playerId).get();
+        PlayerMessage playerMessage = getDatastore().find(PlayerMessage.class, "playerId", playerId).get();
         if (playerMessage == null){
             playerMessage = new PlayerMessage();
             playerMessage.setPlayerId(playerId);
@@ -50,7 +41,7 @@ public class PlayerMessageDAO extends AbsDao {
      */
     public PlayerMessage saveMessage(int serverId, PlayerMessage message){
 
-        getDatastore(serverId).save(message);
+        getDatastore().save(message);
 
         return message;
     }
@@ -62,7 +53,7 @@ public class PlayerMessageDAO extends AbsDao {
      */
     public void updateMessage(int serverId, PlayerMessage message){
 
-        Datastore ds = getDatastore(serverId);
+        Datastore ds = getDatastore();
         UpdateOperations<PlayerMessage> up = ds.createUpdateOperations(PlayerMessage.class)
                 .set("messages",message.getMessages());
 

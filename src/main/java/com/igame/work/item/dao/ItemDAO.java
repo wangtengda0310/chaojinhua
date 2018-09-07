@@ -18,28 +18,20 @@ import com.igame.work.user.dto.Player;
  */
 public class ItemDAO extends AbsDao {
 
-	@Override
-	public String getTableName() {
-		return "Item";
-	}
-	
     private static final ItemDAO domain = new ItemDAO();
 
-    public static final ItemDAO ins() {
+    public static ItemDAO ins() {
         return domain;
     }
     
 
     /**
      * 查询
-     * @param serverId
-     * @param playerId
-     * @return
      */
     public Map<Integer,Item> getItemByPlayer(int serverId,long playerId){
     	Map<Integer,Item> all = Maps.newHashMap();
     	
-    	List<Item> ls = getDatastore(serverId).find(Item.class, "playerId", playerId).asList();
+    	List<Item> ls = getDatastore().find(Item.class, "playerId", playerId).asList();
     	if(ls != null){
     		for(Item mm : ls){
     			all.put(mm.getItemId(), mm);
@@ -50,40 +42,32 @@ public class ItemDAO extends AbsDao {
     
     /**
      * 保存
-     * @param serverId
-     * @param userId
-     * @return
      */
     public Item saveItem(int serverId,Item m){
-    	getDatastore(serverId).save(m);
+    	getDatastore().save(m);
     	return m;
     }
     
     /**
      * 更新
-     * @param serverId
-     * @param m
      */
     public void updateItem(int serverId,Item m){
-    	UpdateOperations<Item> up = getDatastore(serverId).createUpdateOperations(Item.class)
+    	UpdateOperations<Item> up = getDatastore().createUpdateOperations(Item.class)
         		.set("count", m.getCount())
         		.set("equipCounts", m.getEquipCounts())
         		;
-    	getDatastore(serverId).update(m, up);
+    	getDatastore().update(m, up);
     }
     
     /**
      * 删除
-     * @param serverId
-     * @param m
      */
     public void removeItem(int serverId,Item m){
-    	getDatastore(serverId).delete(m);
+    	getDatastore().delete(m);
     }
     
     /**
      * 更新玩家
-     * @param player
      */
     public void updatePlayer(Player player){
     	

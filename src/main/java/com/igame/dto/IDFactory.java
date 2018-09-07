@@ -17,15 +17,7 @@ public class IDFactory extends AbsDao {
 	public static final String PL = "PL";//角色ID
 	
 	static final String MA = "MA";//怪物
-	
 
-
-	@Override
-	public String getTableName() {
-		return "IDSeq";
-	}
-	
-	 
 	public  long getNewIdByType(String type,int serverId){
 		return getNewId(serverId, type);
 
@@ -33,14 +25,14 @@ public class IDFactory extends AbsDao {
 
 	private long getNewId(int serverId, String type) {
 		synchronized (DBSeqcLock.getLock(serverId - 1)) {
-			IDSeq id = getDatastore(serverId).find(IDSeq.class, "type", type).get();
+			IDSeq id = getDatastore().find(IDSeq.class, "type", type).get();
 			if (id == null) {
 				id = new IDSeq(type, 1);
-				getDatastore(serverId).save(id);
+				getDatastore().save(id);
 				return Long.valueOf(String.valueOf(10000 + serverId) + id.getValue());
 			} else {
-				getDatastore(serverId).update(id, getDatastore(serverId).createUpdateOperations(IDSeq.class).inc("value"));
-//				id = getDatastore().find(IDSeq.class, "type", AT).get();
+				getDatastore().update(id, getDatastore().createUpdateOperations(IDSeq.class).inc("value"));
+//				id = getAccountDatastore().find(IDSeq.class, "type", AT).get();
 				return Long.valueOf(String.valueOf(10000 + serverId) + (id.getValue() + 1));
 			}
 		}
