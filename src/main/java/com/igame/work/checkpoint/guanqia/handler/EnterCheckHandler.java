@@ -71,7 +71,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 
 		if (isExistXinmo(player,chapterId)){	//如果关卡有心魔,返回心魔数据
 
-			Map<String,RobotDto> ro = robotService.getRobot().get(player.getSeverId());
+			Map<String,RobotDto> ro = robotService.getRobot();
 			if(ro == null || ro.get(player.getXinMo().get(chapterId).getMid()) == null){
 				return error(ErrorCode.XINGMO_LEAVEL);
 			}

@@ -17,13 +17,6 @@ import java.util.Map;
  */
 public class RobotDAO extends AbsDao {
 
-    private static final RobotDAO domain = new RobotDAO();
-
-    public static RobotDAO ins() {
-        return domain;
-    }
-    
-
     /**
      * 查询
      */

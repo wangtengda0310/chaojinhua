@@ -442,7 +442,7 @@ public class PlayerHandler extends BaseHandler{
 							Integer cid = ls.remove(index);
 							XingMoDto xx = new XingMoDto();
 							xx.setCheckPiontId(cid);
-							Map<Long, RobotDto> robs = robotService.getRobot().get(player.getSeverId());
+							Map<Long, RobotDto> robs = robotService.getRobot();
 							if(!robs.isEmpty()){
 								RobotDto rb = new ArrayList<>(robs.values()).get(GameMath.getRandInt(robs.size()));
 								xx.setPlayerId(rb.getPlayerId());

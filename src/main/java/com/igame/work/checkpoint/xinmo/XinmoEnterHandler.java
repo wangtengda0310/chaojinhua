@@ -36,7 +36,7 @@ public class XinmoEnterHandler extends ReconnectedHandler {
 		}else if(player.getXinMo().get(chapterId) != null && player.getXinMo().get(chapterId).calLeftTime(System.currentTimeMillis()) <= 0){
 			return error(ErrorCode.XINGMO_LEAVEL);
 		}else{
-			Map<String,RobotDto> ro = robotService.getRobot().get(player.getSeverId());
+			Map<String,RobotDto> ro = robotService.getRobot();
 			if(ro == null || ro.get(player.getXinMo().get(chapterId).getMid()) == null){
 				return error(ErrorCode.ERROR);
 			}			

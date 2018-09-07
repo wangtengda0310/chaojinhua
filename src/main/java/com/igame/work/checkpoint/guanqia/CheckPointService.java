@@ -177,7 +177,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 						Integer cid = ls.get(GameMath.getRandInt(ls.size()));
 						XingMoDto xx = new XingMoDto();
 						xx.setCheckPiontId(cid);
-						Map<String, RobotDto> robs = robotService.getRobot().get(player.getSeverId());
+						Map<String, RobotDto> robs = robotService.getRobot();
 						if(!robs.isEmpty()){
 							RobotDto rb = new ArrayList<>(robs.values()).get(GameMath.getRandInt(robs.size()));
 							xx.setPlayerId(rb.getPlayerId());

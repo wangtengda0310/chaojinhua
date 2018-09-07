@@ -6,8 +6,8 @@ import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.event.EventService;
 import com.igame.core.quartz.TimeListener;
-import com.igame.server.GameServerExtension;
 import com.igame.util.GameMath;
+import com.igame.work.fight.arena.ArenadataTemplate;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.GodsDto;
@@ -18,7 +18,6 @@ import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.dao.RobotDAO;
-import com.igame.work.fight.arena.ArenadataTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.dto.Team;
@@ -32,19 +31,20 @@ import java.util.Map;
  *
  */
 public class RobotService extends EventService implements ISFSModule, TimeListener {
+	private RobotDAO dao;
+
 	@Override
 	public void minute5() {
 		ref();
 		save();
 	}
 
-	private static Map<Integer,Map<String,RobotDto>> robot = Maps.newHashMap();
+	private static Map<String,RobotDto> robot = Maps.newHashMap();
     
     
     private void ref(){
     	for(Player player : SessionManager.ins().getSessions().values()){
-			Map<String, RobotDto> map = robot.computeIfAbsent(player.getSeverId(), k -> Maps.newHashMap());
-			RobotDto rb = map.get(player.getNickname());
+			RobotDto rb = robot.get(player.getNickname());
     		if(rb == null){
     			rb = new RobotDto();
     			rb.setDtate(1);
@@ -70,7 +70,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     	    	}
     			rb.setMon(mon);
 
-    			map.put(player.getUsername(), rb);
+				robot.put(player.getUsername(), rb);
     		}
     	}
     	
@@ -78,20 +78,13 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 
 	@Override
 	public void init(){
-		String DBName = GameServerExtension.dbManager.p.getProperty("DBName");
-		String[] DBNames = DBName.split(",");
-		for(String db : DBNames){
-			int serverId=Integer.parseInt(db.substring(5));
-			robot.put(serverId, RobotDAO.ins().loadData());
-		}
+		robot = dao.loadData();
     }
     
     private void save(){
-		for(Map<String,RobotDto> db : robot.values()){
+		for(RobotDto m : robot.values()){
 			try{
-				for(RobotDto m : db.values()){
-					RobotDAO.ins().update(m);
-				}
+				dao.update(m);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -99,7 +92,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 		}
     }
 
-	public Map<Integer, Map<String, RobotDto>> getRobot() {
+	public Map<String, RobotDto> getRobot() {
 		return robot;
 	}
 

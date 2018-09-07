@@ -54,9 +54,9 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
         ArenaService.up = up;
     }
 
-    private Map<Integer, Map<Long, RobotDto>> robot = Maps.newHashMap();//玩家阵容数据
+    private Map<Long, RobotDto> robot = Maps.newHashMap();//玩家阵容数据
 
-    public Map<Integer, Map<Long, RobotDto>> getRobot() {
+    public Map<Long, RobotDto> getRobot() {
         return robot;
     }
 
@@ -80,13 +80,11 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
      */
     private void addPlayerRobotDto(Player player, boolean update) {//同步处理
 
-        Map<Long, RobotDto> map = robot.computeIfAbsent(player.getSeverId(), k -> Maps.newHashMap());
-
-        RobotDto rb = map.get(player.getPlayerId());
+        RobotDto rb = robot.get(player.getPlayerId());
         if (rb == null || update) {
             rb = RobotService.createRobotLike(player);
 
-            map.put(player.getPlayerId(), rb);
+            robot.put(player.getPlayerId(), rb);
         }
 
     }
@@ -96,11 +94,9 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     }
 
     private void saveRobot() {
-        for (Map<Long, RobotDto> db : robot.values()) {
+        for (RobotDto m : robot.values()) {
             try {
-                for (RobotDto m : db.values()) {
-                    dao.update(m);
-                }
+                dao.update(m);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -141,13 +137,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     @Override
     public void init() {
 
-        String DBName = GameServerExtension.dbManager.p.getProperty("DBName");
-        String[] DBNames = DBName.split(",");
-        for (String db : DBNames) {
-            int serverId = Integer.parseInt(db.substring(5));
-            robot.put(serverId, dao.loadData());
-        }
-
+        robot = dao.loadData();
         loadRank(true);
     }
 

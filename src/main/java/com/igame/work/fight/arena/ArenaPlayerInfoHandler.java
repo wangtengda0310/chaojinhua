@@ -48,7 +48,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 		GodsDto gods = new GodsDto();
 		List<MatchMonsterDto> lb = Lists.newArrayList();
 		new RobotDto();
-		Map<Long,RobotDto> map = arenaService.getRobot().get(player.getSeverId());
+		Map<Long,RobotDto> map = arenaService.getRobot();
 //		List<ArenaRanker> rank = ArenaServiceDto.ins().getRankDto(player.getAreaType(), player.getSeverId());
 		ArenaRanker oter = null;
 		for(ArenaRanker ar : player.getTempOpponent()){

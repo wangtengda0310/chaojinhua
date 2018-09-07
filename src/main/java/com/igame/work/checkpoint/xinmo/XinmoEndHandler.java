@@ -60,7 +60,7 @@ public class XinmoEndHandler extends ReconnectedHandler {
 				if(player.getXinMo().size() <25 && qiang < 2 && GameMath.hitRate100(5)){ //生成强化心魔
 					XingMoDto xx = new XingMoDto();
 					xx.setCheckPiontId(chapterId);
-					Map<String, RobotDto> robs = robotService.getRobot().get(player.getSeverId());
+					Map<String, RobotDto> robs = robotService.getRobot();
 
 					if(!robs.isEmpty()){
 						RobotDto rb = new ArrayList<>(robs.values()).get(GameMath.getRandInt(robs.size()));
