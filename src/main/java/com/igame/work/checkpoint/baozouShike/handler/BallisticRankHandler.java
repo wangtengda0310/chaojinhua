@@ -4,6 +4,7 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
+import com.igame.work.checkpoint.baozouShike.BallisticRankClientData;
 import com.igame.work.checkpoint.baozouShike.BallisticRanker;
 import com.igame.work.checkpoint.baozouShike.BallisticService;
 import com.igame.work.user.dto.Player;
@@ -13,9 +14,10 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static com.igame.work.checkpoint.guanqia.CheckPointContants.BALL_LOCK_LV;
-import static com.igame.work.checkpoint.guanqia.CheckPointContants.BALL_RANK_SHOW;
+import static com.igame.work.checkpoint.baozouShike.BallisticConstant.BALL_LOCK_LV;
+import static com.igame.work.checkpoint.baozouShike.BallisticConstant.BALL_RANK_SHOW;
 
 /**
  * @author xym
@@ -39,58 +41,59 @@ public class BallisticRankHandler extends ReconnectedHandler {
 
         //return
         int rank = 0;
-        int round = -1;
+        int rankPercent = -1;
         int score = 0;
         int ballisticCount;
         int buff;
-        List<BallisticRanker> topFifty;
+        List<BallisticRankClientData> topFifty;
 
         //获取挑战次数
         ballisticCount = player.getBallisticCount();
 
         //获取buff
-        buff = ballisticService.getRank().getBuffMap().get(player.getSeverId());
+        buff = ballisticService.getRankDto().getBuff();
 
         //排序并取前50
-        List<BallisticRanker> rankList = ballisticService.getRankList().get(player.getSeverId());
-        if (rankList == null){
-            topFifty = new ArrayList<>();
-        }else if (rankList.size() <= BALL_RANK_SHOW){
-            rankList.sort(BallisticRanker::compareTo);
-            topFifty = rankList;
-        }else {
-            rankList.sort(BallisticRanker::compareTo);
-            topFifty = rankList.subList(0,BALL_RANK_SHOW);
-        }
+        topFifty = ballisticService.getRankDto().getRank().values().stream()
+                .sorted(BallisticRanker::compareTo)
+                .limit(BALL_RANK_SHOW)
+                .map(this::toClientData)
+                .collect(Collectors.toList());
 
         //set排名与昵称
         for (int i = 0; i < topFifty.size(); i++) {
-            BallisticRanker ballisticRanker = topFifty.get(i);
+            BallisticRankClientData ballisticRanker = topFifty.get(i);
             ballisticRanker.setRank(i+1);
             ballisticRanker.setName(PlayerCacheService.getPlayerById(ballisticRanker.getPlayerId()).getNickname());
         }
 
         //获取玩家排行榜信息
-        Map<Long, BallisticRanker> rankerMap = ballisticService.getRank().getRankMap().get(player.getSeverId());
-        if(rankList != null) {
-            if (rankerMap != null && rankerMap.get(player.getPlayerId()) != null) {    //玩家在排行榜中
+        Map<Long, BallisticRanker> rankerMap = ballisticService.getRankDto().getRank();
+        if (rankerMap != null && rankerMap.get(player.getPlayerId()) != null) {    //玩家在排行榜中
 
-                BallisticRanker ranker = rankerMap.get(player.getPlayerId());
+            BallisticRanker ranker = rankerMap.get(player.getPlayerId());
 
-                rank = rankList.indexOf(ranker) + 1;
-                round = Math.round(rank / rankList.size() * 100);
-                score = ranker.getScore();
-            }
+            rank = new ArrayList<>(rankerMap.values()).indexOf(ranker) + 1;
+            int percent = rank / rankerMap.size() * 100;
+            rankPercent = Math.round(percent);
+            score = ranker.getScore();
         }
 
         vo.addData("playerScore", score);
         vo.addData("playerRank", rank);
-        vo.addData("rankPercent", round);
+        vo.addData("rankPercent", rankPercent);
         vo.addData("challengeCount", ballisticCount);
         vo.addData("currentBuff", buff);
         vo.addData("ranks", topFifty);
         return vo;
 
+    }
+
+    private BallisticRankClientData toClientData(BallisticRanker rankDto) {
+        BallisticRankClientData r = new BallisticRankClientData();
+        r.setPlayerId(rankDto.getPlayerId());
+        r.setScore(r.getScore());
+        return r;
     }
 
     @Override

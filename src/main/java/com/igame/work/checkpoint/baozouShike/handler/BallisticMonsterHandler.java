@@ -10,7 +10,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 
 import java.util.List;
 
-import static com.igame.work.checkpoint.guanqia.CheckPointContants.BALL_MONSTER_EVERY;
+import static com.igame.work.checkpoint.baozouShike.BallisticConstant.BALL_MONSTER_EVERY;
 
 /**
  * @author xym monster

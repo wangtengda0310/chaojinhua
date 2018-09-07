@@ -19,8 +19,8 @@ import net.sf.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.igame.work.checkpoint.guanqia.CheckPointContants.BALL_PHYSICAL;
-import static com.igame.work.checkpoint.guanqia.CheckPointContants.BALL_REWARD_EXP;
+import static com.igame.work.checkpoint.baozouShike.BallisticConstant.BALL_PHYSICAL;
+import static com.igame.work.checkpoint.baozouShike.BallisticConstant.BALL_REWARD_EXP;
 
 /**
  * @author xym monster

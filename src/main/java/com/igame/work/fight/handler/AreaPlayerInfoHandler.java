@@ -51,7 +51,7 @@ public class AreaPlayerInfoHandler extends ReconnectedHandler {
 		List<MatchMonsterDto> lb = Lists.newArrayList();
 		new RobotDto();
 		Map<Long,RobotDto> map = arenaService.getRobot().get(player.getSeverId());
-//		List<AreaRanker> rank = ArenaServiceDto.ins().getRank(player.getAreaType(), player.getSeverId());
+//		List<AreaRanker> rank = ArenaServiceDto.ins().getRankDto(player.getAreaType(), player.getSeverId());
 		AreaRanker oter = null;
 		for(AreaRanker ar : player.getTempOpponent()){
 			if(ar.getPlayerId() == playerId){

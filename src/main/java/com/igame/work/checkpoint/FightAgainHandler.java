@@ -4,6 +4,7 @@ import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.checkpoint.baozouShike.BallisticConstant;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
@@ -16,8 +17,6 @@ import net.sf.json.JSONObject;
 
 import java.util.Date;
 import java.util.Map;
-
-import static com.igame.work.checkpoint.guanqia.CheckPointContants.*;
 
 public class FightAgainHandler extends ReconnectedHandler {
     private ResourceService resourceService;
@@ -115,19 +114,19 @@ public class FightAgainHandler extends ReconnectedHandler {
         } else if (battleType == 3) {  // 从BallisticEnterHandler复制过来
             //校验等级
             int playerLevel = player.getPlayerLevel();
-            if (playerLevel < BALL_LOCK_LV){
+            if (playerLevel < BallisticConstant.BALL_LOCK_LV){
                 return error(ErrorCode.BALLISTIC_LOCK);
             }
 
             //校验挑战次数
             int ballisticCount = player.getBallisticCount();
-            if (ballisticCount >= BALL_CHALLENGE_COUNT_MAX){
+            if (ballisticCount >= BallisticConstant.BALL_CHALLENGE_COUNT_MAX){
                 return error(ErrorCode.BALLISTIC_NOT_ENTER);
             }
 
             //校验体力
             int physical = player.getPhysical();
-            if (physical < ballisticCount*BALL_PHYSICAL){
+            if (physical < ballisticCount* BallisticConstant.BALL_PHYSICAL){
                 return error(ErrorCode.PHYSICA_NOT_ENOUGH);
             }
 

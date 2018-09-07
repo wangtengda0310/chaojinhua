@@ -41,7 +41,7 @@ public class RankServiceDAO extends AbsDao {
     	}else{
 	    	UpdateOperations<RankServiceDto> up = accountDbDao.getAccountDatastore().createUpdateOperations(RankServiceDto.class);
 	    	up.set("rankMap", m.getRankMap());
-//	    	for(Map<Long, Ranker> rr : m.getRankMap().values()){
+//	    	for(Map<Long, Ranker> rr : m.getRankDto().values()){
 //	    		int ss = rr.size();
 //	    	}
 			accountDbDao.getAccountDatastore().update(m, up);
