@@ -1,10 +1,10 @@
 package com.igame.work.chat.handler;
 
+import com.igame.core.SessionManager;
+import com.igame.core.handler.RetVO;
+import com.igame.sfsAdaptor.EventDispatcherHandler;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseEventHandler;
-import com.igame.core.handler.RetVO;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.chat.exception.MessageException;
 import com.igame.work.chat.service.PublicMessageService;
@@ -12,6 +12,7 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
+import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.exceptions.SFSException;
@@ -25,7 +26,7 @@ import static com.igame.work.chat.MessageContants.*;
  * @author Marcus.Z
  *
  */
-public class PublicMessageEventHandler extends BaseEventHandler {
+public class PublicMessageEventHandler extends EventDispatcherHandler {
 
 	private ResourceService resourceService;
 
@@ -114,5 +115,9 @@ public class PublicMessageEventHandler extends BaseEventHandler {
 
 		sendClient(MProtrol.MESSAGE_ERROR,vo,sender);
 	}
-	
+
+	@Override
+	public SFSEventType eventType() {
+		return SFSEventType.PUBLIC_MESSAGE;
+	}
 }

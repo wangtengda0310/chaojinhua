@@ -12,6 +12,7 @@ import com.igame.work.PlayerEvents;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
+import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
@@ -90,5 +91,10 @@ public class LoginEventHandler extends EventDispatcherHandler {
 		     throw new SFSLoginException("vertify failed uid:", errData);
 		}
 		
+	}
+
+	@Override
+	public SFSEventType eventType() {
+		return SFSEventType.USER_LOGIN;
 	}
 }

@@ -1,19 +1,20 @@
 package com.igame.work.user.handler;
 
 import com.igame.core.SessionManager;
+import com.igame.sfsAdaptor.EventDispatcherHandler;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
+import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.exceptions.SFSException;
-import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
 
 /**
  * 
  * @author Marcus.Z
  *
  */
-public class DisconnectEventHandler extends BaseServerEventHandler{
+public class DisconnectEventHandler extends EventDispatcherHandler {
 
 
 	@Override
@@ -51,5 +52,9 @@ public class DisconnectEventHandler extends BaseServerEventHandler{
 		}
 		
 	}
-	
+
+	@Override
+	public SFSEventType eventType() {
+		return SFSEventType.USER_DISCONNECT;
+	}
 }

@@ -10,6 +10,7 @@ import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
+import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.exceptions.SFSException;
 
@@ -55,5 +56,9 @@ public class LOGINOUTEventHandler extends EventDispatcherHandler {
 		
 		
 	}
-	
+
+	@Override
+	public SFSEventType eventType() {
+		return SFSEventType.USER_LOGOUT;
+	}
 }

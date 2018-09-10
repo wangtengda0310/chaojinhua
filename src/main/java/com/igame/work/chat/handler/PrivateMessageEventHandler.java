@@ -1,10 +1,10 @@
 package com.igame.work.chat.handler;
 
+import com.igame.core.SessionManager;
+import com.igame.core.handler.RetVO;
+import com.igame.sfsAdaptor.EventDispatcherHandler;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
-import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseEventHandler;
-import com.igame.core.handler.RetVO;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.chat.exception.MessageException;
 import com.igame.work.chat.service.PrivateMessageService;
@@ -12,6 +12,7 @@ import com.igame.work.friend.dto.Friend;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
+import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.exceptions.SFSException;
 
@@ -25,7 +26,7 @@ import static com.igame.work.chat.MessageContants.MSG_TYPE_FRIEND;
  * @author Marcus.Z
  *
  */
-public class PrivateMessageEventHandler extends BaseEventHandler {
+public class PrivateMessageEventHandler extends EventDispatcherHandler {
 
 
 	@Override
@@ -85,5 +86,9 @@ public class PrivateMessageEventHandler extends BaseEventHandler {
 		Message message = PrivateMessageService.ins().addMessage(senderPlayer,recPlayer,type,content);
 		sendClient(MProtrol.MESSAGE_ERROR,vo,sender);
 	}
-	
+
+	@Override
+	public SFSEventType eventType() {
+		return SFSEventType.PRIVATE_MESSAGE;
+	}
 }
