@@ -1,6 +1,7 @@
 package com.igame.work.chat.service;
 
 import com.igame.core.ISFSModule;
+import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.core.quartz.TimeListener;
 import com.igame.work.chat.dao.MessageDAO;
@@ -18,7 +19,7 @@ import static com.igame.work.chat.MessageContants.*;
  * 公聊消息服务
  */
 public class PublicMessageService extends EventService implements ISFSModule, TimeListener {
-    private MessageDAO dao;
+    @Inject private MessageDAO dao;
 
     @Override
     public void minute5() {
@@ -32,7 +33,7 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
     private static ArrayBlockingQueue<Message> hornMessage;
 
     //工会频道 <工会ID,消息列表>
-    private ArrayBlockingQueue<Message> clubMessage = new ArrayBlockingQueue<>(Integer.MAX_VALUE);
+    private ArrayBlockingQueue<Message> clubMessage;
 
     //所有删除掉的消息
     private static LinkedList<Message> delMessages = new LinkedList<>();

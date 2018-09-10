@@ -106,6 +106,9 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
 
         if (loadDB) {
             as = dao.getDatastore().find(ArenaServiceDto.class).get();
+            if (as == null) {
+                as = new ArenaServiceDto();
+            }
         }
 
         List<List<ArenaRanker>> allRank = new ArrayList<>();
@@ -135,6 +138,9 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     public void init() {
 
         robot = dao.loadData();
+        if (robot == null) {
+            robot = new HashMap<>();
+        }
         loadRank(true);
     }
 

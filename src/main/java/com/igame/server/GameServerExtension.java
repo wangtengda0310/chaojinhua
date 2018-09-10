@@ -60,9 +60,9 @@ public class GameServerExtension extends SFSExtension {
 			T service = clazz.newInstance();
 
 			if (ISFSModule.class.isAssignableFrom(clazz)) {
+				injectField(service);
 				service.init(this);
 				services.put(clazz, service);
-				injectField(service);
 			}
 
 			if (TimeListener.class.isAssignableFrom(clazz)) {

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.GameMath;
@@ -22,6 +23,7 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.dto.Team;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ import java.util.Map;
  *
  */
 public class RobotService extends EventService implements ISFSModule, TimeListener {
+	@Inject
 	private RobotDAO dao;
 
 	@Override
@@ -39,7 +42,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 		save();
 	}
 
-	private static Map<String,RobotDto> robot = Maps.newHashMap();
+	private static Map<String,RobotDto> robot;
     
     
     private void ref(){
@@ -79,6 +82,9 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 	@Override
 	public void init(){
 		robot = dao.loadData();
+		if (robot == null) {
+			robot = new HashMap<>();
+		}
     }
     
     private void save(){

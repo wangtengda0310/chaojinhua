@@ -75,6 +75,7 @@ public class PlayerHandler extends BaseHandler{
 	private QuestService questService;
 	private ShopActivityService shopActivityService;
 	@Inject private TurntableService turntableService;
+	@Inject private FriendService friendService;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -247,7 +248,7 @@ public class PlayerHandler extends BaseHandler{
 
 		MailService.ins().loadPlayer(player, serverId);
 		ShopService.ins().loadPlayer(player, serverId);
-		FriendService.ins().loadPlayer(player);
+		friendService.loadPlayer(player);
 
 		player.setPrivateMessages(PlayerMessageDAO.ins().getMessageByPlayerId(player.getPlayerId()).getMessages());
 		player.initMessageBoard();

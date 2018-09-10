@@ -110,6 +110,9 @@ public class RankService extends EventService implements ISFSModule, TimeListene
     @Override
     public void init(){
         dto = RankServiceDAO.ins().loadData();
+        if (dto == null) {
+            dto = new RankServiceDto();
+        }
         sort();
     }
 
