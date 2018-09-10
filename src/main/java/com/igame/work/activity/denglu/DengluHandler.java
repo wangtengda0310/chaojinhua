@@ -46,7 +46,7 @@ public class DengluHandler extends ReconnectedHandler {
             return error(ErrorCode.ERROR);
         }
 
-        if (!DengluService.configs.get(id).get(index).isActive(player, new Date())) {
+        if (!DengluService.configs.get(id).get(index-1).isActive(player, new Date())) {
             return error(ErrorCode.CAN_NOT_RECEIVE);
         }
 
