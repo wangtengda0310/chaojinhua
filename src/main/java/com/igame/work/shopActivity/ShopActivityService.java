@@ -34,14 +34,17 @@ public class ShopActivityService extends EventService implements ISFSModule {
         return dto;
     }
 
+    private ShopActivityPlayerDto createShopActivityPlayerDto1(long playerId) {
+        ShopActivityPlayerDto dto = new ShopActivityPlayerDto();
+        dto.openMillis=System.currentTimeMillis();
+        return dto;
+    }
+
     private void recordGoldData(Player player, long timeMillis, long amount, ShopActivityDataTemplate c) {
         dto.computeIfAbsent(c.getNum(), this::createShopActivityDto)
                 .players
-                .computeIfAbsent(player.getPlayerId(), k -> {
-                    ShopActivityPlayerDto dto = createShopActivityPlayerDto();
-                    return dto;
-                })
-                .goldActivityInfo.put(timeMillis, amount);;
+                .computeIfAbsent(player.getPlayerId(), k -> createShopActivityPlayerDto())
+                .goldActivityInfo.put(timeMillis, amount);
     }
 
     private boolean canOpenGoldActivityForPlayer(Player player, ShopActivityDataTemplate c) {
@@ -72,7 +75,8 @@ public class ShopActivityService extends EventService implements ISFSModule {
     private void recordItemData(Player player, int itemId, int amount, ShopActivityDataTemplate c) {
         dto
                 .computeIfAbsent(c.getNum(), this::createShopActivityDto)
-                .players.computeIfAbsent(player.getPlayerId(), k -> createShopActivityPlayerDto()).itemActivityInfo
+                .players.computeIfAbsent(player.getPlayerId(), k -> createShopActivityPlayerDto())
+                .itemActivityInfo
                 .merge(itemId, amount, (i, j) -> i + j);
     }
 
@@ -183,8 +187,9 @@ public class ShopActivityService extends EventService implements ISFSModule {
 
         return ShopActivityDataManager.Configs.getAll().stream()
                 .filter(c -> dto.containsKey(c.getNum()))
+                .filter(c -> dto.get(c.getNum()).players.containsKey(player.getPlayerId()))
+                .filter(c -> !dto.get(c.getNum()).players.get(player.getPlayerId()).received)
                 .filter(c -> isOpen(player, c))
-                .filter(c -> dto.get(c.getNum()).players.get(player.getPlayerId()).openMillis >0)
                 .collect(Collectors.toMap(ShopActivityDataTemplate::getNum,c-> DateUtil.formatClientDateTime(dto.get(c.getNum()).players.get(player.getPlayerId()).openMillis)))
                 ;
     }

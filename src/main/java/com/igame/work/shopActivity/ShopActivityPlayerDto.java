@@ -5,6 +5,7 @@ import java.util.Map;
 
 class ShopActivityPlayerDto {
     long openMillis;
+    boolean received;
     /**时间戳:金额*/
     Map<Long,Long> goldActivityInfo = new HashMap<>();
     /**itemId:count*/

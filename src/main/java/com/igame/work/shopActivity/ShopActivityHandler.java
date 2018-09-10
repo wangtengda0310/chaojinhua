@@ -35,7 +35,13 @@ public class ShopActivityHandler extends ReconnectedHandler {
             return error(ErrorCode.CAN_NOT_RECEIVE);
         }
 
-        ShopActivityPlayerDto dto = shopActivityService.dto.get(id).players.remove(player.getPlayerId());
+        ShopActivityPlayerDto dto = shopActivityService.dto.get(id).players.get(player.getPlayerId());
+
+        if (dto.received) {
+            return error(ErrorCode.PACK_PURCHASED);
+        }
+        dto.received = true;
+
         shopActivityService.save(player);
         if (dto.openMillis + config.getTime_limit() * ShopActivityService.HOUR_MILLIS < System.currentTimeMillis()) {
             return error(ErrorCode.ACTIVITY_CLOSED);
