@@ -57,19 +57,19 @@ public class LuckTableData {
 
         if (playerLv < 15)
             return "";
-        else if (15 <= playerLv && playerLv < 25)
+        else if (playerLv < 25)
             return "15,25";
-        else if (26 <= playerLv && playerLv < 35)
+        else if (playerLv < 35)
             return "26,35";
-        else if (36 <= playerLv && playerLv < 45)
+        else if (playerLv < 45)
             return "36,45";
-        else if (46 <= playerLv && playerLv < 55)
+        else if (playerLv < 55)
             return "46,55";
-        else if (56 <= playerLv && playerLv < 65)
+        else if (playerLv < 65)
             return "56,65";
-        else if (66 <= playerLv && playerLv < 75)
+        else if (playerLv < 75)
             return "66,75";
-        else if (76 <= playerLv && playerLv < 85)
+        else if (playerLv < 85)
             return "76,85";
         else
             return "";
