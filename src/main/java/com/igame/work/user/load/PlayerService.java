@@ -4,10 +4,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
+import com.igame.core.event.EventService;
+import com.igame.core.event.EventType;
+import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.log.DebugLog;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
 import com.igame.work.MessageUtil;
+import com.igame.work.PlayerEvents;
 import com.igame.work.chat.dao.PlayerMessageDAO;
 import com.igame.work.chat.service.MessageBoardService;
 import com.igame.work.checkpoint.guanqia.RewardDto;
@@ -38,7 +42,7 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class PlayerService implements ISFSModule {
+public class PlayerService extends EventService implements ISFSModule {
 	private ResourceService resourceService;
 	@Inject private PlayerMessageDAO friendDAO;
 
@@ -287,4 +291,19 @@ public class PlayerService implements ISFSModule {
 			PlayerCacheService.cachePlayer(player);
 		}
 	}
+
+    @Override
+    protected PlayerEventObserver playerObserver() {
+        return new PlayerEventObserver() {
+            @Override
+            public EventType interestedType() {
+                return PlayerEvents.OFF_LINE;
+            }
+
+            @Override
+            public void observe(Player player, Object event) {
+                savePlayer(player, true);
+            }
+        };
+    }
 }
