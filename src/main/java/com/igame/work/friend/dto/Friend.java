@@ -15,7 +15,7 @@ public class Friend{
 	private long playerId;	//好友id
 
 	@Transient
-	private String nickName;	//玩家昵称
+	private String nickName="";	//玩家昵称
 
 	@Transient
 	private int playerLevel;	//玩家等级
@@ -181,7 +181,7 @@ public class Friend{
 	}
 
 	public void setLoginoutTime(Date loginoutTime) {
-		this.loginoutTime = loginoutTime;
+		this.loginoutTime = loginoutTime == null ? new Date() : loginoutTime;
 	}
 
 	public int getHelpAcc() {
