@@ -27,7 +27,7 @@ public class TurntableService implements TimeListener {
 
     public Map<Long, Turntable> turntables = new HashMap<>();//幸运大转盘
     public Turntable getTurntable(Player player) {
-        return turntables.get(player.getPlayerId());
+        return turntables.computeIfAbsent(player.getPlayerId(), playerId -> initTurntable(player));
     }
 
     public void setTurntable(Player player, Turntable turntable) {
@@ -46,10 +46,10 @@ public class TurntableService implements TimeListener {
     /**
      * 初始化大转盘
      */
-    public void initTurntable(Player player){
+    public Turntable initTurntable(Player player){
 
         if (player.getPlayerLevel() < 15)
-            return;
+            return null;
 
         Turntable turntable = new Turntable();
         turntable.setPlayerId(player.getPlayerId());
@@ -62,6 +62,8 @@ public class TurntableService implements TimeListener {
 
         //推送更新
         notifyTurntableChange(player);
+
+        return turntable;
     }
 
     /**
