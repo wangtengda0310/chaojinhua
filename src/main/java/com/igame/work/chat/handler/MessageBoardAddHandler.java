@@ -60,7 +60,7 @@ public class MessageBoardAddHandler extends ReconnectedHandler {
             return error(ErrorCode.MESSAGE_TOO_LONG);
         }
 
-        MessageBoard messageBoard = messageBoardService.addMessageBoard(player.getSeverId(), sType, player.getPlayerId(), player.getUserId(),content);
+        MessageBoard messageBoard = messageBoardService.addMessageBoard(sType, player.getPlayerId(), player.getUserId(),content);
 
         //更新当前留言板留言时间
         player.getLastMessageBoard().put(sType,new Date());

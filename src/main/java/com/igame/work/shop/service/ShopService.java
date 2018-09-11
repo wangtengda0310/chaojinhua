@@ -404,7 +404,7 @@ public class ShopService implements ISFSModule, TimeListener {
         return array;
     }
 
-    public void loadPlayer(Player player, int serverId) {
+    public void loadPlayer(Player player) {
         player.setShopInfo(shopDAO.getShopInfoByPlayerId(player.getPlayerId()));
     }
 }

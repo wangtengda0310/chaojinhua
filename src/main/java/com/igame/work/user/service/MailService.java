@@ -136,7 +136,7 @@ public class MailService {
     }
 
 
-    public void loadPlayer(Player player, int serverId) {
+    public void loadPlayer(Player player) {
 		player.setMail(mailDAO.getByPlayer(player.getPlayerId()));
     }
 }

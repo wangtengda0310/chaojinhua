@@ -343,7 +343,7 @@ public class QuestService implements ISFSModule {
 	}
 
 
-	public void loadPlayer(Player player, int serverId) {
+	public void loadPlayer(Player player) {
 		questDAO.getByPlayer(player);
 	}
 }

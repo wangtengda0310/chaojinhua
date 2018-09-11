@@ -128,7 +128,7 @@ public class PlayerHandler extends BaseHandler {
 				return;
 			}
 		}else{
-			loadPlayer(player,serverId);//载入玩家数据
+			loadPlayer(player);//载入玩家数据
 		}
 
 		try {
@@ -261,23 +261,23 @@ public class PlayerHandler extends BaseHandler {
 		return playerDAO.savePlayer(player);
 	}
 
-	private void loadPlayer(Player player, int serverId){
-		itemService.loadPlayer(player, serverId);
+	private void loadPlayer(Player player){
+		itemService.loadPlayer(player);
 
 		player.setGods(godsDAO.getByPlayer(player.getPlayerId()));
 
-		MonsterService.loadPlayer(player,serverId);
+		MonsterService.loadPlayer(player);
 
 		player.setWordEvent(wordEventDAO.getByPlayer(player.getPlayerId()));
 
-		mailService.loadPlayer(player, serverId);
-		shopService.loadPlayer(player, serverId);
+		mailService.loadPlayer(player);
+		shopService.loadPlayer(player);
 		friendService.loadPlayer(player);
 
 		player.setPrivateMessages(playerMessageDAO.getMessageByPlayerId(player.getPlayerId()).getMessages());
 		player.initMessageBoard();
 
-		questService.loadPlayer(player, serverId);
+		questService.loadPlayer(player);
 
 		PlayerCacheService.remove(player);
 

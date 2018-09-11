@@ -127,7 +127,7 @@ public class ItemService {
 
     }
 
-    public void loadPlayer(Player player, int serverId) {
+    public void loadPlayer(Player player) {
         player.setItems(itemDAO.getItemByPlayer(player.getPlayerId()));
     }
 }

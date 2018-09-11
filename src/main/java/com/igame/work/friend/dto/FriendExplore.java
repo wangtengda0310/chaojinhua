@@ -39,7 +39,7 @@ public class FriendExplore {
 		String[] split = tansuoDto.getMons().split(",");
 		for (String s : split) {
 
-			Monster monsterByOid = MonsterDAO.ins().getMonsterByOid(severId, Long.parseLong(s));
+			Monster monsterByOid = MonsterDAO.ins().getMonsterByOid(Long.parseLong(s));
 			if (monsterByOid != null)
 				sb.append(monsterByOid.getMonsterId()+":"+monsterByOid.getLevel()+":"+monsterByOid.getBreaklv()+";");
 

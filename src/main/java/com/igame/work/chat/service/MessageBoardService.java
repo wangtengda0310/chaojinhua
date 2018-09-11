@@ -93,11 +93,11 @@ public class MessageBoardService {
     /**
      * 添加留言
      * @param type 留言类型
-     * @param userId uid
      * @param playerId 角色ID
+     * @param userId uid
      * @param content 内容
      */
-    public MessageBoard addMessageBoard(int serverId, String type, long playerId, long userId, String content){
+    public MessageBoard addMessageBoard(String type, long playerId, long userId, String content){
 
         MessageBoard messageBoard = new MessageBoard();
         messageBoard.setType(type);

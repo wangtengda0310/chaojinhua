@@ -236,7 +236,7 @@ public class MonsterService implements ISFSModule {
 		return mms;
 	}
 
-	public static void loadPlayer(Player player, int serverId) {
+	public static void loadPlayer(Player player) {
 		player.setMonsters(monsterDAO.getMonsterByPlayer(player, player.getPlayerId()));
 	}
 }

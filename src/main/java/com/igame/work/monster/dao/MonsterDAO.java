@@ -30,7 +30,7 @@ public class MonsterDAO extends AbsDao {
     	return getDatastore().find(Monster.class).asList();
     }
 
-	public Monster getMonsterByOid(int serverId,long objectId){
+	public Monster getMonsterByOid(long objectId){
 		return getDatastore().find(Monster.class,"objectId", objectId).get();
 	}
     
