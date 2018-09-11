@@ -61,6 +61,8 @@ public class DengluHandler extends ReconnectedHandler {
                 .forEach(c -> gmService.processGM(player, c.getActivity_drop()));
         RetVO vo = new RetVO();
         vo.addData("d", Arrays.stream(dengluDto.getRecord()).mapToObj(String::valueOf).collect(Collectors.joining(",")));
+        vo.addData("id", id);
+        vo.addData("index", index);
         return vo;
     }
 }

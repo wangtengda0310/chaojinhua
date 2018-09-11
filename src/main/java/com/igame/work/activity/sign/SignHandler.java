@@ -60,6 +60,7 @@ public class SignHandler extends ActivityHandler {
             return error(ErrorCode.PARAMS_INVALID);
         }
 
+        vo.addData("index", index);
         return vo;
     }
 }

@@ -54,6 +54,7 @@ public class TansuoZhiLuActivityHandler extends ActivityHandler {
 
         RetVO retVO = new RetVO();
         retVO.addData("d", tansuo.clientData(player));
+        retVO.addData("level", level);
         return retVO;
     }
 

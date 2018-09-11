@@ -49,6 +49,8 @@ public class ShopActivityHandler extends ReconnectedHandler {
 
         gmService.processGM(player, config.getDrop_value());
 
-        return new RetVO();
+        RetVO retVO = new RetVO();
+        retVO.addData("id", id);
+        return retVO;
     }
 }
