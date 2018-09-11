@@ -1,5 +1,6 @@
 package com.igame.work.chat.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
@@ -19,6 +20,8 @@ import java.util.List;
  */
 public class PublicMessageHandler extends ReconnectedHandler {
 
+    @Inject private PublicMessageService publicMessageService;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -27,11 +30,11 @@ public class PublicMessageHandler extends ReconnectedHandler {
 
         //世界消息
         List<PublicMessageDto> worldMsg = new ArrayList<>();
-        PublicMessageService.getWorldMessage().forEach(message -> worldMsg.add(new PublicMessageDto(message)));
+        publicMessageService.getWorldMessage().forEach(message -> worldMsg.add(new PublicMessageDto(message)));
 
         //喇叭消息
         List<PublicMessageDto> hornMsg = new ArrayList<>();
-        PublicMessageService.getHornMessage().forEach(message -> hornMsg.add(new PublicMessageDto(message)));
+        publicMessageService.getHornMessage().forEach(message -> hornMsg.add(new PublicMessageDto(message)));
 
         RetVO vo = new RetVO();
         vo.addData("worldMsg", worldMsg);
