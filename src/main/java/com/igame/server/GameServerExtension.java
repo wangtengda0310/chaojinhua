@@ -202,7 +202,7 @@ public class GameServerExtension extends SFSExtension {
 
 			classOfInterface.get(EventDispatcherHandler.class).forEach(this::addEventDispatcherHandler);
 		} catch (Throwable e) {
-			trace(e);
+			getLogger().error("extension error",e);
 		}
 
 	}
