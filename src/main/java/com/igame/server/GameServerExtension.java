@@ -64,7 +64,8 @@ public class GameServerExtension extends SFSExtension {
 	}
 
 	private <T> void doReflact(T component) throws IllegalAccessException, InstantiationException {
-		Class<?> aClass = component.getClass();
+        Class<?> aClass = component.getClass();
+	    do {
 
         for (Field field : aClass.getDeclaredFields()) {
             field.setAccessible(true);
@@ -108,6 +109,7 @@ public class GameServerExtension extends SFSExtension {
 			JobManager.addJobListener((TimeListener) component);
 		}
 
+        } while ((aClass = aClass.getSuperclass())!=null);
 	}
 
 	private void register(int requestId, Class<? extends IClientRequestHandler> clazz) {

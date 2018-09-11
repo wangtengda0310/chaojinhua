@@ -1,5 +1,6 @@
 package com.igame.core.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 public abstract class ReconnectedHandler extends BaseHandler {
 
-    private SessionManager sessionManager;
+    @Inject private SessionManager sessionManager;
 
     /** 不使用这个方法则需要实现断线重连的消息重发 */
     protected abstract RetVO handleClientRequest(Player player, ISFSObject params) throws Exception;

@@ -2,6 +2,7 @@ package com.igame.work.gm.handler;
 
 
 import com.igame.core.SystemService;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.MProtrol;
@@ -18,8 +19,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class GMHandler extends ReconnectedHandler {
-	private SystemService systemService;
-	private GMService gmService;
+	@Inject private SystemService systemService;
+	@Inject private GMService gmService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
