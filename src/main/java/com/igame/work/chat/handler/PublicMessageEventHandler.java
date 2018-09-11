@@ -1,6 +1,7 @@
 package com.igame.work.chat.handler;
 
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.RetVO;
 import com.igame.sfsAdaptor.EventDispatcherHandler;
 import com.igame.work.ErrorCode;
@@ -28,7 +29,8 @@ import static com.igame.work.chat.MessageContants.*;
  */
 public class PublicMessageEventHandler extends EventDispatcherHandler {
 
-	private ResourceService resourceService;
+	@Inject private ResourceService resourceService;
+	@Inject private SessionManager sessionManager;
 
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
@@ -45,7 +47,7 @@ public class PublicMessageEventHandler extends EventDispatcherHandler {
 		trace(sender.getName()+" sendClient  message ："+content);
 		//trace(sender.getName()+" additionalMsg ："+infor);
 
-		Player player = SessionManager.ins().getSession(Long.parseLong(sender.getName()));
+		Player player = sessionManager.getSession(Long.parseLong(sender.getName()));
 		if(player == null){
 			this.getLogger().error("get player failed Name:" +sender.getName());
 			return;

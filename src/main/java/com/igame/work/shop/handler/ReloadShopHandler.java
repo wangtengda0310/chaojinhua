@@ -1,5 +1,6 @@
 package com.igame.work.shop.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
@@ -22,7 +23,8 @@ import net.sf.json.JSONObject;
  * 刷新商店
  */
 public class ReloadShopHandler extends ReconnectedHandler {
-    private ResourceService resourceService;
+    @Inject private ResourceService resourceService;
+    @Inject private ShopService shopService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -70,7 +72,7 @@ public class ReloadShopHandler extends ReconnectedHandler {
         }
 
         //刷新商店
-        ShopService.ins().reloadShop(shopId,shopInfo,true);
+        shopService.reloadShop(shopId,shopInfo,true);
         //减少钻石
         resourceService.addDiamond(player,-gem);
 

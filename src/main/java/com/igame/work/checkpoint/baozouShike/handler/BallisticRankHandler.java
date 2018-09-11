@@ -1,5 +1,6 @@
 package com.igame.work.checkpoint.baozouShike.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
@@ -26,7 +27,8 @@ import static com.igame.work.checkpoint.baozouShike.BallisticConstant.BALL_RANK_
  */
 public class BallisticRankHandler extends ReconnectedHandler {
 
-    private BallisticService ballisticService;
+    @Inject private BallisticService ballisticService;
+    @Inject private PlayerCacheService playerCacheService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -64,7 +66,7 @@ public class BallisticRankHandler extends ReconnectedHandler {
         for (int i = 0; i < topFifty.size(); i++) {
             BallisticRankClientData ballisticRanker = topFifty.get(i);
             ballisticRanker.setRank(i+1);
-            ballisticRanker.setName(PlayerCacheService.getPlayerById(ballisticRanker.getPlayerId()).getNickname());
+            ballisticRanker.setName(playerCacheService.getPlayerById(ballisticRanker.getPlayerId()).getNickname());
         }
 
         //获取玩家排行榜信息

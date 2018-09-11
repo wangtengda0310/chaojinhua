@@ -14,13 +14,6 @@ import java.util.List;
  */
 public class MessageBoardDAO extends AbsDao {
 
-    private static final MessageBoardDAO domain = new MessageBoardDAO();
-
-    public static MessageBoardDAO ins() {
-        return domain;
-    }
-
-
     /**
      * 根据 服务器ID 获取 消息
      * @param type 留言板类型

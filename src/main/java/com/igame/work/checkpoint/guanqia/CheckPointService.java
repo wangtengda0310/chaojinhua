@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.GameMath;
@@ -39,8 +40,9 @@ import java.util.Map;
  *
  */
 public class CheckPointService implements ISFSModule, TimeListener {
-	private RobotService robotService;
-	private ResourceService resourceService;
+	@Inject private RobotService robotService;
+	@Inject private ResourceService resourceService;
+	@Inject private SessionManager sessionManager;
 
 	public String getString(Player player, RewardDto reward, List<Monster> ll, String monsterExpStr) {
 		StringBuilder monsterExpStrBuilder = new StringBuilder(monsterExpStr);
@@ -71,7 +73,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 
 	//定时执行玩家金币关卡计算
 	private void calPlayerTimeRes(){
-		for(Player player : SessionManager.ins().getSessions().values()){
+		for(Player player : sessionManager.getSessions().values()){
 			synchronized (player.getTimeLock()) {
 				if(!player.getTimeResCheck().isEmpty()){
 					for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){

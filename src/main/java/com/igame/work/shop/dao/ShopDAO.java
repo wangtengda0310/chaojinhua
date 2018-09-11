@@ -8,13 +8,6 @@ import org.mongodb.morphia.query.UpdateOperations;
 
 public class ShopDAO extends AbsDao {
 
-    private static final ShopDAO domain = new ShopDAO();
-
-    public static ShopDAO ins() {
-        return domain;
-    }
-
-
     /**
      * 根据 玩家ID 获取 玩家商店信息
      * @param playerId 玩家ID

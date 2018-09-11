@@ -7,13 +7,6 @@ import org.mongodb.morphia.query.UpdateOperations;
 
 public class TurntableDAO extends AbsDao {
 
-    private static final TurntableDAO domain = new TurntableDAO();
-
-    public static TurntableDAO ins() {
-        return domain;
-    }
-
-
     /**
      * 根据 玩家ID 获取 玩家转盘信息
      * @param playerId 玩家ID

@@ -1,5 +1,6 @@
 package com.igame.work.shop.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
@@ -21,7 +22,8 @@ import net.sf.json.JSONObject;
  * 购买商品
  */
 public class ShopBuyHandler extends ReconnectedHandler {
-    private ResourceService resourceService;
+    @Inject private ResourceService resourceService;
+    @Inject private ShopService shopService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -84,7 +86,7 @@ public class ShopBuyHandler extends ReconnectedHandler {
                     //增加神秘商店经验
                     int exp = ShopDataManager.shopRandomLvData.getTemplate(shopInfo.getMysticalShop().getShopLv())
                             .getUnitExp() * discountedPrice;
-                    ShopService.ins().addMysticalExp(player, exp);
+                    shopService.addMysticalExp(player, exp);
 
                     shopInfo.addMaxCount(shopId, itemId, -count);
                     resourceService.addDiamond(player, -discountedPrice);

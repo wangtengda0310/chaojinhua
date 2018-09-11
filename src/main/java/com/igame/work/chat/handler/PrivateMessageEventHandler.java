@@ -1,6 +1,7 @@
 package com.igame.work.chat.handler;
 
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.RetVO;
 import com.igame.sfsAdaptor.EventDispatcherHandler;
 import com.igame.work.ErrorCode;
@@ -29,6 +30,9 @@ import static com.igame.work.chat.MessageContants.MSG_TYPE_FRIEND;
 public class PrivateMessageEventHandler extends EventDispatcherHandler {
 
 
+	@Inject private SessionManager sessionManager;
+	@Inject private PrivateMessageService privateMessageService;
+
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
 
@@ -42,13 +46,13 @@ public class PrivateMessageEventHandler extends EventDispatcherHandler {
 		//String infor = extraParams.getUtfString("infor");
 		//JSONObject jsonObject = JSONObject.fromObject(infor);
 
-		Player senderPlayer =  SessionManager.ins().getSession(Long.parseLong(sender.getName()));
+		Player senderPlayer =  sessionManager.getSession(Long.parseLong(sender.getName()));
 		if(senderPlayer == null){
 			sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.ERROR),sender);
 			throw new MessageException("senderPlayer not online : name="+sender.getName());
 		}
 
-		Player recPlayer =  SessionManager.ins().getSession(Long.parseLong(recipient.getName()));
+		Player recPlayer =  sessionManager.getSession(Long.parseLong(recipient.getName()));
 		if(recPlayer == null){
 			sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.RECIPIENT_NOT_ONLINE),sender);
 			throw new MessageException("recipient not online : name="+recipient.getName());
@@ -83,7 +87,7 @@ public class PrivateMessageEventHandler extends EventDispatcherHandler {
 		}
 
 		//放入缓存
-		Message message = PrivateMessageService.ins().addMessage(senderPlayer,recPlayer,type,content);
+		Message message = privateMessageService.addMessage(senderPlayer,recPlayer,type,content);
 		sendClient(MProtrol.MESSAGE_ERROR,vo,sender);
 	}
 

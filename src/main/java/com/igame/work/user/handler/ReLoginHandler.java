@@ -1,6 +1,7 @@
 package com.igame.work.user.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.BaseHandler;
@@ -16,13 +17,15 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
  *
  */
 public class ReLoginHandler extends BaseHandler{
-	
+
+
+	@Inject private SessionManager sessionManager;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
 
 
-		Player player =  SessionManager.ins().getSession(Long.parseLong(user.getName()));
+		Player player =  sessionManager.getSession(Long.parseLong(user.getName()));
 		if(player != null){
 			User old = getApi().getUserById(player.getUser().getId());
 			player.setUser(user);

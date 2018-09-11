@@ -1,5 +1,6 @@
 package com.igame.work.activity.denglu;
 
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
@@ -15,7 +16,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DengluHandler extends ReconnectedHandler {
-    private GMService gmService;
+    @Inject private GMService gmService;
+    @Inject private DengluDAO dengluDAO;
 
     @Override
     public int protocolId() {
@@ -35,7 +37,7 @@ public class DengluHandler extends ReconnectedHandler {
             return error(ErrorCode.ERROR);
         }
 
-        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getPlayerId());
+        Map<Integer, DengluDto> byPlayer = dengluDAO.getByPlayer(player.getPlayerId());
         DengluDto dengluDto = byPlayer.get(id);
 
         if (dengluDto == null) {
@@ -54,7 +56,7 @@ public class DengluHandler extends ReconnectedHandler {
             return error(ErrorCode.PACK_PURCHASED);
         }
         dengluDto.getRecord()[index - 1] = 2;
-        DengluDAO.ins().save(dengluDto);
+        dengluDAO.save(dengluDto);
 
         DengluService.configs.get(id).stream()
                 .filter(c -> c.getOrder() == index)

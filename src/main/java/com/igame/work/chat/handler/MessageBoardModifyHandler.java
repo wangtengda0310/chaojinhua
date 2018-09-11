@@ -1,5 +1,6 @@
 package com.igame.work.chat.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
@@ -14,6 +15,8 @@ import net.sf.json.JSONObject;
  * 修改留言板(点赞、取消点赞、反对、取消反对)
  */
 public class MessageBoardModifyHandler extends ReconnectedHandler {
+
+    @Inject private MessageBoardService messageBoardService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -30,11 +33,11 @@ public class MessageBoardModifyHandler extends ReconnectedHandler {
         vo.addData("disLikeModify",disLikeModify);
 
         for (String messageId : likeModify.split(",")) {
-            MessageBoardService.ins().likeMessageBoard(player,messageId);
+            messageBoardService.likeMessageBoard(player,messageId);
         }
 
         for (String messageId : disLikeModify.split(",")) {
-            MessageBoardService.ins().dislikeMessageBoard(player,messageId);
+            messageBoardService.dislikeMessageBoard(player,messageId);
         }
 
         return vo;

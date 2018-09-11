@@ -26,8 +26,8 @@ import com.igame.work.checkpoint.mingyunZhiMen.FateDto;
 import com.igame.work.checkpoint.worldEvent.WordEventDAO;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.FightDataManager;
-import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.work.fight.arena.ArenaService;
+import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.item.service.ItemService;
@@ -67,15 +67,28 @@ import java.util.*;
  */
 public class PlayerHandler extends BaseHandler{
 
-	private ActivityService activityService;
-	private ArenaService robotService;
-	private ResourceService resourceService;
-	private PlayerService playerService;
-	private MonsterService monsterService;
-	private QuestService questService;
-	private ShopActivityService shopActivityService;
+	@Inject private ActivityService activityService;
+	@Inject private ArenaService robotService;
+	@Inject private ResourceService resourceService;
+	@Inject private PlayerService playerService;
+	@Inject private MonsterService monsterService;
+	@Inject private QuestService questService;
+	@Inject private ShopActivityService shopActivityService;
 	@Inject private TurntableService turntableService;
 	@Inject private FriendService friendService;
+	@Inject private PlayerDAO playerDAO;
+	@Inject private MonsterDAO monsterDAO;
+	@Inject private ShopService shopService;
+	@Inject private HeadService headService;
+	@Inject private VIPService vIPService;
+	@Inject private ItemService itemService;
+	@Inject private GodsDAO godsDAO;
+	@Inject private WordEventDAO wordEventDAO;
+	@Inject private MailService mailService;
+	@Inject private PlayerMessageDAO playerMessageDAO;
+	@Inject private ComputeFightService computeFightService;
+	@Inject private SessionManager sessionManager;
+	@Inject private IDFactory idFactory;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -99,7 +112,7 @@ public class PlayerHandler extends BaseHandler{
 			return;
 		}
 		
-		Player player = PlayerDAO.ins().getPlayerByUserId(userId);
+		Player player = playerDAO.getPlayerByUserId(userId);
 		if(player == null){//不存在就默认创建一个
 			try {
 				player = newPlayer(userId, serverId);
@@ -119,7 +132,7 @@ public class PlayerHandler extends BaseHandler{
 
 		try {
 			player.setUser(user);
-			SessionManager.ins().addSession(player);
+			sessionManager.addSession(player);
 			afterPlayerLogin(player);
 		} catch (Exception e) {
 			this.getLogger().warn("PlayerHandler load error", e);
@@ -179,7 +192,7 @@ public class PlayerHandler extends BaseHandler{
 		Player player = new Player();
 
 		player.setUserId(userId);
-		player.setPlayerId(IDFactory.ins().getNewIdByType(IDFactory.PL, serverId));
+		player.setPlayerId(idFactory.getNewIdByType(IDFactory.PL, serverId));
 		player.setSeverId(serverId);
 		player.setUsername("user_"+player.getPlayerId());
 		player.setNickname("玩家_"+player.getPlayerId());
@@ -192,14 +205,14 @@ public class PlayerHandler extends BaseHandler{
 		player.setLoginTime(new Date());
 
 		//创建默认的怪物
-		Monster m1 = new Monster(player, IDFactory.ins().getNewIdMonster(serverId), player.getPlayerId(), MonsterDataManager.MONSTER_DATA.getMonsterTemplate(1001).getMonster_hp(), 0,1001);
-		Monster m2 = new Monster(player,IDFactory.ins().getNewIdMonster(serverId), player.getPlayerId(),  MonsterDataManager.MONSTER_DATA.getMonsterTemplate(1002).getMonster_hp(), 0,1002);
+		Monster m1 = new Monster(player, idFactory.getNewIdMonster(serverId), player.getPlayerId(), MonsterDataManager.MONSTER_DATA.getMonsterTemplate(1001).getMonster_hp(), 0,1001);
+		Monster m2 = new Monster(player, idFactory.getNewIdMonster(serverId), player.getPlayerId(),  MonsterDataManager.MONSTER_DATA.getMonsterTemplate(1002).getMonster_hp(), 0,1002);
 
 		m1.reCalculate(player,true);
 		m2.reCalculate(player,true);
 
-		MonsterDAO.ins().saveNewMonster(m1);
-		MonsterDAO.ins().saveNewMonster(m2);
+		monsterDAO.saveNewMonster(m1);
+		monsterDAO.saveNewMonster(m2);
 		player.getMonsters().put(m1.getObjectId(),m1);
 		player.getMonsters().put(m2.getObjectId(),m2);
 
@@ -216,17 +229,17 @@ public class PlayerHandler extends BaseHandler{
 		player.initMessageBoard();
 
 		//初始化商店
-		ShopService.ins().initShop(player);
+		shopService.initShop(player);
 
 		//初始化头像和头像框
-		HeadService.ins().initHead(player);
-		HeadService.ins().initFrame(player);
+		headService.initHead(player);
+		headService.initFrame(player);
 
 		//初始化好友
-		FriendService.ins().newPlayer(player);
+		friendService.newPlayer(player);
 
 		//初始化会员特权
-		VIPService.ins().initPrivileges(player.getVipPrivileges());
+		vIPService.initPrivileges(player.getVipPrivileges());
 
 		//初始化角色挑战次数上限
 		player.setPlayerTop(new PlayerTop().init());
@@ -234,26 +247,26 @@ public class PlayerHandler extends BaseHandler{
 		//初始化角色剩余挑战次数
 		BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
 
-		return PlayerDAO.ins().savePlayer(player);
+		return playerDAO.savePlayer(player);
 	}
 
 	private void loadPlayer(Player player, int serverId){
-		ItemService.ins().loadPlayer(player, serverId);
+		itemService.loadPlayer(player, serverId);
 
-		player.setGods(GodsDAO.ins().getByPlayer(player.getPlayerId()));
+		player.setGods(godsDAO.getByPlayer(player.getPlayerId()));
 
 		MonsterService.loadPlayer(player,serverId);
 
-		player.setWordEvent(WordEventDAO.ins().getByPlayer(player.getPlayerId()));
+		player.setWordEvent(wordEventDAO.getByPlayer(player.getPlayerId()));
 
-		MailService.ins().loadPlayer(player, serverId);
-		ShopService.ins().loadPlayer(player, serverId);
+		mailService.loadPlayer(player, serverId);
+		shopService.loadPlayer(player, serverId);
 		friendService.loadPlayer(player);
 
-		player.setPrivateMessages(PlayerMessageDAO.ins().getMessageByPlayerId(player.getPlayerId()).getMessages());
+		player.setPrivateMessages(playerMessageDAO.getMessageByPlayerId(player.getPlayerId()).getMessages());
 		player.initMessageBoard();
 
-		QuestService.loadPlayer(player, serverId);
+		questService.loadPlayer(player, serverId);
 
 		PlayerCacheService.remove(player);
 
@@ -265,19 +278,19 @@ public class PlayerHandler extends BaseHandler{
 	private void afterPlayerLogin(Player player) throws Exception {
 
 		if (player.getPrivateMessages().size() <= 0)
-			VIPService.ins().initPrivileges(player.getVipPrivileges());
+			vIPService.initPrivileges(player.getVipPrivileges());
 
 		//初始化商店或者刷新
 		if (player.getShopInfo() == null)
-			ShopService.ins().initShop(player);
+			shopService.initShop(player);
 		else
-			ShopService.ins().reloadAll(player.getShopInfo());
+			shopService.reloadAll(player.getShopInfo());
 
 		//初始化头像和头像框
 		if (player.getUnlockHead().size() == 0)
-			HeadService.ins().initHead(player);
+			headService.initHead(player);
 		if (player.getUnlockFrame().size() == 0)
-			HeadService.ins().initFrame(player);
+			headService.initFrame(player);
 
 
 		//初始化角色挑战次数上限与剩余挑战次数
@@ -329,7 +342,7 @@ public class PlayerHandler extends BaseHandler{
 		calPlayerTimeRes(player);//计算金币关卡的获得数量 和心魔 以及各货币资源的定时更新
 		player.calLeftTime();//算每个心魔剩余时间
 		monsterService.reCalMonsterExtPre(player,true);//计算图鉴增加属性
-		ComputeFightService.ins().computePlayerFight(player);
+		computeFightService.computePlayerFight(player);
 		//player.reCalFightValue();//计算战斗力
 		playerService.checkDrawData(player, false);//检测造物台数据
 		questService.checkPlayerQuest(player);//检测玩家任务
@@ -368,7 +381,7 @@ public class PlayerHandler extends BaseHandler{
 		if(player.getLastNickname()!=null && !"".equals(player.getLastNickname())) {
 			player.setModifiedName(1);
 		}
-		ActivityService.loadPlayer(player);
+		activityService.loadPlayer(player);
 	}
 
 	private void calPlayerTimeRes(Player player){

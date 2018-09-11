@@ -1,5 +1,6 @@
 package com.igame.work.friend.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
@@ -23,6 +24,10 @@ import java.util.List;
  */
 public class FriendDeleteHandler extends ReconnectedHandler {
 
+    @Inject private FriendService friendService;
+    @Inject private SessionManager sessionManager;
+    @Inject private PlayerCacheService playerCacheService;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -41,20 +46,20 @@ public class FriendDeleteHandler extends ReconnectedHandler {
         }
 
         //校验要删除的好友
-        Player delPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
-        Player delPlayerCache = PlayerCacheService.getPlayerById(playerId);
+        Player delPlayer = sessionManager.getSessionByPlayerId(playerId);
+        Player delPlayerCache = playerCacheService.getPlayerById(playerId);
         if (delPlayer == null && delPlayerCache == null){
             return error(ErrorCode.ERROR);
         }
 
         fireEvent(player, PlayerEvents.DELETE_FRIEND, playerId);
         //删除好友
-        FriendService.ins().delFriend(player,playerId);
+        friendService.delFriend(player,playerId);
 
         //推送当前角色好友更新
         List<Long> delFriends = new ArrayList<>();
         delFriends.add(playerId);
-        FriendService.ins().pushFriends(player,delFriends,new ArrayList<>());
+        friendService.pushFriends(player,delFriends,new ArrayList<>());
 
         return vo;
     }

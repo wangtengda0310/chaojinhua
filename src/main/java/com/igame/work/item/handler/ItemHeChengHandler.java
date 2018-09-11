@@ -2,6 +2,7 @@ package com.igame.work.item.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -29,8 +30,9 @@ import java.util.List;
  */
 public class ItemHeChengHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
-	private QuestService questService;
+	@Inject private ResourceService resourceService;
+	@Inject private QuestService questService;
+	@Inject private ItemService itemService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -81,7 +83,7 @@ public class ItemHeChengHandler extends ReconnectedHandler {
 				resourceService.addGold(player, 0-pt.getGold());
 				Item old = resourceService.addItem(player, itemId, -3, false);
 				Item newI = resourceService.addItem(player, pt.getGroup(), 1, false);
-				List<Monster> monsters = ItemService.ins().processItemGroupSucceed(player, old);
+				List<Monster> monsters = itemService.processItemGroupSucceed(player, old);
 				mm.addAll(monsters);
 				ll.add(old);
 				ll.add(newI);
@@ -108,7 +110,7 @@ public class ItemHeChengHandler extends ReconnectedHandler {
 			resourceService.addDiamond(player, 0-pt.getGem());
 			Item old = resourceService.addItem(player, itemId, -3, false);
 			Item newI = resourceService.addItem(player, pt.getGroup(), 1, false);
-			List<Monster> monsters = ItemService.ins().processItemGroupSucceed(player, old);
+			List<Monster> monsters = itemService.processItemGroupSucceed(player, old);
 			mm.addAll(monsters);
 			ll.add(old);
 			ll.add(newI);
@@ -128,7 +130,7 @@ public class ItemHeChengHandler extends ReconnectedHandler {
 			xiao = resourceService.addItem(player, xiao.getItemId(), 0-pt.getItem(), false);
 			Item old = resourceService.addItem(player, itemId, -3, false);
 			Item newI = resourceService.addItem(player, pt.getGroup(), 1, false);
-			List<Monster> monsters = ItemService.ins().processItemGroupSucceed(player, old);
+			List<Monster> monsters = itemService.processItemGroupSucceed(player, old);
 			mm.addAll(monsters);
 			ll.add(xiao);
 			ll.add(old);

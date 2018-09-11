@@ -45,6 +45,16 @@ import java.util.Map;
 public class PlayerService extends EventService implements ISFSModule {
 	private ResourceService resourceService;
 	@Inject private PlayerMessageDAO friendDAO;
+	@Inject private PlayerDAO playerDAO;
+	@Inject private MonsterDAO monsterDAO;
+	@Inject private ItemDAO itemDAO;
+	@Inject private WordEventDAO wordEventDAO;
+	@Inject private GodsDAO godsDAO;
+	@Inject private MailDAO mailDAO;
+	@Inject private QuestDAO questDAO;
+	@Inject private ShopDAO shopDAO;
+	@Inject private PlayerMessageDAO playerMessageDAO;
+	@Inject private MessageBoardService messageBoardService;
 
 	public TongHuaDto getRandomTongHuaDto(){
 		
@@ -275,17 +285,17 @@ public class PlayerService extends EventService implements ISFSModule {
 	public void savePlayer(Player player,boolean loginOutTime){
 		synchronized(player.dbLock){
 			DebugLog.debug("palyer leave save---- serverId:" + player.getSeverId() + "," +"userId:" + player.getUserId() + "," +"playerId:" + player.getPlayerId() + "," +"playerName:" + player.getNickname());
-			PlayerDAO.ins().updatePlayer(player,loginOutTime);
-			MonsterDAO.ins().updatePlayer(player);
-			ItemDAO.ins().updatePlayer(player);
-			WordEventDAO.ins().updatePlayer(player);
-			GodsDAO.ins().updatePlayer(player);
-			MailDAO.ins().updatePlayer(player);
-			QuestDAO.ins().updatePlayer(player);
-			ShopDAO.ins().updatePlayer(player);
+			playerDAO.updatePlayer(player,loginOutTime);
+			monsterDAO.updatePlayer(player);
+			itemDAO.updatePlayer(player);
+			wordEventDAO.updatePlayer(player);
+			godsDAO.updatePlayer(player);
+			mailDAO.updatePlayer(player);
+			questDAO.updatePlayer(player);
+			shopDAO.updatePlayer(player);
 			friendDAO.updatePlayer(player);
-			PlayerMessageDAO.ins().updatePlayer(player);
-			MessageBoardService.ins().saveMessageBoard(player);
+			playerMessageDAO.updatePlayer(player);
+			messageBoardService.saveMessageBoard(player);
 			PlayerCacheService.cachePlayer(player);
 
 			PlayerCacheService.cachePlayer(player);

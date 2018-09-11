@@ -33,8 +33,9 @@ import java.util.Map;
  *
  */
 public class RobotService extends EventService implements ISFSModule, TimeListener {
-	@Inject
-	private RobotDAO dao;
+	@Inject private ComputeFightService computeFightService;
+	@Inject private RobotDAO dao;
+	@Inject private SessionManager sessionManager;
 
 	@Override
 	public void minute5() {
@@ -46,7 +47,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     
     
     private void ref(){
-    	for(Player player : SessionManager.ins().getSessions().values()){
+    	for(Player player : sessionManager.getSessions().values()){
 			RobotDto rb = robot.get(player.getNickname());
     		if(rb == null){
     			rb = new RobotDto();
@@ -105,7 +106,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     /**
      * 生成机器人数据
      */
-    public static RobotDto createRobotDto(Player player,long playerId,String name,int level){
+    public RobotDto createRobotDto(Player player,long playerId,String name,int level){
     	RobotDto rto = null;
     	ArenadataTemplate at = PlayerDataManager.ArenaData.getTemplateByPlayerLevel(player.getPlayerLevel());
     	if(at != null){
@@ -143,7 +144,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 	    	for(Monster m : fb.getFightB().getMonsters().values()){
 	    		MatchMonsterDto mto = new MatchMonsterDto(m);
 	    		rto.getMon().add(mto);
-				ComputeFightService.ins().computeMonsterFight(m);
+				computeFightService.computeMonsterFight(m);
 				//m.reCalFightValue();
 				fightValue += m.getFightValue();
 	    	}

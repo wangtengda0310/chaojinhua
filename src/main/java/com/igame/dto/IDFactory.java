@@ -44,13 +44,6 @@ public class IDFactory extends AbsDao {
 
 	}
 
-    private static final IDFactory domain = new IDFactory();
-    public static IDFactory ins(){return domain;}
-   
-    
-    private IDFactory(){}
-
-
 	/**
 	 *
 	 * @author Marcus.Z

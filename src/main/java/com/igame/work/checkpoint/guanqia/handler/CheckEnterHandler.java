@@ -81,7 +81,7 @@ public class CheckEnterHandler extends ReconnectedHandler {
 				MatchMonsterDto mto = new MatchMonsterDto(m);
 				lb.add(mto);
 			}
-			PVPFightService.ins().fights.put(fb.getObjectId(), fb);*/
+			pvpFightService.fights.put(fb.getObjectId(), fb);*/
 
 		}else{	//资源关卡
 			/*boolean resChec = false;

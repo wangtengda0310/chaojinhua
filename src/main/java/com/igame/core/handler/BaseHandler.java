@@ -1,5 +1,6 @@
 package com.igame.core.handler;
 
+import com.igame.core.ISFSModule;
 import com.igame.core.event.EventManager;
 import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.event.ServiceEventListener;
@@ -19,22 +20,25 @@ import java.util.Collections;
 /**
  * @author xym
  */
-public abstract class BaseHandler extends BaseClientRequestHandler implements GameHandler {
+public abstract class BaseHandler extends BaseClientRequestHandler implements ISFSModule, GameHandler {
     public abstract int protocolId();
 
-    {
+    @Override
+    public void init() {
+        EventManager eventManager = (EventManager) extensionHolder.SFSExtension.services.get(EventManager.class);
+
         PlayerEventObserver playerEventObserver = playerObserver();
         if (playerEventObserver != null) {
-            EventManager.playerEventObservers.put(getClass().getSimpleName(), playerEventObserver);
+            eventManager.playerEventObservers.put(getClass().getSimpleName(), playerEventObserver);
         }
         ServiceEventListener playerEventListener = eventListener();
         if (playerEventListener != null) {
-            EventManager.serviceEventListeners.put(getClass().getSimpleName(), playerEventListener);
+            eventManager.serviceEventListeners.put(getClass().getSimpleName(), playerEventListener);
         }
 
         if (playerObservers() != null) {
             for (PlayerEventObserver observer : playerObservers()) {
-                EventManager.playerEventObservers.put(observer.getClass().getName(), observer);
+                eventManager.playerEventObservers.put(observer.getClass().getName(), observer);
             }
         }
     }

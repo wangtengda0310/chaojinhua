@@ -2,6 +2,7 @@ package com.igame.work.fight.arena;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
@@ -27,7 +28,10 @@ import java.util.Map;
  */
 public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 
-	private ArenaService arenaService;
+	@Inject private ArenaService arenaService;
+	@Inject private PlayerDAO playerDAO;
+	@Inject private RobotService robotService;
+	@Inject private MonsterDAO monsterDAO;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -49,7 +53,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 		List<MatchMonsterDto> lb = Lists.newArrayList();
 		new RobotDto();
 		Map<Long,RobotDto> map = arenaService.getRobot();
-//		List<ArenaRanker> rank = ArenaServiceDto.ins().getRankDto(player.getAreaType(), player.getSeverId());
+//		List<ArenaRanker> rank = arenaServiceDto.getRankDto(player.getAreaType(), player.getSeverId());
 		ArenaRanker oter = null;
 		for(ArenaRanker ar : player.getTempOpponent()){
 			if(ar.getPlayerId() == playerId){
@@ -62,9 +66,9 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 		}
 		RobotDto rto = map.get(playerId);
 
-		Player opponent = PlayerDAO.ins().getPlayerByPlayerId(playerId);
+		Player opponent = playerDAO.getPlayerByPlayerId(playerId);
 		if(opponent != null){	// TODO 监听上下阵事件
-			Map<Long, Monster> mons = MonsterDAO.ins().getMonsterByPlayer(opponent, opponent.getPlayerId());
+			Map<Long, Monster> mons = monsterDAO.getMonsterByPlayer(opponent, opponent.getPlayerId());
 			opponent.setMonsters(mons);
 			rto = RobotService.createRobotLike(opponent);
 			
@@ -83,7 +87,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 			}
 
 			if(oter != null){
-				rto = RobotService.createRobotDto(player, playerId, oter.getName(), 2);
+				rto = robotService.createRobotDto(player, playerId, oter.getName(), 2);
 				gods = rto.getGods();
 				for(MatchMonsterDto mo : rto.getMon()){//处理神灵加成属性
 					MatchMonsterDto mto = mo.clonew();

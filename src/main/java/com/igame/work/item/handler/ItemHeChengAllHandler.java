@@ -2,6 +2,7 @@ package com.igame.work.item.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -29,8 +30,9 @@ import java.util.List;
  *
  */
 public class ItemHeChengAllHandler extends ReconnectedHandler {
-	private QuestService questService;
-	private ResourceService resourceService;
+	@Inject private QuestService questService;
+	@Inject private ResourceService resourceService;
+	@Inject private ItemService itemService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -84,7 +86,7 @@ public class ItemHeChengAllHandler extends ReconnectedHandler {
 					if(GameMath.hitRate(pt.getRate() * 100)){//成功
 						Item old = resourceService.addItem(player, item.getItemId(), -3, false);
 						Item newI = resourceService.addItem(player, pt.getGroup(), 1, false);
-						List<Monster> monsters = ItemService.ins().processItemGroupSucceed(player, old);
+						List<Monster> monsters = itemService.processItemGroupSucceed(player, old);
 						mm.addAll(monsters);
 						ll.add(old);
 						ll.add(newI);

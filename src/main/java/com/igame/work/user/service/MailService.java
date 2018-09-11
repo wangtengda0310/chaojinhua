@@ -1,8 +1,9 @@
 package com.igame.work.user.service;
 
-import com.igame.work.MessageUtil;
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.log.GoldLog;
+import com.igame.work.MessageUtil;
 import com.igame.work.user.dao.MailDAO;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Mail;
@@ -18,13 +19,11 @@ import java.util.Optional;
  *
  */
 public class MailService {
-	
-    private static final MailService domain = new MailService();
 
-    public static final MailService ins() {
-        return domain;
-    }
-	
+	@Inject private SessionManager sessionManager;
+	@Inject private MailDAO mailDAO;
+	@Inject private PlayerDAO playerDAO;
+
     public int getMaxId(Map<Integer,Mail> mail) {
         Optional<Integer> o = mail.keySet().stream().max((a, b)->a-b);
         if(o.isPresent()){
@@ -57,7 +56,7 @@ public class MailService {
     	mail.setDtate(1);
     	mail.setTime(new Date());
     	mail.setPlayerId(target);
-    	Player player = SessionManager.ins().getSessionByPlayerId(target);
+    	Player player = sessionManager.getSessionByPlayerId(target);
     	if(player != null){
     		String maxId = String.valueOf(getMaxId(player.getMail()));
     		if(maxId.length() < 5){
@@ -72,17 +71,17 @@ public class MailService {
 //    		int serverId = 0;
 //	    	for(Integer sId :ServerListHandler.servers.keySet()){
 //	    		
-//	    		if(PlayerDAO.ins().getPlayerByPlayerId(sId, target)!= null){
+//	    		if(playerDAO.getPlayerByPlayerId(sId, target)!= null){
 //	    			serverId = sId;
 //	    			break;
 //	    		}
 //	    	}	    	
-    		String maxId = String.valueOf(getMaxId(MailDAO.ins().getByPlayer(target)));
+    		String maxId = String.valueOf(getMaxId(mailDAO.getByPlayer(target)));
     		if(maxId.length() < 5){
     			maxId = String.valueOf(serverId * 100000 + Integer.parseInt(maxId));
     		}
     		mail.setId(serverId * 100000 + Integer.parseInt(maxId.substring(maxId.length() - 5)));
-    		MailDAO.ins().save(mail);
+    		mailDAO.save(mail);
     	}
 
     	if (exttype == 1 && type == 1){	//如果是系统发的奖励邮件
@@ -103,7 +102,7 @@ public class MailService {
     	mail.setAttach(attach);
     	mail.setDtate(1);
     	mail.setTime(new Date());
-    	Player player = SessionManager.ins().getSession(username);
+    	Player player = sessionManager.getSession(username);
     	if(player != null){
     		String maxId = String.valueOf(getMaxId(player.getMail()));
     		if(maxId.length() < 5){
@@ -118,26 +117,26 @@ public class MailService {
 //    		int serverId = 0;
 //	    	for(Integer sId :ServerListHandler.servers.keySet()){
 //	    		
-//	    		if(PlayerDAO.ins().getPlayerByPlayerId(sId, target)!= null){
+//	    		if(playerDAO.getPlayerByPlayerId(sId, target)!= null){
 //	    			serverId = sId;
 //	    			break;
 //	    		}
 //	    	}
 
-    		player = PlayerDAO.ins().getPlayerByPlayerNickName(username);
-    		String maxId = String.valueOf(getMaxId(MailDAO.ins().getByPlayer(player.getPlayerId())));
+    		player = playerDAO.getPlayerByPlayerNickName(username);
+    		String maxId = String.valueOf(getMaxId(mailDAO.getByPlayer(player.getPlayerId())));
     		if(maxId.length() < 5){
     			maxId = String.valueOf(serverId * 100000 + Integer.parseInt(maxId));
     		}
     		mail.setPlayerId(player.getPlayerId());
     		mail.setId(serverId * 100000 + Integer.parseInt(maxId.substring(maxId.length() - 5)));
-    		MailDAO.ins().save(mail);
+    		mailDAO.save(mail);
     	}
     	return mail;
     }
 
 
     public void loadPlayer(Player player, int serverId) {
-		player.setMail(MailDAO.ins().getByPlayer(player.getPlayerId()));
+		player.setMail(mailDAO.getByPlayer(player.getPlayerId()));
     }
 }

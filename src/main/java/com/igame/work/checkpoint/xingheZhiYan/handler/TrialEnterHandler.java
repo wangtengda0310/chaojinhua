@@ -87,7 +87,7 @@ public class TrialEnterHandler extends ReconnectedHandler {
 					mto.reCalGods(player.callFightGods(), null);
 		    		lb.add(mto);
 		    	}
-//				   PVPFightService.ins().fights.put(fb.getObjectId(), fb);
+//				   pvpFightService,fights.put(fb.getObjectId(), fb);
 				
 			}
 			

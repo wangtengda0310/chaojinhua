@@ -71,20 +71,6 @@ public class Friend{
 		this.helpAcc = 0;
 	}
 
-	public void loadCache(Friend friend) {
-
-		Player cacheDto = PlayerCacheService.getPlayerById(friend.getPlayerId());
-
-		if(cacheDto!=null) {
-			friend.setPlayerLevel(cacheDto.getPlayerLevel());    //玩家等级
-			friend.setNickName(cacheDto.getNickname());    //玩家昵称
-			friend.setPlayerFrameId(cacheDto.getPlayerFrameId());    //玩家头像框
-			friend.setPlayerHeadId(cacheDto.getPlayerHeadId());    //玩家头像
-			friend.setFightValue(cacheDto.getFightValue());    //战力
-			friend.setLoginoutTime(cacheDto.getLoginoutTime());    //战力
-		}
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Friend) {

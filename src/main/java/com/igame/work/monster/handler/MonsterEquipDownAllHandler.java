@@ -2,6 +2,7 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -29,7 +30,10 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class MonsterEquipDownAllHandler extends ReconnectedHandler {
-	
+
+
+	@Inject private ItemService itemService;
+	@Inject private ComputeFightService computeFightService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -69,7 +73,7 @@ public class MonsterEquipDownAllHandler extends ReconnectedHandler {
 				continue;
 			}
 
-			ItemService.ins().unsnatch(player, teamId, i+1/*下标从1开始*/, monsterEquip, items);
+			itemService.unsnatch(player, teamId, i+1/*下标从1开始*/, monsterEquip, items);
 			eqs[i] = "0";
 
 		}
@@ -90,7 +94,7 @@ public class MonsterEquipDownAllHandler extends ReconnectedHandler {
 
 		//如果更新怪兽为当前阵容出战怪兽,更新阵容战力
 		if (Arrays.asList(player.getTeams().get(teamId).getTeamMonster()).contains(mid)){
-			ComputeFightService.ins().computeTeamFight(player,teamId);
+			computeFightService.computeTeamFight(player,teamId);
 		}
 		MessageUtil.notifyTeamChange(player,player.getTeams().get(teamId));
 

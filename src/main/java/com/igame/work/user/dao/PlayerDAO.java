@@ -14,12 +14,6 @@ import java.util.Map;
 
 public class PlayerDAO extends AbsDao {
 
-    private static final PlayerDAO domain = new PlayerDAO();
-
-    public static PlayerDAO ins() {
-        return domain;
-    }
-    
     /**
      * 获取角色对象
      */

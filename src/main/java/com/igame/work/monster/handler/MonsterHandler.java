@@ -1,5 +1,6 @@
 package com.igame.work.monster.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
@@ -13,6 +14,8 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
  */
 public class MonsterHandler extends ReconnectedHandler {
 
+
+    @Inject private ComputeFightService computeFightService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -35,11 +38,11 @@ public class MonsterHandler extends ReconnectedHandler {
                 if (modifyTeam(player, teamId, teaminfo[1])) {
 
                     //更新阵容战力
-                    ComputeFightService.ins().computeTeamFight(player, teamId);
+                    computeFightService.computeTeamFight(player, teamId);
                     MessageUtil.notifyTeamChange(player,player.getTeams().get(teamId));
 
                     if (teamId == player.getCurTeam()) {
-                        ComputeFightService.ins().computePlayerFight(player);
+                        computeFightService.computePlayerFight(player);
                     }
                 }
             } catch (Exception ignore) {

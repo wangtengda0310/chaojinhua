@@ -1,5 +1,6 @@
 package com.igame.work.chat.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
@@ -18,6 +19,9 @@ import net.sf.json.JSONObject;
  */
 public class GetPlayerInfoHandler extends ReconnectedHandler {
 
+    @Inject private SessionManager sessionManager;
+    @Inject private PlayerCacheService playerCacheService;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -29,8 +33,8 @@ public class GetPlayerInfoHandler extends ReconnectedHandler {
         long playerId = jsonObject.getLong("playerId");
         vo.addData("playerId", playerId);
 
-        Player playerSession = SessionManager.ins().getSessionByPlayerId(playerId);
-        Player playerCache = PlayerCacheService.getPlayerById(playerId);
+        Player playerSession = sessionManager.getSessionByPlayerId(playerId);
+        Player playerCache = playerCacheService.getPlayerById(playerId);
         if (playerSession == null && playerCache == null){
             return error(ErrorCode.ERROR);
         }

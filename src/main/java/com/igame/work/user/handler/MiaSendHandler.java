@@ -1,6 +1,7 @@
 package com.igame.work.user.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
@@ -15,7 +16,9 @@ import net.sf.json.JSONObject;
  *
  */
 public class MiaSendHandler extends ReconnectedHandler {
-	
+
+
+	@Inject private MailService mailService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -34,7 +37,7 @@ public class MiaSendHandler extends ReconnectedHandler {
 			content = content.substring(0, 300);
 		}
 
-		MailService.ins().senderMail(player.getSeverId(), playerId, 2, 2, player.getUsername(), title, content, null);
+		mailService.senderMail(player.getSeverId(), playerId, 2, 2, player.getUsername(), title, content, null);
 
 		return vo;
 	}

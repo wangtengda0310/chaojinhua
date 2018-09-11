@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
@@ -31,7 +32,9 @@ public class ServerListHandler extends BaseHandler {
 		servers.put(1,new ServerInfo(1, "一服", 1,1));
 		servers.put(2,new ServerInfo(2, "二服", 2,2));
 	}
-	
+
+	@Inject private PlayerDAO playerDAO;
+
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
 		
@@ -40,7 +43,7 @@ public class ServerListHandler extends BaseHandler {
 		int index = params.getInt("index");
 		vo.setIndex(index);
 		//获取所有服务器此用户ID下的角色
-		Map<Integer,Player> all = PlayerDAO.ins().getAllUser(Long.parseLong(user.getName()));
+		Map<Integer,Player> all = playerDAO.getAllUser(Long.parseLong(user.getName()));
 		ServerInfo curr = new ServerInfo(servers.get(1).getServerId(),servers.get(1).getServerName(),servers.get(1).getStatus(),servers.get(1).getWorldRoomId());
 		if(all.get(servers.get(1).getServerId()) != null){
 			curr.setHas(true);

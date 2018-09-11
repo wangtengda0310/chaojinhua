@@ -1,5 +1,6 @@
 package com.igame.work.friend.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
  * 拒绝好友请求
  */
 public class FriendRefuseHandler extends ReconnectedHandler {
+
+    @Inject private FriendService friendService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -44,7 +47,7 @@ public class FriendRefuseHandler extends ReconnectedHandler {
 
         if (playerId != -1){
 
-            FriendService.ins().delReqFriend(player, playerId);
+            friendService.delReqFriend(player, playerId);
             delReqFriends = Collections.singletonList(playerId);
 
         }else { //拒绝全部
@@ -54,7 +57,7 @@ public class FriendRefuseHandler extends ReconnectedHandler {
         }
 
         //推送
-        FriendService.ins().pushReqFriends(player,delReqFriends,new ArrayList<>());
+        friendService.pushReqFriends(player,delReqFriends,new ArrayList<>());
 
         return vo;
     }

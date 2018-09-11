@@ -1,5 +1,6 @@
 package com.igame.work.item.service;
 
+import com.igame.core.di.Inject;
 import com.igame.work.item.dao.ItemDAO;
 import com.igame.work.item.dto.Item;
 import com.igame.work.monster.dto.Monster;
@@ -17,12 +18,7 @@ import java.util.Map;
  */
 public class ItemService {
 
-    private static final ItemService domain = new ItemService();
-
-    public static final ItemService ins() {
-
-        return domain;
-    }
+    @Inject private ItemDAO itemDAO;
 
     /**
      *  道具合成成功以后
@@ -132,6 +128,6 @@ public class ItemService {
     }
 
     public void loadPlayer(Player player, int serverId) {
-        player.setItems(ItemDAO.ins().getItemByPlayer(player.getPlayerId()));
+        player.setItems(itemDAO.getItemByPlayer(player.getPlayerId()));
     }
 }

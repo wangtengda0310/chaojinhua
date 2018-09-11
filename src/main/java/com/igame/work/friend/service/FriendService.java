@@ -28,13 +28,9 @@ import static com.igame.work.friend.FriendConstants.FRIEND_STATE_NO_HELP;
  */
 public class FriendService {
 
-
-    private static final FriendService domain = new FriendService();
     @Inject private FriendDAO dao;
-
-    public static FriendService ins() {
-        return domain;
-    }
+    @Inject private SessionManager sessionManager;
+    @Inject private PlayerCacheService playerCacheService;
 
     /**
      * 获取好友探索列表
@@ -89,8 +85,8 @@ public class FriendService {
      */
     public void addReqFriend(Player sendPlayer, long recPlayerId) {
 
-        Player reqPlayer = SessionManager.ins().getSessionByPlayerId(recPlayerId);
-        Player reqPlayerCache = PlayerCacheService.getPlayerById(recPlayerId);
+        Player reqPlayer = sessionManager.getSessionByPlayerId(recPlayerId);
+        Player reqPlayerCache = playerCacheService.getPlayerById(recPlayerId);
 
         if (reqPlayer == null && reqPlayerCache == null){
             return;
@@ -155,8 +151,8 @@ public class FriendService {
      */
     public void addFriend(Player player, long reqPlayerId){
 
-        Player reqPlayer = SessionManager.ins().getSessionByPlayerId(reqPlayerId);
-        Player reqPlayerCache = PlayerCacheService.getPlayerById(reqPlayerId);
+        Player reqPlayer = sessionManager.getSessionByPlayerId(reqPlayerId);
+        Player reqPlayerCache = playerCacheService.getPlayerById(reqPlayerId);
 
         if (reqPlayer == null && reqPlayerCache == null){
             return;
@@ -215,8 +211,8 @@ public class FriendService {
      */
     public void delFriend(Player player, long delPlayerId) {
 
-        Player delPlayer = SessionManager.ins().getSessionByPlayerId(delPlayerId);
-        Player delPlayerCache = PlayerCacheService.getPlayerById(delPlayerId);
+        Player delPlayer = sessionManager.getSessionByPlayerId(delPlayerId);
+        Player delPlayerCache = playerCacheService.getPlayerById(delPlayerId);
 
         //如果对方在线，推送好友更新，不在线，则减少好友数量并存库
         if (delPlayer == null && delPlayerCache == null){

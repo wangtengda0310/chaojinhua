@@ -1,6 +1,7 @@
 package com.igame.work.user.handler;
 
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.log.GoldLog;
@@ -20,11 +21,14 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 public class LoginOutHandler extends BaseHandler {
 
 
+	@Inject private PVPFightService pvpFightService;
+	@Inject private SessionManager sessionManager;
+
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
 
 		trace("LoginOutHandlerLoginOutHandler-----name :"+user.getName());
-		Player player =  SessionManager.ins().getSession(Long.parseLong(user.getName()));
+		Player player =  sessionManager.getSession(Long.parseLong(user.getName()));
 		if(player != null){//保存角色数据
 			try{
 				fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
@@ -33,11 +37,11 @@ public class LoginOutHandler extends BaseHandler {
 				ExceptionLog.error("palyer leave save error----- :",e);
 			}
 			
-			if(PVPFightService.ins().palyers.containsKey(player.getPlayerId())){
-				PVPFightService.ins().chancelFight(player);
+			if(pvpFightService.palyers.containsKey(player.getPlayerId())){
+				pvpFightService.chancelFight(player);
 			}
-			if(PVPFightService.ins().fights.containsKey(player.getPlayerId())){
-				PVPFightService.ins().fights.remove(player.getPlayerId());
+			if(pvpFightService.fights.containsKey(player.getPlayerId())){
+				pvpFightService.fights.remove(player.getPlayerId());
 			}
 			player.getFateData().setTodayFateLevel(1);
 			player.getFateData().setTodayBoxCount(0);
@@ -50,7 +54,7 @@ public class LoginOutHandler extends BaseHandler {
 		}
 		
 		//移除SESSION
-		SessionManager.ins().removeSession(Long.parseLong(user.getName()));
+		sessionManager.removeSession(Long.parseLong(user.getName()));
 	}
 
 	@Override

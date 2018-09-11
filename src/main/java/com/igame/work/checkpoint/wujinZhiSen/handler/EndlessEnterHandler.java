@@ -114,7 +114,7 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 	    	for(MatchMonsterDto mdt : player.getWuZheng().values()){
 	    		mdt.reCalValue(ls);
 	    	}
-//				   PVPFightService.ins().fights.put(fb.getObjectId(), fb);
+//				   pvpFightService.fights.put(fb.getObjectId(), fb);
 
 			
 		}

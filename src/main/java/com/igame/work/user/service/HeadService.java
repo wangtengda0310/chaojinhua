@@ -21,14 +21,6 @@ import static com.igame.work.user.HeadConstants.*;
  */
 public class HeadService {
 
-    private static final HeadService domain = new HeadService();
-
-    public static final HeadService ins() {
-        return domain;
-    }
-
-
-
     /**
      * 初始化头像
      * @param player 玩家

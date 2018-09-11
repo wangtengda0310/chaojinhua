@@ -18,13 +18,6 @@ import java.util.List;
  */
 public class QuestDAO extends AbsDao {
 
-    private static final QuestDAO domain = new QuestDAO();
-
-    public static final QuestDAO ins() {
-        return domain;
-    }
-    
-
     /**
      * 查询
      */

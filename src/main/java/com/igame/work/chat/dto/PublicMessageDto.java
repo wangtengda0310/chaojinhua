@@ -1,5 +1,6 @@
 package com.igame.work.chat.dto;
 
+import com.igame.core.di.Inject;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.PlayerCacheService;
 
@@ -10,6 +11,7 @@ import com.igame.work.user.service.PlayerCacheService;
  */
 public class PublicMessageDto extends Message {
 
+    @Inject private PlayerCacheService playerCacheService;
     private long userId;
 
     private String name = "";
@@ -24,7 +26,7 @@ public class PublicMessageDto extends Message {
     public PublicMessageDto(Message message) {
 
         super(message);
-        Player cacheDto = PlayerCacheService.getPlayerById(message.getSender());
+        Player cacheDto = playerCacheService.getPlayerById(message.getSender());
         this.userId = cacheDto.getUserId();
         this.name = cacheDto.getNickname();
         this.playerFrameId = cacheDto.getPlayerFrameId();

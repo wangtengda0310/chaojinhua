@@ -2,6 +2,7 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -31,7 +32,10 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class MonsterEquipHandler extends ReconnectedHandler {
-	
+
+
+	@Inject private ItemService itemService;
+	@Inject private ComputeFightService computeFightService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -79,7 +83,7 @@ public class MonsterEquipHandler extends ReconnectedHandler {
 				return error(ErrorCode.EQ_NOT_XIE);
 			}
 
-			ItemService.ins().unsnatch(player, teamId, location, monsterEquip, items);
+			itemService.unsnatch(player, teamId, location, monsterEquip, items);
 			eqs[location-1] = "0";
 
 		}else{//穿上
@@ -96,7 +100,7 @@ public class MonsterEquipHandler extends ReconnectedHandler {
 				return error(ErrorCode.EQ_LOCATION_ZHUANG);
 			}
 
-			ItemService.ins().dress(player,teamId,location,itemId,monsterEquip, items);
+			itemService.dress(player,teamId,location,itemId,monsterEquip, items);
 			eqs[location-1] = String.valueOf(itemId);
 
 		}
@@ -117,7 +121,7 @@ public class MonsterEquipHandler extends ReconnectedHandler {
 
 		//如果更新怪兽为当前阵容出战怪兽,更新阵容战力
 		if (Arrays.asList(player.getTeams().get(teamId).getTeamMonster()).contains(mid)){
-			ComputeFightService.ins().computeTeamFight(player,teamId);
+			computeFightService.computeTeamFight(player,teamId);
 		}
 		MessageUtil.notifyTeamChange(player,player.getTeams().get(teamId));
 

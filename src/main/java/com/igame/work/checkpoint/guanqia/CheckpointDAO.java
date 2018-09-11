@@ -16,13 +16,6 @@ import java.util.Map;
  */
 public class CheckpointDAO extends AbsDao {
 
-    private static final CheckpointDAO domain = new CheckpointDAO();
-
-    public static final CheckpointDAO ins() {
-        return domain;
-    }
-    
-
     /**
      * 查询
      */

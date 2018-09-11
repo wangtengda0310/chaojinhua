@@ -1,5 +1,6 @@
 package com.igame.work.chat.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
@@ -21,6 +22,8 @@ import java.util.List;
  */
 public class PrivateMessageHandler extends ReconnectedHandler {
 
+    @Inject private SessionManager sessionManager;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
@@ -30,7 +33,7 @@ public class PrivateMessageHandler extends ReconnectedHandler {
 
         //判断对方是否在线
         long playerId = jsonObject.getLong("playerId");
-        Player recPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
+        Player recPlayer = sessionManager.getSessionByPlayerId(playerId);
         if (recPlayer == null){
             return error(ErrorCode.RECIPIENT_NOT_ONLINE);
         }

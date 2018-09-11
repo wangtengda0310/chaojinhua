@@ -1,5 +1,6 @@
 package com.igame.work.friend.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
@@ -29,6 +30,9 @@ import static com.igame.work.friend.FriendConstants.*;
 public class FriendAgreeHandler extends ReconnectedHandler {
 
     private static final int max = 20;
+    @Inject private FriendService friendService;
+    @Inject private SessionManager sessionManager;
+    @Inject private PlayerCacheService playerCacheService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -74,10 +78,10 @@ public class FriendAgreeHandler extends ReconnectedHandler {
         }
 
         //推送当前角色好友更新
-        FriendService.ins().pushFriends(player,new ArrayList<>(),addFriends);
+        friendService.pushFriends(player,new ArrayList<>(),addFriends);
 
         //推送当前角色好友请求更新
-        FriendService.ins().pushReqFriends(player, delReqFriends,new ArrayList<>());
+        friendService.pushReqFriends(player, delReqFriends,new ArrayList<>());
 
         vo.addData("states",states);
         return vo;
@@ -98,8 +102,8 @@ public class FriendAgreeHandler extends ReconnectedHandler {
      */
     private int addFriend(Player player, List<Long> delReqFriends, List<Friend> addFriends, long reqPlayerId) {
 
-        Player reqPlayer = SessionManager.ins().getSessionByPlayerId(reqPlayerId);
-        Player reqPlayerCache = PlayerCacheService.getPlayerById(reqPlayerId);
+        Player reqPlayer = sessionManager.getSessionByPlayerId(reqPlayerId);
+        Player reqPlayerCache = playerCacheService.getPlayerById(reqPlayerId);
 
         //校验对方角色是否存在
         if (reqPlayer == null && reqPlayerCache == null){
@@ -125,7 +129,7 @@ public class FriendAgreeHandler extends ReconnectedHandler {
         }
 
         //添加好友
-        FriendService.ins().addFriend(player,reqPlayerId);
+        friendService.addFriend(player,reqPlayerId);
 
         if (reqPlayer != null) {
             addFriends.add(new Friend(reqPlayer));
@@ -134,7 +138,7 @@ public class FriendAgreeHandler extends ReconnectedHandler {
         }
 
         //删除好友请求
-        FriendService.ins().delReqFriend(player,reqPlayerId);
+        friendService.delReqFriend(player,reqPlayerId);
 
         delReqFriends.add(reqPlayerId);
 

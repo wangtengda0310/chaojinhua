@@ -13,13 +13,6 @@ import org.mongodb.morphia.query.UpdateOperations;
  */
 public class SystemServiceDAO extends AbsDao {
 
-    private static final SystemServiceDAO domain = new SystemServiceDAO();
-
-    public static SystemServiceDAO ins() {
-        return domain;
-    }
-    
-
     /**
      * 查询
      */

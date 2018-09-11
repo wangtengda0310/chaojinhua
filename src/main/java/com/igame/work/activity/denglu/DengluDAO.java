@@ -15,13 +15,6 @@ import java.util.Map;
  */
 public class DengluDAO extends AbsDao {
 
-    private static final DengluDAO domain = new DengluDAO();
-
-    public static DengluDAO ins() {
-        return domain;
-    }
-
-
 	public List<DengluDto> listByPlayer(long playerId){
 		return getDatastore().find(DengluDto.class, "playerId", playerId).asList();
 	}

@@ -18,13 +18,6 @@ import java.util.Map;
  */
 public class GodsDAO extends AbsDao {
 
-    private static final GodsDAO domain = new GodsDAO();
-
-    public static final GodsDAO ins() {
-        return domain;
-    }
-    
-
     /**
      * 查询
      */

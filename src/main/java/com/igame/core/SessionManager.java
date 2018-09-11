@@ -14,9 +14,6 @@ import java.util.concurrent.ConcurrentMap;
  *
  */
 public class SessionManager {
-	
-    private static final SessionManager domain = new SessionManager();
-    public static final SessionManager ins(){return domain;}
 
     private ConcurrentMap<Long,Player> sessions = Maps.newConcurrentMap();
     private Object lock = new Object();

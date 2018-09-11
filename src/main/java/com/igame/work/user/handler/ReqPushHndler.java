@@ -6,6 +6,7 @@ package com.igame.work.user.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.core.SessionManager;
@@ -28,7 +29,9 @@ import java.util.stream.Collectors;
  *
  */
 public class ReqPushHndler extends ReconnectedHandler {
-	
+
+
+	@Inject private SessionManager sessionManager;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -40,7 +43,7 @@ public class ReqPushHndler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 		int index = jsonObject.getInt("index");
 		RetVO vo = new RetVO();
-		Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
+		Player player = sessionManager.getSession(Long.parseLong(user.getName()));
 		if(player == null){
 			this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
 			vo.addData("index", index);

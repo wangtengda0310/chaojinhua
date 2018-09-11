@@ -42,7 +42,7 @@ public class GameServerExtension extends SFSExtension {
 
 	public static DBManager dbManager;
 
-	private Map<Class, Object> services = new HashMap<>();
+	public Map<Class, Object> services = new HashMap<>();
 	private Set<ISFSModule> modules = new HashSet<>();
 
 	/**
@@ -195,8 +195,10 @@ public class GameServerExtension extends SFSExtension {
 
 			initService(JobManager.class);
 
-			addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, EventManager.playerEventObserver());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
-			addEventHandler(SFSEventType.ROOM_VARIABLES_UPDATE, EventManager.serviceEventListener());	// 利用ROOM_VARIABLES_UPDATE实现的服务器事件机制
+			EventManager eventManager = new EventManager();
+			injectObjectField(eventManager);
+			addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, eventManager.playerEventObserver());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
+			addEventHandler(SFSEventType.ROOM_VARIABLES_UPDATE, eventManager.serviceEventListener());	// 利用ROOM_VARIABLES_UPDATE实现的服务器事件机制
 
 			classOfInterface.get(BaseHandler.class).forEach(this::register);
 
@@ -220,7 +222,6 @@ public class GameServerExtension extends SFSExtension {
 	public void destroy(){
 		super.destroy();
 		modules.forEach(ISFSModule::destroy);
-		EventManager.clearAllListeners();
 		GoldLog.info("GameServerExtension destroy");
 	}
 

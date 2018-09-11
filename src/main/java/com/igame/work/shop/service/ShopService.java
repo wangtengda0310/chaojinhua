@@ -1,6 +1,7 @@
 package com.igame.work.shop.service;
 
 import com.igame.core.ISFSModule;
+import com.igame.core.di.Inject;
 import com.igame.core.quartz.TimeListener;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -26,6 +27,10 @@ import java.util.*;
  * @author xym
  */
 public class ShopService implements ISFSModule, TimeListener {
+    @Inject private SessionManager sessionManager;
+    @Inject private ShopService shopService;
+    @Inject private ShopDAO shopDAO;
+
     @Override
     public void twenty() {
         reloadGeneralOnline();
@@ -49,12 +54,6 @@ public class ShopService implements ISFSModule, TimeListener {
     @Override
     public void zero() {
         reloadMysticalOnline();
-    }
-
-    private static final ShopService domain = new ShopService();
-
-    public static final ShopService ins() {
-        return domain;
     }
 
     /**
@@ -232,8 +231,8 @@ public class ShopService implements ISFSModule, TimeListener {
      * 定时任务 刷新所有在线玩家的神秘商店 并推送
      */
     public void reloadMysticalOnline() {
-        for(Player player : SessionManager.ins().getSessions().values()){
-            ShopService.ins().reloadShop(ShopConstants.ID_MysticalShop,player.getShopInfo(), false);
+        for(Player player : sessionManager.getSessions().values()){
+            shopService.reloadShop(ShopConstants.ID_MysticalShop,player.getShopInfo(), false);
 
             //推送
             RetVO vo = new RetVO();
@@ -246,11 +245,11 @@ public class ShopService implements ISFSModule, TimeListener {
      * 定时任务 刷新所有在线玩家的一般商店 并推送
      */
     public void reloadGeneralOnline() {
-        for(Player player : SessionManager.ins().getSessions().values()){
-            ShopService.ins().reloadShop(ShopConstants.ID_WUJINShop,player.getShopInfo(), false);
-            ShopService.ins().reloadShop(ShopConstants.ID_DOUJIShop,player.getShopInfo(), false);
-            ShopService.ins().reloadShop(ShopConstants.ID_QIYUANShop,player.getShopInfo(), false);
-            ShopService.ins().reloadShop(ShopConstants.ID_BULUOShop,player.getShopInfo(), false);
+        for(Player player : sessionManager.getSessions().values()){
+            shopService.reloadShop(ShopConstants.ID_WUJINShop,player.getShopInfo(), false);
+            shopService.reloadShop(ShopConstants.ID_DOUJIShop,player.getShopInfo(), false);
+            shopService.reloadShop(ShopConstants.ID_QIYUANShop,player.getShopInfo(), false);
+            shopService.reloadShop(ShopConstants.ID_BULUOShop,player.getShopInfo(), false);
 
             //推送
             RetVO vo = new RetVO();
@@ -406,6 +405,6 @@ public class ShopService implements ISFSModule, TimeListener {
     }
 
     public void loadPlayer(Player player, int serverId) {
-        player.setShopInfo(ShopDAO.ins().getShopInfoByPlayerId(player.getPlayerId()));
+        player.setShopInfo(shopDAO.getShopInfoByPlayerId(player.getPlayerId()));
     }
 }

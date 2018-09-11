@@ -1,5 +1,6 @@
 package com.igame.work.friend.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
@@ -22,7 +23,9 @@ import java.util.stream.Stream;
  * 探索加速
  */
 public class FriendExploreAccHandler extends ReconnectedHandler {
-    private ResourceService resourceService;
+    @Inject private ResourceService resourceService;
+    @Inject private PlayerDAO playerDAO;
+    @Inject private SessionManager sessionManager;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -55,10 +58,10 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
 
         //校验对方角色是否存在
         boolean isOnline = true;
-        Player friendPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
+        Player friendPlayer = sessionManager.getSessionByPlayerId(playerId);
         if (friendPlayer == null){  //不在线取库
             isOnline = false;
-            friendPlayer = PlayerDAO.ins().getPlayerByPlayerId(playerId);
+            friendPlayer = playerDAO.getPlayerByPlayerId(playerId);
         }
         if (friendPlayer == null){
             return error(ErrorCode.ERROR);
@@ -81,7 +84,7 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
 
         //如果对方不在线，则存库
         if (!isOnline){
-            PlayerDAO.ins().updatePlayer(friendPlayer,false);
+            playerDAO.updatePlayer(friendPlayer,false);
         }
 
         //减少可加速次数

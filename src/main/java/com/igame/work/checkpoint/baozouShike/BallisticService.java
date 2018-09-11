@@ -24,6 +24,8 @@ import java.util.*;
  */
 public class BallisticService extends EventService implements ISFSModule, TimeListener {
     @Inject private BallisticRankDAO dao;
+    @Inject private MailService mailService;
+
     @Override
     public void minute5() {
         saveData();
@@ -201,7 +203,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
                 reward = BaozouShikeDataManager.runRewardData.getTemplate(12).getReward();
             }
 
-            MailService.ins().senderMail(Integer.parseInt(GameServerExtension.dbManager.p.getProperty("serverId"))
+            mailService.senderMail(Integer.parseInt(GameServerExtension.dbManager.p.getProperty("serverId"))
                     , ranker.getPlayerId(), 1, 1, "系统", "标题", "正文", reward);
         }
 

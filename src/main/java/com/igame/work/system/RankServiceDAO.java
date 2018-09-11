@@ -13,13 +13,6 @@ import org.mongodb.morphia.query.UpdateOperations;
  */
 public class RankServiceDAO extends AbsDao {
 
-    private static final RankServiceDAO domain = new RankServiceDAO();
-
-    public static RankServiceDAO ins() {
-        return domain;
-    }
-    
-
     /**
      * 查询
      */

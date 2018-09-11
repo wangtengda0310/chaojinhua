@@ -2,6 +2,7 @@ package com.igame.work.user.handler;
 
 
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.DateUtil;
@@ -21,13 +22,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HeartHandler extends BaseHandler{
     private Map<Long, Integer> timer = new ConcurrentHashMap<>();
+    @Inject private SessionManager sessionManager;
 
     @Override
     public void handleClientRequest(User user, ISFSObject params) {
 
         RetVO vo = new RetVO();
 
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
+        Player player = sessionManager.getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;

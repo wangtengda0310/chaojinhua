@@ -24,6 +24,7 @@ import java.util.*;
 public class TurntableService implements TimeListener {
     @Inject
     TurntableDAO dao;
+    @Inject private SessionManager sessionManager;
 
     public Map<Long, Turntable> turntables = new HashMap<>();//幸运大转盘
     public Turntable getTurntable(Player player) {
@@ -199,7 +200,7 @@ public class TurntableService implements TimeListener {
     @Override
     public void minute180() {
 
-        for(Player player : SessionManager.ins().getSessions().values()){
+        for(Player player : sessionManager.getSessions().values()){
 
             if (getTurntable(player) != null){
                 //更新大转盘

@@ -1,12 +1,12 @@
 package com.igame.work.chat.service;
 
+import com.igame.core.di.Inject;
 import com.igame.util.MyUtil;
 import com.igame.work.chat.dao.MessageBoardDAO;
 import com.igame.work.chat.dto.MessageBoard;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.PlayerCacheService;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +20,8 @@ import static com.igame.work.chat.MessageContants.*;
  */
 public class MessageBoardService {
 
-    private static final MessageBoardService domain = new MessageBoardService();
-
-    public static final MessageBoardService ins() {
-        return domain;
-    }
+    @Inject private MessageBoardDAO messageBoardDAO;
+    @Inject private PlayerCacheService playerCacheService;
 
     public String getSType(int type, int id, int difficulty) {
         String sid;
@@ -58,7 +55,7 @@ public class MessageBoardService {
      */
     public List<MessageBoard> getMessageBoard(Player player, String type){
 
-        List<MessageBoard> messageBoard = MessageBoardDAO.ins().getMessageBoard(type);
+        List<MessageBoard> messageBoard = messageBoardDAO.getMessageBoard(type);
         for (MessageBoard board : messageBoard) {
 
             board.setObjectId(board.get_id().toHexString());
@@ -83,7 +80,7 @@ public class MessageBoardService {
             }
 
             //cache
-            Player cacheDto = PlayerCacheService.getPlayerById(board.getPlayerId());
+            Player cacheDto = playerCacheService.getPlayerById(board.getPlayerId());
             board.setName(cacheDto.getNickname());
             board.setPlayerFrameId(cacheDto.getPlayerFrameId());
             board.setPlayerHeadId(cacheDto.getPlayerHeadId());
@@ -109,7 +106,7 @@ public class MessageBoardService {
         messageBoard.setContent(content);
         messageBoard.setTime(new Date());
 
-        return MessageBoardDAO.ins().saveMessageBoard(messageBoard);
+        return messageBoardDAO.saveMessageBoard(messageBoard);
     }
 
     /**
@@ -164,57 +161,27 @@ public class MessageBoardService {
 
         List<String> likes = messageBoardOpe.get(MSG_BOARD_OPE_LIKE);
         for (String oId : likes) {
-            MessageBoard messageBoard = MessageBoardDAO.ins().getMessageBoardById(oId);
+            MessageBoard messageBoard = messageBoardDAO.getMessageBoardById(oId);
             if (messageBoard.getLike().contains(player.getPlayerId())){ //取消点赞
                 messageBoard.getLike().remove(player.getPlayerId());
             }else { //点赞
                 messageBoard.getLike().add(player.getPlayerId());
                 //todo 解锁成就
             }
-            MessageBoardDAO.ins().updateMessageBoard(messageBoard);
+            messageBoardDAO.updateMessageBoard(messageBoard);
         }
 
         List<String> disLikes = messageBoardOpe.get(MSG_BOARD_OPE_DISLIKE);
 
         for (String oId : disLikes) {
-            MessageBoard messageBoard = MessageBoardDAO.ins().getMessageBoardById(oId);
+            MessageBoard messageBoard = messageBoardDAO.getMessageBoardById(oId);
             if (messageBoard.getDislike().contains(player.getPlayerId())){  //取消反对
                 messageBoard.getDislike().remove(player.getPlayerId());
             }else { //反对
                 messageBoard.getDislike().add(player.getPlayerId());
             }
-            MessageBoardDAO.ins().updateMessageBoard(messageBoard);
+            messageBoardDAO.updateMessageBoard(messageBoard);
         }
     }
 
-
-    public static void main(String[] args) {
-
-        Player player = new Player();
-        player.setSeverId(1);
-        player.setPlayerId(1000119);
-
-        player.getMessageBoardOpe().put(MSG_BOARD_OPE_LIKE,new ArrayList<>());
-        player.getMessageBoardOpe().put(MSG_BOARD_OPE_DISLIKE,new ArrayList<>());
-
-        //添加留言
-        MessageBoardService ins = MessageBoardService.ins();
-        MessageBoard messageBoard = ins.addMessageBoard(1, "星核之眼第二百层", 10001127, 10001127, "test留言");
-        System.out.println("添加的:"+messageBoard);
-
-        System.out.println("添加后:"+ins.getMessageBoard(player, "星核之眼第二百层"));
-
-        //点赞
-        ins.likeMessageBoard(player,messageBoard.get_id().toHexString());
-        System.out.println("点赞后:"+ins.getMessageBoard(player, "星核之眼第二百层"));
-
-        //反对
-        ins.dislikeMessageBoard(player,messageBoard.get_id().toHexString());
-        System.out.println("反对后:"+ins.getMessageBoard(player, "星核之眼第二百层"));
-
-        //保存
-        ins.saveMessageBoard(player);
-        System.out.println("保存后:"+ins.getMessageBoard(player, "星核之眼第二百层"));
-
-    }
 }

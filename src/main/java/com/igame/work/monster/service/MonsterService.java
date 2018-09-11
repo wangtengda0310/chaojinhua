@@ -3,6 +3,7 @@ package com.igame.work.monster.service;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.igame.core.ISFSModule;
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -28,7 +29,8 @@ import java.util.Set;
  *
  */
 public class MonsterService implements ISFSModule {
-	private ResourceService resourceService;
+	@Inject private static MonsterDAO monsterDAO;
+	@Inject private ResourceService resourceService;
 
 	public int monsterEV(Player player,long objectId,int nextObject){
 		
@@ -235,6 +237,6 @@ public class MonsterService implements ISFSModule {
 	}
 
 	public static void loadPlayer(Player player, int serverId) {
-		player.setMonsters(MonsterDAO.ins().getMonsterByPlayer(player, player.getPlayerId()));
+		player.setMonsters(monsterDAO.getMonsterByPlayer(player, player.getPlayerId()));
 	}
 }

@@ -13,20 +13,23 @@ import java.util.Collection;
 import java.util.Collections;
 
 public abstract class EventService implements ISFSModule {
-    {
+    @Override
+    public void init() {
+        EventManager eventManager = (EventManager) extensionHolder.SFSExtension.services.get(EventManager.class);
+
         PlayerEventObserver playerEventObserver = playerObserver();
         if (playerEventObserver != null) {
-            EventManager.playerEventObservers.put(getClass().getSimpleName(), playerEventObserver);
+            eventManager.playerEventObservers.put(getClass().getSimpleName(), playerEventObserver);
         }
         ServiceEventListener playerEventListener = eventListener();
         if (playerEventListener != null) {
-            EventManager.serviceEventListeners.put(getClass().getSimpleName(), playerEventListener);
+            eventManager.serviceEventListeners.put(getClass().getSimpleName(), playerEventListener);
         }
 
         Collection<PlayerEventObserver> eventObservers = playerObservers();
         if (eventObservers != null) {
             for (PlayerEventObserver observer : eventObservers) {
-                EventManager.playerEventObservers.put(observer.getClass().getName(), observer);
+                eventManager.playerEventObservers.put(observer.getClass().getName(), observer);
             }
         }
     }

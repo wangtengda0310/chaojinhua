@@ -17,13 +17,6 @@ import java.util.Map;
  */
 public class WordEventDAO extends AbsDao {
 
-    private static final WordEventDAO domain = new WordEventDAO();
-
-    public static WordEventDAO ins() {
-        return domain;
-    }
-    
-
     /**
      * 查询
      */

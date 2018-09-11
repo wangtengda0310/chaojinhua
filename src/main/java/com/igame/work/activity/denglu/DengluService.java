@@ -1,5 +1,6 @@
 package com.igame.work.activity.denglu;
 
+import com.igame.core.di.Inject;
 import com.igame.util.DateUtil;
 import com.igame.work.activity.ActivityConfigTemplate;
 import com.igame.work.user.dto.Player;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 
 public class DengluService {
     public static Map<Integer, List<ActivityConfigTemplate>> configs = new HashMap<>();
+    @Inject private DengluDAO dengluDAO;
 
     public static void addActivityConfigTemplate(ActivityConfigTemplate template) {
         if (template.getGift_bag() == 3) {
@@ -17,15 +19,15 @@ public class DengluService {
         }
     }
 
-    public static void loadPlayer(Player player) {
+    public void loadPlayer(Player player) {
 
         Date now = new Date();
         // 配置中没找到 认为是活动下线 把数据清掉
-        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getPlayerId());
+        Map<Integer, DengluDto> byPlayer = dengluDAO.getByPlayer(player.getPlayerId());
         byPlayer.values().stream()
                 .filter(a -> !configs.containsKey(a.getActivityId())
                         || configs.get(a.getActivityId()).stream().anyMatch(c->!c.isActive(player, now)))
-                .forEach(a -> DengluDAO.ins().remove(a));
+                .forEach(a -> dengluDAO.remove(a));
 
         // 新的登录活动开始后 删除上轮的数据
         // id相同id时间有修改的话 认为是新一轮活动 把上一轮活动数据清掉
@@ -52,7 +54,7 @@ public class DengluService {
                 dto.setRecord(new int[configs.get(activityId).size()]);
                 configs.get(activityId).stream().findAny()
                         .ifPresent(c->dto.setOpenTime(String.valueOf(c.startTime(player).getTime())));
-                DengluDAO.ins().save(dto);
+                dengluDAO.save(dto);
                 return dto;
             });
         });
@@ -63,13 +65,13 @@ public class DengluService {
                     .filter(c -> a.getRecord()[c.getOrder()-1] != 2)
                     .filter(c -> c.getOrder() - 1 <= DateUtil.getIntervalDays(c.startTime(player), now))  // order从1开始 interval days从0开始
                     .forEach(c -> a.getRecord()[c.getOrder()-1] = 1);
-            DengluDAO.ins().update(a);
+            dengluDAO.update(a);
         });
 
     }
 
-    public static Object clientData(Player player) {
-        Map<Integer, DengluDto> byPlayer = DengluDAO.ins().getByPlayer(player.getPlayerId());
+    public Object clientData(Player player) {
+        Map<Integer, DengluDto> byPlayer = dengluDAO.getByPlayer(player.getPlayerId());
         Map<Integer, String> dengluRecords = new HashMap<>();
         configs.forEach((configId, configs) -> {
 

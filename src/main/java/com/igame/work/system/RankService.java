@@ -3,6 +3,7 @@ package com.igame.work.system;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
+import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 public class RankService extends EventService implements ISFSModule, TimeListener {
+    @Inject private RankServiceDAO rankServiceDAO;
+
     public void minute5() {
 
         sort();
@@ -109,7 +112,7 @@ public class RankService extends EventService implements ISFSModule, TimeListene
 
     @Override
     public void init(){
-        dto = RankServiceDAO.ins().loadData();
+        dto = rankServiceDAO.loadData();
         if (dto == null) {
             dto = new RankServiceDto();
         }
@@ -118,7 +121,7 @@ public class RankService extends EventService implements ISFSModule, TimeListene
 
 
     private void saveData(){
-        RankServiceDAO.ins().update(dto);
+        rankServiceDAO.update(dto);
     }
 
     private void zeroJob() {

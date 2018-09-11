@@ -1,6 +1,7 @@
 package com.igame.work.fight.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
@@ -14,7 +15,9 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
  *
  */
 public class PVPReadCDHandler extends ReconnectedHandler {
-	
+
+
+	@Inject private PVPFightService pvpFightService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -22,7 +25,7 @@ public class PVPReadCDHandler extends ReconnectedHandler {
 //		String infor = params.getUtfString("infor");
 //		JSONObject jsonObject = JSONObject.fromObject(infor);
 
-		PVPFightService.ins().readCDFight(player);
+		pvpFightService.readCDFight(player);
 
 		return new RetVO();
 	}

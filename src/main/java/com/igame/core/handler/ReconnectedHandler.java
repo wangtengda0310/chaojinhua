@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 public abstract class ReconnectedHandler extends BaseHandler {
 
+    private SessionManager sessionManager;
+
     /** 不使用这个方法则需要实现断线重连的消息重发 */
     protected abstract RetVO handleClientRequest(Player player, ISFSObject params) throws Exception;
 
@@ -24,7 +26,7 @@ public abstract class ReconnectedHandler extends BaseHandler {
             return;
         }
 
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
+        Player player = sessionManager.getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;
@@ -47,7 +49,7 @@ public abstract class ReconnectedHandler extends BaseHandler {
     }
 
     private void cacheResponse(String cmdName, RetVO vo, User user, ISFSObject res) {
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
+        Player player = sessionManager.getSession(Long.parseLong(user.getName()));
         if(player != null){
             synchronized (player.getProLock()) {
                 player.getProMap().put(vo.getIndex(), new MessageCache(cmdName, res));
@@ -73,7 +75,7 @@ public abstract class ReconnectedHandler extends BaseHandler {
     protected boolean cachedResponse(User user, ISFSObject params) {
         // 这个方法好像是因为SmartFoxServer有超时强制断线的机制 以前的服务端跟客户端协商出来的解决办法
 
-        Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
+        Player player = sessionManager.getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error("get player failed Name:" +user.getName());
             return false;

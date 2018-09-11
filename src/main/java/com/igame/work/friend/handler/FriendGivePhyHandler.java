@@ -29,6 +29,8 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
     private int state_unGive = 0;   //未赠送
     private int state_gave = 1;   //已赠送
     @Inject private FriendDAO dao;
+    @Inject private SessionManager sessionManager;
+    @Inject private FriendService friendService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -108,7 +110,7 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
 
         //更新对方体力领取状态
         long recPlayerId = recFriend.getPlayerId();
-        Player recPlayer = SessionManager.ins().getSessionByPlayerId(recPlayerId);
+        Player recPlayer = sessionManager.getSessionByPlayerId(recPlayerId);
         if (recPlayer != null){    //如果对方在线
 
             List<Friend> curFriends = recPlayer.getFriends().getCurFriends();
@@ -118,7 +120,7 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
             }
 
             //推送
-            FriendService.ins().pushFriendPhy(recPlayer,sendPlayer.getPlayerId());
+            friendService.pushFriendPhy(recPlayer,sendPlayer.getPlayerId());
 
         }else { //存库
 

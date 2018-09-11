@@ -164,7 +164,7 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
         /*for (ArrayBlockingQueue<Message> messages : hornMessage.values()) {
             for (Message message : messages) {
                 if (message.get_id() == null)
-                    MessageDAO.ins().saveMessage(message);
+                    nessageDAO.saveMessage(message);
                     //System.out.println("喇叭新增："+message.getContent());
             }
         }*/

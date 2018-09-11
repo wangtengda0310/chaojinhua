@@ -2,6 +2,7 @@ package com.igame.work.fight.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
@@ -21,9 +22,10 @@ import java.util.List;
  *
  */
 public class FightCmdHandler extends ReconnectedHandler {
-	
 
-	
+
+	@Inject private FightProcessser fightProcessser;
+
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
@@ -40,7 +42,7 @@ public class FightCmdHandler extends ReconnectedHandler {
 				String[] cd = c.split(",");
 				cmdList.add(new FightCmd(Integer.parseInt(cd[0]), Long.parseLong(cd[1]), Integer.parseInt(cd[2]), Integer.parseInt(cd[3]),Long.parseLong(cd[4])));
 			}
-			ls =  FightProcessser.ins().processCmdList(player.getFightBase(), cmdList);
+			ls =  fightProcessser.processCmdList(player.getFightBase(), cmdList);
 		}
 //		@SuppressWarnings("unchecked")
 //		List<FightCmd> cmdList = (List<FightCmd>)JSONArray.toCollection(jsonObject.getJSONArray("c"), FightCmd.class);

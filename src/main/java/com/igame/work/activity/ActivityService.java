@@ -1,6 +1,7 @@
 package com.igame.work.activity;
 
 import com.igame.core.ISFSModule;
+import com.igame.core.di.Inject;
 import com.igame.util.DateUtil;
 import com.igame.work.activity.denglu.DengluService;
 import com.igame.work.activity.meiriLiangfa.MeiriLiangfaData;
@@ -32,9 +33,10 @@ import java.util.Map;
  * 所有活动记录一下配置的开始时间戳，如果时间戳有变化就当做是新活动
  */
 public class ActivityService implements ISFSModule {
-    private GMService gMService;
+    @Inject private DengluService dengluService;
+    @Inject private GMService gMService;
 
-    public static void loadPlayer(Player player) {
+    public void loadPlayer(Player player) {
         if (player.getActivityData() == null) {
             player.setActivityData(new PlayerActivityData());
         }
@@ -70,7 +72,7 @@ public class ActivityService implements ISFSModule {
         }
 
         // 七天登录活动
-        DengluService.loadPlayer(player);
+        dengluService.loadPlayer(player);
     }
 
     /**
@@ -94,7 +96,7 @@ public class ActivityService implements ISFSModule {
 
         map.put("tansuoZhiLu", player.getActivityData().getTansuo().clientData(player));
 
-        map.put("denglu", DengluService.clientData(player));
+        map.put("denglu", dengluService.clientData(player));
         return map;
     }
 

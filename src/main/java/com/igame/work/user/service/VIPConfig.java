@@ -12,13 +12,6 @@ import static com.igame.work.user.VIPConstants.*;
  */
 public class VIPConfig {
 
-    private static final VIPConfig domain = new VIPConfig();
-
-    public static final VIPConfig ins() {
-
-        return domain;
-    }
-
     public VIPConfig() {
         initVipValue();
     }

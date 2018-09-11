@@ -1,5 +1,6 @@
 package com.igame.work.user.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
@@ -18,6 +19,8 @@ import java.util.List;
  * 更换出战阵容
  */
 public class ReplaceTeamHandler extends ReconnectedHandler {
+
+    @Inject private ComputeFightService computeFightService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -38,7 +41,7 @@ public class ReplaceTeamHandler extends ReconnectedHandler {
         player.setCurTeam(teamId);
 
         //重新计算阵容战力
-        ComputeFightService.ins().computeTeamFight(player,teamId);
+        computeFightService.computeTeamFight(player,teamId);
         player.setFightValue(player.getTeams().get(teamId).getFightValue());
 
         List<Long> changeMonster = player.getTeams().get(teamId).getChangeMonster();

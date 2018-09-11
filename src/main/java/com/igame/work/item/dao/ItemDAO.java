@@ -18,13 +18,6 @@ import java.util.Map;
  */
 public class ItemDAO extends AbsDao {
 
-    private static final ItemDAO domain = new ItemDAO();
-
-    public static ItemDAO ins() {
-        return domain;
-    }
-    
-
     /**
      * 查询
      */

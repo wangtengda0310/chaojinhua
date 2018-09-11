@@ -28,6 +28,9 @@ public class FriendFindHandler extends ReconnectedHandler {
 
     private static final int max = 20;
     @Inject private FriendDAO dao;
+    @Inject private FriendService friendService;
+    @Inject private SessionManager sessionManager;
+    @Inject private PlayerCacheService playerCacheService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -50,7 +53,7 @@ public class FriendFindHandler extends ReconnectedHandler {
         }
 
         //检验昵称是否存在
-        Player reqPlayerCache = PlayerCacheService.getPlayerByNickName(nickname);
+        Player reqPlayerCache = playerCacheService.getPlayerByNickName(nickname);
         if (reqPlayerCache == null){
             vo.addData("state",FRIEND_STATE_NOTEXIST);
             return vo;
@@ -64,7 +67,7 @@ public class FriendFindHandler extends ReconnectedHandler {
         }
 
         //判断对方好友上限
-        Player reqPlayer = SessionManager.ins().getSessionByPlayerId(reqPlayerCache.getPlayerId());
+        Player reqPlayer = sessionManager.getSessionByPlayerId(reqPlayerCache.getPlayerId());
         int curFriendCount;
         if (reqPlayer != null){ //如果对方在线，则取session
             curFriendCount = reqPlayer.getFriends().getCurFriends().size();
@@ -102,7 +105,7 @@ public class FriendFindHandler extends ReconnectedHandler {
         }
 
         //向对方发送好友申请
-        FriendService.ins().addReqFriend(player, reqPlayerCache.getPlayerId());
+        friendService.addReqFriend(player, reqPlayerCache.getPlayerId());
 
         vo.addData("state",FRIEND_STATE_SUCC);
         return vo;

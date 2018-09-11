@@ -1,5 +1,6 @@
 package com.igame.work.user.service;
 
+import com.igame.core.di.Inject;
 import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.data.VipLevelTemplate;
 import com.igame.core.log.ExceptionLog;
@@ -16,12 +17,7 @@ import static com.igame.work.user.VIPConstants.*;
  */
 public class VIPService {
 
-    private static final VIPService domain = new VIPService();
-
-    public static final VIPService ins() {
-
-        return domain;
-    }
+    @Inject private VIPConfig vipConfig;
 
     /**
      * 校验是否可升级
@@ -71,7 +67,7 @@ public class VIPService {
 
         curVipLv++;
         for (int i = curVipLv; i <= addVipLv; i++) {
-            Map<String, Integer> vipValue = VIPConfig.ins().getVipValue(i);
+            Map<String, Integer> vipValue = vipConfig.getVipValue(i);
             for (Map.Entry<String, Integer> entry : vipValue.entrySet()) {
                 String key = entry.getKey();
                 Integer value = entry.getValue();

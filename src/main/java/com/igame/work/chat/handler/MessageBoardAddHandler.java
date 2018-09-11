@@ -1,5 +1,6 @@
 package com.igame.work.chat.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
@@ -21,6 +22,8 @@ import static com.igame.work.chat.MessageContants.MSG_LENGTH_MAX;
  */
 public class MessageBoardAddHandler extends ReconnectedHandler {
 
+    @Inject private MessageBoardService messageBoardService;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -39,7 +42,7 @@ public class MessageBoardAddHandler extends ReconnectedHandler {
         vo.addData("difficulty", difficulty);
         vo.addData("content", content);
 
-        String sType = MessageBoardService.ins().getSType(type,id,difficulty);
+        String sType = messageBoardService.getSType(type,id,difficulty);
         if (sType.isEmpty()){
             return error(ErrorCode.PARAMS_INVALID);
         }
@@ -57,7 +60,7 @@ public class MessageBoardAddHandler extends ReconnectedHandler {
             return error(ErrorCode.MESSAGE_TOO_LONG);
         }
 
-        MessageBoard messageBoard = MessageBoardService.ins().addMessageBoard(player.getSeverId(), sType, player.getPlayerId(), player.getUserId(),content);
+        MessageBoard messageBoard = messageBoardService.addMessageBoard(player.getSeverId(), sType, player.getPlayerId(), player.getUserId(),content);
 
         //更新当前留言板留言时间
         player.getLastMessageBoard().put(sType,new Date());

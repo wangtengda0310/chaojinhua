@@ -25,7 +25,10 @@ import java.util.stream.Collectors;
  *
  */
 public class PlayerCacheService extends EventService implements ISFSModule, TimeListener {
+	@Inject private SessionManager sessionManager;
 	@Inject private FriendDAO dao;
+	@Inject private PVPFightService pvpFightService;
+	@Inject private PlayerDAO playerDAO;
 
 	@Override
 	public void minute() {
@@ -50,9 +53,9 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
     /**
      * 根据玩家ID获取
      */
-    public static Player getPlayerById(long playerId){
+    public Player getPlayerById(long playerId){
 
-		Player player  = SessionManager.ins().getSessionByPlayerId(playerId);
+		Player player  = sessionManager.getSessionByPlayerId(playerId);
 		if(player != null){	//如果玩家在线
 			pcd.remove(player.getPlayerId());
 			return player;
@@ -65,9 +68,9 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
     /**
      * 根据玩家昵称
      */
-    public static Player getPlayerByNickName(String nickName){
+    public Player getPlayerByNickName(String nickName){
 
-		Player player  = SessionManager.ins().getSession(nickName);
+		Player player  = sessionManager.getSession(nickName);
 		if(player != null){	//如果玩家在线
 			pcn.remove(player.getNickname());
 			return player;
@@ -82,7 +85,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 	@Override
 	public void init() {
 
-		List<Player> allPlayer = PlayerDAO.ins().getALLPlayer();
+		List<Player> allPlayer = playerDAO.getALLPlayer();
 		allPlayer.forEach(PlayerCacheService::cachePlayer);
 
 		allPlayer.forEach(player ->
@@ -96,7 +99,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 	}
 	
 	public void checkPlayer(){
-    	for(Player player : SessionManager.ins().getSessions().values()){
+    	for(Player player : sessionManager.getSessions().values()){
 			if(player.getHeartTime()>0 && System.currentTimeMillis() - player.getHeartTime() > 5 * 60 * 1000){
 				try{
 					fireEvent(player, PlayerEvents.OFF_LINE,System.currentTimeMillis());
@@ -104,10 +107,10 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 					ExceptionLog.error("palyer leave save error----- :",e);
 				}
 				
-				if(PVPFightService.ins().palyers.containsKey(player.getPlayerId())){
-					PVPFightService.ins().chancelFight(player);
+				if(pvpFightService.palyers.containsKey(player.getPlayerId())){
+					pvpFightService.chancelFight(player);
 				}
-				PVPFightService.ins().fights.remove(player.getPlayerId());
+				pvpFightService.fights.remove(player.getPlayerId());
 				player.getFateData().setTodayFateLevel(1);
 				player.getFateData().setTodayBoxCount(0);
 				player.getFateData().setTempBoxCount(-1);
@@ -115,7 +118,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 				player.getFateData().setAddRate(0);
 				player.getUser().getZone().removeUser(player.getUser());
 				player.getUser().disconnect(new LoginOutReason());
-				SessionManager.ins().removeSession(Long.parseLong(player.getUser().getName()));
+				sessionManager.removeSession(Long.parseLong(player.getUser().getName()));
 			}
 		}
 	}

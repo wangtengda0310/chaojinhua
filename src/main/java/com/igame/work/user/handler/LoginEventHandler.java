@@ -4,6 +4,7 @@ package com.igame.work.user.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.RetVO;
 import com.igame.sfsAdaptor.EventDispatcherHandler;
 import com.igame.util.KickIDisconnectionReason;
@@ -27,6 +28,8 @@ import com.smartfoxserver.v2.exceptions.SFSLoginException;
  *
  */
 public class LoginEventHandler extends EventDispatcherHandler {
+	@Inject private SessionManager sessionManager;
+
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
 		
@@ -36,7 +39,7 @@ public class LoginEventHandler extends EventDispatcherHandler {
 
 		trace("LoginEventHandler-----userId :"+name + ",isRepeat :" + isRepeat.getBool("isRepeat"));
 
-		Player player = SessionManager.ins().getSession(Long.parseLong(name));
+		Player player = sessionManager.getSession(Long.parseLong(name));
 		if(player != null && !isRepeat.getBool("isRepeat")){
 			fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
 			RetVO vo = new RetVO();
@@ -52,7 +55,7 @@ public class LoginEventHandler extends EventDispatcherHandler {
 			send(MProtrol.toStringProtrol(MProtrol.RELOGIN_NOT_ALLOWED), res, player.getUser());
 			player.getUser().getZone().removeUser(player.getUser());
 			player.getUser().disconnect(new KickIDisconnectionReason());
-			SessionManager.ins().removeSession(Long.parseLong(name));
+			sessionManager.removeSession(Long.parseLong(name));
 		}
 
 		

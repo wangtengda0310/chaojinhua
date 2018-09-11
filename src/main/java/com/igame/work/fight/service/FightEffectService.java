@@ -2,6 +2,7 @@ package com.igame.work.fight.service;
 
 import com.google.common.collect.Lists;
 import com.igame.core.ISFSModule;
+import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.util.ThreadPoolManager;
 import com.igame.work.fight.FightDataManager;
@@ -27,6 +28,7 @@ import java.util.concurrent.ScheduledFuture;
  */
 public class FightEffectService extends EventService implements ISFSModule {
 
+	@Inject private FightProcessser fightProcessser;
 	private ScheduledFuture<?> sc = null;
 
 	@Override
@@ -53,7 +55,7 @@ public class FightEffectService extends EventService implements ISFSModule {
 					
 			    	float center = -10000;
 			    	if(skillTemplate.getCentre() == 1){//命中目标
-			    		 Monster other = FightProcessser.ins().getMonsterById(fb,fc.getTargetId());
+			    		 Monster other = FightProcessser.getMonsterById(fb,fc.getTargetId());
 			    		 if(other != null){
 			    			 center = other.getFightProp().getX();
 			    			 addEet.setTargetId(other.getObjectId());
@@ -70,7 +72,7 @@ public class FightEffectService extends EventService implements ISFSModule {
 						
 						if(eet.getTouchTime() == 1 && eet.getAvailTime()<=0){//增加瞬发一次性生效BUFFER，加、减HP
 		    				ls.add(eet);
-		    				List<Monster> mons = FightProcessser.ins().getTargetByFixedRange(fb, eet.getSender(), eet.getCamp(), eet.getCampTarget(), eet.getCenter(), eet.getRange());
+		    				List<Monster> mons = FightProcessser.getTargetByFixedRange(fb, eet.getSender(), eet.getCamp(), eet.getCampTarget(), eet.getCenter(), eet.getRange());
 							for(Monster mm : mons){
 								Effect addE = eet.clonew();//添加到指令中的EFFECT
 								addE.setTargetId(mm.getObjectId());

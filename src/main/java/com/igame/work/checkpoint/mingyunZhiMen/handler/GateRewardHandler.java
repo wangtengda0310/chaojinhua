@@ -46,7 +46,7 @@ public class GateRewardHandler extends ReconnectedHandler {
 					if(fl < 1){
 						fl = 1;
 					}
-//					RankServiceDto.ins().setMRank(player);//排行榜
+//					rankServiceDto.setMRank(player);//排行榜
 					player.getFateData().setFateLevel(fl);//更新历史最高层数
 					player.getFateData().setTodayFateLevel(player.getFateData().getFateLevel());//设置当天更新层数
 					player.getFateData().setGetReward(1);//更新是否领取宝箱

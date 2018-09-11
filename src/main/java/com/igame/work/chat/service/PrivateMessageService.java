@@ -15,12 +15,6 @@ import static com.igame.work.chat.MessageContants.*;
  */
 public class PrivateMessageService {
 
-    private static final PrivateMessageService domain = new PrivateMessageService();
-
-    public static final PrivateMessageService ins() {
-        return domain;
-    }
-
     /**
      * 添加消息缓存
      *      不推送

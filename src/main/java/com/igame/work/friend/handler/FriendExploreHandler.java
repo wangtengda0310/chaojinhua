@@ -1,5 +1,6 @@
 package com.igame.work.friend.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
 import com.igame.core.handler.ReconnectedHandler;
@@ -23,6 +24,10 @@ import java.util.Map;
  */
 public class FriendExploreHandler extends ReconnectedHandler {
 
+    @Inject private FriendService friendService;
+    @Inject private PlayerDAO playerDAO;
+    @Inject private SessionManager sessionManager;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -36,13 +41,13 @@ public class FriendExploreHandler extends ReconnectedHandler {
             long playerId = curFriend.getPlayerId();
 
             //校验对方角色是否存在
-            Player friendPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
+            Player friendPlayer = sessionManager.getSessionByPlayerId(playerId);
             if (friendPlayer == null)//不在线取库
-                friendPlayer = PlayerDAO.ins().getPlayerByPlayerId(playerId);
+                friendPlayer = playerDAO.getPlayerByPlayerId(playerId);
 
             //获取探索列表
-            List<TansuoDto> exploreList = FriendService.ins().getExploreList(friendPlayer);
-            int state = FriendService.ins().getHelpState(exploreList);
+            List<TansuoDto> exploreList = friendService.getExploreList(friendPlayer);
+            int state = friendService.getHelpState(exploreList);
 
             Map<String,Object> helpState = new HashedMap();
             helpState.put("playerId",playerId);

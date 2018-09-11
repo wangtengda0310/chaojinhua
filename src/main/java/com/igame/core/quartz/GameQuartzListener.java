@@ -2,6 +2,7 @@ package com.igame.core.quartz;
 
 
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.log.ExceptionLog;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.service.PVPFightService;
@@ -16,14 +17,17 @@ import java.util.List;
  *
  */
 public class GameQuartzListener {
-    public GameQuartzListener(){}
+	@Inject private SessionManager sessionManager;
+	@Inject private PVPFightService pvpFightService;
+
+	public GameQuartzListener(){}
 
 
     public void minute(){
 
 		//ExceptionLog.error("minute execute");
 
-//    	for(Player player : SessionManager.ins().getSessions().values()){
+//    	for(Player player : pvpsionManager.getSessions().values()){
 //			fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
 //		}
 
@@ -44,9 +48,9 @@ public class GameQuartzListener {
 		ExceptionLog.error("minute5 execute");
     	
     	long now = System.currentTimeMillis();
-    	for(FightBase fb : PVPFightService.ins().fights.values()){
+    	for(FightBase fb : pvpFightService.fights.values()){
     		if(now - fb.getStartTime() >= 300000){
-    			PVPFightService.ins().fights.remove(fb.getId());
+    			pvpFightService.fights.remove(fb.getId());
     		}  		
     	}
     	
@@ -84,7 +88,7 @@ public class GameQuartzListener {
 		});
         try{
         	List<String> palyers = new ArrayList<>();
-			for (Player player : SessionManager.ins().getSessions().values()) {
+			for (Player player : sessionManager.getSessions().values()) {
 				palyers.add(player.getNickname());
 			}
 			ExceptionLog.error("zero:"+palyers);

@@ -1,21 +1,21 @@
 package com.igame.work.fight.service;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.work.fight.FightDataManager;
-import com.igame.work.fight.data.SkillTemplate;
 import com.igame.core.log.ExceptionLog;
 import com.igame.util.MyUtil;
 import com.igame.util.ThreadPoolManager;
+import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.data.SkillTemplate;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightCmd;
 import com.igame.work.fight.dto.RetFightCmd;
 import com.igame.work.monster.dto.Effect;
 import com.igame.work.monster.dto.Monster;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 
@@ -214,8 +214,8 @@ public class FightProcessser {
 		rcd.setTarget(sb.toString());
 //		rcd.setHp(String.valueOf(value));
 		retCmd.add(rcd);//添加到返回指令集合
-		if(FightProcessser.ins().isEndFight(fb) != -1){//战斗已经结束
-			FightProcessser.ins().endFight(fb);
+		if(isEndFight(fb) != -1){//战斗已经结束
+			endFight(fb);
 		}
 		onAttacked(fb,target,retCmd);//可能触发技能
 		return rcd;
@@ -408,8 +408,8 @@ public class FightProcessser {
         			return null;
         		}
     			
-    			if(FightProcessser.ins().isEndFight(fb) != -1){//战斗已经结束
-    				FightProcessser.ins().endFight(fb);
+    			if(isEndFight(fb) != -1){//战斗已经结束
+    				endFight(fb);
     			}
     		}else{
     			return null;
@@ -484,7 +484,7 @@ public class FightProcessser {
     /**
      * 固定区域类型取值
      */
-    public List<Monster> getTargetByFixedRange(FightBase fb,long sender ,String camp,String campTarget,int center,int range){
+    public static List<Monster> getTargetByFixedRange(FightBase fb,long sender ,String camp,String campTarget,int center,int range){
     	
     	List<Monster> ts = getTargetByCamp(fb, sender, camp);
     	Iterator<Monster> its = ts.iterator();
@@ -544,7 +544,7 @@ public class FightProcessser {
     /**
      * 根据生效阵营获取目标对象集合
      */
-    private List<Monster> getTargetByCamp(FightBase fb,long playerId,String camp){
+    private static List<Monster> getTargetByCamp(FightBase fb,long playerId,String camp){
     	
     	Map<Long,Monster> self = null;//自方
     	Map<Long,Monster> enemy = null;//对方
@@ -572,7 +572,7 @@ public class FightProcessser {
     /**
      * 根据生效阵营目标获取对象集合
      */
-    private List<Monster> getTargetByCampTarget(FightBase fb,long targetId,Monster attacker,String campTarget,List<Monster> ts){
+    private static List<Monster> getTargetByCampTarget(FightBase fb,long targetId,Monster attacker,String campTarget,List<Monster> ts){
     	List<Monster> ret = Lists.newArrayList();
     	switch (campTarget){
     		case "0"://自身
@@ -661,7 +661,7 @@ public class FightProcessser {
     /**
      * 根据目标ID获取目标怪物
      */
-    public Monster getMonsterById(FightBase fb,long objectId){
+    public static Monster getMonsterById(FightBase fb,long objectId){
     	
     	Monster m = fb.getFightA().getMonsters().get(objectId);
     	if(m == null){

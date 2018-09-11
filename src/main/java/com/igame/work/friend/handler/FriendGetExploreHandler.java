@@ -1,5 +1,6 @@
 package com.igame.work.friend.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
@@ -24,6 +25,10 @@ import java.util.List;
  */
 public class FriendGetExploreHandler extends ReconnectedHandler {
 
+    @Inject private FriendService friendService;
+    @Inject private PlayerDAO playerDAO;
+    @Inject private SessionManager sessionManager;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -47,16 +52,16 @@ public class FriendGetExploreHandler extends ReconnectedHandler {
         }
 
         //校验对方角色是否存在
-        Player friendPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
+        Player friendPlayer = sessionManager.getSessionByPlayerId(playerId);
         if (friendPlayer == null)//不在线取库
-            friendPlayer = PlayerDAO.ins().getPlayerByPlayerId(playerId);
+            friendPlayer = playerDAO.getPlayerByPlayerId(playerId);
         if (friendPlayer == null){
             return error(ErrorCode.ERROR);
         }
 
         //获取
-        List<TansuoDto> exploreList = FriendService.ins().getExploreList(friendPlayer);
-        int helpState = FriendService.ins().getHelpState(exploreList);
+        List<TansuoDto> exploreList = friendService.getExploreList(friendPlayer);
+        int helpState = friendService.getHelpState(exploreList);
 
         List<FriendExplore> friendExplores = new ArrayList<>();
         for (TansuoDto tansuoDto : exploreList) {

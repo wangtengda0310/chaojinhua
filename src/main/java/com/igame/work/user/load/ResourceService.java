@@ -44,10 +44,14 @@ import java.util.Map;
  *
  */
 public class ResourceService extends EventService implements ISFSModule {
-	private QuestService questService;
-	private PlayerService playerService;
-	private MonsterService monsterService;
-	@Inject TurntableService turntableService;
+	@Inject private QuestService questService;
+	@Inject private PlayerService playerService;
+	@Inject private MonsterService monsterService;
+	@Inject private TurntableService turntableService;
+	@Inject private ShopService shopService;
+	@Inject private HeadService headService;
+	@Inject private IDFactory idFactory;
+	@Inject private VIPService vipService;
 
 	
 	//1 - 金币 2-钻石 3-体力 4-扫荡券 5-同化经验 6-同化点 7-星能 8-无尽积分 9-斗技积分 10-起源积分 11-部落积分 12-远征积分 13-悬赏积分 14-充值金额
@@ -68,9 +72,8 @@ public class ResourceService extends EventService implements ISFSModule {
 
     private static final int MONEY = 14;
 
-    
 
-    public static String getRewardString(RewardDto reward){
+	public static String getRewardString(RewardDto reward){
 
     	StringBuffer items = new StringBuffer();
 		if(reward.getGold() >0 ){
@@ -493,13 +496,13 @@ public class ResourceService extends EventService implements ISFSModule {
     	questService.onLevelUp(player);//任务开放
 
 		//判断是否解锁神秘商店
-		ShopService.ins().initMysticalShop(player);
+		shopService.initMysticalShop(player);
 		//判断是否解锁幸运大转盘
 		turntableService.initTurntable(player);
 		//触发解锁头像
-		HeadService.ins().unlockHead(player, HeadConstants.HEAD_TOUCH_LV);
+		headService.unlockHead(player, HeadConstants.HEAD_TOUCH_LV);
 		//触发解锁头像框
-		HeadService.ins().unlockHeadFrame(player, HeadConstants.HEAD_TOUCH_LV);
+		headService.unlockHeadFrame(player, HeadConstants.HEAD_TOUCH_LV);
 
     }
     
@@ -554,7 +557,7 @@ public class ResourceService extends EventService implements ISFSModule {
     		ret = 1;
     	}else{
     		for(int i = 0;i < count;i++){
-    			Monster m = new Monster(player,IDFactory.ins().getNewIdMonster(player.getSeverId()), player.getPlayerId(),  mt.getMonster_hp(), 1,mt.getMonster_id());
+    			Monster m = new Monster(player,idFactory.getNewIdMonster(player.getSeverId()), player.getPlayerId(),  mt.getMonster_hp(), 1,mt.getMonster_id());
             	player.getMonsters().put(m.getObjectId(), m);
             	m.reCalculate(player, true);
             	ls.add(m);
@@ -569,7 +572,7 @@ public class ResourceService extends EventService implements ISFSModule {
     		monsterService.reCalMonsterExtPre(player,true);
     		questService.processTask(player, 16, count);
     		//触发解锁头像
-			HeadService.ins().unlockHead(player,HeadConstants.HEAD_TOUCH_MONSTER);
+			headService.unlockHead(player,HeadConstants.HEAD_TOUCH_MONSTER);
     	}
 
     	if(send){
@@ -847,7 +850,7 @@ public class ResourceService extends EventService implements ISFSModule {
 		GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 				+"#act:addRes"+"#stype:" + MONEY + "#count:"+value);
 
-		boolean flag = VIPService.ins().addVipLv(player);
+		boolean flag = vipService.addVipLv(player);
 		if (flag){
 			MessageUtil.notifyVipPrivilegesChange(player);
 		}

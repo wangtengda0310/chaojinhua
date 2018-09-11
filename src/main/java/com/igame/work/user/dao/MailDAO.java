@@ -18,13 +18,6 @@ import java.util.Map;
  */
 public class MailDAO extends AbsDao {
 
-    private static final MailDAO domain = new MailDAO();
-
-    public static final MailDAO ins() {
-        return domain;
-    }
-    
-
     /**
      * 查询
      */

@@ -28,6 +28,9 @@ public class FriendAddHandler extends ReconnectedHandler {
 
     private static final int max = 20;
     @Inject private FriendDAO dao;
+    @Inject private FriendService friendService;
+    @Inject private SessionManager sessionManager;
+    @Inject private PlayerCacheService playerCacheService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -46,8 +49,8 @@ public class FriendAddHandler extends ReconnectedHandler {
         }
 
         //判断对方是否存在
-        Player reqPlayer = SessionManager.ins().getSessionByPlayerId(playerId);
-        Player reqPlayerCache = PlayerCacheService.getPlayerById(playerId);
+        Player reqPlayer = sessionManager.getSessionByPlayerId(playerId);
+        Player reqPlayerCache = playerCacheService.getPlayerById(playerId);
         if (reqPlayer == null && reqPlayerCache == null){
             return error(ErrorCode.ERROR);
         }
@@ -93,7 +96,7 @@ public class FriendAddHandler extends ReconnectedHandler {
         }
 
         //添加好友请求
-        FriendService.ins().addReqFriend(player, playerId);
+        friendService.addReqFriend(player, playerId);
 
         vo.addData("state",FRIEND_STATE_SUCC);
         return vo;

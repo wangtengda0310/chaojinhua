@@ -11,13 +11,6 @@ import org.mongodb.morphia.query.UpdateOperations;
  */
 public class PlayerMessageDAO extends AbsDao {
 
-    private static final PlayerMessageDAO domain = new PlayerMessageDAO();
-
-    public static PlayerMessageDAO ins() {
-        return domain;
-    }
-
-
     /**
      * 获取某人的私聊记录
      */

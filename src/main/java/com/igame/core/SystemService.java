@@ -1,6 +1,7 @@
 package com.igame.core;
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
@@ -19,6 +20,11 @@ import org.apache.commons.beanutils.BeanUtils;
 import java.util.List;
 
 public class SystemService extends EventService implements ISFSModule, TimeListener {
+    @Inject private FriendService friendService;
+    @Inject private VIPService vipService;
+    @Inject private SessionManager sessionManager;
+    @Inject private SystemServiceDAO systemServiceDAO;
+
     @Override
     public void zero() {
 
@@ -33,7 +39,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
     }
 
     private void resetOnline(){
-        SessionManager.ins().getSessions().values()
+        sessionManager.getSessions().values()
                 .forEach(player->resetOnce(player,true));
     }
 
@@ -108,16 +114,16 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
         player.setBallisticCount(0);
 
         //重置好友 体力领取次数与探索加速次数
-        FriendService.ins().zero(player);
+        friendService.zero(player);
 
         //重置玩家会员特权
-        VIPService.ins().zero(player);
+        vipService.zero(player);
 
         //重置玩家当日剩余挑战次数
         try {
             BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
         } catch (Exception e) {
-            ExceptionLog.error("SystemServiceDto.ins().resetOnce.resetCount failed");
+            ExceptionLog.error("systemServiceDto.resetOnce.resetCount failed");
             e.printStackTrace();
         }
 
@@ -132,14 +138,14 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
 
     @Override
     public void init(){
-        dto = SystemServiceDAO.ins().loadData();
+        dto = systemServiceDAO.loadData();
         if (dto == null) {
             dto = new SystemServiceDto();
         }
     }
 
     private void saveData(){
-        SystemServiceDAO.ins().update(dto);
+        systemServiceDAO.update(dto);
     }
 
     public void destroy() {

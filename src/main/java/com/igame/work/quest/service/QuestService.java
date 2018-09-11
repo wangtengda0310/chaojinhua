@@ -2,9 +2,10 @@ package com.igame.work.quest.service;
 
 import com.google.common.collect.Lists;
 import com.igame.core.ISFSModule;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
+import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.monster.dto.Gods;
@@ -25,8 +26,9 @@ import java.util.Map;
  *
  */
 public class QuestService implements ISFSModule {
-	private ResourceService resourceService;
-	private QuestService questService;
+	@Inject private QuestDAO questDAO;
+	@Inject private ResourceService resourceService;
+	@Inject private QuestService questService;
 
 	/**
 	 * 检测玩家任务
@@ -341,7 +343,7 @@ public class QuestService implements ISFSModule {
 	}
 
 
-	public static void loadPlayer(Player player, int serverId) {
-		QuestDAO.ins().getByPlayer(player);
+	public void loadPlayer(Player player, int serverId) {
+		questDAO.getByPlayer(player);
 	}
 }

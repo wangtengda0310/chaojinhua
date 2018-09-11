@@ -1,6 +1,8 @@
 package com.igame.core.event;
 
+import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.work.PlayerEvents;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.core.ISFSEvent;
@@ -17,14 +19,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class EventManager {
-    public static Map<String, PlayerEventObserver> playerEventObservers = new HashMap<>();
-    public static Map<String, ServiceEventListener> serviceEventListeners = new HashMap<>();
+public class EventManager implements ISFSModule {
+    @Inject SessionManager sessionManager;
+
+    public Map<String, PlayerEventObserver> playerEventObservers = new HashMap<>();
+    public Map<String, ServiceEventListener> serviceEventListeners = new HashMap<>();
 
     /**
      * 接受用户相关的事件并预处理后传给GameHandler.PlayerEventObserver
      */
-    public static BaseServerEventHandler playerEventObserver() {
+    public BaseServerEventHandler playerEventObserver() {
         return new BaseServerEventHandler() {
             @Override
             public void handleServerEvent(ISFSEvent isfsEvent) {
@@ -47,7 +51,7 @@ public class EventManager {
                                 PlayerEvents eventType = (PlayerEvents) ((ISFSObject) value).getClass("eventType");
                                 Object param = ((ISFSObject) value).getClass("event");
 
-                                Player player = SessionManager.ins().getSession(Long.parseLong(user.getName()));
+                                Player player = sessionManager.getSession(Long.parseLong(user.getName()));
                                 if (player == null) {
                                     // TODO 是否加载缓存或数据库？
                                 }
@@ -70,7 +74,7 @@ public class EventManager {
         };
     }
 
-    public static BaseServerEventHandler serviceEventListener() {
+    public BaseServerEventHandler serviceEventListener() {
         return new BaseServerEventHandler() {
             @Override
             public void handleServerEvent(ISFSEvent isfsEvent) {
@@ -105,8 +109,13 @@ public class EventManager {
         };
     }
 
-    public static void clearAllListeners() {
+    public void clearAllListeners() {
         playerEventObservers.clear();
         serviceEventListeners.clear();
+    }
+
+    @Override
+    public void destroy() {
+        clearAllListeners();
     }
 }

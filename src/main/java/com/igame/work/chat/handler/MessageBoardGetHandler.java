@@ -1,5 +1,6 @@
 package com.igame.work.chat.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
@@ -20,6 +21,8 @@ import java.util.List;
  */
 public class MessageBoardGetHandler extends ReconnectedHandler {
 
+    @Inject private MessageBoardService messageBoardService;
+
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -36,12 +39,12 @@ public class MessageBoardGetHandler extends ReconnectedHandler {
         vo.addData("id", id);
         vo.addData("difficulty", difficulty);
 
-        String sType = MessageBoardService.ins().getSType(type,id,difficulty);
+        String sType = messageBoardService.getSType(type,id,difficulty);
         if (sType.isEmpty()){
             return error(ErrorCode.PARAMS_INVALID);
         }
 
-        List<MessageBoard> messageBoards = MessageBoardService.ins().getMessageBoard(player,sType);
+        List<MessageBoard> messageBoards = messageBoardService.getMessageBoard(player,sType);
 
         //根据赞同数取前三
         List<MessageBoard> voList = new ArrayList<>(getHot(messageBoards, 3));
