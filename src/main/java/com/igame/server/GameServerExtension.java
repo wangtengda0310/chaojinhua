@@ -1,7 +1,6 @@
 package com.igame.server;
 
 import com.igame.core.ISFSModule;
-import com.igame.core.SystemService;
 import com.igame.core.data.DataManager;
 import com.igame.core.db.DBManager;
 import com.igame.core.di.Inject;
@@ -12,14 +11,6 @@ import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.core.quartz.TimeListener;
 import com.igame.sfsAdaptor.EventDispatcherHandler;
-import com.igame.work.chat.service.PublicMessageService;
-import com.igame.work.checkpoint.baozouShike.BallisticService;
-import com.igame.work.checkpoint.mingyunZhiMen.GateService;
-import com.igame.work.fight.arena.ArenaService;
-import com.igame.work.fight.service.FightEffectService;
-import com.igame.work.system.RankService;
-import com.igame.work.user.service.PlayerCacheService;
-import com.igame.work.user.service.RobotService;
 import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.extensions.IClientRequestHandler;
 import com.smartfoxserver.v2.extensions.SFSExtension;
@@ -42,47 +33,22 @@ public class GameServerExtension extends SFSExtension {
 
 	public static DBManager dbManager;
 
-	public Map<Class, Object> services = new HashMap<>();
+	public Map<Class, Object> components = new HashMap<>();
 	private Set<ISFSModule> modules = new HashSet<>();
 
-	/**
-	 * 加载ISFSModule的实例
-	 */
-	private <T extends ISFSModule> T initService(Class<T> clazz) {
-		try {
-			T service = clazz.newInstance();
-
-			if (ISFSModule.class.isAssignableFrom(clazz)) {
-				injectObjectField(service);
-				service.init(this);
-				services.put(clazz, service);
-			}
-
-			if (TimeListener.class.isAssignableFrom(clazz)) {
-				JobManager.addJobListener((TimeListener) service);
-			}
-
-			return service;
-		} catch (InstantiationException | IllegalAccessException e) {
-			getLogger().error("init service {} error", clazz.getSimpleName(), e);
-		}
-
-		return null;
-	}
-
-	private <T> T injectObjectField(T service) {
+	private <T> T injectObjectField(T needInjectField) {
 
 		try {
-			doReflact(service);
+			doReflact(needInjectField);
 
-			return service;
+			return needInjectField;
 		} catch (InstantiationException | IllegalAccessException e) {
-			getLogger().error("init service {} error", service, e);
+			getLogger().error("init {} error", needInjectField, e);
 			throw new Error(e);
 		}
 	}
 
-	private <T extends IClientRequestHandler> T injectClassField(Class<T> clazz) {
+	private <T> T injectHandlerClassField(Class<T> clazz) {
 
 		try {
 			T handler = clazz.newInstance();
@@ -91,49 +57,87 @@ public class GameServerExtension extends SFSExtension {
 
 			return handler;
 		} catch (InstantiationException | IllegalAccessException e) {
-			getLogger().error("init handler {} error", clazz.getSimpleName(), e);
+			getLogger().error("init {} error", clazz.getSimpleName(), e);
 			throw new Error(e);
 		}
 
 	}
 
-	private <T> void doReflact(T service) throws IllegalAccessException, InstantiationException {
-		for (Field field : service.getClass().getDeclaredFields()) {
-			field.setAccessible(true);
-			if (field.get(service) != null) {
-				continue;
-			}
-			Class<?> fieldClass = field.getType();
-			if (!field.isAnnotationPresent(Inject.class)
-					&& !Injectable.class.isAssignableFrom(fieldClass)) {
-				continue;
-			}
+	private <T> void doReflact(T component) throws IllegalAccessException, InstantiationException {
+		Class<?> aClass = component.getClass();
 
-			if (services.containsKey(fieldClass)) {
-				field.set(service, services.get(fieldClass));
-			} else {
-				Object s = fieldClass.newInstance();
-				services.put(fieldClass, s);
-				injectObjectField(s);
-				if (s instanceof ISFSModule) {
-					modules.add((ISFSModule) s);
-				}
-				field.set(service, s);
-			}
+        for (Field field : aClass.getDeclaredFields()) {
+            field.setAccessible(true);
+            if (field.get(component) != null) {
+                continue;
+            }
+            Class<?> fieldClass = field.getType();
+            if (!field.isAnnotationPresent(Inject.class)
+                    && !Injectable.class.isAssignableFrom(fieldClass)) {
+                continue;
+            }
+
+            if (components.containsKey(fieldClass)) {
+                field.set(component, components.get(fieldClass));	// 递归出口
+            } else {
+                Object fieldObject = fieldClass.newInstance();
+                components.put(fieldClass, fieldObject); 			// 需要先放入components 不然下面递归会死循环
+                injectObjectField(fieldObject);			 			// 这里递归了，如果上面没先放进components会死循环
+
+                if (fieldObject instanceof ISFSModule) {
+                    modules.add((ISFSModule) fieldObject);
+                }
+
+                field.set(component, fieldObject);
+            }
+        }
+
+        if (components.containsKey(aClass)) {	// 递归出口
+            return;
+        }
+
+		// 好像应该放在field后面
+		components.put(aClass, component); 	// 需要先放入components 不然下面递归会死循环
+		injectObjectField(component);		// 这里递归了，如果上面没先放进components会死循环
+
+		if (component instanceof ISFSModule) {	// todo observer
+			((ISFSModule)component).init(this);
 		}
+
+		if (TimeListener.class.isAssignableFrom(aClass)) {	// todo observer
+			JobManager.addJobListener((TimeListener) component);
+		}
+
 	}
 
 	private void register(int requestId, Class<? extends IClientRequestHandler> clazz) {
-		addRequestHandler(String.valueOf(String.valueOf(requestId)), injectClassField(clazz));
+		addRequestHandler(String.valueOf(String.valueOf(requestId)), injectHandlerClassField(clazz));
 	}
 
 	/**注册SmartFoxServer的handler并注入ISFSModule属性*/
 	private void register(Class<? extends BaseHandler> clazz) {
-		BaseHandler handler = injectClassField(clazz);
+		BaseHandler handler = injectHandlerClassField(clazz);
 		addRequestHandler(String.valueOf(handler.protocolId()), handler);
 	}
 
 	private HashSet<Class> classesInJarFile = new HashSet<>();
+
+	private Map<Class,Set<Class>> classOfInterface = new HashMap<>();
+
+	private void summarize(Class thisClass, Class superClass) {
+		Stream.concat(Stream.of(superClass, superClass.getSuperclass()), Arrays.stream(superClass.getInterfaces()))
+				.filter(Objects::nonNull)
+				.forEach(i->classOfInterface.computeIfAbsent(i,interfaceClass->new HashSet<>()).add(thisClass));
+
+        if (!Modifier.isAbstract(thisClass.getModifiers())) {
+            Stream.concat(Stream.of(superClass.getSuperclass()), Arrays.stream(superClass.getInterfaces()))
+                    .filter(Objects::nonNull)
+                    .forEach(i->summarize(thisClass,i));
+        }
+	}
+	private void summarize() {
+		classesInJarFile.forEach(c->summarize(c,c));
+	}
 
 	public GameServerExtension() {
 		try {
@@ -158,42 +162,14 @@ public class GameServerExtension extends SFSExtension {
 		}
 	}
 
-	private Map<Class,Set<Class>> classOfInterface = new HashMap<>();
-
-	private void summarize(Class thisClass, Class superClass) {
-		if (Modifier.isAbstract(thisClass.getModifiers())) {
-			return;
-		}
-		Stream.concat(Stream.of(superClass, superClass.getSuperclass()), Arrays.stream(superClass.getInterfaces()))
-				.filter(Objects::nonNull)
-				.forEach(i->classOfInterface.computeIfAbsent(i,interfaceClass->new HashSet<>()).add(thisClass));
-
-		Stream.concat(Stream.of(superClass.getSuperclass()), Arrays.stream(superClass.getInterfaces()))
-				.filter(Objects::nonNull)
-				.forEach(i->summarize(thisClass,i));
-	}
-	private void summarize() {
-		classesInJarFile.forEach(c->summarize(c,c));
-	}
-
 	@Override
 	public void init() {
 		try {
 			DataManager dataManager = new DataManager();
 			dataManager.load("resource/");
 
-			dbManager = initService(DBManager.class);
-			initService(SystemService.class);
-			initService(RankService.class);
-			initService(RobotService.class);
-			initService(ArenaService.class);
-			initService(BallisticService.class);
-			initService(PlayerCacheService.class);
-			initService(PublicMessageService.class);
-			initService(FightEffectService.class);
-			initService(GateService.class);
-
-			initService(JobManager.class);
+			dbManager = new DBManager();
+			injectObjectField(dbManager);
 
 			EventManager eventManager = new EventManager();
 			injectObjectField(eventManager);

@@ -65,7 +65,7 @@ import java.util.*;
  * @author Marcus.Z
  *
  */
-public class PlayerHandler extends BaseHandler{
+public class PlayerHandler extends BaseHandler {
 
 	@Inject private ActivityService activityService;
 	@Inject private ArenaService robotService;

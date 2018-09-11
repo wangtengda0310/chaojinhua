@@ -1,10 +1,10 @@
 package com.igame.work.friend.handler;
 
-import com.igame.core.di.Inject;
-import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.service.FriendService;
@@ -25,7 +25,8 @@ import java.util.Map;
 public class FriendExploreHandler extends ReconnectedHandler {
 
     @Inject private FriendService friendService;
-    @Inject private PlayerDAO playerDAO;
+    @Inject
+    private PlayerDAO playerDAO;
     @Inject private SessionManager sessionManager;
 
     @Override

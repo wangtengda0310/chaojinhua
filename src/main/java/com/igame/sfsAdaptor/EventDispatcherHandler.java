@@ -22,7 +22,7 @@ import java.util.Collections;
 public abstract class EventDispatcherHandler extends BaseServerEventHandler implements ISFSModule, GameHandler {
     @Override
     public void init() {
-        EventManager eventManager = (EventManager) extensionHolder.SFSExtension.services.get(EventManager.class);
+        EventManager eventManager = (EventManager) extensionHolder.SFSExtension.components.get(EventManager.class);
 
         PlayerEventObserver playerEventObserver = playerObserver();
         if (playerEventObserver != null) {

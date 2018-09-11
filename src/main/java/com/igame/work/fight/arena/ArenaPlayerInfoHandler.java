@@ -28,7 +28,8 @@ import java.util.Map;
  */
 public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 
-	@Inject private ArenaService arenaService;
+	@Inject
+	private ArenaService arenaService;
 	@Inject private PlayerDAO playerDAO;
 	@Inject private RobotService robotService;
 	@Inject private MonsterDAO monsterDAO;
