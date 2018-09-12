@@ -1,6 +1,6 @@
 package com.igame.work.activity;
 
-import com.igame.work.activity.sign.SignConfig;
+import com.igame.work.sign.SignConfig;
 
 public class ActivityDataManager {
     /**

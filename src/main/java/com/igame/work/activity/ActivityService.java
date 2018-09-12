@@ -2,17 +2,22 @@ package com.igame.work.activity;
 
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
+import com.igame.core.event.EventService;
+import com.igame.core.event.EventType;
+import com.igame.core.event.PlayerEventObserver;
+import com.igame.core.log.ExceptionLog;
 import com.igame.util.DateUtil;
+import com.igame.work.PlayerEvents;
+import com.igame.work.activity.condition.Conditions;
 import com.igame.work.activity.denglu.DengluService;
-import com.igame.work.activity.meiriLiangfa.MeiriLiangfaData;
-import com.igame.work.activity.sign.SignConfigTemplate;
-import com.igame.work.activity.sign.SignData;
-import com.igame.work.activity.tansuoZhiLu.TanSuoZhiLuActivityData;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.load.ResourceService;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.igame.work.activity.condition.Conditions.*;
 
 /**
  * activity_type配置1的时候time_limit可能是一个正数 也可能是-1
@@ -32,47 +37,122 @@ import java.util.Map;
  * <br/>
  * 所有活动记录一下配置的开始时间戳，如果时间戳有变化就当做是新活动
  */
-public class ActivityService implements ISFSModule {
+public class ActivityService extends EventService implements ISFSModule {
+    @Inject public ResourceService resourceService;
     @Inject private DengluService dengluService;
     @Inject private GMService gMService;
+    @Inject private ActivityDAO dao;
 
-    public void loadPlayer(Player player) {
-        if (player.getActivityData() == null) {
-            player.setActivityData(new PlayerActivityData());
-        }
-        if (player.getActivityData().getSign() == null) {
-            player.getActivityData().setSign(new SignData());
-        }
+    @Override
+    protected PlayerEventObserver playerObserver() {
+        return new PlayerEventObserver() {
 
-        String[] signDataSplit = player.getActivityData().getSign().getSignData().split(",");
-        int round = Integer.parseInt(signDataSplit[0]);
-        int signedDays = Integer.parseInt(signDataSplit[1]);
-        String lastSignDate = signDataSplit[2];
+            private PlayerEvents[] playerEvents;
 
-        if (!DateUtil.formatToday().equals(lastSignDate)) {
-            // 昨天已经签满上个周期，今天应该给客户端的数据是新的周期签到0天，今天刚签满这个周期则显示全部签到，累签数据保留到玩家签到操作为止
-            SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(round);
-            String[] split = template.getRewardData().split(";");
-            if (signedDays >= split.length) {
-                signedDays = 0;
-                round += 1;
-                if (round > ActivityDataManager.signConfig.size()) {
-                    round = 1;
-                }
-                player.getActivityData().getSign().setSignData(round + "," + signedDays + "," + lastSignDate);
+            @Override
+            public EventType[] interestedTypes() {
+                playerEvents = new PlayerEvents[]{PlayerEvents.LEVEL_UP
+                        , PlayerEvents.CONSUME_GOLD
+                        , PlayerEvents.CONSUME_DIAMOND
+                        , PlayerEvents.RECHARGE
+                , PlayerEvents.GOT_MONSTER
+                , PlayerEvents.DRAW_BY_DIAMOND};
+                return playerEvents;
             }
+
+            @Override
+            public void observe(Player player, EventType eventType, Object event) {
+                Map<Integer, List<ActivityConfigTemplate>> collect = ActivityConfig.its.stream()
+                        .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
+                collect.forEach((key, value) -> {
+
+                    ActivityDto activityData = dao.getActivityById(key);
+                    if (activityData == null) {
+                        activityData = new ActivityDto();
+                    }
+                    ActivityOrderDto orderData = activityData.getOrderData().computeIfAbsent(player.getPlayerId(), playerId -> {
+                        ActivityOrderDto orderData1 = new ActivityOrderDto();
+                        orderData1.state = new int[value.size()];
+                        return orderData1;
+                    });
+                    value.forEach(template -> {
+
+                        if (orderData.state[template.getOrder() - 1] == 2) {    // 已经领取奖励
+                            return;
+                        }
+
+                        if (PlayerEvents.LEVEL_UP == eventType) {
+                            int[] levelInfo = (int[]) event;
+                            if (levelInfo[1]>=Integer.parseInt(template.getGet_value()))
+                                orderData.state[template.getOrder()-1] = 1;
+                        }
+                        if (PlayerEvents.CONSUME_DIAMOND == eventType) {
+                            Object[] eventInfo = (Object[]) event;
+                            long eventMillis = (long) eventInfo[0];
+                            int amount = (int) eventInfo[1];
+                            Map<Long, Integer> records = (Map<Long, Integer>) orderData.recrod.get(template.getOrder());
+                            records.put(eventMillis, amount);
+                            // todo 这里更新state还是1003协议toClientData的时候更新
+                        }
+                        if (PlayerEvents.GOT_MONSTER == eventType) {
+                            int monsterId = (int) event;
+                            if (monsterId==Integer.parseInt(template.getGet_value()))
+                                orderData.state[template.getOrder()-1] = 1;
+                        }
+                        if (PlayerEvents.DRAW_BY_DIAMOND == eventType) {
+                            int times = (int) orderData.recrod.get(template.getOrder());
+                            orderData.recrod.put(template.getOrder(), times + 1);
+                            if (times + 1>=Integer.parseInt(template.getGet_value()))
+                                orderData.state[template.getOrder()-1] = 1;
+                        }
+                    });
+                });
+            }
+        };
+    }
+
+    private int[] initPlayerActivityData(Player player, List<ActivityConfigTemplate> value) {
+        int[] data = new int[value.size()];
+        Date now = new Date();
+        for (ActivityConfigTemplate template : value) {
+            int state = 0;
+            try {
+                if (!template.isActive(player, now)) {
+                    state = 0;  // todo 活动过期是否新定义一个状态值
+                } else if (template.getGet_limit() == NO_LIMIT.type()) {
+                    state = 1;
+                } else if (template.getGet_limit() == LEVEL.type()) {
+                    state = player.getPlayerLevel()>=Integer.valueOf(template.getGet_value())?1:0;
+                } else if (template.getGet_limit() == TIME_INTERVAL.type()) {
+                    // todo 每日两发做在这
+                } else if (template.getGet_limit() == CONSUME_DIAMOND.type()) {
+                    // todo 记录活动期间内的钻石消耗
+                } else if (template.getGet_limit() == CONSUME_GOLD.type()) {
+
+                } else if (template.getGet_limit() == TURNTABLE_TIMES.type()) {
+
+                } else if (template.getGet_limit() == ARENA_WIN_TIMES.type()) {
+
+                } else if (template.getGet_limit() == ARENA_TIMES.type()) {
+
+                } else if (template.getGet_limit() == ADVANCE_CARD.type()) {
+                    // todo 2057 event
+                } else if (template.getGet_limit() == GOT_MONSTER.type()) {
+                    // todo monster event
+                } else if (template.getGet_limit() == GOLD_LEVEL.type()) {
+                    if (player.getTeams().values().stream().anyMatch(team -> player.getGods().get(team.getTeamGod()).getGodsLevel() >= Integer.valueOf(template.getGet_value()))) {
+                        state = 1;
+                    }
+                } else if (template.getGet_limit() == RECHARGE_DIAMOND.type()) {
+                    // todo 终极馈赠
+                }
+            } catch (Exception e) {
+                ExceptionLog.error("初始化玩家活动数据错误", e);
+            }
+            data[template.getOrder()-1] = state;
         }
 
-        if (player.getActivityData().getMeiriLiangfa() == null) {
-            player.getActivityData().setMeiriLiangfa(new MeiriLiangfaData());
-        }
-
-        if (player.getActivityData().getTansuo() == null) {
-            player.getActivityData().setTansuo(new TanSuoZhiLuActivityData());
-        }
-
-        // 七天登录活动
-        dengluService.loadPlayer(player);
+        return data;
     }
 
     /**
@@ -81,8 +161,8 @@ public class ActivityService implements ISFSModule {
     public Map<String, Object> clientData(Player player) {
         Map<String, Object> map = new HashMap<>();
 
-        String totalSign = player.getActivityData().getSign().getTotalSign();
-        String[] signDataSplit = player.getActivityData().getSign().getSignData().split(",");
+        String totalSign = player.getSign().getTotalSign();
+        String[] signDataSplit = player.getSign().getSignData().split(",");
 
         Map<String, Object> signData = new HashMap<>();
 
@@ -92,109 +172,64 @@ public class ActivityService implements ISFSModule {
         signData.put("canSign", DateUtil.formatToday().equals(signDataSplit[2]) ? 0 : 1);
         map.put("sign", signData);
 
-        map.put("meiriLiangfa", player.getActivityData().getMeiriLiangfa().clientData());
-
-        map.put("tansuoZhiLu", player.getActivityData().getTansuo().clientData(player));
-
         map.put("denglu", dengluService.clientData(player));
+
+//        map.put("tansuoZhiLu", activityData.getTansuo().clientData(player));
+
+        Map<Integer, List<ActivityConfigTemplate>> collect = ActivityConfig.its.stream()
+                .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
+        collect.entrySet().stream()
+                .filter(entry->entry.getValue().stream().anyMatch(t->t.getGift_bag()==2))   // 暂时把type为2的协议单独拎出来 后面在吧所有活动数据改掉
+                .forEach(entry->{
+                    ActivityDto activityData = dao.getActivityById(entry.getKey());
+                    int[] orderData = activityData.getOrderData().get(player.getPlayerId()).state;
+                    if (orderData==null) {
+                        orderData=initPlayerActivityData(player, entry.getValue());
+                    } else if(orderData.length!=entry.getValue().size()) {
+                        int[] newOrderData = new int[entry.getValue().size()];
+                        System.arraycopy(orderData, 0,newOrderData,0,Math.min(newOrderData.length, orderData.length));
+                        orderData = newOrderData;
+                    }
+
+                    map.put(String.valueOf(entry.getKey()), join(orderData));
+                });
         return map;
     }
 
-    /**
-     * 今天签到
-     */
-    public Map<String, Object> signToday(Player player) {
-        SignData playerSignData = player.getActivityData().getSign();
-        String today = DateUtil.formatToday();
-        String signData = playerSignData.getSignData();
-        if (signData == null || "".equals(signData)) {
-            playerSignData.setSignData("1,1," + today);
-            SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
-            String reward = template.getRewardData().split(";")[0];
-            gMService.processGM(player, reward);
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("canSign", 0);
-            map.put("totalSign", playerSignData.getTotalSign());
-            return map;
-        } else {
-            String[] data = signData.split(",");
-            if (today.equals(data[2])) {
-                return null;
-            } else {
-                // 跨周期重置数据测造作在登录时已经完成
-                int round = Integer.parseInt(data[0]);
-                int signed = Integer.parseInt(data[1]);
-
-                SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(round);
-                String[] split = template.getRewardData().split(";");
-                String reward = split[signed];
-
-                signed += 1;
-
-                playerSignData.setSignData(round + "," + signed + "," + today);
-                if (signed == 1) {
-                    playerSignData.setTotalSign("0,0,0,0");
-                }
-
-                gMService.processGM(player, reward);
-
-                Map<String, Object> map = new HashMap<>();
-                map.put("cansign", 0);
-                map.put("totalSign", playerSignData.getTotalSign());
-                return map;
-            }
-        }
+    private String join(int[] array) {  // todo move to util
+        return Arrays.stream(array).mapToObj(String::valueOf).collect(Collectors.joining(","));
     }
 
-    /**
-     * 累签
-     */
+    public void reward(Player player,int activityId, int order) {
+        Date now = new Date();
+        ActivityConfig.its.stream()
+                .filter(c -> c.getActivity_sign() == activityId && c.getOrder() == order)
+                .forEach(c->{
+                    ActivityDto activityData = dao.getActivityById(activityId);
+                    if (activityData == null) {
+                        return;
+                    }
+                    ActivityOrderDto orderData = activityData.getOrderData().get(player.getPlayerId());
+                    if (orderData.state[order-1]!=1) {
+                        return;
+                    }
+                    if (!c.isActive(player, now)) {
+                        return;
+                    }
+                    boolean canReceive = false;
+                    if (c.getGift_bag() == 3) {
+                        canReceive = dengluService.reward(player,c)==0;
+                    } else {
+                        canReceive = Arrays.stream(Conditions.values())
+                                .filter(e->e.type()==c.getGet_limit())
+                                .anyMatch(e->e.reward(player,c,orderData, this)==0);
+                    }
 
-    public Map<String, Object> signTotal(Player player, int index) {
-        if (index < 1 || index > 4) {  // 1 3天累签， 2 7天累签， 3 15天累签， 4 30天累签
-            return null;
-        }
-
-        SignData playerSignData = player.getActivityData().getSign();
-        String signData = playerSignData.getSignData();
-
-        if (signData == null || "".equals(signData)) {
-            return null;
-        }
-        String[] data = signData.split(",");
-        int signedDays = Integer.parseInt(data[1]);
-        if ((index == 4 && signedDays < 30) || (index == 3 && signedDays < 15) || (index == 2 && signedDays < 7) || (index == 1 && signedDays < 3)) {
-            return null;
-        }
-
-        String totalSign = playerSignData.getTotalSign();
-
-        if (totalSign == null || totalSign.split(",").length == 0) {
-            playerSignData.setTotalSign("0,0,0,0");
-        }
-
-        String[] totalSigns = playerSignData.getTotalSign().split(",");
-        totalSigns[index - 1] = "1";
-        playerSignData.setTotalSign(totalSign = String.join(",", totalSigns));
-
-        SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
-        if (index == 1) {
-            gMService.processGM(player, template.getTotalSign3());
-        }
-        if (index == 2) {
-            gMService.processGM(player, template.getTotalSign7());
-        }
-        if (index == 3) {
-            gMService.processGM(player, template.getTotalSign15());
-        }
-        if (index == 4) {
-            gMService.processGM(player, template.getTotalSign30());
-        }
-        Map<String, Object> map = new HashMap<>();
-        map.put("round", Integer.parseInt(data[0]));
-        map.put("signed", Integer.parseInt(data[1]));
-        map.put("totalSign", totalSign);
-        return map;
+                    if (canReceive) {
+                        gMService.processGM(player, c.getActivity_drop());
+                    }
+                });
     }
+
+    // todo 手动关闭指定活动 活动领奖状态判断是否关闭
 }

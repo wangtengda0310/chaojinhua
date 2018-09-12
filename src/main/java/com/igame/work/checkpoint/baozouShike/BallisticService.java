@@ -48,7 +48,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
             }
 
             @Override
-            public void observe(Player eventOwner, Object event) {
+            public void observe(Player eventOwner, EventType eventType, Object event) {
                 updateRank(eventOwner, (int) event);
             }
         };

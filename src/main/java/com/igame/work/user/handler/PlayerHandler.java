@@ -17,6 +17,8 @@ import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.PlayerEvents;
 import com.igame.work.activity.ActivityService;
+import com.igame.work.activity.denglu.DengluService;
+import com.igame.work.sign.SignService;
 import com.igame.work.chat.dao.PlayerMessageDAO;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
@@ -42,7 +44,7 @@ import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.shop.service.ShopService;
-import com.igame.work.shopActivity.ShopActivityService;
+import com.igame.work.activitylimit.ShopActivityService;
 import com.igame.work.turntable.dto.Turntable;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dao.PlayerDAO;
@@ -90,6 +92,8 @@ public class PlayerHandler extends BaseHandler {
 	@Inject private ComputeFightService computeFightService;
 	@Inject private SessionManager sessionManager;
 	@Inject private IDFactory idFactory;
+	@Inject private SignService signService;
+	@Inject private DengluService dengluService;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -186,7 +190,7 @@ public class PlayerHandler extends BaseHandler {
 		vo.addData("vipPrivileges",player.getVipPrivileges());
 		vo.addData("showActivities", activityService.clientData(player));
 		vo.addData("dateTime", DateUtil.formatClientDateTime(new Date()));
-		vo.addData("shopActivity",shopActivityService.clientData(player));
+		vo.addData("activitylimit",shopActivityService.clientData(player));
 		try {
 			json = mapper.writeValueAsString(vo);
 		} catch (JsonProcessingException e) {
@@ -387,12 +391,13 @@ public class PlayerHandler extends BaseHandler {
 
 		Turntable turntable = turntableService.getTurntable(player);
 		if (turntable != null && turntableService.needRealod(turntable.getLastUpdate()))
-			turntableService.reloadTurntable(player);
+			turntableService.reloadTurntable(player, turntable);
 
 		if(player.getLastNickname()!=null && !"".equals(player.getLastNickname())) {
 			player.setModifiedName(1);
 		}
-		activityService.loadPlayer(player);
+		signService.loadPlayer(player);		// todo event
+		dengluService.loadPlayer(player);	// todo event
 	}
 
 	private void calPlayerTimeRes(Player player){

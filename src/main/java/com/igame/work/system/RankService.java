@@ -63,7 +63,7 @@ public class RankService extends EventService implements ISFSModule, TimeListene
             }
 
             @Override
-            public void observe(Player player, Object event) {
+            public void observe(Player player, EventType eventType, Object event) {
                 if (player != null) {
                     //加入并刷新排行榜
                     setMRank(player);

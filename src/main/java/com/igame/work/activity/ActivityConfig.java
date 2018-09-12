@@ -3,8 +3,6 @@ package com.igame.work.activity;
 
 import com.google.common.collect.Maps;
 import com.igame.work.activity.denglu.DengluService;
-import com.igame.work.activity.meiriLiangfa.MeiriLiangfaData;
-import com.igame.work.activity.tansuoZhiLu.TanSuoZhiLuActivityData;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,8 +29,6 @@ public class ActivityConfig
 		its.forEach((c -> {
 			maps.put(c.getActivity_sign(), c);
 
-			MeiriLiangfaData.addActivityConfigTemplate(c);
-			TanSuoZhiLuActivityData.addActivityConfigTemplate(c);
 			DengluService.addActivityConfigTemplate(c);
 		}));
 	}

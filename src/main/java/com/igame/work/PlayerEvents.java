@@ -16,4 +16,7 @@ public enum PlayerEvents implements EventType {
     , CONSUME_GOLD
     , CONSUME_ITEM
     , OFF_LINE
+    , LEVEL_UP
+    , GOT_MONSTER
+    , DRAW_BY_DIAMOND
 }

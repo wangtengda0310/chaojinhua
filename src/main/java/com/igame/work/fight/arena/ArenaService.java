@@ -67,7 +67,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
             }
 
             @Override
-            public void observe(Player player, Object event) {
+            public void observe(Player player, EventType eventType, Object event) {
                 addPlayerRobotDto(player,false);
             }
         };

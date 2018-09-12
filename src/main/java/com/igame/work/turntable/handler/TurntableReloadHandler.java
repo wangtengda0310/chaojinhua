@@ -5,6 +5,7 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
+import com.igame.work.turntable.dto.Turntable;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
@@ -28,7 +29,8 @@ public class TurntableReloadHandler extends ReconnectedHandler {
         JSONObject jsonObject = JSONObject.fromObject(infor);
 
         //校验等级
-        if (player.getPlayerLevel() < 15 || turntableService.getTurntable(player) == null){
+        Turntable turntable = turntableService.getTurntable(player);
+        if (player.getPlayerLevel() < 15 || turntable == null){
             return error(ErrorCode.LEVEL_NOT);
         }
 
@@ -41,7 +43,7 @@ public class TurntableReloadHandler extends ReconnectedHandler {
         resourceService.addDiamond(player,-20);
 
         //刷新大转盘
-        turntableService.reloadTurntable(player);
+        turntableService.reloadTurntable(player, turntable);
 
         RetVO vo = new RetVO();
 

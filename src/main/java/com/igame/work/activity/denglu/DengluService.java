@@ -2,6 +2,7 @@ package com.igame.work.activity.denglu;
 
 import com.igame.core.di.Inject;
 import com.igame.util.DateUtil;
+import com.igame.work.ErrorCode;
 import com.igame.work.activity.ActivityConfigTemplate;
 import com.igame.work.user.dto.Player;
 
@@ -80,5 +81,41 @@ public class DengluService {
                     .collect(Collectors.joining(",")));
         });
         return dengluRecords;
+    }
+
+    /**
+     * @return errorCode
+     */
+    public int reward(Player player, ActivityConfigTemplate c) {
+
+        Integer activityId = c.getActivity_sign();
+
+        if (!DengluService.configs.containsKey(activityId)) {
+            return ErrorCode.ERROR;
+        }
+
+        Map<Integer, DengluDto> byPlayer = dengluDAO.getByPlayer(player.getPlayerId());
+        DengluDto dengluDto = byPlayer.get(activityId);
+
+        if (dengluDto == null) {
+            return ErrorCode.ERROR;
+        }
+
+        if (DengluService.configs.get(activityId) == null) {
+            return ErrorCode.ERROR;
+        }
+
+        int order = c.getOrder();
+        if (!DengluService.configs.get(activityId).get(order-1).isActive(player, new Date())) {
+            return ErrorCode.CAN_NOT_RECEIVE;
+        }
+
+        if (dengluDto.getRecord()[order - 1]!=1) {
+            return ErrorCode.PACK_PURCHASED;
+        }
+        dengluDto.getRecord()[order - 1] = 2;
+        dengluDAO.save(dengluDto);
+
+        return 0;
     }
 }

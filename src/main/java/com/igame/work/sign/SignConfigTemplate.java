@@ -1,4 +1,4 @@
-package com.igame.work.activity.sign;
+package com.igame.work.sign;
 
 
 

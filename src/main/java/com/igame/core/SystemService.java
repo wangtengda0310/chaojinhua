@@ -54,7 +54,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
             }
 
             @Override
-            public void observe(Player player, Object event) {
+            public void observe(Player player, EventType eventType, Object event) {
                 resetOnce(player,false);//0点执行
             }
         };

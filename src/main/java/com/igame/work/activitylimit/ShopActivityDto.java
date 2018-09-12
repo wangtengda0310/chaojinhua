@@ -1,4 +1,4 @@
-package com.igame.work.shopActivity;
+package com.igame.work.activitylimit;
 
 import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;

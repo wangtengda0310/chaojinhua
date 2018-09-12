@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.igame.util.MyUtil;
-import com.igame.work.activity.PlayerActivityData;
+import com.igame.work.sign.SignData;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.checkpoint.mingyunZhiMen.FateSelfData;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
@@ -145,7 +145,8 @@ public class Player extends PlayerDto {
     @JsonIgnore
     private String lastNickname="";//修改前的昵称
 
-
+    @JsonIgnore
+    private SignData sign;//签到数据
 
 
 
@@ -315,17 +316,6 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     private Map<String, Object> lastBattleParam;//上次战斗的关卡参数
-
-    @JsonIgnore
-    private PlayerActivityData activityData;
-
-    public PlayerActivityData getActivityData() {
-        return activityData;
-    }
-
-    public void setActivityData(PlayerActivityData activityData) {
-        this.activityData = activityData;
-    }
 
     public User getUser() {
         return user;
@@ -870,6 +860,15 @@ public class Player extends PlayerDto {
     public void setModifiedName(int modifiedName) {
         this.modifiedName = modifiedName;
     }
+
+    public SignData getSign() {
+        return sign;
+    }
+
+    public void setSign(SignData sign) {
+        this.sign = sign;
+    }
+
     /**
      *  -----------------------       自定义方法   -----------------------------------------------
      */

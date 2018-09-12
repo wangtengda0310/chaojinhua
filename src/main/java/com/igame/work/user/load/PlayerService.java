@@ -313,7 +313,7 @@ public class PlayerService extends EventService implements ISFSModule {
             }
 
             @Override
-            public void observe(Player player, Object event) {
+            public void observe(Player player, EventType eventType, Object event) {
                 savePlayer(player, true);
             }
         };

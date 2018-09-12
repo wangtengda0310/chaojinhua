@@ -453,6 +453,7 @@ public class ResourceService extends EventService implements ISFSModule {
      * 玩家升级之后的事情
      */
     public void upgradePlayer(Player player,int tempLevel,int currLevel){
+    	fireEvent(player, PlayerEvents.LEVEL_UP, new Object[]{tempLevel, currLevel});
     	int old = player.getBattleSpace();
     	if(currLevel>= 2 && currLevel<10){
     		player.setBattleSpace(2);
@@ -573,6 +574,7 @@ public class ResourceService extends EventService implements ISFSModule {
     		questService.processTask(player, 16, count);
     		//触发解锁头像
 			headService.unlockHead(player,HeadConstants.HEAD_TOUCH_MONSTER);
+			fireEvent(player, PlayerEvents.GOT_MONSTER, monster_id);
     	}
 
     	if(send){

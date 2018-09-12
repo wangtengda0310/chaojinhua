@@ -61,7 +61,7 @@ public class EventManager implements ISFSModule {
                                                 || Arrays.stream(listener.interestedTypes()).anyMatch(type -> type == eventType))
                                         .forEach(listener->{
                                             try {
-                                                listener.observe(player, param);
+                                                listener.observe(player, eventType, param);
                                             } catch (Exception e) {
                                                 trace(e);
                                             }

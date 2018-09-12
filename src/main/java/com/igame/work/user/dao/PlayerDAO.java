@@ -123,7 +123,7 @@ public class PlayerDAO extends AbsDao {
 			.set("playerCount", player.getPlayerCount())
 			.set("playerTop", player.getPlayerTop())
 			.set("fightValue", player.getFightValue())
-			.set("activityData", player.getActivityData())
+			.set("sign", player.getSign())
     		;
     	if(loginOutTime){
     		up.set("loginoutTime", new Date())

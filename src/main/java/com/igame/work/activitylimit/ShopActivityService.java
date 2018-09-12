@@ -1,4 +1,4 @@
-package com.igame.work.shopActivity;
+package com.igame.work.activitylimit;
 
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
@@ -106,7 +106,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
             }
 
             @Override
-            public void observe(Player player, Object event) {
+            public void observe(Player player, EventType eventType, Object event) {
                 Object[] customEvent = (Object[]) event;
                 long timeMillis = (long) customEvent[0];
                 long amount = (long) customEvent[1];
@@ -137,7 +137,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
             }
 
             @Override
-            public void observe(Player player, Object event) {
+            public void observe(Player player, EventType eventType, Object event) {
                 Object[] customEvent = (Object[]) event;
                 int itemId = (int) customEvent[0];
                 int count = (int) customEvent[1];

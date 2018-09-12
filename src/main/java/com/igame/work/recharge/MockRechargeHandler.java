@@ -51,7 +51,7 @@ public class MockRechargeHandler extends ReconnectedHandler {
             }
 
             @Override
-            public void observe(Player player, Object event) {
+            public void observe(Player player, EventType eventType, Object event) {
                 // TODO 这块是终极馈赠的活动 是新建个活动类移到活动模块还是放在这里
                 ActivityConfigTemplate template = ActivityDataManager.activityConfig.getTemplate(1003);
                 if (template == null) {

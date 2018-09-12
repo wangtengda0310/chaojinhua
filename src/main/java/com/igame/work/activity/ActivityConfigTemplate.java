@@ -27,7 +27,7 @@ public class ActivityConfigTemplate {
 	@XmlAttribute(name = "activity_type")
 	private int activity_type;
 	
-	@XmlAttribute(name = "order")
+	@XmlAttribute(name = "state")
 	private int order;
 
 	@XmlAttribute(name = "activity_show")
@@ -49,7 +49,7 @@ public class ActivityConfigTemplate {
 	private  int time_limit;
 
 	@XmlAttribute(name = "get_limit")
-	private  String get_limit;
+	private  int get_limit;
 
 	@XmlAttribute(name = "get_value")
 	private  String get_value;
@@ -129,11 +129,11 @@ public class ActivityConfigTemplate {
 		this.time_limit = time_limit;
 	}
 
-	public String getGet_limit() {
+	public int getGet_limit() {
 		return get_limit;
 	}
 
-	public void setGet_limit(String get_limit) {
+	public void setGet_limit(int get_limit) {
 		this.get_limit = get_limit;
 	}
 

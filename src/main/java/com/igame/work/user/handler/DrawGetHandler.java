@@ -9,6 +9,7 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
+import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.item.dto.Item;
 import com.igame.work.user.PlayerDataManager;
@@ -120,7 +121,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 						for(int i = 1;i<=number;i++){
 							List<RewardDto> ls = playerService.couKa(dt.getRewardId(), dt.getDrawValue());
 							for(RewardDto temp : ls){
-								reward.append(";").append(resourceService.getRewardString(temp));
+								reward.append(";").append(ResourceService.getRewardString(temp));
 								resourceService.getTotalRewardDto(dto, temp);
 							}
 						}
@@ -141,7 +142,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 						List<RewardDto> ls  =  playerService.couKa(dt.getRewardId(), dt.getDrawValue());
 						reward = new StringBuilder();
 						for(RewardDto temp : ls){
-							reward.append(";").append(resourceService.getRewardString(temp));
+							reward.append(";").append(ResourceService.getRewardString(temp));
 							resourceService.getTotalRewardDto(dto, temp);
 						}
 //						reward = resourceService.getRewardString(dto);
@@ -150,6 +151,8 @@ public class DrawGetHandler extends ReconnectedHandler {
 						}
 						resourceService.addRewarToPlayer(player, dto);
 						resourceService.addDrawExp(player, dt.getDrawExp());
+
+						fireEvent(player, PlayerEvents.DRAW_BY_DIAMOND, number);
 					}
 
 				}

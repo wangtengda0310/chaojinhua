@@ -61,10 +61,10 @@ public class TurntableService implements TimeListener {
         turntable.setPlayerId(player.getPlayerId());
         turntable.setDtate(1);
 
-        setTurntable(player,turntable);
+        setTurntable(player, turntable);
 
         //刷新道具
-        reloadTurntable(player);
+        reloadTurntable(player, turntable);
 
         //推送更新
         notifyTurntableChange(player);
@@ -98,10 +98,7 @@ public class TurntableService implements TimeListener {
     /**
      * 刷新大转盘
      */
-    public void reloadTurntable(Player player){
-
-        Turntable turntable = getTurntable(player);
-        int playerLevel = player.getPlayerLevel();
+    public void reloadTurntable(Player player,Turntable turntable){
 
         Map<Integer, String> rewards = turntable.getRewards();
         List<Integer> results = turntable.getResults();
@@ -111,7 +108,7 @@ public class TurntableService implements TimeListener {
         results.clear();
 
         //随机十二个位置的商品
-        List<LuckTableTemplate> templates = LuckTableDataManager.luckTableData.getTemplate(playerLevel);
+        List<LuckTableTemplate> templates = LuckTableDataManager.luckTableData.getTemplate(player.getPlayerLevel());
         for (LuckTableTemplate template : templates) {
 
             int site = template.getSite();
@@ -207,9 +204,10 @@ public class TurntableService implements TimeListener {
 
         for(Player player : sessionManager.getSessions().values()){
 
-            if (getTurntable(player) != null){
+            Turntable turntable = getTurntable(player);
+            if (turntable != null){
                 //更新大转盘
-                reloadTurntable(player);
+                reloadTurntable(player,turntable);
                 //推送更新
                 notifyTurntableChange(player);
             }
