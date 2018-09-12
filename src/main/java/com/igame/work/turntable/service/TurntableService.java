@@ -28,7 +28,12 @@ public class TurntableService implements TimeListener {
 
     public Map<Long, Turntable> turntables = new HashMap<>();//幸运大转盘
     public Turntable getTurntable(Player player) {
-        return turntables.computeIfAbsent(player.getPlayerId(), playerId -> initTurntable(player));
+        Turntable turntable = dao.getTurntableByPlayerId(player.getPlayerId());
+        if (turntable == null) {
+            turntable = initTurntable(player);
+        }
+        turntables.put(player.getPlayerId(), turntable);
+        return turntable;
     }
 
     public void setTurntable(Player player, Turntable turntable) {
