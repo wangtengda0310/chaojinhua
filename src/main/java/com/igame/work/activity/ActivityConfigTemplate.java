@@ -27,7 +27,7 @@ public class ActivityConfigTemplate {
 	@XmlAttribute(name = "activity_type")
 	private int activity_type;
 	
-	@XmlAttribute(name = "state")
+	@XmlAttribute(name = "order")
 	private int order;
 
 	@XmlAttribute(name = "activity_show")
