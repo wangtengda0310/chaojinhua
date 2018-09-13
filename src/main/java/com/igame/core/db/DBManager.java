@@ -18,7 +18,6 @@ import java.util.*;
  */
 public class DBManager implements ISFSModule {
 	
-	public Properties p = new Properties();
 	private Map<String,MongoDatabase> mongoDBs = new HashMap<>();
 	private Map<String,Datastore> datastores = new HashMap<>();
 	private MongoClient mclient = null;
@@ -26,7 +25,7 @@ public class DBManager implements ISFSModule {
 	private final String dbPer = "igame";
 
 	public Datastore getDatastore(){
-		String dbName = dbPer+p.getProperty("serverId");
+		String dbName = dbPer+extensionHolder.SFSExtension.getConfigProperties().getProperty("serverId");
 		return getDatastore(dbName);
 	}
 	public Datastore getDatastore(String dbName){
@@ -45,8 +44,7 @@ public class DBManager implements ISFSModule {
 	}
 
 	public void init() {
-		this.p = extensionHolder.SFSExtension.getConfigProperties();
-		String DBName = p.getProperty("DBName");
+		String DBName = extensionHolder.SFSExtension.getConfigProperties().getProperty("DBName");
 		String[] DBNames = DBName.split(",");
 		MongoClient client = getConnect();
 		mclient = client;
@@ -66,7 +64,7 @@ public class DBManager implements ISFSModule {
 	private MongoClient getConnect(){
 		MongoClient mongoClient = null;
 		try {
-
+			Properties p = extensionHolder.SFSExtension.getConfigProperties();
 			String DBUrl = p.getProperty("DBUrl");
 			int DBPort = Integer.parseInt(p.getProperty("DBPort"));
 			String server = p.getProperty("server");
@@ -102,9 +100,9 @@ public class DBManager implements ISFSModule {
 	private MongoClient createMongoDBClient(String DBUrl, int DBPort,MongoClientOptions myOptions){
 		ServerAddress serverAddress = new ServerAddress(DBUrl, DBPort);  
         List<ServerAddress> addrs = new ArrayList<ServerAddress>();  
-        addrs.add(serverAddress);  
-          
-        String username = p.getProperty("username");
+        addrs.add(serverAddress);
+		Properties p = extensionHolder.SFSExtension.getConfigProperties();
+		String username = p.getProperty("username");
 		String password = p.getProperty("password");
 		String defaultDB = p.getProperty("DefaultDB");
         //MongoCredential.createScramSha1Credential()三个参数分别为 用户名 数据库名称 密码  

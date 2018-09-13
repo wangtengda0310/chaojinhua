@@ -31,10 +31,11 @@ import java.util.stream.Stream;
  */
 public class GameServerExtension extends SFSExtension {
 
-	public static DBManager dbManager;
-
-	public Map<Class, Object> components = new HashMap<>();
 	private Set<ISFSModule> modules = new HashSet<>();
+
+	private HashSet<Class> classesInJarFile = new HashSet<>();
+	public Map<Class,Object> cachedObjects = new HashMap<>();
+	private Map<Class,Set<Class>> classOfInterface = new HashMap<>();
 
 	private <T> T injectObjectField(T needInjectField) {
 
@@ -51,7 +52,7 @@ public class GameServerExtension extends SFSExtension {
 	private <T> T injectHandlerClassField(Class<T> clazz) {
 
 		try {
-			T handler = clazz.newInstance();
+			T handler = (T) cachedObjects.get(clazz);
 
 			doReflact(handler);
 
@@ -67,78 +68,51 @@ public class GameServerExtension extends SFSExtension {
         Class<?> aClass = component.getClass();
 	    do {
 
-        for (Field field : aClass.getDeclaredFields()) {
-            field.setAccessible(true);
-            if (field.get(component) != null) {
-                continue;
-            }
-            Class<?> fieldClass = field.getType();
-            if (!field.isAnnotationPresent(Inject.class)
-                    && !Injectable.class.isAssignableFrom(fieldClass)) {
-                continue;
-            }
+			for (Field field : aClass.getDeclaredFields()) {
+				field.setAccessible(true);
+				if (field.get(component) != null) {
+					continue;
+				}
+				Class<?> fieldClass = field.getType();
+				if (!field.isAnnotationPresent(Inject.class)
+						&& !Injectable.class.isAssignableFrom(fieldClass)) {
+					continue;
+				}
 
-            if (components.containsKey(fieldClass)) {
-                field.set(component, components.get(fieldClass));	// 递归出口
-            } else {
-                Object fieldObject = fieldClass.newInstance();
-                components.put(fieldClass, fieldObject); 			// 需要先放入components 不然下面递归会死循环
-                injectObjectField(fieldObject);			 			// 这里递归了，如果上面没先放进components会死循环
-
-                if (fieldObject instanceof ISFSModule) {
-                    modules.add((ISFSModule) fieldObject);
-                }
-
-                field.set(component, fieldObject);
-            }
-        }
-
-        if (components.containsKey(aClass)) {	// 递归出口
-            return;
-        }
-
-		// 好像应该放在field后面
-		components.put(aClass, component); 	// 需要先放入components 不然下面递归会死循环
-		injectObjectField(component);		// 这里递归了，如果上面没先放进components会死循环
-
-		if (component instanceof ISFSModule) {	// todo observer
-			((ISFSModule)component).init(this);
-		}
-
-		if (TimeListener.class.isAssignableFrom(aClass)) {	// todo observer
-			JobManager.addJobListener((TimeListener) component);
-		}
+				if (cachedObjects.containsKey(fieldClass)) {
+					field.set(component, cachedObjects.get(fieldClass));	// 递归出口
+				} else {
+					Object fieldObject = fieldClass.newInstance();
+					cachedObjects.put(fieldClass, fieldObject); 			// 需要先放入components 不然下面递归会死循环
+					field.set(component, fieldObject);
+					injectObjectField(fieldObject);			 			// 这里递归了，如果上面没先放进components会死循环
+				}
+			}
 
         } while ((aClass = aClass.getSuperclass())!=null);
 	}
 
 	private void register(int requestId, Class<? extends IClientRequestHandler> clazz) {
-		addRequestHandler(String.valueOf(String.valueOf(requestId)), injectHandlerClassField(clazz));
+		addRequestHandler(String.valueOf(String.valueOf(requestId)), (IClientRequestHandler) cachedObjects.get(clazz));
 	}
 
 	/**注册SmartFoxServer的handler并注入ISFSModule属性*/
 	private void register(Class<? extends BaseHandler> clazz) {
-		BaseHandler handler = injectHandlerClassField(clazz);
+		BaseHandler handler = (BaseHandler) cachedObjects.get(clazz);
 		addRequestHandler(String.valueOf(handler.protocolId()), handler);
 	}
 
-	private HashSet<Class> classesInJarFile = new HashSet<>();
-
-	private Map<Class,Set<Class>> classOfInterface = new HashMap<>();
-
+	// 房到classOfInterface里
 	private void summarize(Class thisClass, Class superClass) {
-		Stream.concat(Stream.of(superClass, superClass.getSuperclass()), Arrays.stream(superClass.getInterfaces()))
+		Stream.concat(Stream.of(superClass.getSuperclass()), Arrays.stream(superClass.getInterfaces()))
 				.filter(Objects::nonNull)
-				.forEach(i->classOfInterface.computeIfAbsent(i,interfaceClass->new HashSet<>()).add(thisClass));
+				.forEach(i->summarize(thisClass,i));
 
         if (!Modifier.isAbstract(thisClass.getModifiers())) {
-            Stream.concat(Stream.of(superClass.getSuperclass()), Arrays.stream(superClass.getInterfaces()))
-                    .filter(Objects::nonNull)
-                    .forEach(i->summarize(thisClass,i));
+			Stream.concat(Stream.of(superClass, superClass.getSuperclass()), Arrays.stream(superClass.getInterfaces()))
+					.filter(Objects::nonNull)
+					.forEach(i->classOfInterface.computeIfAbsent(i,interfaceClass->new HashSet<>()).add(thisClass));
         }
-	}
-	private void summarize() {
-		classesInJarFile.forEach(c->summarize(c,c));
 	}
 
 	public GameServerExtension() {
@@ -147,6 +121,7 @@ public class GameServerExtension extends SFSExtension {
 					.stream()
 					.map(JarEntry::getName)
 					.filter(name -> name.endsWith(".class"))
+					.filter(name -> !name.contains("$"))
 					.map(name -> name.substring(0,name.indexOf(".class")).replace("/","."))
 					.map(n-> {
 						try {
@@ -156,13 +131,25 @@ public class GameServerExtension extends SFSExtension {
 						}
 					})
 					.filter(c-> !Modifier.isAbstract(c.getModifiers()))
+					.peek(c->{
+						try {
+							if (Injectable.class.isAssignableFrom(c)) {
+								cachedObjects.put(c, c.newInstance());
+							}
+						} catch (Throwable e) {
+							getLogger().warn("{}",c);
+						}
+					})
 					.forEach(c->classesInJarFile.add(c));
 
-			summarize();
+			new HashSet<>(cachedObjects.values()).forEach(this::injectObjectField);
+			classesInJarFile.forEach(c->summarize(c,c));
 		} catch (IOException e) {
 			trace(e);
 		}
 	}
+
+	public static DBManager dbManager;
 
 	@Override
 	public void init() {
@@ -170,8 +157,21 @@ public class GameServerExtension extends SFSExtension {
 			DataManager dataManager = new DataManager();
 			dataManager.load("resource/");
 
-			dbManager = new DBManager();
-			injectObjectField(dbManager);
+			dbManager = (DBManager) cachedObjects.get(DBManager.class);
+			dbManager.init(this);	// 数据库被其他模块init的时候依赖
+
+			cachedObjects.values().stream()
+					.filter(o->!o.equals(dbManager))	// 数据库被其他模块init的时候依赖
+					.forEach(component->{
+				if (component instanceof ISFSModule) {
+					((ISFSModule)component).init(this);
+				}
+
+				if (component instanceof TimeListener) {
+					JobManager.addJobListener((TimeListener) component);
+				}
+
+			});
 
 			EventManager eventManager = new EventManager();
 			injectObjectField(eventManager);

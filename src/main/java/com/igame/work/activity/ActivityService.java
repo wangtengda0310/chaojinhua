@@ -15,6 +15,7 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.igame.work.activity.condition.Conditions.*;
@@ -43,6 +44,20 @@ public class ActivityService extends EventService implements ISFSModule {
     @Inject private GMService gMService;
     @Inject private ActivityDAO dao;
 
+    private Map<Integer, ActivityDto> dtos=new ConcurrentHashMap<>();
+    @Override
+    public void init() {
+        Map<Integer, List<ActivityConfigTemplate>> collect = ActivityConfig.its.stream()
+                .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
+        collect.forEach((key, value) -> {
+            ActivityDto dto = dtos.get(key);
+            if (dto == null) {
+                dto = new ActivityDto();
+            }
+            dtos.put(key, dto);
+        });
+    }
+
     @Override
     protected PlayerEventObserver playerObserver() {
         return new PlayerEventObserver() {
@@ -66,7 +81,7 @@ public class ActivityService extends EventService implements ISFSModule {
                         .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
                 collect.forEach((key, value) -> {
 
-                    ActivityDto activityData = dao.getActivityById(key);
+                    ActivityDto activityData = dtos.get(key);
                     if (activityData == null) {
                         activityData = new ActivityDto();
                     }
@@ -159,7 +174,7 @@ public class ActivityService extends EventService implements ISFSModule {
      * 因为数据库里存的数据跟客户端协议的格式不一样，这里做下转换
      */
     public Map<String, Object> clientData(Player player) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();  // todo string->int
 
         String totalSign = player.getSign().getTotalSign();
         String[] signDataSplit = player.getSign().getSignData().split(",");
@@ -175,16 +190,23 @@ public class ActivityService extends EventService implements ISFSModule {
         map.put("denglu", dengluService.clientData(player));
 
 //        map.put("tansuoZhiLu", activityData.getTansuo().clientData(player));
+//        map.put("meiriLiangfa", activityData.getTansuo().clientData(player));
 
         Map<Integer, List<ActivityConfigTemplate>> collect = ActivityConfig.its.stream()
                 .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
         collect.entrySet().stream()
                 .filter(entry->entry.getValue().stream().anyMatch(t->t.getGift_bag()==2))   // 暂时把type为2的协议单独拎出来 后面在吧所有活动数据改掉
                 .forEach(entry->{
-                    ActivityDto activityData = dao.getActivityById(entry.getKey());
-                    int[] orderData = activityData.getOrderData().get(player.getPlayerId()).state;
-                    if (orderData==null) {
-                        orderData=initPlayerActivityData(player, entry.getValue());
+                    ActivityDto activityData = dtos.get(entry.getKey());
+                    if (activityData.getOrderData()==null) {
+                        activityData.setOrderData(new HashMap<>());
+                    }
+                    ActivityOrderDto activityOrderDto = activityData.getOrderData()
+                            .computeIfAbsent(player.getPlayerId(), playerId -> new ActivityOrderDto());
+
+                    int[] orderData = activityOrderDto.state;
+                    if (activityOrderDto.state==null) {
+                        activityOrderDto.state=orderData=initPlayerActivityData(player, entry.getValue());
                     } else if(orderData.length!=entry.getValue().size()) {
                         int[] newOrderData = new int[entry.getValue().size()];
                         System.arraycopy(orderData, 0,newOrderData,0,Math.min(newOrderData.length, orderData.length));
@@ -192,6 +214,12 @@ public class ActivityService extends EventService implements ISFSModule {
                     }
 
                     map.put(String.valueOf(entry.getKey()), join(orderData));
+                    if (entry.getKey() == 1004) {
+                        map.put("meiriLiangfa", join(orderData));
+                    }
+                    if (entry.getKey() == 1005) {
+                        map.put("tansuoZhiLu", join(orderData));
+                    }
                 });
         return map;
     }
@@ -205,7 +233,7 @@ public class ActivityService extends EventService implements ISFSModule {
         ActivityConfig.its.stream()
                 .filter(c -> c.getActivity_sign() == activityId && c.getOrder() == order)
                 .forEach(c->{
-                    ActivityDto activityData = dao.getActivityById(activityId);
+                    ActivityDto activityData = dtos.get(activityId);
                     if (activityData == null) {
                         return;
                     }

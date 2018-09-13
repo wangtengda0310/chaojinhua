@@ -6,7 +6,6 @@ import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.quartz.TimeListener;
-import com.igame.server.GameServerExtension;
 import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.baozouShike.data.RunTemplate;
 import com.igame.work.checkpoint.baozouShike.data.RunTypeTemplate;
@@ -203,7 +202,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
                 reward = BaozouShikeDataManager.runRewardData.getTemplate(12).getReward();
             }
 
-            mailService.senderMail(Integer.parseInt(GameServerExtension.dbManager.p.getProperty("serverId"))
+            mailService.senderMail(Integer.parseInt(extensionHolder.SFSExtension.getConfigProperties().getProperty("serverId"))
                     , ranker.getPlayerId(), 1, 1, "系统", "标题", "正文", reward);
         }
 
