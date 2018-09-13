@@ -25,7 +25,12 @@ import java.util.HashMap;
  * 11钻石充值
  */
 public enum Conditions {
-    NO_LIMIT(0)
+    NO_LIMIT(0){
+        @Override
+        public int reward(Player player, ActivityConfigTemplate c, ActivityOrderDto orderData, ActivityService activityService) {
+            return orderData.state[c.getOrder()-1]!=2?0:ErrorCode.CAN_NOT_RECEIVE;
+        }
+    }
     , LEVEL(1){
         @Override
         public int reward(Player player, ActivityConfigTemplate c, ActivityOrderDto orderData, ActivityService activityService) {
@@ -64,8 +69,23 @@ public enum Conditions {
     , TURNTABLE_TIMES(5)
     , ARENA_WIN_TIMES(6)
     , ARENA_TIMES(7)
-    , ADVANCE_CARD(8)
-    , GOT_MONSTER(9)
+    , ADVANCE_CARD(8){
+        @Override
+        public int reward(Player player, ActivityConfigTemplate c, ActivityOrderDto orderData, ActivityService activityService) {
+            return orderData.state[c.getOrder()-1]!=2 && (int)orderData.recrod.get(c.getOrder())>=c.getGet_limit()?0:ErrorCode.CAN_NOT_RECEIVE;
+        }
+    }
+    , GOT_MONSTER(9){
+        @Override
+        public int reward(Player player, ActivityConfigTemplate c, ActivityOrderDto orderData, ActivityService activityService) {
+            if (orderData.state[c.getOrder()-1]!=2
+                    && orderData.recrod.containsKey(c.getOrder())
+                    && orderData.recrod.get(c.getOrder()).equals(c.getGet_limit())) {
+                return 0;
+            }
+            return ErrorCode.CAN_NOT_RECEIVE;
+        }
+    }
     , GOLD_LEVEL(10){
         @Override
         public int reward(Player player, ActivityConfigTemplate c, ActivityOrderDto orderData, ActivityService activityService) {
