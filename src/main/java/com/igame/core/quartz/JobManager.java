@@ -2,14 +2,13 @@ package com.igame.core.quartz;
 
 
 import com.igame.core.ISFSModule;
+import com.igame.core.di.Inject;
 import com.igame.core.log.ExceptionLog;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Map;
 
 /**
  * 
@@ -18,7 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class JobManager implements ISFSModule {
 
-    private static SchedulerFactory schedulerFactory;
+    @Inject private GameQuartzListener listener;
+
     private static Scheduler scheduler;
 
     static HashMap<String, TimeListener> listeners = new HashMap<>();
@@ -27,40 +27,44 @@ public class JobManager implements ISFSModule {
         listeners.put(listener.getClass().getSimpleName(), listener);
     }
     public void destroy() {
+        try {
+            scheduler.shutdown(true);
+        } catch (SchedulerException e) {
+            extensionHolder.SFSExtension.getLogger().error("",e);
+        }
         listeners.clear();
     }
 
     @Override
       public void init(){
         try {
-            List<MyJob> jobList = new ArrayList<>();
-            AtomicInteger atomicInteger = new AtomicInteger(1);
 
-            String className = "com.igame.core.quartz.GameQuartzListener";
-//        jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.seconds", className, "seconds", "0/1 * *  * * ?"));
-            jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.minute", className, "minute", "0 0/1 * * * ?"));
-            jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.minute5", className, "minute5", "0 0/5 * * * ?"));
-            jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.minute180", className, "minute180", "0 0 0/3 * * ? "));
-            jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.zero", className, "zero", "0 0 12 * * ?"));
+            scheduler = new StdSchedulerFactory().getScheduler();
 
-            jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.nine", className, "nine", "0 0 9 * * ?"));
-            jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.twelve", className, "twelve", "0 0 12 * * ?"));
-            jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.fourteen", className, "fourteen", "0 0 14 * * ?"));
-            jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.twenty", className, "twenty", "0 0 20 * * ?"));
-            jobList.add(new MyJob(atomicInteger.incrementAndGet(), "job.week7", className, "week7", "0 0 12 ? * 2"));
+            Map<String, String> methodCronExpression = new HashMap<>();
+            methodCronExpression.put("second", "0/1 * *  * * ?");
+            methodCronExpression.put("minute", "0 0/1 * * * ?");
+            methodCronExpression.put("minute5", "0 0/5 * * * ?");
+            methodCronExpression.put("minute180", "0 0 0/3 * * ? ");
+            methodCronExpression.put("zero", "0 0 12 * * ?");
 
-            schedulerFactory = new StdSchedulerFactory();
-            scheduler = schedulerFactory.getScheduler();
+            methodCronExpression.put("nine", "0 0 9 * * ?");
+            methodCronExpression.put("twelve", "0 0 12 * * ?");
+            methodCronExpression.put("fourteen", "0 0 14 * * ?");
+            methodCronExpression.put("twenty", "0 0 20 * * ?");
+            methodCronExpression.put("week7", "0 0 12 ? * 2");
 
-            for (MyJob job : jobList) {
-                JobDetail tokenJob = new JobDetail(job.jobId, "DEFAULT", JobExecutor.class);
-                CronTrigger conTrigger = new CronTrigger(job.triggerId, "DEFAULT");
+            for(String method: methodCronExpression.keySet()) {
+                CronTrigger conTrigger = new CronTrigger("QuartzTrigger_"+method, "DEFAULT");
                 JobDataMap dataMap = new JobDataMap();
-                dataMap.put("JOB_INFO", job);
+                dataMap.put("JOB_INSTANCE", listener);
+                dataMap.put("JOB_METHOD", method);
                 conTrigger.setJobDataMap(dataMap);
-                conTrigger.setCronExpression(job.cronExpression);
-                scheduler.scheduleJob(tokenJob, conTrigger);
+                conTrigger.setCronExpression(methodCronExpression.get(method));
+                scheduler.scheduleJob(new JobDetail("QuartzJOB_"+method, "DEFAULT", JobExecutor.class)
+                        , conTrigger);
             }
+
             scheduler.start();
         }catch(Exception e){
             ExceptionLog.error("",e);

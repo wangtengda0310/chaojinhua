@@ -1,14 +1,15 @@
 package com.igame.work.fight.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.google.common.collect.Lists;
+import com.igame.core.quartz.TimeListener;
 import com.igame.work.MessageUtil;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.user.dto.Player;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 
@@ -17,11 +18,11 @@ import com.igame.work.user.dto.Player;
  * @author Marcus.Z
  *
  */
-public class PVPFightService {
+public class PVPFightService implements TimeListener {
 	
 	private static final PVPFightService domain = new PVPFightService();
 
-    public static final PVPFightService ins() {
+    public static PVPFightService ins() {
         return domain;
     }
     
@@ -33,7 +34,6 @@ public class PVPFightService {
     
     /**
      * 开始匹配
-     * @param player
      */
     public void readFight(Player player){
     	
@@ -57,7 +57,6 @@ public class PVPFightService {
     
     /**
      * 开始匹配
-     * @param player
      */
     public synchronized void chancelFight(Player player){
     	
@@ -71,8 +70,6 @@ public class PVPFightService {
     
     /**
      * 成功匹配到玩家
-     * @param playerA
-     * @param playerB
      */
     public void processStartFigth(Player playerA,Player playerB){
     	
@@ -89,7 +86,6 @@ public class PVPFightService {
     
     /**
      * 倒计时结束
-     * @param player
      */
     public void readCDFight(Player player){
     	
@@ -111,7 +107,6 @@ public class PVPFightService {
     
     /**
      * 加载游戏完毕
-     * @param player
      */
     public void gameLoadEnd(Player player){
     	
@@ -148,5 +143,16 @@ public class PVPFightService {
 		this.palyers = palyers;
 	}
 
-	
+
+	@Override
+	public void minute5() {
+
+		long now = System.currentTimeMillis();  // todo 这个是quartz通知过来的 时间不是时间发送当时的时间了
+		for(FightBase fb : fights.values()){
+			if(now - fb.getStartTime() >= 300000){
+				fights.remove(fb.getId());
+			}
+		}
+
+	}
 }

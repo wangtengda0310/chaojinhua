@@ -1,15 +1,7 @@
 package com.igame.core.quartz;
 
 
-import com.igame.core.SessionManager;
-import com.igame.core.di.Inject;
 import com.igame.core.log.ExceptionLog;
-import com.igame.work.fight.dto.FightBase;
-import com.igame.work.fight.service.PVPFightService;
-import com.igame.work.user.dto.Player;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 
@@ -17,20 +9,11 @@ import java.util.List;
  *
  */
 public class GameQuartzListener {
-	@Inject private SessionManager sessionManager;
-	@Inject private PVPFightService pvpFightService;
 
 	public GameQuartzListener(){}
 
 
     public void minute(){
-
-		//ExceptionLog.error("minute execute");
-
-//    	for(Player player : pvpsionManager.getSessions().values()){
-//			fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
-//		}
-
 		ExceptionLog.error("minute");
 		JobManager.listeners.values().forEach(jobListener -> {
 			try{
@@ -45,27 +28,29 @@ public class GameQuartzListener {
 
     public void minute5(){
 
-		ExceptionLog.error("minute5 execute");
-    	
-    	long now = System.currentTimeMillis();
-    	for(FightBase fb : pvpFightService.fights.values()){
-    		if(now - fb.getStartTime() >= 300000){
-    			pvpFightService.fights.remove(fb.getId());
-    		}  		
-    	}
-    	
+        ExceptionLog.error("minute5");
+        JobManager.listeners.values().forEach(jobListener -> {
+            try{
+
+                jobListener.minute5();
+            }catch (Exception e){
+                ExceptionLog.error("minute5");
+                e.printStackTrace();
+            }
+        });
+
 
     }
 
 
 	public void minute180(){
 
-		ExceptionLog.error("minute180 execute");
+		ExceptionLog.error("minute180");
 		JobManager.listeners.values().forEach(jobListener -> {
 			try{
 
 				//刷新所有在线玩家的一般商店
-				jobListener.zero();
+				jobListener.minute180();
 			}catch (Exception e){
 				ExceptionLog.error("minute180");
 				e.printStackTrace();
@@ -86,17 +71,6 @@ public class GameQuartzListener {
 				e.printStackTrace();
 			}
 		});
-        try{
-        	List<String> palyers = new ArrayList<>();
-			for (Player player : sessionManager.getSessions().values()) {
-				palyers.add(player.getNickname());
-			}
-			ExceptionLog.error("zero:"+palyers);
-
-        }catch (Exception e){
-           ExceptionLog.error("zero");
-            e.printStackTrace();
-        }
     }
 
 	//九点执行
@@ -131,6 +105,7 @@ public class GameQuartzListener {
 	//十四点执行
 	public void fourteen(){
 		ExceptionLog.error("fourteen");
+
 		JobManager.listeners.values().forEach(jobListener -> {
 			try{
 
@@ -146,10 +121,20 @@ public class GameQuartzListener {
 	public void twenty(){
 		ExceptionLog.error("twenty");
 
+		JobManager.listeners.values().forEach(jobListener -> {
+			try{
+				jobListener.twenty();
+			}catch (Exception e){
+				ExceptionLog.error("twenty");
+				e.printStackTrace();
+			}
+		});
 	}
 
 	//每周一执行
 	public void week7(){
+		ExceptionLog.error("week7");
+
     	JobManager.listeners.values().forEach(jobListener -> {
 			try{
 				jobListener.week7();

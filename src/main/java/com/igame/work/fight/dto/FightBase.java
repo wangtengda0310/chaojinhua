@@ -29,7 +29,7 @@ public class FightBase {
 	
 	public Set<Long> state = Sets.newHashSet();
 	
-	public Object lock = new Object();
+	public final Object lock = new Object();	// todo PVPFightService和FightProcesser都用这个锁吗
 	
 	public List<Effect> scBuffers = Lists.newArrayList();//区域HOTBUFFER列表
 	
