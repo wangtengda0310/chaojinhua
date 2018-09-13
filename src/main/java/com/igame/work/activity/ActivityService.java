@@ -18,8 +18,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static com.igame.work.activity.condition.Conditions.*;
-
 /**
  * activity_type配置1的时候time_limit可能是一个正数 也可能是-1
  * 配置2的时候time_limit只允许配置为正数
@@ -148,35 +146,10 @@ public class ActivityService extends EventService implements ISFSModule {
         for (ActivityConfigTemplate template : value) {
             int state = 0;
             try {
-                if (!template.isActive(player, now)) {
-                    state = 0;  // todo 活动过期是否新定义一个状态值
-                } else if (template.getGet_limit() == NO_LIMIT.type()) {
-                    state = 1;
-                } else if (template.getGet_limit() == LEVEL.type()) {
-                    state = player.getPlayerLevel()>=Integer.valueOf(template.getGet_value())?1:0;
-                } else if (template.getGet_limit() == TIME_INTERVAL.type()) {
-                    // todo 每日两发做在这
-                } else if (template.getGet_limit() == CONSUME_DIAMOND.type()) {
-                    // todo 记录活动期间内的钻石消耗
-                } else if (template.getGet_limit() == CONSUME_GOLD.type()) {
-
-                } else if (template.getGet_limit() == TURNTABLE_TIMES.type()) {
-
-                } else if (template.getGet_limit() == ARENA_WIN_TIMES.type()) {
-
-                } else if (template.getGet_limit() == ARENA_TIMES.type()) {
-
-                } else if (template.getGet_limit() == ADVANCE_CARD.type()) {
-                    // todo 2057 event
-                } else if (template.getGet_limit() == GOT_MONSTER.type()) {
-                    // todo monster event
-                } else if (template.getGet_limit() == GOLD_LEVEL.type()) {
-                    if (player.getTeams().values().stream().anyMatch(team -> player.getGods().get(team.getTeamGod()).getGodsLevel() >= Integer.valueOf(template.getGet_value()))) {
-                        state = 1;
-                    }
-                } else if (template.getGet_limit() == RECHARGE_DIAMOND.type()) {
-                    // todo 终极馈赠
-                }
+                state = template.isActive(player, now)?Arrays.stream(Conditions.values())
+                        .filter(c -> c.type() == template.getGet_limit())
+                        .map(c -> c.initState(player, template))
+                        .findAny().orElse(0):0;
             } catch (Exception e) {
                 ExceptionLog.error("初始化玩家活动数据错误", e);
             }
@@ -201,41 +174,31 @@ public class ActivityService extends EventService implements ISFSModule {
         signData.put("signed", Integer.parseInt(signDataSplit[1]));
         signData.put("totalSign", totalSign);
         signData.put("canSign", DateUtil.formatToday().equals(signDataSplit[2]) ? 0 : 1);
-        map.put("sign", signData);
+        map.put("sign", signData);  // todo move outer
 
-        map.put("denglu", dengluService.clientData(player));
-
-//        map.put("tansuoZhiLu", activityData.getTansuo().clientData(player));
-//        map.put("meiriLiangfa", activityData.getTansuo().clientData(player));
+        map.put("denglu", dengluService.clientData(player));    // todu remove?
 
         Map<Integer, List<ActivityConfigTemplate>> collect = ActivityConfig.its.stream()
                 .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
-        collect.entrySet().stream()
-                .forEach(entry->{
-                    ActivityDto activityData = dtos.get(entry.getKey());
-                    if (activityData.getOrderData()==null) {
-                        activityData.setOrderData(new HashMap<>());
-                    }
-                    ActivityOrderDto activityOrderDto = activityData.getOrderData()
-                            .computeIfAbsent(player.getPlayerId(), playerId -> new ActivityOrderDto());
+        collect.forEach((key, value) -> {
+            ActivityDto activityData = dtos.get(key);
+            if (activityData.getOrderData() == null) {
+                activityData.setOrderData(new HashMap<>());
+            }
+            ActivityOrderDto activityOrderDto = activityData.getOrderData()
+                    .computeIfAbsent(player.getPlayerId(), playerId -> new ActivityOrderDto());
 
-                    int[] orderData = activityOrderDto.state;
-                    if (activityOrderDto.state==null) {
-                        activityOrderDto.state=orderData=initPlayerActivityData(player, entry.getValue());
-                    } else if(orderData.length!=entry.getValue().size()) {
-                        int[] newOrderData = new int[entry.getValue().size()];
-                        System.arraycopy(orderData, 0,newOrderData,0,Math.min(newOrderData.length, orderData.length));
-                        orderData = newOrderData;
-                    }
+            int[] orderData = activityOrderDto.state;
+            if (activityOrderDto.state == null) {
+                activityOrderDto.state = orderData = initPlayerActivityData(player, value);
+            } else if (orderData.length != value.size()) {
+                int[] newOrderData = new int[value.size()];
+                System.arraycopy(orderData, 0, newOrderData, 0, Math.min(newOrderData.length, orderData.length));
+                orderData = newOrderData;
+            }
 
-                    map.put(String.valueOf(entry.getKey()), join(orderData));
-                    if (entry.getKey() == 1004) {   // todo remove after
-                        map.put("meiriLiangfa", join(orderData));
-                    }
-                    if (entry.getKey() == 1005) {   // todo remove after
-                        map.put("tansuoZhiLu", join(orderData));
-                    }
-                });
+            map.put(String.valueOf(key), join(orderData));
+        });
         return map;
     }
 
@@ -254,7 +217,7 @@ public class ActivityService extends EventService implements ISFSModule {
                         return;
                     }
                     ActivityOrderDto orderData = activityData.getOrderData().get(player.getPlayerId());
-                    if (!(c.getGift_bag()==2&&c.getGet_limit()==2) && orderData.state[order-1]!=1) {  // todo 每日两发消耗钻石不该判断这里
+                    if (!(c.getGift_bag()==2&&c.getGet_limit()==2) && orderData.state[order-1]!=1) {  // todo 每日两发消耗钻石跳过这里
                         return;
                     }
                     if (!c.isActive(player, now)) {

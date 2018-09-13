@@ -27,11 +27,21 @@ import java.util.HashMap;
 public enum Conditions {
     NO_LIMIT(0){
         @Override
+        public int initState(Player player, ActivityConfigTemplate c) {
+            return 1;
+        }
+
+        @Override
         public int reward(Player player, ActivityConfigTemplate c, ActivityOrderDto orderData, ActivityService activityService) {
             return orderData.state[c.getOrder()-1]!=2?0:ErrorCode.CAN_NOT_RECEIVE;
         }
     }
     , LEVEL(1){
+        @Override
+        public int initState(Player player, ActivityConfigTemplate c) {
+            return player.getPlayerLevel()>=Integer.valueOf(c.getGet_value())?1:0;
+        }
+
         @Override
         public int reward(Player player, ActivityConfigTemplate c, ActivityOrderDto orderData, ActivityService activityService) {
             return player.getPlayerLevel()>=Integer.valueOf(c.getGet_value())?0: ErrorCode.CAN_NOT_RECEIVE;
@@ -88,6 +98,14 @@ public enum Conditions {
     }
     , GOLD_LEVEL(10){
         @Override
+        public int initState(Player player, ActivityConfigTemplate c) {
+            if (player.getTeams().values().stream().anyMatch(team -> player.getGods().get(team.getTeamGod()).getGodsLevel() >= Integer.valueOf(c.getGet_value()))) {
+                return 1;
+            }
+            return 0;
+        }
+
+        @Override
         public int reward(Player player, ActivityConfigTemplate c, ActivityOrderDto orderData, ActivityService activityService) {
            return player.getTeams().values().stream()
                    .anyMatch(team -> player.getGods().get(team.getTeamGod()).getGodsLevel() >= Integer.valueOf(c.getGet_value()))
@@ -107,4 +125,8 @@ public enum Conditions {
      * @return errorCode
      */
     public int reward(Player player, ActivityConfigTemplate c, ActivityOrderDto orderData, ActivityService activityService) {return ErrorCode.ERROR;}
+
+    public int initState(Player player, ActivityConfigTemplate c) {
+        return 0;
+    }
 }
