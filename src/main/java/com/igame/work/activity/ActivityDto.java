@@ -1,11 +1,12 @@
 package com.igame.work.activity;
 
+import com.igame.core.db.BasicDto;
 import org.mongodb.morphia.annotations.Entity;
 
 import java.util.Map;
 
 @Entity(noClassnameStored = true)
-public class ActivityDto {
+public class ActivityDto extends BasicDto {
     private int activityId; // activityId 在外层 方便删除不存在活动的数据
     protected Map<Long, ActivityOrderDto> orderData;   // key playerId
 

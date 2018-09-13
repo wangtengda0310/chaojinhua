@@ -22,7 +22,7 @@ public class ActivityHandler extends ReconnectedHandler {
         activityService.reward(player, activityId, order);
 
         RetVO retVO = new RetVO();
-        retVO.addData("d", "还没弄好");
+        retVO.addData("state", "还没弄好");
         retVO.addData("activityId", activityId);
         retVO.addData("order", order);
         return retVO;

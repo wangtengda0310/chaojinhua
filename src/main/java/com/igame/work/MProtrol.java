@@ -358,7 +358,7 @@ public class MProtrol {
 
 	public static final int AREA_BUY = 4029;//购买竞技场挑战次数
 
-	public static final int SHOP_ACTICITY_STATE = 4055;//金币礼包活动开关控制
+	public static final int SHOP_ACTICITY_STATE = 4050;//金币礼包活动开关控制
 	public static final int SIGN = 4051;//签到
 	public static final int ACTIVITY = 4052;//活动
 	public static final int SHOP_ACTICITY_REWARD = 4053;//金币礼包活动领奖

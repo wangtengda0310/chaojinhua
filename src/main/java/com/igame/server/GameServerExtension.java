@@ -165,6 +165,7 @@ public class GameServerExtension extends SFSExtension {
 					.forEach(component->{
 				if (component instanceof ISFSModule) {
 					((ISFSModule)component).init(this);
+					modules.add((ISFSModule) component);
 				}
 
 				if (component instanceof TimeListener) {

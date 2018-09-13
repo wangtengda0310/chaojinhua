@@ -8,6 +8,7 @@ import com.igame.work.activity.ActivityService;
 import com.igame.work.user.dto.Player;
 
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * 0无条件
@@ -42,15 +43,18 @@ public enum Conditions {
             int end = Integer.parseInt(splitTime[1]);
             int current = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
-            String[] splitRecord = (String[]) orderData.recrod.get(c.getOrder());
+            if (orderData.recrod == null) {
+                orderData.recrod = new HashMap<>();
+            }
+            String splitRecord = (String) orderData.recrod.get(c.getOrder());
             String today = DateUtil.formatToday();
-            if (!today.equals(splitRecord[c.getOrder() - 1])) { // 今天已经领过
+            if (today.equals(splitRecord)) { // 今天已经领过
                 return ErrorCode.PACK_PURCHASED;
             }
             if(current<begin||current>end) {    // 不在配置时间内当做补领
                 activityService.resourceService.addDiamond(player, -20);
             }
-            splitRecord[c.getOrder()-1] = today;
+            orderData.recrod.put(c.getOrder(), today);
             orderData.state[c.getOrder()-1] = 2;
             return 0;
         }

@@ -47,15 +47,31 @@ public class ActivityService extends EventService implements ISFSModule {
     private Map<Integer, ActivityDto> dtos=new ConcurrentHashMap<>();
     @Override
     public void init() {
+        // todo 手动关闭指定活动 活动领奖状态判断是否关闭
         Map<Integer, List<ActivityConfigTemplate>> collect = ActivityConfig.its.stream()
                 .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
         collect.forEach((key, value) -> {
-            ActivityDto dto = dtos.get(key);
+            ActivityDto dto = dao.getActivityById(key);
             if (dto == null) {
                 dto = new ActivityDto();
             }
             dtos.put(key, dto);
         });
+
+        for (int activityId : new HashSet<>(dtos.keySet())) {
+            if (!collect.containsKey(activityId)) {
+                try {
+                    dao.remove(dtos.remove(activityId));
+                } catch (Exception e) {
+                    extensionHolder.SFSExtension.getLogger().warn("",e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void destroy() {
+        dtos.values().forEach(dto->dao.saveActivity(dto));
     }
 
     @Override
@@ -195,7 +211,6 @@ public class ActivityService extends EventService implements ISFSModule {
         Map<Integer, List<ActivityConfigTemplate>> collect = ActivityConfig.its.stream()
                 .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
         collect.entrySet().stream()
-                .filter(entry->entry.getValue().stream().anyMatch(t->t.getGift_bag()==2))   // 暂时把type为2的协议单独拎出来 后面在吧所有活动数据改掉
                 .forEach(entry->{
                     ActivityDto activityData = dtos.get(entry.getKey());
                     if (activityData.getOrderData()==null) {
@@ -214,10 +229,10 @@ public class ActivityService extends EventService implements ISFSModule {
                     }
 
                     map.put(String.valueOf(entry.getKey()), join(orderData));
-                    if (entry.getKey() == 1004) {
+                    if (entry.getKey() == 1004) {   // todo remove after
                         map.put("meiriLiangfa", join(orderData));
                     }
-                    if (entry.getKey() == 1005) {
+                    if (entry.getKey() == 1005) {   // todo remove after
                         map.put("tansuoZhiLu", join(orderData));
                     }
                 });
@@ -228,8 +243,9 @@ public class ActivityService extends EventService implements ISFSModule {
         return Arrays.stream(array).mapToObj(String::valueOf).collect(Collectors.joining(","));
     }
 
-    public void reward(Player player,int activityId, int order) {
+    public String reward(Player player,int activityId, int order) {
         Date now = new Date();
+        StringBuilder ret = new StringBuilder();
         ActivityConfig.its.stream()
                 .filter(c -> c.getActivity_sign() == activityId && c.getOrder() == order)
                 .forEach(c->{
@@ -238,26 +254,28 @@ public class ActivityService extends EventService implements ISFSModule {
                         return;
                     }
                     ActivityOrderDto orderData = activityData.getOrderData().get(player.getPlayerId());
-                    if (orderData.state[order-1]!=1) {
+                    if (!(c.getGift_bag()==2&&c.getGet_limit()==2) && orderData.state[order-1]!=1) {  // todo 每日两发消耗钻石不该判断这里
                         return;
                     }
                     if (!c.isActive(player, now)) {
                         return;
                     }
-                    boolean canReceive = false;
+                    boolean canReceive;
                     if (c.getGift_bag() == 3) {
                         canReceive = dengluService.reward(player,c)==0;
                     } else {
                         canReceive = Arrays.stream(Conditions.values())
-                                .filter(e->e.type()==c.getGet_limit())
-                                .anyMatch(e->e.reward(player,c,orderData, this)==0);
+                                    .filter(e->e.type()==c.getGet_limit())
+                                    .anyMatch(e->e.reward(player,c,orderData, this)==0);
                     }
 
                     if (canReceive) {
+                        orderData.state[c.getOrder()-1]=2;
                         gMService.processGM(player, c.getActivity_drop());
                     }
+                    ret.append(join(orderData.state));
                 });
+        return ret.toString();
     }
 
-    // todo 手动关闭指定活动 活动领奖状态判断是否关闭
 }

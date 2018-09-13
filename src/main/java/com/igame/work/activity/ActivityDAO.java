@@ -16,4 +16,7 @@ public class ActivityDAO extends AbsDao {
         return activity;
     }
 
+    public void remove(ActivityDto dto) {
+        getDatastore().delete(dto);
+    }
 }
