@@ -37,8 +37,9 @@ public class PublicMessageHandler extends ReconnectedHandler {
             Player playerCache = playerCacheService.getPlayerById(message.getSender());
             if (playerCache == null) {
                 extensionHolder.SFSExtension.getLogger().warn("{} player cache is null",message);
+            } else {
+                worldMsg.add(new PublicMessageDto(message, playerCache));
             }
-            worldMsg.add(new PublicMessageDto(message,playerCache));
         });
 
         //喇叭消息
