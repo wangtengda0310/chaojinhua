@@ -185,7 +185,7 @@ public class TurntableService implements TimeListener {
 
         //推送
         RetVO vo = new RetVO();
-        vo.addData("turntables", transTurntableVo(player));
+        vo.addData("rewardsStr", transTurntableVo(player).getRewardsStr());
 
         MessageUtil.sendMessageToPlayer(player, MProtrol.TURNTABLE_UPDATE, vo);
     }

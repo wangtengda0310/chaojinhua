@@ -47,7 +47,7 @@ public class TurntableReloadHandler extends ReconnectedHandler {
 
         RetVO vo = new RetVO();
 
-        vo.addData("turntables",turntableService.transTurntableVo(player));
+        vo.addData("rewardsStr",turntableService.transTurntableVo(player).getRewardsStr());
         return vo;
     }
 

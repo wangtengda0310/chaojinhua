@@ -1,6 +1,5 @@
 package com.igame.work.turntable.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.db.BasicDto;
@@ -22,13 +21,10 @@ import java.util.Map;
 public class Turntable extends BasicDto {
 	
 	@Indexed
-	@JsonIgnore
 	private long playerId;//所属角色ID
 
-	@JsonIgnore
 	private Date lastUpdate;//上回刷新时间
 
-	@JsonIgnore
 	private Map<Integer,String> rewards = Maps.newHashMap();//道具 <位置,奖励字符串>
 
 	@Transient
@@ -37,7 +33,6 @@ public class Turntable extends BasicDto {
 	private List<Integer> results = Lists.newArrayList();//结果
 
 	@Transient
-	@JsonIgnore
 	private int dtate;//数据库状态 0-NO 1-新增 2-更新 3-删除
 
 	public long getPlayerId() {
