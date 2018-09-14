@@ -1,12 +1,14 @@
 package com.igame.work.checkpoint.guanqia.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.monster.dto.Monster;
@@ -27,7 +29,8 @@ import java.util.Map;
  */
 public class CheckEnterHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
+	@Inject private ResourceService resourceService;
+	@Inject private CheckPointService checkPointService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -142,7 +145,7 @@ public class CheckEnterHandler extends ReconnectedHandler {
 		param.put("battleType", 1);
 		param.put("chapterId", chapterId);
 		param.put("nianya", player.hasCheckPoint(String.valueOf(chapterId)) ? 1 : 0);
-		player.setLastBattleParam(param);
+		checkPointService.setLastBattleParam(player.getPlayerId(), param);
 
 		addNianyaBuff(player);
 		return vo;

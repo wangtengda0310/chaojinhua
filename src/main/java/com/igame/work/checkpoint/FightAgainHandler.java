@@ -1,10 +1,12 @@
 package com.igame.work.checkpoint;
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.baozouShike.BallisticConstant;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
@@ -19,7 +21,10 @@ import java.util.Date;
 import java.util.Map;
 
 public class FightAgainHandler extends ReconnectedHandler {
+    @Inject
     private ResourceService resourceService;
+    @Inject
+    private CheckPointService checkPointService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -29,7 +34,7 @@ public class FightAgainHandler extends ReconnectedHandler {
         String infor = params.getUtfString("infor");
         JSONObject jsonObject = JSONObject.fromObject(infor);
 
-        Map<String, Object> param = player.getLastBattleParam();
+        Map<String, Object> param = checkPointService.getLastBattleParam(player.getPlayerId());
         if (param == null || !param.containsKey("battleType")) {
             return error(ErrorCode.CHECKPOINT_END_ERROR);
         }

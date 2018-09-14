@@ -32,6 +32,7 @@ import com.igame.work.user.service.RobotService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -43,6 +44,16 @@ public class CheckPointService implements ISFSModule, TimeListener {
 	@Inject private RobotService robotService;
 	@Inject private ResourceService resourceService;
 	@Inject private SessionManager sessionManager;
+
+	private Map<Long, Map<String,Object>> lastBattleParam = new ConcurrentHashMap<>();//上次战斗的关卡参数
+
+	public Map<String, Object> getLastBattleParam(long playerId) {
+		return lastBattleParam.get(playerId);
+	}
+
+	public void setLastBattleParam(long playerId, Map<String,Object> param) {
+		lastBattleParam.put(playerId,param);
+	}
 
 	public String getString(Player player, RewardDto reward, List<Monster> ll, String monsterExpStr) {
 		StringBuilder monsterExpStrBuilder = new StringBuilder(monsterExpStr);

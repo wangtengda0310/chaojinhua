@@ -2,10 +2,12 @@ package com.igame.work.checkpoint.worldEvent.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
@@ -30,7 +32,8 @@ import java.util.Map;
  */
 public class WorldEventEnterHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
+	@Inject private ResourceService resourceService;
+	@Inject private CheckPointService checkPointService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -95,7 +98,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 		param.put("battleType", 2);
 		param.put("eventType", eventType);
 		param.put("level", level);
-		player.setLastBattleParam(param);
+		checkPointService.setLastBattleParam(player.getPlayerId(), param);
 
 		return vo;
 	}

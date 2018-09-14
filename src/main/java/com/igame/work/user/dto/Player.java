@@ -313,10 +313,6 @@ public class Player extends PlayerDto {
     @JsonIgnore
     private long heartTime = System.currentTimeMillis();//心跳刷新时间
 
-    @Transient
-    @JsonIgnore
-    private Map<String, Object> lastBattleParam;//上次战斗的关卡参数
-
     public User getUser() {
         return user;
     }
@@ -835,14 +831,6 @@ public class Player extends PlayerDto {
 
     public void setPlayerTop(PlayerTop playerTop) {
         this.playerTop = playerTop;
-    }
-
-    public Map<String, Object> getLastBattleParam() {
-        return lastBattleParam;
-    }
-
-    public void setLastBattleParam(Map<String,Object> lastBattleParam) {
-        this.lastBattleParam = lastBattleParam;
     }
 
     public String getLastNickname() {
