@@ -174,10 +174,8 @@ public class GameServerExtension extends SFSExtension {
 
 			});
 
-			EventManager eventManager = new EventManager();
-			injectObjectField(eventManager);
-			addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, eventManager.playerEventObserver());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
-			addEventHandler(SFSEventType.ROOM_VARIABLES_UPDATE, eventManager.serviceEventListener());	// 利用ROOM_VARIABLES_UPDATE实现的服务器事件机制
+			addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, ((EventManager)cachedObjects.get(EventManager.class)).playerEventObserver());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
+			addEventHandler(SFSEventType.ROOM_VARIABLES_UPDATE, ((EventManager)cachedObjects.get(EventManager.class)).serviceEventListener());	// 利用ROOM_VARIABLES_UPDATE实现的服务器事件机制
 
 			classOfInterface.get(BaseHandler.class).forEach(this::register);
 
