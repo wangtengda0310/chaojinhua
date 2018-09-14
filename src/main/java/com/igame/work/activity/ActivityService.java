@@ -107,11 +107,14 @@ public class ActivityService extends EventService implements ISFSModule {
                         activityData = new ActivityDto();
                         activityData.setActivityId(key);
                     }
+
                     ActivityOrderDto orderData = activityData.getOrderData().computeIfAbsent(player.getPlayerId(), playerId -> {
                         ActivityOrderDto orderData1 = new ActivityOrderDto();
                         orderData1.state = new int[value.size()];
                         return orderData1;
                     });
+
+                    ActivityDto d = activityData;
                     value.forEach(template -> {
 
                         if (orderData.state[template.getOrder() - 1] == 2) {    // 已经领取奖励
@@ -120,6 +123,7 @@ public class ActivityService extends EventService implements ISFSModule {
 
                         Arrays.stream(Conditions.values())
                                 .filter(c->c.intrestEvent()==eventType)
+                                .peek(c->dao.updatePlayer(d, player.getPlayerId(),orderData))
                                 .forEach(c->c.onEvent(player, template, orderData, event));
 
                     });
@@ -232,6 +236,7 @@ public class ActivityService extends EventService implements ISFSModule {
 
                     if (canReceive) {
                         orderData.state[c.getOrder()-1]=2;
+                        dao.updatePlayer(activityData, player.getPlayerId(), orderData);
                         gMService.processGM(player, c.getActivity_drop());
                     }
                     ret.append(join(orderData.state));
