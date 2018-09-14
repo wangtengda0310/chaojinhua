@@ -1,10 +1,12 @@
 package com.igame.work.shopActivity;
 
 import com.igame.core.db.BasicDto;
+import org.mongodb.morphia.annotations.Entity;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Entity(noClassnameStored = true)
 public class ShopActivityDto extends BasicDto {
 
     public int activityId;

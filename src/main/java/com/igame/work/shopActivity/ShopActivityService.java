@@ -19,7 +19,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
     @Inject
     private ShopActivityDAO shopActivityDAO;
 
-    static int HOUR_MILLIS = 24 * 60 * 60 * 1000;
+    static int HOUR_MILLIS = 60 * 60 * 1000;
     Map<Integer, ShopActivityDto> dto = new HashMap<>();
 
     private ShopActivityDto createShopActivityDto(int activityId) {
@@ -35,12 +35,13 @@ public class ShopActivityService extends EventService implements ISFSModule {
     }
 
     private void recordGoldData(Player player, long timeMillis, long amount, ShopActivityDataTemplate c) {
-        dto.computeIfAbsent(c.getNum(), this::createShopActivityDto).players
+        dto.computeIfAbsent(c.getNum(), this::createShopActivityDto)
+                .players
                 .computeIfAbsent(player.getPlayerId(), k -> {
                     ShopActivityPlayerDto dto = createShopActivityPlayerDto();
-                    dto.goldActivityInfo.put(timeMillis, amount);
                     return dto;
-                });
+                })
+                .goldActivityInfo.put(timeMillis, amount);;
     }
 
     private boolean canOpenGoldActivityForPlayer(Player player, ShopActivityDataTemplate c) {
@@ -55,7 +56,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
                 records.remove(min);
                 timestamps.remove(min);
             } else {
-                return Math.abs(records.values().stream().mapToLong(x -> x).sum()) > c.getTouch_value();
+                return Math.abs(records.values().stream().mapToLong(x -> x).sum()) >= c.getTouch_value();
             }
         }
         while (timestamps.size() > 1);
