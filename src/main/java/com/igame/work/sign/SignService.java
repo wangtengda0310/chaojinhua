@@ -138,4 +138,19 @@ public class SignService {
         map.put("totalSign", totalSign);
         return map;
     }
+
+    public Object clientData(Player player) {
+
+        String totalSign = player.getSign().getTotalSign();
+        String[] signDataSplit = player.getSign().getSignData().split(",");
+
+        Map<String, Object> signData = new HashMap<>();
+
+        signData.put("round", Integer.parseInt(signDataSplit[0]));
+        signData.put("signed", Integer.parseInt(signDataSplit[1]));
+        signData.put("totalSign", totalSign);
+        signData.put("canSign", DateUtil.formatToday().equals(signDataSplit[2]) ? 0 : 1);
+
+        return signData;
+    }
 }

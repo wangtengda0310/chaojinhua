@@ -6,7 +6,6 @@ import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.log.ExceptionLog;
-import com.igame.util.DateUtil;
 import com.igame.work.PlayerEvents;
 import com.igame.work.activity.condition.Conditions;
 import com.igame.work.activity.denglu.DengluService;
@@ -52,10 +51,12 @@ public class ActivityService extends EventService implements ISFSModule {
             ActivityDto dto = dao.getActivityById(key);
             if (dto == null) {
                 dto = new ActivityDto();
+                dto.setActivityId(key);
             }
             dtos.put(key, dto);
         });
 
+        // 配置中没找到 认为是活动下线 把数据清掉
         for (int activityId : new HashSet<>(dtos.keySet())) {
             if (!collect.containsKey(activityId)) {
                 try {
@@ -98,6 +99,7 @@ public class ActivityService extends EventService implements ISFSModule {
                     ActivityDto activityData = dtos.get(key);
                     if (activityData == null) {
                         activityData = new ActivityDto();
+                        activityData.setActivityId(key);
                     }
                     ActivityOrderDto orderData = activityData.getOrderData().computeIfAbsent(player.getPlayerId(), playerId -> {
                         ActivityOrderDto orderData1 = new ActivityOrderDto();
@@ -139,45 +141,53 @@ public class ActivityService extends EventService implements ISFSModule {
         return data;
     }
 
+    // 新的登录活动开始后 删除上轮的数据
+    // id相同id时间有修改的话 认为是新一轮活动 把上一轮活动数据清掉
+    // todo 修改数据库以活动为主数据后 统一在加载数据的地方处理
+//        byPlayer.values().stream()
+//                .filter(a -> configs.containsKey(a.getActivityId()))
+//                .filter(a -> configs.get(a.getActivityId()).stream()
+//                        .anyMatch(c ->
+//                                    !String.valueOf(c.startTime(player).getTime()).equals(a.getOpenTime())))
+//                .peek(a->
+//                        configs.get(a.getActivityId()).stream().findAny()
+//                                .ifPresent(c->{
+//                                    if(a.getOpenTime()==null || c.startTime(player).getTime()>Long.parseLong(a.getOpenTime())) {
+//                                        a.setOpenTime(String.valueOf(c.startTime(player).getTime()));
+//                                    }
+//                                }))
+//                .forEach(a -> a.setRecord(new int[configs.get(a.getActivityId()).size()]));
+
     /**
      * 因为数据库里存的数据跟客户端协议的格式不一样，这里做下转换
      */
     public Map<String, Object> clientData(Player player) {
         Map<String, Object> map = new HashMap<>();  // todo string->int
 
-        String totalSign = player.getSign().getTotalSign();
-        String[] signDataSplit = player.getSign().getSignData().split(",");
-
-        Map<String, Object> signData = new HashMap<>();
-
-        signData.put("round", Integer.parseInt(signDataSplit[0]));
-        signData.put("signed", Integer.parseInt(signDataSplit[1]));
-        signData.put("totalSign", totalSign);
-        signData.put("canSign", DateUtil.formatToday().equals(signDataSplit[2]) ? 0 : 1);
-        map.put("sign", signData);  // todo move outer
-
-        map.put("denglu", dengluService.clientData(player));    // todu remove?
-
         Map<Integer, List<ActivityConfigTemplate>> collect = ActivityConfig.its.stream()
+                .filter(c->c.getGift_bag()==2||c.getGift_bag()==3)
                 .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
-        collect.forEach((key, value) -> {
-            ActivityDto activityData = dtos.get(key);
+        collect.forEach((activityId, configs) -> {
+            ActivityDto activityData = dtos.get(activityId);
             if (activityData.getOrderData() == null) {
                 activityData.setOrderData(new HashMap<>());
             }
             ActivityOrderDto activityOrderDto = activityData.getOrderData()
                     .computeIfAbsent(player.getPlayerId(), playerId -> new ActivityOrderDto());
 
+            // 只保证state的初始化，record留给活动逻辑单独处理初始化
             int[] orderData = activityOrderDto.state;
             if (activityOrderDto.state == null) {
-                activityOrderDto.state = orderData = initPlayerActivityData(player, value);
-            } else if (orderData.length != value.size()) {
-                int[] newOrderData = new int[value.size()];
+                activityOrderDto.state = orderData = initPlayerActivityData(player, configs);
+            } else if (orderData.length != configs.size()) {
+                int[] newOrderData = new int[configs.size()];
                 System.arraycopy(orderData, 0, newOrderData, 0, Math.min(newOrderData.length, orderData.length));
                 orderData = newOrderData;
             }
 
-            map.put(String.valueOf(key), join(orderData));
+            dengluService.loadPlayer(player, activityOrderDto, configs);	// todo event
+
+            map.put(String.valueOf(activityId), join(orderData));
         });
         return map;
     }
@@ -205,7 +215,7 @@ public class ActivityService extends EventService implements ISFSModule {
                     }
                     boolean canReceive;
                     if (c.getGift_bag() == 3) {
-                        canReceive = dengluService.reward(player,c)==0;
+                        canReceive = dengluService.checkReward(player,c,orderData)==0;
                     } else {
                         canReceive = Arrays.stream(Conditions.values())
                                     .filter(e->e.type()==c.getGet_limit())

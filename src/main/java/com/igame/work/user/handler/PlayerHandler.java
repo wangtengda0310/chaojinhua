@@ -189,6 +189,7 @@ public class PlayerHandler extends BaseHandler {
 		vo.addData("teams",player.getTeams().values());
 		vo.addData("vipPrivileges",player.getVipPrivileges());
 		vo.addData("showActivities", activityService.clientData(player));
+		vo.addData("sign", signService.clientData(player));
 		vo.addData("dateTime", DateUtil.formatClientDateTime(new Date()));
 		vo.addData("activitylimit",shopActivityService.clientData(player));
 		try {
@@ -396,8 +397,7 @@ public class PlayerHandler extends BaseHandler {
 		if(player.getLastNickname()!=null && !"".equals(player.getLastNickname())) {
 			player.setModifiedName(1);
 		}
-		signService.loadPlayer(player);		// todo event
-		dengluService.loadPlayer(player);	// todo event
+		signService.loadPlayer(player);		// todo event?
 	}
 
 	private void calPlayerTimeRes(Player player){
