@@ -308,10 +308,6 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     private Object proPushLock = new Object();//推送消息同步锁
-    
-    @Transient
-    @JsonIgnore
-    private long heartTime = System.currentTimeMillis();//心跳刷新时间
 
     public User getUser() {
         return user;
@@ -799,14 +795,6 @@ public class Player extends PlayerDto {
 
     public void setProPushLock(Object proPushLock) {
         this.proPushLock = proPushLock;
-    }
-
-    public long getHeartTime() {
-        return heartTime;
-    }
-
-    public void setHeartTime(long heartTime) {
-        this.heartTime = heartTime;
     }
 
     public Map<String, Object> getVipPrivileges() {

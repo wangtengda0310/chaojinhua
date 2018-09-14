@@ -11,6 +11,7 @@ import com.igame.util.KickIDisconnectionReason;
 import com.igame.work.MProtrol;
 import com.igame.work.PlayerEvents;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
 import com.smartfoxserver.v2.core.SFSEventType;
@@ -29,6 +30,7 @@ import com.smartfoxserver.v2.exceptions.SFSLoginException;
  */
 public class LoginEventHandler extends EventDispatcherHandler {
 	@Inject private SessionManager sessionManager;
+	@Inject private PlayerCacheService playerCacheService;
 
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
@@ -61,7 +63,7 @@ public class LoginEventHandler extends EventDispatcherHandler {
 		
 		//是重连但是玩家不存在
 		if(player != null){
-			player.setHeartTime(System.currentTimeMillis());
+			playerCacheService.setHeartTime(player.getPlayerId(), System.currentTimeMillis());
 //			RetVO vo = new RetVO();
 //			ObjectMapper mapper = new ObjectMapper();
 //			String json = null;

@@ -17,6 +17,7 @@ import com.igame.work.user.dto.Player;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -97,10 +98,21 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 	public static List<Player> getPlayers(int serverId) {
 		return pcd.values().stream().filter(player -> player.getSeverId() == serverId).collect(Collectors.toList());
 	}
-	
+
+	private Map<Long, Long> heartTime = new ConcurrentHashMap<>();//心跳刷新时间
+
+	public long getHeartTime(long playerId) {
+		return heartTime.containsKey(playerId)?heartTime.get(playerId):0;
+	}
+
+	public void setHeartTime(long playerId, long heartTime) {
+		this.heartTime.put(playerId, heartTime);
+	}
+
 	public void checkPlayer(){
     	for(Player player : sessionManager.getSessions().values()){
-			if(player.getHeartTime()>0 && System.currentTimeMillis() - player.getHeartTime() > 5 * 60 * 1000){
+			long heartTime = getHeartTime(player.getPlayerId());
+			if(heartTime >0 && System.currentTimeMillis() - heartTime > 5 * 60 * 1000){
 				try{
 					fireEvent(player, PlayerEvents.OFF_LINE,System.currentTimeMillis());
 				}catch(Exception e){

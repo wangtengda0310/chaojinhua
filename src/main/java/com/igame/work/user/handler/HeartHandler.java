@@ -8,6 +8,7 @@ import com.igame.core.handler.RetVO;
 import com.igame.util.DateUtil;
 import com.igame.work.MProtrol;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
@@ -23,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HeartHandler extends BaseHandler{
     private Map<Long, Integer> timer = new ConcurrentHashMap<>();
     @Inject private SessionManager sessionManager;
+    @Inject private PlayerCacheService playerCacheService;
 
     @Override
     public void handleClientRequest(User user, ISFSObject params) {
@@ -34,7 +36,7 @@ public class HeartHandler extends BaseHandler{
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;
         }
-        player.setHeartTime(System.currentTimeMillis());
+        playerCacheService.setHeartTime(player.getPlayerId(), System.currentTimeMillis());
         int times = timer.computeIfAbsent(player.getPlayerId(), k->0);
         if (times++ > 10) {
             times = 0;
