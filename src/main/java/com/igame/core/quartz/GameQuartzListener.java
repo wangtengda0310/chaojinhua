@@ -8,7 +8,7 @@ import com.igame.core.log.ExceptionLog;
  * @author Marcus.Z
  *
  */
-public class GameQuartzListener implements TimeListener {
+public class GameQuartzListener {
 
 	public GameQuartzListener(){}
 
