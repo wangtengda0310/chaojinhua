@@ -300,11 +300,7 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     private Map<Integer,MessageCache> proTuiMap = new ConcurrentHashMap<>();//推送消息缓存
-    
-    @Transient
-    @JsonIgnore
-    private Object proLock = new Object();//消息同步锁
-    
+
     @Transient
     @JsonIgnore
     private Object proPushLock = new Object();//推送消息同步锁
@@ -779,14 +775,6 @@ public class Player extends PlayerDto {
 
     public void setProTuiMap(Map<Integer, MessageCache> proTuiMap) {
         this.proTuiMap = proTuiMap;
-    }
-
-    public Object getProLock() {
-        return proLock;
-    }
-
-    public void setProLock(Object proLock) {
-        this.proLock = proLock;
     }
 
     public Object getProPushLock() {

@@ -1,9 +1,9 @@
 package com.igame.core.handler;
 
+import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
-import com.igame.core.SessionManager;
 import com.igame.work.user.dto.MessageCache;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
@@ -11,6 +11,8 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public abstract class ReconnectedHandler extends BaseHandler {
@@ -49,10 +51,12 @@ public abstract class ReconnectedHandler extends BaseHandler {
 
     }
 
+    private Map<Long, Object> proLock = new ConcurrentHashMap<>();//消息同步锁
+
     private void cacheResponse(String cmdName, RetVO vo, User user, ISFSObject res) {
         Player player = sessionManager.getSession(Long.parseLong(user.getName()));
         if(player != null){
-            synchronized (player.getProLock()) {
+            synchronized (proLock.computeIfAbsent(player.getPlayerId(), pid->new Object())) {
                 player.getProMap().put(vo.getIndex(), new MessageCache(cmdName, res));
                 int size = player.getProMap().size();
                 if(size > 10){
