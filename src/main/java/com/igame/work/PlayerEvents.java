@@ -15,7 +15,7 @@ public enum PlayerEvents implements EventType {
     , CONSUME_DIAMOND
     , CONSUME_GOLD
     , CONSUME_ITEM
-    , OFF_LINE
+    , OFF_LINE  // todo 发送这个事件后会移除session 可能导致后面接受事件的地方取不到Player对象
     , LEVEL_UP
     , GOT_MONSTER
     , DRAW_BY_DIAMOND

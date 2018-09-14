@@ -28,24 +28,14 @@ public class TurntableService implements TimeListener {
 
     public Map<Long, Turntable> turntables = new HashMap<>();//幸运大转盘
     public Turntable getTurntable(Player player) {
+        if (turntables.containsKey(player.getPlayerId())) {
+            return turntables.get(player.getPlayerId());
+        }
         Turntable turntable = dao.getTurntableByPlayerId(player.getPlayerId());
         if (turntable == null) {
             turntable = initTurntable(player);
         }
         turntables.put(player.getPlayerId(), turntable);
-        return turntable;
-    }
-
-    public void setTurntable(Player player, Turntable turntable) {
-        turntables.put(player.getPlayerId(), turntable);
-    }
-
-    public Turntable transTurntableVo(Player player) {
-        Turntable turntable = turntables.get(player.getPlayerId());
-        if (turntable != null) {
-            turntable.setRewardsStr();
-        }
-
         return turntable;
     }
 
@@ -61,7 +51,7 @@ public class TurntableService implements TimeListener {
         turntable.setPlayerId(player.getPlayerId());
         turntable.setDtate(1);
 
-        setTurntable(player, turntable);
+        turntables.put(player.getPlayerId(), turntable);
 
         //刷新道具
         reloadTurntable(player, turntable);
@@ -185,7 +175,7 @@ public class TurntableService implements TimeListener {
 
         //推送
         RetVO vo = new RetVO();
-        vo.addData("rewardsStr", transTurntableVo(player).getRewardsStr());
+        vo.addData("rewardsStr", getTurntable(player).getRewardsStr());
 
         MessageUtil.sendMessageToPlayer(player, MProtrol.TURNTABLE_UPDATE, vo);
     }

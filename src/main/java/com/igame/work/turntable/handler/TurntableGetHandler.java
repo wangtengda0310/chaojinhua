@@ -32,7 +32,7 @@ public class TurntableGetHandler extends ReconnectedHandler {
             return error(ErrorCode.LEVEL_NOT);
         }
 
-        vo.addData("rewardsStr",turntableService.transTurntableVo(player).getRewardsStr());
+        vo.addData("rewardsStr",turntableService.getTurntable(player).getRewardsStr());
         return vo;
     }
 

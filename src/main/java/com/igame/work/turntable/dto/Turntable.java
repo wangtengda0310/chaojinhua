@@ -27,9 +27,6 @@ public class Turntable extends BasicDto {
 
 	private Map<Integer,String> rewards = Maps.newHashMap();//道具 <位置,奖励字符串>
 
-	@Transient
-	private String[] rewardsStr;
-
 	private List<Integer> results = Lists.newArrayList();//结果
 
 	@Transient
@@ -68,11 +65,20 @@ public class Turntable extends BasicDto {
 	}
 
 	public String[] getRewardsStr() {
-		return rewardsStr;
-	}
+		String[] rewardsStr = new String[this.rewards.size()];
 
-	public void setRewardsStr(String[] rewardsStr) {
-		this.rewardsStr = rewardsStr;
+		int index = 0;
+		for (Map.Entry<Integer, String> entry : rewards.entrySet()) {
+
+			Integer site = entry.getKey();
+			String item = entry.getValue();
+
+			rewardsStr[index] = site + ";" + item;
+			index++;
+		}
+
+		return rewardsStr;
+
 	}
 
 	public int getDtate() {
@@ -107,21 +113,4 @@ public class Turntable extends BasicDto {
 		}
 	}
 
-	public Turntable setRewardsStr() {
-
-		this.rewardsStr = new String[this.rewards.size()];
-
-		int index = 0;
-		for (Map.Entry<Integer, String> entry : rewards.entrySet()) {
-
-			Integer site = entry.getKey();
-			String item = entry.getValue();
-
-			rewardsStr[index] = site + ";" + item;
-			index++;
-		}
-
-		return this;
-
-	}
 }
