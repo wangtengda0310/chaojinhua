@@ -8,13 +8,11 @@ import com.igame.core.log.ExceptionLog;
  * @author Marcus.Z
  *
  */
-public class GameQuartzListener {
+public class GameQuartzListener implements TimeListener {
 
 	public GameQuartzListener(){}
 
-
-    public void minute(){
-		ExceptionLog.error("minute");
+	public void minute(){
 		JobManager.listeners.values().forEach(jobListener -> {
 			try{
 
@@ -28,7 +26,6 @@ public class GameQuartzListener {
 
     public void minute5(){
 
-        ExceptionLog.error("minute5");
         JobManager.listeners.values().forEach(jobListener -> {
             try{
 
@@ -45,7 +42,6 @@ public class GameQuartzListener {
 
 	public void minute180(){
 
-		ExceptionLog.error("minute180");
 		JobManager.listeners.values().forEach(jobListener -> {
 			try{
 
@@ -60,7 +56,6 @@ public class GameQuartzListener {
 
     //零点执行
     public void zero(){
-		ExceptionLog.error("zero");
 		JobManager.listeners.values().forEach(jobListener -> {
 			try{
 
@@ -75,7 +70,6 @@ public class GameQuartzListener {
 
 	//九点执行
 	public void nine(){
-		ExceptionLog.error("nine");
 		JobManager.listeners.values().forEach(jobListener -> {
 			try{
 
@@ -90,7 +84,6 @@ public class GameQuartzListener {
 
 	//十二点执行
 	public void twelve(){
-		ExceptionLog.error("twelve");
 		JobManager.listeners.values().forEach(jobListener -> {
 			try{
 
@@ -104,7 +97,6 @@ public class GameQuartzListener {
 
 	//十四点执行
 	public void fourteen(){
-		ExceptionLog.error("fourteen");
 
 		JobManager.listeners.values().forEach(jobListener -> {
 			try{
@@ -119,7 +111,6 @@ public class GameQuartzListener {
 
 	//二十点执行
 	public void twenty(){
-		ExceptionLog.error("twenty");
 
 		JobManager.listeners.values().forEach(jobListener -> {
 			try{
@@ -133,7 +124,6 @@ public class GameQuartzListener {
 
 	//每周一执行
 	public void week7(){
-		ExceptionLog.error("week7");
 
     	JobManager.listeners.values().forEach(jobListener -> {
 			try{

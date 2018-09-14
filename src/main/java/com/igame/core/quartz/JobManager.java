@@ -7,8 +7,8 @@ import com.igame.core.log.ExceptionLog;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 
@@ -38,30 +38,22 @@ public class JobManager implements ISFSModule {
     @Override
       public void init(){
         try {
-
             scheduler = new StdSchedulerFactory().getScheduler();
 
-            Map<String, String> methodCronExpression = new HashMap<>();
-            methodCronExpression.put("second", "0/1 * *  * * ?");
-            methodCronExpression.put("minute", "0 0/1 * * * ?");
-            methodCronExpression.put("minute5", "0 0/5 * * * ?");
-            methodCronExpression.put("minute180", "0 0 0/3 * * ? ");
-            methodCronExpression.put("zero", "0 0 12 * * ?");
+            for (Method method : TimeListener.class.getMethods()) {
+                if(!method.isAnnotationPresent(Cron.class)) {
+                    continue;
+                }
+                String cron = method.getAnnotation(Cron.class).value();
 
-            methodCronExpression.put("nine", "0 0 9 * * ?");
-            methodCronExpression.put("twelve", "0 0 12 * * ?");
-            methodCronExpression.put("fourteen", "0 0 14 * * ?");
-            methodCronExpression.put("twenty", "0 0 20 * * ?");
-            methodCronExpression.put("week7", "0 0 12 ? * 2");
-
-            for(String method: methodCronExpression.keySet()) {
-                CronTrigger conTrigger = new CronTrigger("QuartzTrigger_"+method, "DEFAULT");
+                String methodName = method.getName();
+                CronTrigger conTrigger = new CronTrigger("QuartzTrigger_"+ methodName, "DEFAULT");
                 JobDataMap dataMap = new JobDataMap();
                 dataMap.put("JOB_INSTANCE", listener);
-                dataMap.put("JOB_METHOD", method);
+                dataMap.put("JOB_METHOD", methodName);
                 conTrigger.setJobDataMap(dataMap);
-                conTrigger.setCronExpression(methodCronExpression.get(method));
-                scheduler.scheduleJob(new JobDetail("QuartzJOB_"+method, "DEFAULT", JobExecutor.class)
+                conTrigger.setCronExpression(cron);
+                scheduler.scheduleJob(new JobDetail("QuartzJOB_"+ methodName, "DEFAULT", JobExecutor.class)
                         , conTrigger);
             }
 
