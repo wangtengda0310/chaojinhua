@@ -77,7 +77,7 @@ public class TrialEndHandler extends ReconnectedHandler {
 		vo.addData("win", win);
 //		vo.addData("playerExp", playerExp);
 //		vo.addData("monsterExp", monsterExpStr);
-		vo.addData("reward", reward);
+		vo.addData("checkReward", reward);
 
 		return vo;
 	}

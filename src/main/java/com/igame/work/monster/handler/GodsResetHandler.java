@@ -68,7 +68,7 @@ public class GodsResetHandler extends ReconnectedHandler {
 		}
 
 		vo.addData("gods", gods);
-		vo.addData("reward", reward);
+		vo.addData("checkReward", reward);
 
 		return vo;
 	}

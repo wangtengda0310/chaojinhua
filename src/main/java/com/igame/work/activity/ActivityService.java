@@ -42,7 +42,7 @@ public class ActivityService extends EventService implements ISFSModule {
     @Inject private GMService gMService;
     @Inject private ActivityDAO dao;
 
-    private Map<Integer, ActivityDto> dtos=new ConcurrentHashMap<>();
+    Map<Integer, ActivityDto> dtos=new ConcurrentHashMap<>();
     @Override
     public void init() {
         // todo 手动关闭指定活动 活动领奖状态判断是否关闭
@@ -80,7 +80,7 @@ public class ActivityService extends EventService implements ISFSModule {
 
             @Override
             public EventType[] interestedTypes() {
-                playerEvents = new PlayerEvents[]{PlayerEvents.LEVEL_UP
+                playerEvents = new PlayerEvents[]{PlayerEvents.LEVEL_UP,PlayerEvents.GOD_LEVEL_UP
                         , PlayerEvents.CONSUME_GOLD
                         , PlayerEvents.CONSUME_DIAMOND
                         , PlayerEvents.RECHARGE
@@ -110,30 +110,10 @@ public class ActivityService extends EventService implements ISFSModule {
                             return;
                         }
 
-                        if (PlayerEvents.LEVEL_UP == eventType) {
-                            int[] levelInfo = (int[]) event;
-                            if (levelInfo[1]>=Integer.parseInt(template.getGet_value()))
-                                orderData.state[template.getOrder()-1] = 1;
-                        }
-                        if (PlayerEvents.CONSUME_DIAMOND == eventType) {
-                            Object[] eventInfo = (Object[]) event;
-                            long eventMillis = (long) eventInfo[0];
-                            int amount = (int) eventInfo[1];
-                            Map<Long, Integer> records = (Map<Long, Integer>) orderData.recrod.get(template.getOrder());
-                            records.put(eventMillis, amount);
-                            // todo 这里更新state还是1003协议toClientData的时候更新
-                        }
-                        if (PlayerEvents.GOT_MONSTER == eventType) {
-                            int monsterId = (int) event;
-                            if (monsterId==Integer.parseInt(template.getGet_value()))
-                                orderData.state[template.getOrder()-1] = 1;
-                        }
-                        if (PlayerEvents.DRAW_BY_DIAMOND == eventType) {
-                            int times = (int) orderData.recrod.get(template.getOrder());
-                            orderData.recrod.put(template.getOrder(), times + 1);
-                            if (times + 1>=Integer.parseInt(template.getGet_value()))
-                                orderData.state[template.getOrder()-1] = 1;
-                        }
+                        Arrays.stream(Conditions.values())
+                                .filter(c->c.intrestEvent()==eventType)
+                                .forEach(c->c.onEvent(player, template, orderData, event));
+
                     });
                 });
             }
@@ -202,7 +182,7 @@ public class ActivityService extends EventService implements ISFSModule {
         return map;
     }
 
-    private String join(int[] array) {  // todo move to util
+    String join(int[] array) {  // todo move to util
         return Arrays.stream(array).mapToObj(String::valueOf).collect(Collectors.joining(","));
     }
 
@@ -229,7 +209,7 @@ public class ActivityService extends EventService implements ISFSModule {
                     } else {
                         canReceive = Arrays.stream(Conditions.values())
                                     .filter(e->e.type()==c.getGet_limit())
-                                    .anyMatch(e->e.reward(player,c,orderData, this)==0);
+                                    .anyMatch(e->e.checkReward(player,c,orderData, this)==0);
                     }
 
                     if (canReceive) {

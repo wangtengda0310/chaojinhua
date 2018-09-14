@@ -55,7 +55,7 @@ public class MialGetHandler extends ReconnectedHandler {
 		vo.addData("id", id);
 		vo.addData("type", type);
 		vo.addData("state", mail.getState());
-		vo.addData("reward", reward);
+		vo.addData("checkReward", reward);
 
 		return vo;
 	}

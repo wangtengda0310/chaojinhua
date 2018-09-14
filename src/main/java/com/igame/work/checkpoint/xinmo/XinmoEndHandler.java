@@ -85,7 +85,7 @@ public class XinmoEndHandler extends ReconnectedHandler {
 
 		vo.addData("chapterId", chapterId);
 		vo.addData("win", win);
-		vo.addData("reward", reward);
+		vo.addData("checkReward", reward);
 
 		return vo;
 	}

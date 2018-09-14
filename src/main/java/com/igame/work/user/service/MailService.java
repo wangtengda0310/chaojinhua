@@ -86,7 +86,7 @@ public class MailService {
 
     	if (exttype == 1 && type == 1){	//如果是系统发的奖励邮件
 			GoldLog.info("#serverId:"+serverId+"#userId:"+"#playerId:"+target
-					+"#act:addRes"+"#addtype:mail"+ "#title:"+ title + "#reward:"+attach);
+					+"#act:addRes"+"#addtype:mail"+ "#title:"+ title + "#checkReward:"+attach);
 		}
     	return mail;
     }

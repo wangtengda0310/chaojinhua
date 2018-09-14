@@ -22,7 +22,8 @@ public class ActivityHandler extends ReconnectedHandler {
         activityService.reward(player, activityId, order);
 
         RetVO retVO = new RetVO();
-        retVO.addData("state", "还没弄好");
+        ActivityOrderDto orderData = activityService.dtos.get(activityId).getOrderData().get(player.getPlayerId());
+        retVO.addData("state", activityService.join(orderData.state));
         retVO.addData("activityId", activityId);
         retVO.addData("order", order);
         return retVO;

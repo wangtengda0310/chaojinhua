@@ -73,7 +73,7 @@ public class VipBuyFristPackHandler extends ReconnectedHandler {
         }
         player.getVipPrivileges().put(KEY_FIRST_PACK,s);
 
-        vo.addData("reward",firstPack);
+        vo.addData("checkReward",firstPack);
         return vo;
     }
 

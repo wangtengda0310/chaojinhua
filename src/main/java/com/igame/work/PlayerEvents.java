@@ -19,4 +19,6 @@ public enum PlayerEvents implements EventType {
     , LEVEL_UP
     , GOT_MONSTER
     , DRAW_BY_DIAMOND
+    , GOD_LEVEL_UP
+    , TURN_TABLE
 }

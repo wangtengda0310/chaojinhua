@@ -108,7 +108,7 @@ public class WorldEventEndHandler extends ReconnectedHandler {
 
 		vo.addData("playerExp", playerExp);
 		vo.addData("monsterExp", monsterExpStr);
-		vo.addData("reward", reward);
+		vo.addData("checkReward", reward);
 		vo.addData("count", wd.getCount());
 		vo.addData("levelInfo", wd.getLevel());
 

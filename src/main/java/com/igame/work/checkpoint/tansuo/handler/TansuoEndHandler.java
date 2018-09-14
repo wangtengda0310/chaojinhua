@@ -124,7 +124,7 @@ public class TansuoEndHandler extends ReconnectedHandler {
 
 		vo.addData("leftTime", dto.getLeftTime());
 		vo.addData("state", dto.getState());
-		vo.addData("reward", reward);
+		vo.addData("checkReward", reward);
 
 		return vo;
 	}

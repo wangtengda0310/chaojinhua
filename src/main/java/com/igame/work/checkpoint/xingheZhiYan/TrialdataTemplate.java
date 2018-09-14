@@ -36,7 +36,7 @@ public class TrialdataTemplate {
 	@XmlAttribute(name = "monster_prop")
 	private  String monsterProp;
 	
-	@XmlAttribute(name = "reward")
+	@XmlAttribute(name = "checkReward")
 	private  String reward;
 
 	public int getNum() {

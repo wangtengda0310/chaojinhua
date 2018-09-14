@@ -102,7 +102,7 @@ public class WorldEventSaoHandler extends ReconnectedHandler {
 		vo.addData("count", wd.getCount());
 		vo.addData("playerExp", playerExp);
 		vo.addData("monsterExp", monsterExpStr);
-		vo.addData("reward", reward);
+		vo.addData("checkReward", reward);
 
 		return vo;
 	}

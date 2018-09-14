@@ -96,7 +96,7 @@ public class MessageUtil {
 		
 		RetVO vo = new RetVO();	
     	vo.addData("chapterId", chapterId);
-    	vo.addData("reward", ResourceService.getRewardString(reward));
+    	vo.addData("checkReward", ResourceService.getRewardString(reward));
     	MessageUtil.sendMessageToPlayer(player, MProtrol.CHECKPOINT_RES_UPDATE, vo);
 		
 	}

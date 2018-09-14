@@ -5,6 +5,7 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
+import com.igame.work.PlayerEvents;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.item.dto.Item;
 import com.igame.work.turntable.service.TurntableService;
@@ -53,8 +54,9 @@ public class OneLotteryHandler extends ReconnectedHandler {
         String reward = turntableService.getTurntable(player).getRewards().get(site);
         gmService.processGM(player,reward);
 
+        fireEvent(player, PlayerEvents.TURN_TABLE,1);
         vo.addData("site",site);
-        vo.addData("reward",reward);
+        vo.addData("checkReward",reward);
 
         return vo;
     }

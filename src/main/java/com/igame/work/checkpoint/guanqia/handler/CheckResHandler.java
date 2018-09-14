@@ -57,7 +57,7 @@ public class CheckResHandler extends ReconnectedHandler {
 			reward = reward.substring(1);
 		}
 		vo.addData("chapterId", chapterIdstr);
-		vo.addData("reward", reward);
+		vo.addData("checkReward", reward);
 
 		return vo;
 	}

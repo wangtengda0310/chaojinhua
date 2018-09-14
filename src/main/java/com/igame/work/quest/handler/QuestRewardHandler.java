@@ -47,7 +47,7 @@ public class QuestRewardHandler extends ReconnectedHandler {
 
 		String reward = questService.getReward(player, td);
 
-		vo.addData("reward", reward);
+		vo.addData("checkReward", reward);
 
 		return vo;
 	}

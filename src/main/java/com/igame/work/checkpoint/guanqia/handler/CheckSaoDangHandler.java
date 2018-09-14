@@ -97,7 +97,7 @@ public class CheckSaoDangHandler extends ReconnectedHandler {
 
 		vo.addData("playerExp", playerExp);
 		vo.addData("monsterExp", monsterExpStr);
-		vo.addData("reward", rr);
+		vo.addData("checkReward", rr);
 
 		return vo;
 	}

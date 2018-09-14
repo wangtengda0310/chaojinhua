@@ -24,7 +24,7 @@ public class RunRewardTemplate {
     @XmlAttribute(name = "rank_max")
     private int rankMax;//最大排名
 
-    @XmlAttribute(name = "reward")
+    @XmlAttribute(name = "checkReward")
     private String reward;//奖励  同GM字符串结构
 
     public int getNum() {

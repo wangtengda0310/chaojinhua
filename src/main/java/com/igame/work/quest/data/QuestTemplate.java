@@ -41,7 +41,7 @@ public class QuestTemplate {
 	private  int finish;
 	
 	//任务奖励
-	@XmlAttribute(name = "reward")
+	@XmlAttribute(name = "checkReward")
 	private String reward;
 	
 	//限时时间

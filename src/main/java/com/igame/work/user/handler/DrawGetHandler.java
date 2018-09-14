@@ -82,7 +82,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 //						}
 //						
 //						RewardDto dto = resourceService.getRewardDto("1,2,100;3,200001,10", "100");
-//						reward = resourceService.getRewardString(dto);
+//						checkReward = resourceService.getRewardString(dto);
 //						resourceService.addRewarToPlayer(player, dto);
 //						MessageUtil.notifyItemChange(player, ll);
 //						resourceService.addDrawExp(player, dt.getDrawExp());
@@ -125,7 +125,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 								resourceService.getTotalRewardDto(dto, temp);
 							}
 						}
-//						reward = resourceService.getRewardString(dto);
+//						checkReward = resourceService.getRewardString(dto);
 						if(reward.length() > 0){
 							reward = new StringBuilder(reward.substring(1));
 						}
@@ -145,7 +145,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 							reward.append(";").append(ResourceService.getRewardString(temp));
 							resourceService.getTotalRewardDto(dto, temp);
 						}
-//						reward = resourceService.getRewardString(dto);
+//						checkReward = resourceService.getRewardString(dto);
 						if(reward.length() > 0){
 							reward = new StringBuilder(reward.substring(1));
 						}
@@ -164,7 +164,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 		vo.addData("drawType", drawType);
 		vo.addData("type", type);
 		vo.addData("number", number);
-		vo.addData("reward", reward.toString());
+		vo.addData("checkReward", reward.toString());
 
 		return vo;
 	}

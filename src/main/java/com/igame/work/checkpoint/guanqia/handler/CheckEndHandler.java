@@ -139,7 +139,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 
 		vo.addData("playerExp", playerExp);
 		vo.addData("monsterExp", monsterExpStr);
-		vo.addData("reward", rr);
+		vo.addData("checkReward", rr);
 
 		removeNianyaBuff(player);
 		return vo;
