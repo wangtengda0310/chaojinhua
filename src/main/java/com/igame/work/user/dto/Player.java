@@ -292,11 +292,7 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     private AtomicInteger proIndex = new AtomicInteger(0);//发送的消息ID
-    
-    @Transient
-    @JsonIgnore
-    private Map<Integer,MessageCache> proMap = new ConcurrentHashMap<>();//消息缓存
-    
+
     @Transient
     @JsonIgnore
     private Map<Integer,MessageCache> proTuiMap = new ConcurrentHashMap<>();//推送消息缓存
@@ -759,14 +755,6 @@ public class Player extends PlayerDto {
 
     public void setProIndex(AtomicInteger proIndex) {
         this.proIndex = proIndex;
-    }
-
-    public Map<Integer, MessageCache> getProMap() {
-        return proMap;
-    }
-
-    public void setProMap(Map<Integer, MessageCache> proMap) {
-        this.proMap = proMap;
     }
 
     public Map<Integer, MessageCache> getProTuiMap() {
