@@ -4,7 +4,9 @@ package com.igame.core.data;
 import com.igame.core.di.Injectable;
 import com.igame.work.activity.ActivityConfig;
 import com.igame.work.activity.ActivityDataManager;
-import com.igame.work.sign.SignConfig;
+import com.igame.work.activity.ActivityService;
+import com.igame.work.activitylimit.ShopActivityData;
+import com.igame.work.activitylimit.ShopActivityDataManager;
 import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
 import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardData;
 import com.igame.work.checkpoint.baozouShike.data.RunData;
@@ -38,8 +40,7 @@ import com.igame.work.shop.data.ShopData;
 import com.igame.work.shop.data.ShopOutPutData;
 import com.igame.work.shop.data.ShopRandomData;
 import com.igame.work.shop.data.ShopRandomLvData;
-import com.igame.work.activitylimit.ShopActivityData;
-import com.igame.work.activitylimit.ShopActivityDataManager;
+import com.igame.work.sign.SignConfig;
 import com.igame.work.turntable.LuckTableDataManager;
 import com.igame.work.turntable.data.LuckTableData;
 import com.igame.work.user.PlayerDataManager;
@@ -116,7 +117,7 @@ public class DataManager implements Injectable {
 		LuckTableDataManager.luckTableData              =loader.loadData(LuckTableData.class,   "lucktable.xml" );
 
 		ActivityDataManager.signConfig                  =loader.loadData(SignConfig.class,   "signreward.xml" );
-		ActivityDataManager.activityConfig              =loader.loadData(ActivityConfig.class,   "activity.xml" );
+		ActivityService.activityConfig              =loader.loadData(ActivityConfig.class,   "activity.xml" );
 		ShopActivityDataManager.Configs              =loader.loadData(ShopActivityData.class,   "activitylimit.xml" );
 
 	}

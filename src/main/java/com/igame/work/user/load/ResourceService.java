@@ -446,6 +446,9 @@ public class ResourceService extends EventService implements ISFSModule {
 		if (value < 0) {
 			fireEvent(player, PlayerEvents.CONSUME_DIAMOND, new Object[]{System.currentTimeMillis(),value});
 		}
+		if (value > 0) {
+			fireEvent(player, PlayerEvents.RECHARGE, new Object[]{System.currentTimeMillis(),value});
+		}
     }
     
     

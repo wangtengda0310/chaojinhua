@@ -21,8 +21,8 @@ public class ActivityConfig
 	List<ActivityConfigTemplate> its = new ArrayList<>();
 	
 	private Map<Integer,ActivityConfigTemplate> maps	= Maps.newHashMap();
-	
 
+	// todo 同一个活动 不同order的配置time_limit如果不同 给策划报个错
 	void afterUnmarshal(Unmarshaller u, Object parent)
 	{
 		its.forEach((c -> {

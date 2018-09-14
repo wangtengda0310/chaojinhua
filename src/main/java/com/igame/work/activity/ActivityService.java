@@ -36,6 +36,11 @@ import java.util.stream.Collectors;
  * 所有活动记录一下配置的开始时间戳，如果时间戳有变化就当做是新活动
  */
 public class ActivityService extends EventService implements ISFSModule {
+    /**
+     * 大部分活动共用的配置
+     */
+    public static ActivityConfig activityConfig;
+
     @Inject public ResourceService resourceService;
     @Inject private DengluService dengluService;
     @Inject private GMService gMService;
@@ -44,6 +49,7 @@ public class ActivityService extends EventService implements ISFSModule {
     Map<Integer, ActivityDto> dtos=new ConcurrentHashMap<>();
     @Override
     public void init() {
+        super.init();
         // todo 手动关闭指定活动 活动领奖状态判断是否关闭
         Map<Integer, List<ActivityConfigTemplate>> collect = ActivityConfig.its.stream()
                 .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
