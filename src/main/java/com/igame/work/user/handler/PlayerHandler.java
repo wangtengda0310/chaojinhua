@@ -18,6 +18,7 @@ import com.igame.work.MProtrol;
 import com.igame.work.PlayerEvents;
 import com.igame.work.activity.ActivityService;
 import com.igame.work.activity.denglu.DengluService;
+import com.igame.work.chat.service.MessageBoardService;
 import com.igame.work.sign.SignService;
 import com.igame.work.chat.dao.PlayerMessageDAO;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
@@ -94,6 +95,7 @@ public class PlayerHandler extends BaseHandler {
 	@Inject private IDFactory idFactory;
 	@Inject private SignService signService;
 	@Inject private DengluService dengluService;
+	@Inject private MessageBoardService messageBoardService;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -240,9 +242,6 @@ public class PlayerHandler extends BaseHandler {
 		player.getTeams().put(5,new Team(5,"默认队伍5",m1.getObjectId(),m2.getObjectId()));
 		player.getTeams().put(6,new Team(6,"竞技场防守阵容",m1.getObjectId(),m2.getObjectId()));
 		//player.getTeams()[0] = m1.getObjectId()+","  + m2.getObjectId() +",-1,-1,-1";
-		
-		//初始化留言板
-		player.initMessageBoard();
 
 		//初始化商店
 		shopService.initShop(player);
@@ -280,7 +279,6 @@ public class PlayerHandler extends BaseHandler {
 		friendService.loadPlayer(player);
 
 		player.setPrivateMessages(playerMessageDAO.getMessageByPlayerId(player.getPlayerId()).getMessages());
-		player.initMessageBoard();
 
 		questService.loadPlayer(player);
 
@@ -292,6 +290,8 @@ public class PlayerHandler extends BaseHandler {
 	 * 玩家登录成功后的操作
 	 */
 	private void afterPlayerLogin(Player player) throws Exception {
+		//初始化留言板
+		messageBoardService.initMessageBoard(player);
 
 		if (player.getPrivateMessages().size() <= 0)
 			vIPService.initPrivileges(player.getVipPrivileges());

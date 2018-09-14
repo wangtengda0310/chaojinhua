@@ -7,9 +7,8 @@ import com.igame.work.chat.dto.MessageBoard;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.PlayerCacheService;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.igame.work.chat.MessageContants.*;
 
@@ -47,6 +46,14 @@ public class MessageBoardService {
         return sid;
     }
 
+    private Map<Long, Map<String,List<String>>> messageBoard = new ConcurrentHashMap<>();    //记录留言板操作 <"like",留言ID列表>&&<"disLike",留言ID列表>
+
+    public void initMessageBoard(Player player) {
+        Map<String, List<String>> stringListMap = messageBoard.computeIfAbsent(player.getPlayerId(), pid -> new HashMap<>());
+        stringListMap.put(MSG_BOARD_OPE_LIKE,new ArrayList<>());
+        stringListMap.put(MSG_BOARD_OPE_DISLIKE,new ArrayList<>());
+    }
+
     /**
      * 获取留言板
      * @param player 当前角色
@@ -60,7 +67,7 @@ public class MessageBoardService {
 
             board.setObjectId(board.get_id().toHexString());
 
-            Map<String, List<String>> messageBoardOpe = player.getMessageBoardOpe();
+            Map<String, List<String>> messageBoardOpe = this.messageBoard.get(player.getPlayerId());
             List<String> likes = messageBoardOpe.get(MSG_BOARD_OPE_LIKE);
             if (likes.contains(board.get_id().toString())){  //如果当前角色操作过
                 board.setIsLike(board.getLike().contains(player.getPlayerId())? 0 : 1);
@@ -119,7 +126,7 @@ public class MessageBoardService {
         if (MyUtil.isNullOrEmpty(oId))
             return;
 
-        Map<String, List<String>> messageBoardOpe = player.getMessageBoardOpe();
+        Map<String, List<String>> messageBoardOpe = messageBoard.get(player.getPlayerId());
 
         List<String> likes = messageBoardOpe.get(MSG_BOARD_OPE_LIKE);
         if (likes.contains(oId)){
@@ -140,7 +147,7 @@ public class MessageBoardService {
         if (MyUtil.isNullOrEmpty(oId))
             return;
 
-        Map<String, List<String>> messageBoardOpe = player.getMessageBoardOpe();
+        Map<String, List<String>> messageBoardOpe = messageBoard.get(player.getPlayerId());
 
         List<String> likes = messageBoardOpe.get(MSG_BOARD_OPE_DISLIKE);
         if (likes.contains(oId)){
@@ -153,11 +160,10 @@ public class MessageBoardService {
 
     /**
      * 保存
-     * @param player
      */
     public void saveMessageBoard(Player player){
 
-        Map<String, List<String>> messageBoardOpe = player.getMessageBoardOpe();
+        Map<String, List<String>> messageBoardOpe = messageBoard.get(player.getPlayerId());
 
         List<String> likes = messageBoardOpe.get(MSG_BOARD_OPE_LIKE);
         for (String oId : likes) {

@@ -286,10 +286,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private Map<String,List<String>> messageBoardOpe = Maps.newHashMap();    //记录留言板操作 <"like",留言ID列表>&&<"disLike",留言ID列表>
-
-    @Transient
-    @JsonIgnore
     private Map<Integer,MessageCache> proTuiMap = new ConcurrentHashMap<>();//推送消息缓存
 
     @Transient
@@ -712,14 +708,6 @@ public class Player extends PlayerDto {
         this.privateMessages = privateMessages;
     }
 
-    public Map<String, List<String>> getMessageBoardOpe() {
-        return messageBoardOpe;
-    }
-
-    public void setMessageBoardOpe(Map<String, List<String>> messageBoardOpe) {
-        this.messageBoardOpe = messageBoardOpe;
-    }
-
     public Map<String, Date> getLastMessageBoard() {
         return lastMessageBoard;
     }
@@ -918,11 +906,6 @@ public class Player extends PlayerDto {
 
     public synchronized void addBallisticMonsters(int value) {
         this.ballisticMonsters += value;
-    }
-
-    public void initMessageBoard() {
-        messageBoardOpe.put(MSG_BOARD_OPE_LIKE,new ArrayList<>());
-        messageBoardOpe.put(MSG_BOARD_OPE_DISLIKE,new ArrayList<>());
     }
 
     public synchronized void addBagSpace(int value) {
