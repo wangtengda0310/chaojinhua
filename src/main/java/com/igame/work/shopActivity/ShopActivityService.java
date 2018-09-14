@@ -107,17 +107,18 @@ public class ShopActivityService extends EventService implements ISFSModule {
                 long timeMillis = (long) customEvent[0];
                 long amount = (long) customEvent[1];
 
-                ShopActivityDataManager.Configs.getAll().stream()
+                Map<Integer, String> result = ShopActivityDataManager.Configs.getAll().stream()
                         .filter(c -> c.getTouch_limit() == 1)                       // 找出消耗金币类的配置
                         .filter(c -> !isOpen(player, c))                           // 判断是否已经开启，避免重复记录数据
                         .filter(c -> notCd(player, c))                              // 是否cd
                         .peek(c -> recordGoldData(player, timeMillis, amount, c))   // 记录数据
                         .filter(c -> canOpenGoldActivityForPlayer(player, c))       // 是否达成目标
                         .peek(c -> openGoldActivity(player, c))                     // 活动状态改为开启
-                        .forEach(c -> notifyClient(player, c));                        // 通知客户端    todo 合并发送
+                        .collect(Collectors.toMap(ShopActivityDataTemplate::getNum
+                                , c->DateUtil.formatClientDateTime(dto.get(c.getNum()).players.get(player.getPlayerId()).openMillis)));
 
                 save(player);
-
+                notifyClient(player, result);
             }
         });
         /*
@@ -137,16 +138,18 @@ public class ShopActivityService extends EventService implements ISFSModule {
                 int itemId = (int) customEvent[0];
                 int count = (int) customEvent[1];
 
-                ShopActivityDataManager.Configs.getAll().stream()               // 判断每个活动
+                Map<Integer, String> result = ShopActivityDataManager.Configs.getAll().stream()               // 判断每个活动
                         .filter(c -> c.getTouch_limit() == 3)                   // 找出消耗道具类的配置
                         .filter(c -> !isOpen(player, c))                       // 判断是否已经开启，避免重复记录数据
                         .filter(c -> notCd(player, c))                          // 是否cd
                         .peek(c -> recordItemData(player, itemId, count, c))    // 记录数据
                         .filter(c -> canOpenItemActivityForPlayer(player, c))   // 是否达成目标
                         .peek(c -> openItemActivity(player, c))                 // 活动状态改为开启
-                        .forEach(c -> notifyClient(player, c));                    // 通知客户端    todo 合并发送
+                        .collect(Collectors.toMap(ShopActivityDataTemplate::getNum
+                                , c->DateUtil.formatClientDateTime(dto.get(c.getNum()).players.get(player.getPlayerId()).openMillis)));                    // 通知客户端    todo 合并发送
 
-
+                save(player);
+                notifyClient(player, result);
             }
         });
         return observers;
@@ -165,13 +168,11 @@ public class ShopActivityService extends EventService implements ISFSModule {
 
     }
 
-    private void notifyClient(Player player, ShopActivityDataTemplate config) {
-        if (!dto.containsKey(config.getNum())) {
+    private void notifyClient(Player player, Map<Integer, String> result) {
+        if (result == null || result.isEmpty()) {
             return;
         }
         RetVO vo = new RetVO();
-        Map<Integer, String> result = new HashMap<>();
-        result.put(config.getNum(), DateUtil.formatClientDateTime(dto.get(config.getNum()).players.get(player.getPlayerId()).openMillis));
         vo.addData("open", result);
         MessageUtil.sendMessageToPlayer(player, MProtrol.SHOP_ACTICITY_STATE, vo);
     }
