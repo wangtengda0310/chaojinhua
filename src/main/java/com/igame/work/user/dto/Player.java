@@ -26,11 +26,11 @@ import com.smartfoxserver.v2.entities.User;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static com.igame.work.chat.MessageContants.MSG_BOARD_OPE_DISLIKE;
-import static com.igame.work.chat.MessageContants.MSG_BOARD_OPE_LIKE;
 
 /**
  * @author Marcus.Z
@@ -175,10 +175,6 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     private List<Item> removes = Lists.newArrayList();//删除的道具
-
-    @Transient
-    @JsonIgnore
-    public final Object dbLock = new Object();//防止定时保存和玩家离线保存并发的数据库同步锁
 
     @Transient
     @JsonIgnore

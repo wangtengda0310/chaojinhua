@@ -37,6 +37,7 @@ import com.igame.work.user.service.PlayerCacheService;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
@@ -284,8 +285,10 @@ public class PlayerService extends EventService implements ISFSModule {
 	}
 
 
-	public void savePlayer(Player player,boolean loginOutTime){
-		synchronized(player.dbLock){
+	private Map<Long, Object> dbLock = new ConcurrentHashMap<>();//防止定时保存和玩家离线保存并发的数据库同步锁
+
+	private void savePlayer(Player player,boolean loginOutTime){
+		synchronized(dbLock.computeIfAbsent(player.getPlayerId(), pid->new Object())){
 			DebugLog.debug("palyer leave save---- serverId:" + player.getSeverId() + "," +"userId:" + player.getUserId() + "," +"playerId:" + player.getPlayerId() + "," +"playerName:" + player.getNickname());
 			playerDAO.updatePlayer(player,loginOutTime);
 			monsterDAO.updatePlayer(player);
