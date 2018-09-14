@@ -167,11 +167,13 @@ public class ActivityService extends EventService implements ISFSModule {
     /**
      * 因为数据库里存的数据跟客户端协议的格式不一样，这里做下转换
      */
-    public Map<String, Object> clientData(Player player) {
-        Map<String, Object> map = new HashMap<>();  // todo string->int
+    public Map<Integer, Object> clientData(Player player) {
+        Map<Integer, Object> map = new HashMap<>();  // todo string->int
 
+        Date now = new Date();
         Map<Integer, List<ActivityConfigTemplate>> collect = ActivityConfig.its.stream()
                 .filter(c->c.getGift_bag()==2||c.getGift_bag()==3)
+                .filter(c->c.isActive(player, now))
                 .collect(Collectors.groupingBy(ActivityConfigTemplate::getActivity_sign));
         collect.forEach((activityId, configs) -> {
             ActivityDto activityData = dtos.get(activityId);
@@ -193,7 +195,7 @@ public class ActivityService extends EventService implements ISFSModule {
 
             dengluService.loadPlayer(player, activityOrderDto, configs);	// todo event
 
-            map.put(String.valueOf(activityId), join(orderData));
+            map.put(activityId, join(orderData));
         });
         return map;
     }
