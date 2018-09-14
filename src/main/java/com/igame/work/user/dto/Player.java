@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.igame.util.MyUtil;
-import com.igame.work.sign.SignData;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.checkpoint.mingyunZhiMen.FateSelfData;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
@@ -22,13 +21,13 @@ import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.shop.dto.ShopInfo;
+import com.igame.work.sign.SignData;
 import com.smartfoxserver.v2.entities.User;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.igame.work.chat.MessageContants.MSG_BOARD_OPE_DISLIKE;
 import static com.igame.work.chat.MessageContants.MSG_BOARD_OPE_LIKE;
@@ -288,10 +287,6 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     private Map<String,List<String>> messageBoardOpe = Maps.newHashMap();    //记录留言板操作 <"like",留言ID列表>&&<"disLike",留言ID列表>
-
-    @Transient
-    @JsonIgnore
-    private AtomicInteger proIndex = new AtomicInteger(0);//发送的消息ID
 
     @Transient
     @JsonIgnore
@@ -747,14 +742,6 @@ public class Player extends PlayerDto {
 
     public void setMingZheng(Map<Long, MatchMonsterDto> mingZheng) {
         this.mingZheng = mingZheng;
-    }
-
-    public AtomicInteger getProIndex() {
-        return proIndex;
-    }
-
-    public void setProIndex(AtomicInteger proIndex) {
-        this.proIndex = proIndex;
     }
 
     public Map<Integer, MessageCache> getProTuiMap() {

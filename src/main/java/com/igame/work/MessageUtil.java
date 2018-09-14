@@ -27,6 +27,9 @@ import com.smartfoxserver.v2.entities.data.SFSObject;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +38,9 @@ import java.util.stream.Collectors;
  *
  */
 public class MessageUtil {
-	
+
+	private static Map<Long,AtomicInteger> proIndex = new ConcurrentHashMap<>();//发送的消息ID
+
 	/**
 	 * 推送一条消息给玩家
 	 */
@@ -47,7 +52,7 @@ public class MessageUtil {
 		}
 		
 		vo.setIsPush(1);
-		vo.setIndex(player.getProIndex().incrementAndGet());
+		vo.setIndex(proIndex.computeIfAbsent(player.getPlayerId(),pid->new AtomicInteger(0)).incrementAndGet());
 		ObjectMapper mapper = new ObjectMapper();
 		String json = null;
 		ISFSObject res = new SFSObject();
