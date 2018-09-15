@@ -174,10 +174,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private int enterCheckpointId;//进入的关卡ID
-
-    @Transient
-    @JsonIgnore
     private String enterWordEventId;//进入世界事件关卡ID
 
     @Transient
@@ -282,14 +278,6 @@ public class Player extends PlayerDto {
 
     public void setRemoves(List<Item> removes) {
         this.removes = removes;
-    }
-
-    public int getEnterCheckpointId() {
-        return enterCheckpointId;
-    }
-
-    public void setEnterCheckpointId(int enterCheckpointId) {
-        this.enterCheckpointId = enterCheckpointId;
     }
 
     public String getEnterWordEventId() {

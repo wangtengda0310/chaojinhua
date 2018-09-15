@@ -58,7 +58,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 		vo.addData("win", win);
 
 		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
-		if(ct == null || chapterId != player.getEnterCheckpointId()){
+		if(ct == null || chapterId != checkPointService.getEnterCheckpointId(player)){
 			GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 					+"#act:cheat" + "#type:endC#chapterId:"+chapterId);
 			return error(ErrorCode.CHECKPOINT_END_ERROR);

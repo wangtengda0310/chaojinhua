@@ -47,6 +47,8 @@ public class CheckPointService implements ISFSModule, TimeListener {
 
 	private Map<Long, Long> enterCheckPointTime = new ConcurrentHashMap<>();//进入的关卡时间
 	private Map<Long, Long> enterWordEventTime = new ConcurrentHashMap<>();//进入世界事件关卡时间
+	private Map<Long, Integer> enterCheckpointId = new ConcurrentHashMap<>();//进入的关卡ID
+
 
 
 	private Map<Long, Map<String,Object>> lastBattleParam = new ConcurrentHashMap<>();//上次战斗的关卡参数
@@ -394,5 +396,13 @@ public class CheckPointService implements ISFSModule, TimeListener {
 
 	public void setEnterWordEventTime(Player player) {
 		enterWordEventTime.put(player.getPlayerId(), System.currentTimeMillis());
+	}
+
+	public int getEnterCheckpointId(Player player) {
+		return enterCheckpointId.get(player.getPlayerId());
+	}
+
+	public void setEnterCheckpointId(Player player, int chapterId) {
+		enterCheckpointId.put(player.getPlayerId(), chapterId);
 	}
 }

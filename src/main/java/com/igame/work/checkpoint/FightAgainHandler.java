@@ -71,7 +71,7 @@ public class FightAgainHandler extends ReconnectedHandler {
             }
 
             resourceService.addPhysica(player, -ct.getPhysical());
-            player.setEnterCheckpointId(chapterId);
+            checkPointService.setEnterCheckpointId(player,chapterId);
             checkPointService.setEnterCheckPointTime(player);
 
             //减少可挑战次数
