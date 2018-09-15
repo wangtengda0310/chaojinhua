@@ -1,10 +1,12 @@
 package com.igame.work.checkpoint.guanqia.handler;
 
 
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
@@ -20,7 +22,10 @@ import net.sf.json.JSONObject;
  */
 public class CheckResHandler extends ReconnectedHandler {
 
+	@Inject
 	private ResourceService resourceService;
+	@Inject
+	private CheckPointService checkPointService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -30,11 +35,11 @@ public class CheckResHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		String chapterIdstr = jsonObject.getString("chapterId");
-		String reward = "";
+		StringBuilder reward = new StringBuilder();
 		for(String temp: chapterIdstr.split(",")){
 			int chapterId = Integer.parseInt(temp);
 			CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
-			synchronized (player.getTimeLock()) {
+			synchronized (checkPointService.getTimeLock(player)) {
 				if(!player.getTimeResCheck().containsKey(chapterId) || ct == null || ct.getChapterType() != 2){
 //					ret = ErrorCode.CHECKPOINT_RESNOT_EXIT;
 				}else{
@@ -43,7 +48,7 @@ public class CheckResHandler extends ReconnectedHandler {
 //						ret = ErrorCode.CHECKPOINT_RESNOT_EXIT;
 					}else{
 						RewardDto dto = resourceService.getResRewardDto(ct.getDropPoint(), timeCount, ct.getMaxTime() * 60);
-						reward += ";"+ resourceService.getRewardString(dto);//返回字符串
+						reward.append(";").append(resourceService.getRewardString(dto));//返回字符串
 						resourceService.addRewarToPlayer(player, dto);//真实给玩家加东西
 						player.getTimeResCheck().put(chapterId, timeCount % 60);
 						MessageUtil.notifyTimeResToPlayer(player, chapterId, new RewardDto());
@@ -54,10 +59,10 @@ public class CheckResHandler extends ReconnectedHandler {
 
 
 		if(reward.length() > 0){
-			reward = reward.substring(1);
+			reward = new StringBuilder(reward.substring(1));
 		}
 		vo.addData("chapterId", chapterIdstr);
-		vo.addData("checkReward", reward);
+		vo.addData("checkReward", reward.toString());
 
 		return vo;
 	}

@@ -99,8 +99,8 @@ public class PlayerHandler extends BaseHandler {
 	@Inject private SignService signService;
 	@Inject private DengluService dengluService;
 	@Inject private MessageBoardService messageBoardService;
-	@Inject
-	private PrivateMessageService privateMessageService;
+	@Inject private PrivateMessageService privateMessageService;
+	@Inject private CheckPointService checkPointService;
 
 	private Map<Long, Map<Integer, ResCdto>> resC = new ConcurrentHashMap<>();//金币资源关卡
 
@@ -409,7 +409,7 @@ public class PlayerHandler extends BaseHandler {
 	}
 
 	private void calPlayerTimeRes(Player player){
-		synchronized (player.getTimeLock()) {
+		synchronized (checkPointService.getTimeLock(player)) {
 			calRes(player);
 			if(!player.getTimeResCheck().isEmpty()){
 				long now = System.currentTimeMillis();

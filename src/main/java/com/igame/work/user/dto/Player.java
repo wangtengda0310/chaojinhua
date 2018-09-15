@@ -173,10 +173,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private Object timeLock = new Object();//定时同步锁
-
-    @Transient
-    @JsonIgnore
     private Map<Integer, WorldEventDto> wordEvent = Maps.newHashMap();//世界事件
 
     @Transient
@@ -253,14 +249,6 @@ public class Player extends PlayerDto {
 
     public void setTimeResCheck(Map<Integer, Integer> timeResCheck) {
         this.timeResCheck = timeResCheck;
-    }
-
-    public Object getTimeLock() {
-        return timeLock;
-    }
-
-    public void setTimeLock(Object timeLock) {
-        this.timeLock = timeLock;
     }
 
     public Map<Integer, XingMoDto> getXinMo() {

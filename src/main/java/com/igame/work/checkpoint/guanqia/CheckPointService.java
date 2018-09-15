@@ -88,10 +88,15 @@ public class CheckPointService implements ISFSModule, TimeListener {
 		calPlayerTimeRes();
 	}
 
+	private Map<Long,Object> timeLock = new ConcurrentHashMap();//定时同步锁
+
+	public Object getTimeLock(Player player) {
+		return timeLock.computeIfAbsent(player.getPlayerId(), pid->new Object());
+	}
 	//定时执行玩家金币关卡计算
 	private void calPlayerTimeRes(){
 		for(Player player : sessionManager.getSessions().values()){
-			synchronized (player.getTimeLock()) {
+			synchronized (getTimeLock(player)) {
 				if(!player.getTimeResCheck().isEmpty()){
 					for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){
 						CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(m.getKey());
