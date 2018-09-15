@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.igame.util.MyUtil;
-import com.igame.work.chat.dto.Message;
 import com.igame.work.checkpoint.mingyunZhiMen.FateSelfData;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
@@ -203,18 +202,6 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     private String ballisticAid;    //记录暴走时刻援助怪兽
-
-    @Transient
-    @JsonIgnore
-    private Date lastWorldSpeak;//上次世界频道发言
-
-    @Transient
-    @JsonIgnore
-    private Date lastHornSpeak;//上次喇叭频道发言
-
-    @Transient
-    @JsonIgnore
-    private Date lastClubSpeak;//上次工会频道发言
 
     @Transient
     @JsonIgnore
@@ -502,30 +489,6 @@ public class Player extends PlayerDto {
 
     public void setBallisticAid(String ballisticAid) {
         this.ballisticAid = ballisticAid;
-    }
-
-    public Date getLastWorldSpeak() {
-        return lastWorldSpeak;
-    }
-
-    public void setLastWorldSpeak(Date lastWorldSpeak) {
-        this.lastWorldSpeak = lastWorldSpeak;
-    }
-
-    public Date getLastHornSpeak() {
-        return lastHornSpeak;
-    }
-
-    public void setLastHornSpeak(Date lastHornSpeak) {
-        this.lastHornSpeak = lastHornSpeak;
-    }
-
-    public Date getLastClubSpeak() {
-        return lastClubSpeak;
-    }
-
-    public void setLastClubSpeak(Date lastClubSpeak) {
-        this.lastClubSpeak = lastClubSpeak;
     }
 
     public Map<String, Date> getLastMessageBoard() {

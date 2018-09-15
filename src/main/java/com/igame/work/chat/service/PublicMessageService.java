@@ -6,10 +6,14 @@ import com.igame.core.event.EventService;
 import com.igame.core.quartz.TimeListener;
 import com.igame.work.chat.dao.MessageDAO;
 import com.igame.work.chat.dto.Message;
+import com.igame.work.user.dto.Player;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.igame.work.chat.MessageContants.*;
 
@@ -171,4 +175,31 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
 
     }
 
+    private Map<Long, Date> lastWorldSpeak = new ConcurrentHashMap<>();//上次世界频道发言
+    private Map<Long, Date> lastHornSpeak = new ConcurrentHashMap<>();//上次喇叭频道发言
+    private Map<Long, Date> lastClubSpeak = new ConcurrentHashMap<>();//上次工会频道发言
+
+    public Date getLastWorldSpeak(Player player) {
+        return lastWorldSpeak.get(player.getPlayerId());
+    }
+
+    public void setLastWorldSpeak(Player player, Date date) {
+        lastWorldSpeak.put(player.getPlayerId(), date);
+    }
+
+    public Date getLastHornSpeak(Player player) {
+        return lastHornSpeak.get(player.getPlayerId());
+    }
+
+    public void setLastHornSpeak(Player player, Date date) {
+        lastHornSpeak.put(player.getPlayerId(), date);
+    }
+
+    public Date getLastClubSpeak(Player player) {
+        return lastClubSpeak.get(player.getPlayerId());
+    }
+
+    public void setLastClubSpeak(Player player, Date date) {
+        lastClubSpeak.put(player.getPlayerId(), date);
+    }
 }

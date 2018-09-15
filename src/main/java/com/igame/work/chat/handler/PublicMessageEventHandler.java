@@ -31,6 +31,7 @@ public class PublicMessageEventHandler extends EventDispatcherHandler {
 
 	@Inject private ResourceService resourceService;
 	@Inject private SessionManager sessionManager;
+	@Inject private PublicMessageService publicMessageService;
 
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
@@ -68,18 +69,18 @@ public class PublicMessageEventHandler extends EventDispatcherHandler {
 		if (type == MSG_TYPE_WORLD){	//世界
 
 			//校验间隔时间
-			Date lastWorldSpeak = player.getLastWorldSpeak();
+			Date lastWorldSpeak = publicMessageService.getLastWorldSpeak(player);
 			if (lastWorldSpeak != null && System.currentTimeMillis() - lastWorldSpeak.getTime() < 10000){
 				sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.SHORT_INTERVAL_TIME),sender);
 				throw new MessageException("worldMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
 			}
 
-			player.setLastWorldSpeak(new Date());
+			publicMessageService.setLastWorldSpeak(player,new Date());
 
 		}else if (type == MSG_TYPE_HORN){	//喇叭
 
 			//校验间隔时间
-			Date lastHornSpeak = player.getLastHornSpeak();
+			Date lastHornSpeak = publicMessageService.getLastHornSpeak(player);
 			if (lastHornSpeak != null && System.currentTimeMillis() - lastHornSpeak.getTime() < 20000){
 				sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.SHORT_INTERVAL_TIME),sender);
 				throw new MessageException("hornMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
@@ -95,12 +96,12 @@ public class PublicMessageEventHandler extends EventDispatcherHandler {
 			//扣除钻石
 			resourceService.addDiamond(player,-5);
 
-			player.setLastHornSpeak(new Date());
+			publicMessageService.setLastHornSpeak(player,new Date());
 
 		}else if (type == MSG_TYPE_CLUB){	//工会
 
 			//校验间隔时间
-			Date lastClubSpeak = player.getLastClubSpeak();
+			Date lastClubSpeak = publicMessageService.getLastClubSpeak(player);
 			if (lastClubSpeak != null && System.currentTimeMillis() - lastClubSpeak.getTime() < 3000){
 				sendClient(MProtrol.MESSAGE_ERROR,error(ErrorCode.SHORT_INTERVAL_TIME),sender);
 				throw new MessageException("clubMessage sendClient failed : name="+sender.getName()+",errorCode="+ ErrorCode.SHORT_INTERVAL_TIME);
@@ -109,7 +110,7 @@ public class PublicMessageEventHandler extends EventDispatcherHandler {
 			//校验玩家是否加入工会
 
 
-			player.setLastClubSpeak(new Date());
+			publicMessageService.setLastClubSpeak(player,new Date());
 		}
 
 		//放入缓存
