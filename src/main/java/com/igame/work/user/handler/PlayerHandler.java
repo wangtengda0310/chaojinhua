@@ -18,9 +18,9 @@ import com.igame.work.MProtrol;
 import com.igame.work.PlayerEvents;
 import com.igame.work.activity.ActivityService;
 import com.igame.work.activity.denglu.DengluService;
-import com.igame.work.chat.service.MessageBoardService;
-import com.igame.work.sign.SignService;
+import com.igame.work.activitylimit.ShopActivityService;
 import com.igame.work.chat.dao.PlayerMessageDAO;
+import com.igame.work.chat.service.MessageBoardService;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
@@ -45,7 +45,7 @@ import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.shop.service.ShopService;
-import com.igame.work.activitylimit.ShopActivityService;
+import com.igame.work.sign.SignService;
 import com.igame.work.turntable.dto.Turntable;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dao.PlayerDAO;
@@ -63,6 +63,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
@@ -96,6 +97,8 @@ public class PlayerHandler extends BaseHandler {
 	@Inject private SignService signService;
 	@Inject private DengluService dengluService;
 	@Inject private MessageBoardService messageBoardService;
+
+	private Map<Long, Map<Integer, ResCdto>> resC = new ConcurrentHashMap<>();//金币资源关卡
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -170,7 +173,7 @@ public class PlayerHandler extends BaseHandler {
 		vo.addData("gods", player.getGods().values());
 		vo.addData("mail", mailService.getMails(player).values());
 		vo.addData("meetM", MyUtil.toString(player.getMeetM(), ","));
-		vo.addData("resC", player.getResC().values());
+		vo.addData("resC", resC.computeIfAbsent(player.getPlayerId(),pid->new HashMap<>()).values());
 		vo.addData("draw", player.getDraw());
 		vo.addData("quest", qs);
 		vo.addData("wuMap", player.getWuMap().values());
@@ -419,7 +422,8 @@ public class PlayerHandler extends BaseHandler {
 						}
 						RewardDto dto = resourceService.getResRewardDto(ct.getDropPoint(), total, ct.getMaxTime() * 60);
 //    					MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
-						player.getResC().put(ct.getChapterId(),new ResCdto(ct.getChapterId(), ResourceService.getRewardString(dto)));
+						resC.computeIfAbsent(player.getPlayerId(),pid->new HashMap<>())
+								.put(ct.getChapterId(),new ResCdto(ct.getChapterId(), ResourceService.getRewardString(dto)));
 
 					}
 				}

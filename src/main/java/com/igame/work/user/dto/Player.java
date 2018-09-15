@@ -205,10 +205,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private Map<Integer, ResCdto> resC = Maps.newHashMap();//金币资源关卡
-
-    @Transient
-    @JsonIgnore
     private FightBase fightBase;
 
     @Transient
@@ -437,14 +433,6 @@ public class Player extends PlayerDto {
 
     public void setMeetM(Set<Integer> meetM) {
         this.meetM = meetM;
-    }
-
-    public Map<Integer, ResCdto> getResC() {
-        return resC;
-    }
-
-    public void setResC(Map<Integer, ResCdto> resC) {
-        this.resC = resC;
     }
 
     public DrawData getDraw() {
