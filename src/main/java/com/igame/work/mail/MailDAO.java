@@ -1,10 +1,9 @@
-package com.igame.work.user.dao;
+package com.igame.work.mail;
 
 
 
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
-import com.igame.work.user.dto.Mail;
 import org.mongodb.morphia.query.UpdateOperations;
 
 import java.util.List;

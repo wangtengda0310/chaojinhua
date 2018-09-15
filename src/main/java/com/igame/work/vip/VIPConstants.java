@@ -1,4 +1,4 @@
-package com.igame.work.user;
+package com.igame.work.vip;
 
 /**
  * @author xym

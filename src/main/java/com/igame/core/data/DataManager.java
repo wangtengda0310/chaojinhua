@@ -26,6 +26,9 @@ import com.igame.work.checkpoint.wujinZhiSen.EndlessData;
 import com.igame.work.checkpoint.wujinZhiSen.WujinZhiSenDataManager;
 import com.igame.work.checkpoint.xingheZhiYan.TrialData;
 import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanDataManager;
+import com.igame.work.draw.DrawLevelData;
+import com.igame.work.draw.DrawdataData;
+import com.igame.work.draw.DrawrewardData;
 import com.igame.work.fight.FightDataManager;
 import com.igame.work.fight.arena.ArenaData;
 import com.igame.work.fight.data.*;
@@ -45,6 +48,9 @@ import com.igame.work.turntable.LuckTableDataManager;
 import com.igame.work.turntable.data.LuckTableData;
 import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.data.*;
+import com.igame.work.vip.VipData;
+import com.igame.work.vip.VipLevelData;
+import com.igame.work.vip.VipPackData;
 
 public class DataManager implements Injectable {
 

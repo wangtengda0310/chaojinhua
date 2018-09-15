@@ -12,7 +12,7 @@ import com.igame.work.checkpoint.baozouShike.data.RunTypeTemplate;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.service.MailService;
+import com.igame.work.mail.MailService;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

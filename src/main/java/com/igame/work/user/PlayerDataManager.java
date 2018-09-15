@@ -1,6 +1,9 @@
 package com.igame.work.user;
 
 import com.igame.work.user.data.*;
+import com.igame.work.vip.VipData;
+import com.igame.work.vip.VipLevelData;
+import com.igame.work.vip.VipPackData;
 
 public class PlayerDataManager {
     /**
@@ -10,15 +13,15 @@ public class PlayerDataManager {
     /**
      * 造物台数据
      */
-    public static com.igame.work.user.data.DrawdataData DrawdataData;
+    public static com.igame.work.draw.DrawdataData DrawdataData;
     /**
      * 造物台等级
      */
-    public static com.igame.work.user.data.DrawLevelData DrawLevelData;
+    public static com.igame.work.draw.DrawLevelData DrawLevelData;
     /**
      * 奖励库
      */
-    public static com.igame.work.user.data.DrawrewardData DrawrewardData;
+    public static com.igame.work.draw.DrawrewardData DrawrewardData;
     /**
      * 头像数据
      */

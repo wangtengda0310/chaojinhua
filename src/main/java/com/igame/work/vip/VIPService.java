@@ -1,14 +1,13 @@
-package com.igame.work.user.service;
+package com.igame.work.vip;
 
 import com.igame.core.di.Inject;
 import com.igame.work.user.PlayerDataManager;
-import com.igame.work.user.data.VipLevelTemplate;
 import com.igame.core.log.ExceptionLog;
 import com.igame.work.user.dto.Player;
 
 import java.util.Map;
 
-import static com.igame.work.user.VIPConstants.*;
+import static com.igame.work.vip.VIPConstants.*;
 
 /**
  * @author xym

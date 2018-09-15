@@ -1,4 +1,4 @@
-package com.igame.work.user.data;
+package com.igame.work.vip;
 
 import com.google.common.collect.Maps;
 

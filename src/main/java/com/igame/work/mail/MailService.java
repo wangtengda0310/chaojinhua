@@ -1,12 +1,10 @@
-package com.igame.work.user.service;
+package com.igame.work.mail;
 
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
 import com.igame.core.log.GoldLog;
 import com.igame.work.MessageUtil;
-import com.igame.work.user.dao.MailDAO;
 import com.igame.work.user.dao.PlayerDAO;
-import com.igame.work.user.dto.Mail;
 import com.igame.work.user.dto.Player;
 
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.igame.work.user.handler;
+package com.igame.work.mail;
 
 
 import com.igame.core.di.Inject;
@@ -6,7 +6,7 @@ import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.service.MailService;
+import com.igame.work.mail.MailService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -15,7 +15,7 @@ import net.sf.json.JSONObject;
  * @author Marcus.Z
  *
  */
-public class MiaSendHandler extends ReconnectedHandler {
+public class MaiSendHandler extends ReconnectedHandler {
 
 
 	@Inject private MailService mailService;

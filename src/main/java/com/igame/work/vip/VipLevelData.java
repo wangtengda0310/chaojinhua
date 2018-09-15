@@ -1,4 +1,4 @@
-package com.igame.work.user.data;
+package com.igame.work.vip;
 
 import com.google.common.collect.Maps;
 
@@ -15,31 +15,31 @@ import java.util.Map;
  *
  * 会员礼包数据
  */
-@XmlRootElement(name = "vippack")
+@XmlRootElement(name = "viplevel")
 @XmlAccessorType(XmlAccessType.NONE)
-public class VipPackData {
+public class VipLevelData {
 
     @XmlElement(name="low")
-    private List<VipPackTemplate> its;
+    private List<VipLevelTemplate> its;
 
-    private Map<Integer,VipPackTemplate> maps = Maps.newHashMap();
+    private Map<Integer,VipLevelTemplate> maps = Maps.newHashMap();
 
 
     void afterUnmarshal(Unmarshaller u, Object parent)
     {
-        for(VipPackTemplate it: its)
+        for(VipLevelTemplate it: its)
         {
-            maps.put(it.getVipLv(), it);
+            maps.put(it.getVipLevel(), it);
 
         }
     }
 
-    public VipPackTemplate getTemplate(int vipLv)
+    public VipLevelTemplate getTemplate(int vipLv)
     {
         return maps.get(vipLv);
     }
 
-    public List<VipPackTemplate> getAll(){
+    public List<VipLevelTemplate> getAll(){
         return its;
     }
 

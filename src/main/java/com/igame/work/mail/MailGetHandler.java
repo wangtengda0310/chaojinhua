@@ -1,4 +1,4 @@
-package com.igame.work.user.handler;
+package com.igame.work.mail;
 
 
 import com.igame.core.di.Inject;
@@ -9,10 +9,8 @@ import com.igame.util.MyUtil;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.guanqia.RewardDto;
-import com.igame.work.user.dto.Mail;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
-import com.igame.work.user.service.MailService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -21,7 +19,7 @@ import net.sf.json.JSONObject;
  * @author Marcus.Z
  *
  */
-public class MialGetHandler extends ReconnectedHandler {
+public class MailGetHandler extends ReconnectedHandler {
 
 	@Inject
 	private ResourceService resourceService;

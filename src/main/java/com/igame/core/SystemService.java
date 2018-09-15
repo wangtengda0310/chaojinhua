@@ -13,7 +13,7 @@ import com.igame.work.friend.service.FriendService;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.service.VIPService;
+import com.igame.work.vip.VIPService;
 import org.apache.commons.beanutils.BeanUtils;
 
 public class SystemService extends EventService implements ISFSModule, TimeListener {

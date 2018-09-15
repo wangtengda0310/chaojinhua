@@ -17,7 +17,7 @@ import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.quest.dto.TaskDayInfo;
-import com.igame.work.user.dto.Mail;
+import com.igame.work.mail.Mail;
 import com.igame.work.user.dto.MessageCache;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;

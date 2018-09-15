@@ -1,4 +1,4 @@
-package com.igame.work.user.dto;
+package com.igame.work.draw;
 
 import org.mongodb.morphia.annotations.Entity;
 

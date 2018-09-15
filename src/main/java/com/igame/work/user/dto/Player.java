@@ -9,6 +9,7 @@ import com.igame.work.checkpoint.mingyunZhiMen.FateSelfData;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
+import com.igame.work.draw.DrawData;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;

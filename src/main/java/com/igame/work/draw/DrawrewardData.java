@@ -1,4 +1,4 @@
-package com.igame.work.user.data;
+package com.igame.work.draw;
 
 
 import java.util.List;
@@ -18,35 +18,34 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "draw_level")
+@XmlRootElement(name = "drawreward")
 @XmlAccessorType(XmlAccessType.NONE)
-public class DrawLevelData
+public class DrawrewardData
 {
 	@XmlElement(name="low")
-	private List<DrawLevelTemplate> its;
+	private List<DrawrewardTemplate> its;
 	
-	private Map<Integer,DrawLevelTemplate> maps	= Maps.newHashMap();
+	private Map<Integer,DrawrewardTemplate> maps	= Maps.newHashMap();
 	
 
 	void afterUnmarshal(Unmarshaller u, Object parent)
 	{
-		for(DrawLevelTemplate it: its)
+		for(DrawrewardTemplate it: its)
 		{
-			maps.put(it.getDrawLevel(), it);
+			maps.put(it.getRewardId(), it);
 			
 		}
-		its.sort((h1, h2) -> h1.getDrawLevel() - h2.getDrawLevel());
 	}
 	
-	public DrawLevelTemplate getTemplate(int id)
+	public DrawrewardTemplate getTemplate(int id)
 	{
 		return maps.get(id);
 	}
 	
-	public List<DrawLevelTemplate> getAll(){
+	public List<DrawrewardTemplate> getAll(){
 		return its;
 	}
-
+	
 
 
 	/**

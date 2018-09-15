@@ -1,19 +1,18 @@
-package com.igame.work.user.handler;
+package com.igame.work.draw;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.item.dto.Item;
 import com.igame.work.user.PlayerDataManager;
-import com.igame.work.user.data.DrawdataTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.PlayerService;
 import com.igame.work.user.load.ResourceService;

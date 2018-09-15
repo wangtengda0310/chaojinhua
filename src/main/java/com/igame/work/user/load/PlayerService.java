@@ -28,13 +28,13 @@ import com.igame.work.shop.dao.ShopDAO;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.PlayerDataManager;
-import com.igame.work.user.dao.MailDAO;
+import com.igame.work.mail.MailDAO;
 import com.igame.work.user.dao.PlayerDAO;
-import com.igame.work.user.data.DrawdataTemplate;
-import com.igame.work.user.data.DrawrewardTemplate;
+import com.igame.work.draw.DrawdataTemplate;
+import com.igame.work.draw.DrawrewardTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
-import com.igame.work.user.service.MailService;
+import com.igame.work.mail.MailService;
 import com.igame.work.user.service.PlayerCacheService;
 
 import java.util.Collections;

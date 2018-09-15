@@ -1,4 +1,4 @@
-package com.igame.work.user.handler;
+package com.igame.work.vip;
 
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
@@ -6,11 +6,10 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.PlayerDataManager;
-import com.igame.work.user.data.VipPackTemplate;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
-import static com.igame.work.user.VIPConstants.KEY_DAY_PACK;
+import static com.igame.work.vip.VIPConstants.KEY_DAY_PACK;
 
 /**
  * @author xym

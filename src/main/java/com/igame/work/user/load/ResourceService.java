@@ -11,7 +11,7 @@ import com.igame.work.PlayerEvents;
 import com.igame.work.fight.FightDataManager;
 import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.user.PlayerDataManager;
-import com.igame.work.user.data.DrawLevelTemplate;
+import com.igame.work.draw.DrawLevelTemplate;
 import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.work.user.data.ItemTemplate;
 import com.igame.work.monster.data.MonsterTemplate;
@@ -33,7 +33,7 @@ import com.igame.work.user.HeadConstants;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;
 import com.igame.work.user.service.HeadService;
-import com.igame.work.user.service.VIPService;
+import com.igame.work.vip.VIPService;
 
 import java.util.List;
 import java.util.Map;

@@ -1,9 +1,9 @@
-package com.igame.work.user.service;
+package com.igame.work.vip;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.igame.work.user.VIPConstants.*;
+import static com.igame.work.vip.VIPConstants.*;
 
 /**
  * @author xym
