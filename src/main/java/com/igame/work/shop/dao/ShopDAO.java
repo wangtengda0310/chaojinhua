@@ -2,7 +2,6 @@ package com.igame.work.shop.dao;
 
 import com.igame.core.db.AbsDao;
 import com.igame.work.shop.dto.ShopInfo;
-import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.UpdateOperations;
 
@@ -45,12 +44,12 @@ public class ShopDAO extends AbsDao {
         ds.update(shopInfo,up);
     }
 
-    public void updatePlayer(Player player) {
+    public void updatePlayer(ShopInfo shopInfo) {
 
-        if(player.getShopInfo().getDtate() == 1){
-            saveShopInfo(player.getShopInfo());
-        }else if(player.getShopInfo().getDtate() == 2){
-            updateShopInfo(player.getShopInfo());
+        if(shopInfo.getDtate() == 1){
+            saveShopInfo(shopInfo);
+        }else if(shopInfo.getDtate() == 2){
+            updateShopInfo(shopInfo);
         }
     }
 }

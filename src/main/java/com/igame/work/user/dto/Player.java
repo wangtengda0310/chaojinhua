@@ -20,7 +20,6 @@ import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.quest.dto.TaskDayInfo;
-import com.igame.work.shop.dto.ShopInfo;
 import com.igame.work.sign.SignData;
 import com.smartfoxserver.v2.entities.User;
 import org.mongodb.morphia.annotations.Entity;
@@ -223,10 +222,6 @@ public class Player extends PlayerDto {
 //	@Transient
 //	@JsonIgnore
 //	private Map<Integer,TaskDayInfo> dayTask = Maps.newHashMap();//每日任务
-
-    @Transient
-    @JsonIgnore
-    private ShopInfo shopInfo;    //商店信息
 
     @Transient
     @JsonIgnore
@@ -546,14 +541,6 @@ public class Player extends PlayerDto {
 
     public void setFateData(FateSelfData fateData) {
         this.fateData = fateData;
-    }
-
-    public ShopInfo getShopInfo() {
-        return shopInfo;
-    }
-
-    public void setShopInfo(ShopInfo shopInfo) {
-        this.shopInfo = shopInfo;
     }
 
     public int getDoujiScore() {

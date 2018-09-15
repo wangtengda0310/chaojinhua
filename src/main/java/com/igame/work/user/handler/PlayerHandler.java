@@ -297,10 +297,10 @@ public class PlayerHandler extends BaseHandler {
 			vIPService.initPrivileges(player.getVipPrivileges());
 
 		//初始化商店或者刷新
-		if (player.getShopInfo() == null)
+		if (!shopService.existsShopInfo(player))
 			shopService.initShop(player);
 		else
-			shopService.reloadAll(player.getShopInfo());
+			shopService.reloadAll(player);
 
 		//初始化头像和头像框
 		if (player.getUnlockHead().size() == 0)

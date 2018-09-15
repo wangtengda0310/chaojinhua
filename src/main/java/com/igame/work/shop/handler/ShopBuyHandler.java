@@ -54,7 +54,7 @@ public class ShopBuyHandler extends ReconnectedHandler {
             return error(ErrorCode.PARAMS_INVALID);
         }
 
-        ShopInfo shopInfo = player.getShopInfo();
+        ShopInfo shopInfo = shopService.getShopInfo(player);
         int maxCount = shopInfo.getMaxCount(shopId, itemId);
 
         //校验商店是否解锁

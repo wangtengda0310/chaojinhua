@@ -1,14 +1,14 @@
 package com.igame.work.shop.service;
 
 import com.igame.core.ISFSModule;
-import com.igame.core.di.Inject;
-import com.igame.core.quartz.TimeListener;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.RetVO;
+import com.igame.core.quartz.TimeListener;
 import com.igame.util.DateUtil;
 import com.igame.util.GameMath;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.shop.ShopConstants;
 import com.igame.work.shop.ShopDataManager;
 import com.igame.work.shop.dao.ShopDAO;
@@ -22,6 +22,7 @@ import com.igame.work.shop.dto.ShopInfo;
 import com.igame.work.user.dto.Player;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xym
@@ -31,6 +32,28 @@ public class ShopService implements ISFSModule, TimeListener {
     @Inject private ShopService shopService;
     @Inject private ShopDAO shopDAO;
 
+    private Map<Long, ShopInfo> shopInfos = new ConcurrentHashMap<>();    //商店信息
+
+    public boolean existsShopInfo(Player player) {
+        return shopInfos.containsKey(player.getPlayerId());
+    }
+
+    public ShopInfo getShopInfo(Player player) {
+        return shopInfos.get(player.getPlayerId());
+    }
+    public void resetShopInfo(Player player) {
+        //重置商店刷新次数
+        ShopInfo shopInfo = shopInfos.get(player.getPlayerId());
+        if (shopInfo != null){
+            if (shopInfo.getMysticalShop().getShopId() != 0) {
+                shopInfo.getMysticalShop().setReloadCount(0);
+            }
+            shopInfo.getWujinShop().setReloadCount(0);
+            shopInfo.getDoujiShop().setReloadCount(0);
+            shopInfo.getQiyuanShop().setReloadCount(0);
+            shopInfo.getBuluoShop().setReloadCount(0);
+        }
+    }
     @Override
     public void twenty() {
         reloadGeneralOnline();
@@ -110,9 +133,9 @@ public class ShopService implements ISFSModule, TimeListener {
         shopInfo.setBuluoShop(buluoShop);
 
         //刷新商店
-        reloadAll(shopInfo);
+        reloadAll(player);
 
-        player.setShopInfo(shopInfo);
+        shopInfos.put(player.getPlayerId(), shopInfo);
 
         return shopInfo;
     }
@@ -126,7 +149,7 @@ public class ShopService implements ISFSModule, TimeListener {
         if (player.getPlayerLevel() < ShopConstants.SHOP_MYSTICAL_LOCKLV)	//初始化神秘商店
             return;
 
-        ShopInfo shopInfo = player.getShopInfo();
+        ShopInfo shopInfo = shopInfos.get(player.getPlayerId());
 
         MysticalShop mysticalShop = new MysticalShop();
         mysticalShop.setShopId(ShopConstants.ID_MysticalShop);
@@ -141,16 +164,16 @@ public class ShopService implements ISFSModule, TimeListener {
 
         //推送
         RetVO vo = new RetVO();
-        vo.addData("mysticalShop",player.getShopInfo().getMysticalShop());
+        vo.addData("mysticalShop",shopInfo.getMysticalShop());
         MessageUtil.sendMessageToPlayer(player, MProtrol.MYSTICAL_SHOP_UPDATE, vo);
 
     }
 
     /**
      * 刷新全部商店 玩家登录触发
-     * @param shopInfo 商店信息
      */
-    public ShopInfo reloadAll(ShopInfo shopInfo){
+    public ShopInfo reloadAll(Player player){
+        ShopInfo shopInfo = shopInfos.get(player.getPlayerId());
 
         if (shopInfo.getMysticalShop().getShopId() != 0
                 && needRealod(shopInfo.getMysticalShop().getLastReload(),ShopConstants.ID_MysticalShop))
@@ -232,11 +255,12 @@ public class ShopService implements ISFSModule, TimeListener {
      */
     public void reloadMysticalOnline() {
         for(Player player : sessionManager.getSessions().values()){
-            shopService.reloadShop(ShopConstants.ID_MysticalShop,player.getShopInfo(), false);
+            ShopInfo shopInfo = shopInfos.get(player.getPlayerId());
+            shopService.reloadShop(ShopConstants.ID_MysticalShop, shopInfo, false);
 
             //推送
             RetVO vo = new RetVO();
-            vo.addData("mysticalShop",player.getShopInfo().getMysticalShop());
+            vo.addData("mysticalShop", shopInfo.getMysticalShop());
             MessageUtil.sendMessageToPlayer(player, MProtrol.MYSTICAL_SHOP_UPDATE, vo);
         }
     }
@@ -246,17 +270,18 @@ public class ShopService implements ISFSModule, TimeListener {
      */
     public void reloadGeneralOnline() {
         for(Player player : sessionManager.getSessions().values()){
-            shopService.reloadShop(ShopConstants.ID_WUJINShop,player.getShopInfo(), false);
-            shopService.reloadShop(ShopConstants.ID_DOUJIShop,player.getShopInfo(), false);
-            shopService.reloadShop(ShopConstants.ID_QIYUANShop,player.getShopInfo(), false);
-            shopService.reloadShop(ShopConstants.ID_BULUOShop,player.getShopInfo(), false);
+            ShopInfo shopInfo = shopInfos.get(player.getPlayerId());
+            shopService.reloadShop(ShopConstants.ID_WUJINShop, shopInfo, false);
+            shopService.reloadShop(ShopConstants.ID_DOUJIShop, shopInfo, false);
+            shopService.reloadShop(ShopConstants.ID_QIYUANShop, shopInfo, false);
+            shopService.reloadShop(ShopConstants.ID_BULUOShop, shopInfo, false);
 
             //推送
             RetVO vo = new RetVO();
-            vo.addData("wujinShop",player.getShopInfo().getWujinShop());
-            vo.addData("doujiShop",player.getShopInfo().getDoujiShop());
-            vo.addData("qiyuanShop",player.getShopInfo().getQiyuanShop());
-            vo.addData("buluoShop",player.getShopInfo().getBuluoShop());
+            vo.addData("wujinShop", shopInfo.getWujinShop());
+            vo.addData("doujiShop", shopInfo.getDoujiShop());
+            vo.addData("qiyuanShop", shopInfo.getQiyuanShop());
+            vo.addData("buluoShop", shopInfo.getBuluoShop());
             MessageUtil.sendMessageToPlayer(player, MProtrol.GENERAL_SHOP_UPDATE, vo);
         }
     }
@@ -268,7 +293,7 @@ public class ShopService implements ISFSModule, TimeListener {
      */
     public void addMysticalExp(Player player, int exp) {
 
-        MysticalShop mysticalShop = player.getShopInfo().getMysticalShop();
+        MysticalShop mysticalShop = shopInfos.get(player.getPlayerId()).getMysticalShop();
 
         int curLv = mysticalShop.getShopLv();
         int curExp = mysticalShop.getExp() + exp;
@@ -405,6 +430,10 @@ public class ShopService implements ISFSModule, TimeListener {
     }
 
     public void loadPlayer(Player player) {
-        player.setShopInfo(shopDAO.getShopInfoByPlayerId(player.getPlayerId()));
+        shopInfos.put(player.getPlayerId(), shopDAO.getShopInfoByPlayerId(player.getPlayerId()));
+    }
+
+    public void updatePlayer(Player player) {
+        shopDAO.updatePlayer(shopInfos.get(player.getPlayerId()));
     }
 }

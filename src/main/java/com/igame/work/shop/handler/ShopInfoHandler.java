@@ -1,10 +1,12 @@
 package com.igame.work.shop.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.shop.dto.ShopInfo;
+import com.igame.work.shop.service.ShopService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
@@ -17,12 +19,15 @@ import java.util.Date;
  * 商店信息
  */
 public class ShopInfoHandler extends ReconnectedHandler {
+    @Inject
+    ShopService shopService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
 
-        ShopInfo shopInfo = player.getShopInfo();
+        ShopInfo shopInfo = shopService.getShopInfo(player);
+
         if (shopInfo == null){
             return error(ErrorCode.ERROR);
         }

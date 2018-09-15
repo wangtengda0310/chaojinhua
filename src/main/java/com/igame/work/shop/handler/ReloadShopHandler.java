@@ -42,7 +42,7 @@ public class ReloadShopHandler extends ReconnectedHandler {
             return error(ErrorCode.PARAMS_INVALID);
         }
 
-        ShopInfo shopInfo = player.getShopInfo();
+        ShopInfo shopInfo = shopService.getShopInfo(player);
         ShopTemplate shopTemplate = ShopDataManager.shopData.getTemplate(shopId);
 
         //校验刷新次数

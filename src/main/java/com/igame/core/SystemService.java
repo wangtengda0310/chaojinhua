@@ -13,6 +13,7 @@ import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.quest.QuestDataManager;
 import com.igame.work.quest.dto.TaskDayInfo;
+import com.igame.work.shop.service.ShopService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.VIPService;
 import org.apache.commons.beanutils.BeanUtils;
@@ -24,6 +25,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
     @Inject private VIPService vipService;
     @Inject private SessionManager sessionManager;
     @Inject private SystemServiceDAO systemServiceDAO;
+    @Inject private ShopService shopService;
 
     @Override
     public void zero() {
@@ -50,7 +52,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
         return new PlayerEventObserver() {
             @Override
             public EventType interestedType() {
-                return PlayerEvents.RESET_ONCE;
+                return PlayerEvents.RESET_ONCE; // 换成监听上线事件？
             }
 
             @Override
@@ -100,15 +102,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
             }
         }
 
-        //重置商店刷新次数
-        if (player.getShopInfo() != null){
-            if (player.getShopInfo().getMysticalShop().getShopId() != 0)
-                player.getShopInfo().getMysticalShop().setReloadCount(0);
-            player.getShopInfo().getWujinShop().setReloadCount(0);
-            player.getShopInfo().getDoujiShop().setReloadCount(0);
-            player.getShopInfo().getQiyuanShop().setReloadCount(0);
-            player.getShopInfo().getBuluoShop().setReloadCount(0);
-        }
+        shopService.resetShopInfo(player);
 
         //重置暴走时刻刷新次数
         player.setBallisticCount(0);
