@@ -1,13 +1,14 @@
 package com.igame.work.chat.handler;
 
-import com.igame.core.di.Inject;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.chat.dto.PlayerInfo;
+import com.igame.work.chat.service.PrivateMessageService;
 import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
@@ -25,6 +26,7 @@ public class PrivateMessageHandler extends ReconnectedHandler {
 
     @Inject private SessionManager sessionManager;
     @Inject private FriendService friendService;
+    @Inject private PrivateMessageService privateMessageService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -52,7 +54,7 @@ public class PrivateMessageHandler extends ReconnectedHandler {
             return error(ErrorCode.IS_BAN_STRANGERS);
         }
 
-        List<Message> messages = player.getPrivateMessages().get(playerId);
+        List<Message> messages = privateMessageService.getPrivateMessages(player).get(playerId);
 
         vo.addData("senderCache",new PlayerInfo(recPlayer));
         vo.addData("privateMsg", messages);

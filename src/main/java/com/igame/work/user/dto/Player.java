@@ -218,10 +218,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private Map<Long,List<Message>> privateMessages = Maps.newHashMap();    //私聊消息
-
-    @Transient
-    @JsonIgnore
     private Map<Integer,MessageCache> proTuiMap = new ConcurrentHashMap<>();//推送消息缓存
 
     @Transient
@@ -530,14 +526,6 @@ public class Player extends PlayerDto {
 
     public void setLastClubSpeak(Date lastClubSpeak) {
         this.lastClubSpeak = lastClubSpeak;
-    }
-
-    public Map<Long, List<Message>> getPrivateMessages() {
-        return privateMessages;
-    }
-
-    public void setPrivateMessages(Map<Long, List<Message>> privateMessages) {
-        this.privateMessages = privateMessages;
     }
 
     public Map<String, Date> getLastMessageBoard() {

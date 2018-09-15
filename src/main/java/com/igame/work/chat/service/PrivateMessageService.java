@@ -5,6 +5,8 @@ import com.igame.work.chat.dto.Message;
 import com.igame.work.user.dto.Player;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.igame.work.chat.MessageContants.*;
 
@@ -14,6 +16,8 @@ import static com.igame.work.chat.MessageContants.*;
  * 私聊消息服务
  */
 public class PrivateMessageService {
+
+    private Map<Long, Map<Long,List<Message>>> privateMessages = new ConcurrentHashMap<>();    //私聊消息
 
     /**
      * 添加消息缓存
@@ -36,11 +40,11 @@ public class PrivateMessageService {
 
         if (type == MSG_TYPE_FRIEND || type == MSG_TYPE_STRANGER){    //好友私聊或者陌生人私聊
 
-            List<Message> messages = senderPlayer.getPrivateMessages().get(recPlayer.getPlayerId());
+            List<Message> messages = getPrivateMessages(senderPlayer).get(recPlayer.getPlayerId());
             if (messages == null){
                 messages = Lists.newArrayList();
                 messages.add(message);
-                senderPlayer.getPrivateMessages().put(recPlayer.getPlayerId(),messages);
+                getPrivateMessages(senderPlayer).put(recPlayer.getPlayerId(),messages);
             }else {
                 if (messages.size() > CACHE_MAX){
                     messages.remove(0);
@@ -48,11 +52,11 @@ public class PrivateMessageService {
                 messages.add(message);
             }
 
-            List<Message> messages1 = recPlayer.getPrivateMessages().get(senderPlayer.getPlayerId());
+            List<Message> messages1 = getPrivateMessages(recPlayer).get(senderPlayer.getPlayerId());
             if (messages1 == null){
                 messages1 = Lists.newArrayList();
                 messages1.add(message);
-                recPlayer.getPrivateMessages().put(senderPlayer.getPlayerId(),messages);
+                getPrivateMessages(recPlayer).put(senderPlayer.getPlayerId(),messages);
             }else {
                 if (messages.size() > CACHE_MAX){
                     messages.remove(0);
@@ -64,4 +68,11 @@ public class PrivateMessageService {
         return message;
     }
 
+    public Map<Long, List<Message>> getPrivateMessages(Player player) {
+        return privateMessages.get(player.getPlayerId());
+    }
+
+    public void setPrivateMessages(Player player, Map<Long, List<Message>> messages) {
+        privateMessages.put(player.getPlayerId(), messages);
+    }
 }

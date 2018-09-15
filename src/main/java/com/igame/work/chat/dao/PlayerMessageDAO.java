@@ -1,7 +1,9 @@
 package com.igame.work.chat.dao;
 
 import com.igame.core.db.AbsDao;
+import com.igame.core.di.Inject;
 import com.igame.work.chat.dto.PlayerMessage;
+import com.igame.work.chat.service.PrivateMessageService;
 import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -10,6 +12,8 @@ import org.mongodb.morphia.query.UpdateOperations;
  * @author xym
  */
 public class PlayerMessageDAO extends AbsDao {
+    @Inject
+    private PrivateMessageService privateMessageService;
 
     /**
      * 获取某人的私聊记录
@@ -54,7 +58,7 @@ public class PlayerMessageDAO extends AbsDao {
     public void updatePlayer(Player player) {
 
         PlayerMessage playerMessage = getMessageByPlayerId(player.getPlayerId());
-        playerMessage.setMessages(player.getPrivateMessages());
+        playerMessage.setMessages(privateMessageService.getPrivateMessages(player));
 
         updateMessage(playerMessage);
     }

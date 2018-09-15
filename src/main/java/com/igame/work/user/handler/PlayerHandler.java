@@ -21,6 +21,7 @@ import com.igame.work.activity.denglu.DengluService;
 import com.igame.work.activitylimit.ShopActivityService;
 import com.igame.work.chat.dao.PlayerMessageDAO;
 import com.igame.work.chat.service.MessageBoardService;
+import com.igame.work.chat.service.PrivateMessageService;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
@@ -98,6 +99,8 @@ public class PlayerHandler extends BaseHandler {
 	@Inject private SignService signService;
 	@Inject private DengluService dengluService;
 	@Inject private MessageBoardService messageBoardService;
+	@Inject
+	private PrivateMessageService privateMessageService;
 
 	private Map<Long, Map<Integer, ResCdto>> resC = new ConcurrentHashMap<>();//金币资源关卡
 
@@ -283,7 +286,7 @@ public class PlayerHandler extends BaseHandler {
 		shopService.loadPlayer(player);
 		friendService.loadPlayer(player);
 
-		player.setPrivateMessages(playerMessageDAO.getMessageByPlayerId(player.getPlayerId()).getMessages());
+		privateMessageService.setPrivateMessages(player,playerMessageDAO.getMessageByPlayerId(player.getPlayerId()).getMessages());
 
 		questService.loadPlayer(player);
 
@@ -298,7 +301,7 @@ public class PlayerHandler extends BaseHandler {
 		//初始化留言板
 		messageBoardService.initMessageBoard(player);
 
-		if (player.getPrivateMessages().size() <= 0)
+		if (privateMessageService.getPrivateMessages(player).size() <= 0)
 			vIPService.initPrivileges(player.getVipPrivileges());
 
 		//初始化商店或者刷新
