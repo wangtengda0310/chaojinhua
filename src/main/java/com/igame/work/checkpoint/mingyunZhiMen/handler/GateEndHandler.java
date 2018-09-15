@@ -1,6 +1,7 @@
 package com.igame.work.checkpoint.mingyunZhiMen.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.*;
@@ -20,8 +21,9 @@ import java.util.List;
  */
 public class GateEndHandler extends ReconnectedHandler {
 
-    private ResourceService resourceService;
-    private QuestService questService;
+    @Inject private ResourceService resourceService;
+    @Inject private QuestService questService;
+    @Inject private GateService gateService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -60,8 +62,8 @@ public class GateEndHandler extends ReconnectedHandler {
                 for (String mh : monsHp.split(";")) {
                     long oId = Long.parseLong(mh.split(",")[0]);
                     int hp = Integer.parseInt(mh.split(",")[1]);
-                    if (player.getMingZheng().get(oId) != null && hp < player.getMingZheng().get(oId).getHpInit()) {
-                        player.getMingZheng().get(oId).setHp(hp);
+                    if (gateService.getMingZheng(player).get(oId) != null && hp < gateService.getMingZheng(player).get(oId).getHpInit()) {
+                        gateService.getMingZheng(player).get(oId).setHp(hp);
                     }
                 }
                 player.getFateData().addTempBoxCount(gto.getBoxCount());//加宝箱

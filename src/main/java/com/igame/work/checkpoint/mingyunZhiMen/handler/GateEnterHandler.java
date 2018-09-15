@@ -2,11 +2,12 @@ package com.igame.work.checkpoint.mingyunZhiMen.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
+import com.igame.core.handler.ReconnectedHandler;
+import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
-import com.igame.core.handler.ReconnectedHandler;
-import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.mingyunZhiMen.GateDto;
 import com.igame.work.checkpoint.mingyunZhiMen.GateService;
 import com.igame.work.fight.dto.FightBase;
@@ -28,7 +29,10 @@ import java.util.Map;
  */
 public class GateEnterHandler extends ReconnectedHandler {
 
+	@Inject
 	private QuestService questService;
+	@Inject
+	private GateService gateService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -100,7 +104,7 @@ public class GateEnterHandler extends ReconnectedHandler {
 		vo.addData("type", type);
 		vo.addData("m", lb);
 		if(act == 0){
-			vo.addData("a", player.getMingZheng().values());
+			vo.addData("a", gateService.getMingZheng(player).values());
 		}else{
 			vo.addData("a", Lists.newArrayList());
 		}

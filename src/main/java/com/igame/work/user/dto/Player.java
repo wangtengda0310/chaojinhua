@@ -19,7 +19,6 @@ import com.igame.work.item.dto.Item;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
-import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.sign.SignData;
 import com.smartfoxserver.v2.entities.User;
 import org.mongodb.morphia.annotations.Entity;
@@ -230,10 +229,6 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     private List<ArenaRanker> tempOpponent = Lists.newArrayList();
-
-    @Transient
-    @JsonIgnore
-    private Map<Long, MatchMonsterDto> mingZheng = Maps.newHashMap();//命运之门当前阵容
 
     @Transient
     @JsonIgnore
@@ -645,14 +640,6 @@ public class Player extends PlayerDto {
 
     public void setTeams(Map<Integer, Team> teams) {
         this.teams = teams;
-    }
-
-    public Map<Long, MatchMonsterDto> getMingZheng() {
-        return mingZheng;
-    }
-
-    public void setMingZheng(Map<Long, MatchMonsterDto> mingZheng) {
-        this.mingZheng = mingZheng;
     }
 
     public Map<Integer, MessageCache> getProTuiMap() {

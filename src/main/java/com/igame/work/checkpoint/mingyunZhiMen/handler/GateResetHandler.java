@@ -1,6 +1,7 @@
 package com.igame.work.checkpoint.mingyunZhiMen.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -23,7 +24,7 @@ import java.util.List;
  *
  */
 public class GateResetHandler extends ReconnectedHandler {
-	
+	@Inject GateService gateService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -48,11 +49,11 @@ public class GateResetHandler extends ReconnectedHandler {
 				MessageUtil.notifyGateChange(player);
 				
 				FightData fd = new FightData(player);
-				player.getMingZheng().clear();
+				gateService.getMingZheng(player).clear();
 		    	for(Monster m : fd.getMonsters().values()){
 		    		MatchMonsterDto mto = new MatchMonsterDto(m);
 					mto.reCalGods(player.callFightGods(),null);
-		    		player.getMingZheng().put(mto.getObjectId(),mto);
+		    		gateService.getMingZheng(player).put(mto.getObjectId(),mto);
 		    	}
 				
 			}

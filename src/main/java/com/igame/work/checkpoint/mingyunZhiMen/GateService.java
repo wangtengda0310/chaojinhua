@@ -8,17 +8,25 @@ import com.igame.util.GameMath;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.mingyunZhiMen.data.DestinyrateTemplate;
 import com.igame.work.checkpoint.mingyunZhiMen.data.FatedataTemplate;
+import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GateService implements ISFSModule, TimeListener {
     @Override
     public void zero() {
         refFateMap();
+    }
+
+    private Map<Long, Map<Long, MatchMonsterDto>> mingZheng = new ConcurrentHashMap<>();//命运之门当前阵容
+
+    public Map<Long, MatchMonsterDto> getMingZheng(Player player) {
+        return mingZheng.get(player.getPlayerId());
     }
 
     /**
