@@ -1,12 +1,14 @@
 package com.igame.work.user.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.user.dto.Mail;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.service.MailService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -16,7 +18,7 @@ import net.sf.json.JSONObject;
  *
  */
 public class MialDelHandler extends ReconnectedHandler {
-	
+	@Inject MailService mailService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -26,7 +28,7 @@ public class MialDelHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		int id = jsonObject.getInt("id");
-		Mail mail = player.getMail().get(id);
+		Mail mail = mailService.getMails(player).get(id);
 		if(mail == null){
 			return error(ErrorCode.ERROR);
 		}else{

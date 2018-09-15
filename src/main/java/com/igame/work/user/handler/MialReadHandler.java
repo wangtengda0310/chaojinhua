@@ -1,12 +1,14 @@
 package com.igame.work.user.handler;
 
 
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.MProtrol;
 import com.igame.work.user.dto.Mail;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.service.MailService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -16,7 +18,8 @@ import net.sf.json.JSONObject;
  *
  */
 public class MialReadHandler extends ReconnectedHandler {
-	
+	@Inject
+	MailService mailService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -30,7 +33,7 @@ public class MialReadHandler extends ReconnectedHandler {
 		if(!MyUtil.isNullOrEmpty(id)){
 			String[] ids = id.split(",");
 			for(String temp : ids){
-				Mail mail = player.getMail().get(Integer.parseInt(temp));
+				Mail mail = mailService.getMails(player).get(Integer.parseInt(temp));
 				if(mail != null){
 					mail.setState(1);
 					mail.setDtate(2);

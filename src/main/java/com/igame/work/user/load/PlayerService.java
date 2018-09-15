@@ -33,6 +33,7 @@ import com.igame.work.user.data.DrawdataTemplate;
 import com.igame.work.user.data.DrawrewardTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
+import com.igame.work.user.service.MailService;
 import com.igame.work.user.service.PlayerCacheService;
 
 import java.util.Collections;
@@ -60,6 +61,7 @@ public class PlayerService extends EventService implements ISFSModule {
 	@Inject private MessageBoardService messageBoardService;
 	@Inject private TurntableService turntableService;
 	@Inject private ShopService shopService;
+	@Inject private MailService mailService;
 
 	public TongHuaDto getRandomTongHuaDto(){
 		
@@ -297,7 +299,7 @@ public class PlayerService extends EventService implements ISFSModule {
 			itemDAO.updatePlayer(player);
 			wordEventDAO.updatePlayer(player);
 			godsDAO.updatePlayer(player);
-			mailDAO.updatePlayer(player);
+			mailService.updatePlayer(player);
 			questDAO.updatePlayer(player);
 			shopService.updatePlayer(player);
 			friendDAO.updatePlayer(player);

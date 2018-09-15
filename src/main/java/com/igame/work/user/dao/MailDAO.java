@@ -5,7 +5,6 @@ package com.igame.work.user.dao;
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
 import com.igame.work.user.dto.Mail;
-import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.query.UpdateOperations;
 
 import java.util.List;
@@ -61,9 +60,9 @@ public class MailDAO extends AbsDao {
     /**
      * 更新玩家
      */
-    public void updatePlayer(Player player){
+    public void updatePlayer(Map<Integer,Mail> mail){
     	
-    	for(Mail m : player.getMail().values()){
+    	for(Mail m : mail.values()){
     		if(m.getDtate() == 1){
     			save(m);
     		}else if(m.getDtate() == 2){

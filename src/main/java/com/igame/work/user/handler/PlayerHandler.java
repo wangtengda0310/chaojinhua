@@ -168,7 +168,7 @@ public class PlayerHandler extends BaseHandler {
 		vo.addData("xinMo", player.getXinMo().values());
 		vo.addData("tongAdd", player.getTongAdd());
 		vo.addData("gods", player.getGods().values());
-		vo.addData("mail", player.getMail().values());
+		vo.addData("mail", mailService.getMails(player).values());
 		vo.addData("meetM", MyUtil.toString(player.getMeetM(), ","));
 		vo.addData("resC", player.getResC().values());
 		vo.addData("draw", player.getDraw());

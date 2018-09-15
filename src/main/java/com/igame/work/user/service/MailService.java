@@ -12,6 +12,7 @@ import com.igame.work.user.dto.Player;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
@@ -31,8 +32,10 @@ public class MailService {
         }
         return 1;
     }
-    
-    /**
+
+	private Map<Long, Map<Integer, Mail>> playerMails = new ConcurrentHashMap<>();//玩家邮件
+
+	/**
      * 发送邮件
      * @param serverId 服务器ID
      * @param target 角色ID
@@ -42,7 +45,6 @@ public class MailService {
      * @param title 标题
      * @param content 内容
      * @param attach 附件
-     * @return
      */
     public Mail senderMail(int serverId,long target,int type,int exttype,String sender,String title,String content,String attach){
     	
@@ -58,12 +60,12 @@ public class MailService {
     	mail.setPlayerId(target);
     	Player player = sessionManager.getSessionByPlayerId(target);
     	if(player != null){
-    		String maxId = String.valueOf(getMaxId(player.getMail()));
+    		String maxId = String.valueOf(getMaxId(playerMails.get(player.getPlayerId())));
     		if(maxId.length() < 5){
     			maxId = String.valueOf(serverId * 100000 + Integer.parseInt(maxId));
     		}
     		mail.setId(serverId * 100000 + Integer.parseInt(maxId.substring(maxId.length() - 5)));
-    		player.getMail().put(mail.getId(), mail);
+    		playerMails.get(player.getPlayerId()).put(mail.getId(), mail);
     		MessageUtil.notifyNewMail(player, mail);
     	}else{
     		mail.setDtate(0);
@@ -104,12 +106,12 @@ public class MailService {
     	mail.setTime(new Date());
     	Player player = sessionManager.getSession(username);
     	if(player != null){
-    		String maxId = String.valueOf(getMaxId(player.getMail()));
+			String maxId = String.valueOf(getMaxId(playerMails.get(player.getPlayerId())));
     		if(maxId.length() < 5){
     			maxId = String.valueOf(serverId * 100000 + Integer.parseInt(maxId));
     		}
     		mail.setId(serverId * 100000 + Integer.parseInt(maxId.substring(maxId.length() - 5)));
-    		player.getMail().put(mail.getId(), mail);
+    		playerMails.get(player.getPlayerId()).put(mail.getId(), mail);
     		MessageUtil.notifyNewMail(player, mail);
     	}else{
     		mail.setDtate(0);
@@ -137,6 +139,14 @@ public class MailService {
 
 
     public void loadPlayer(Player player) {
-		player.setMail(mailDAO.getByPlayer(player.getPlayerId()));
+		playerMails.put(player.getPlayerId(), mailDAO.getByPlayer(player.getPlayerId()));
     }
+
+	public Map<Integer, Mail> getMails(Player player) {
+		return playerMails.get(player.getPlayerId());
+	}
+
+	public void updatePlayer(Player player) {
+		mailDAO.updatePlayer(playerMails.get(player.getPlayerId()));
+	}
 }

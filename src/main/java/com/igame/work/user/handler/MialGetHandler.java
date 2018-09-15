@@ -1,16 +1,18 @@
 package com.igame.work.user.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.user.dto.Mail;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
+import com.igame.work.user.service.MailService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -21,7 +23,10 @@ import net.sf.json.JSONObject;
  */
 public class MialGetHandler extends ReconnectedHandler {
 
+	@Inject
 	private ResourceService resourceService;
+	@Inject
+	private MailService mailService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -33,7 +38,7 @@ public class MialGetHandler extends ReconnectedHandler {
 		int id = jsonObject.getInt("id");
 		int type = jsonObject.getInt("type");
 		String reward;
-		Mail mail = player.getMail().get(id);
+		Mail mail = mailService.getMails(player).get(id);
 		if(mail == null || mail.getState() == 2 || mail.getType() != 1 || MyUtil.isNullOrEmpty(mail.getAttach())){
 			return error(ErrorCode.ERROR);
 		}else if (player.getItems().size() >= player.getBagSpace()){

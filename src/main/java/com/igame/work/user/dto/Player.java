@@ -205,10 +205,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private Map<Integer, Mail> mail = Maps.newHashMap();//玩家邮件
-
-    @Transient
-    @JsonIgnore
     private Map<Integer, ResCdto> resC = Maps.newHashMap();//金币资源关卡
 
     @Transient
@@ -433,14 +429,6 @@ public class Player extends PlayerDto {
 
     public void setGods(Map<Integer, Gods> gods) {
         this.gods = gods;
-    }
-
-    public Map<Integer, Mail> getMail() {
-        return mail;
-    }
-
-    public void setMail(Map<Integer, Mail> mail) {
-        this.mail = mail;
     }
 
     public Set<Integer> getMeetM() {
