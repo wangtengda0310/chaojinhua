@@ -56,7 +56,7 @@ public class FriendAddHandler extends ReconnectedHandler {
         }
 
         //判断自己好友上限
-        int myCurFriendCount = player.getFriends().getCurFriends().size();
+        int myCurFriendCount = friendService.getFriends(player).getCurFriends().size();
         if (myCurFriendCount >= max){
             vo.addData("state",FRIEND_STATE_MYUP);
             return vo;
@@ -65,9 +65,9 @@ public class FriendAddHandler extends ReconnectedHandler {
         //判断对方好友上限
         int curFriendCount;
         if (reqPlayer != null){ //如果对方在线，则取session
-            curFriendCount = reqPlayer.getFriends().getCurFriends().size();
+            curFriendCount = friendService.getFriends(reqPlayer).getCurFriends().size();
         } else {    //如果不在线，则取cache
-            curFriendCount = reqPlayerCache.getFriends().getCurFriends().size();
+            curFriendCount = friendService.getFriends(reqPlayerCache).getCurFriends().size();
         }
         if (curFriendCount >= max){
             vo.addData("state",FRIEND_STATE_OTHERUP);
@@ -75,7 +75,7 @@ public class FriendAddHandler extends ReconnectedHandler {
         }
 
         //判断对方是否在自己的好友列表中
-        List<Friend> curFriends = player.getFriends().getCurFriends();
+        List<Friend> curFriends = friendService.getFriends(player).getCurFriends();
         if (curFriends.stream().anyMatch(friend -> friend.getPlayerId() == playerId)){
             vo.addData("state",FRIEND_STATE_ADDED);
             return vo;
@@ -84,7 +84,7 @@ public class FriendAddHandler extends ReconnectedHandler {
         //获取对方好友请求列表
         List<Friend> reqFriends;
         if (reqPlayer != null){
-            reqFriends = reqPlayer.getFriends().getReqFriends();
+            reqFriends = friendService.getFriends(reqPlayer).getReqFriends();
         }else {
             FriendInfo friendInfo = dao.getFriendInfoByPlayerId(playerId);
             reqFriends = friendInfo.getReqFriends();

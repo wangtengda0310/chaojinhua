@@ -33,6 +33,7 @@ import com.igame.work.fight.arena.ArenaService;
 import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.friend.dto.Friend;
+import com.igame.work.friend.dto.FriendInfo;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.item.service.ItemService;
 import com.igame.work.monster.MonsterDataManager;
@@ -180,17 +181,18 @@ public class PlayerHandler extends BaseHandler {
 		vo.addData("wuZheng", CheckPointService.parsePlayer(player));
 		vo.addData("wuEffect", player.getWuEffect());
 		vo.addData("desInfo", FateDto.creatFateDto(player.getFateData()));
-		for (Friend reqFriend : player.getFriends().getReqFriends()) {
+		FriendInfo friends = friendService.getFriends(player);
+		for (Friend reqFriend : friends.getReqFriends()) {
 			if (reqFriend.getLoginoutTime() == null) {
 				reqFriend.setLoginoutTime(new Date());
 			}
 		}
-		for (Friend reqFriend : player.getFriends().getCurFriends()) {
+		for (Friend reqFriend : friends.getCurFriends()) {
 			if (reqFriend.getLoginoutTime() == null) {
 				reqFriend.setLoginoutTime(new Date());
 			}
 		}
-		vo.addData("friends", player.getFriends());
+		vo.addData("friends", friends);
 		vo.addData("teams",player.getTeams().values());
 		vo.addData("vipPrivileges",player.getVipPrivileges());
 		vo.addData("showActivities", activityService.clientData(player));

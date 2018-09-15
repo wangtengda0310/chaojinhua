@@ -44,7 +44,7 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
         vo.addData("playerId",playerId);
 
         //判断对方是否在自己的好友列表中
-        List<Friend> curFriends = player.getFriends().getCurFriends();
+        List<Friend> curFriends = friendService.getFriends(player).getCurFriends();
         if (playerId != -1){
             boolean isExist = false;
             for (Friend curFriend : curFriends) {
@@ -113,7 +113,7 @@ public class FriendGivePhyHandler extends ReconnectedHandler {
         Player recPlayer = sessionManager.getSessionByPlayerId(recPlayerId);
         if (recPlayer != null){    //如果对方在线
 
-            List<Friend> curFriends = recPlayer.getFriends().getCurFriends();
+            List<Friend> curFriends = friendService.getFriends(recPlayer).getCurFriends();
             for (Friend friend : curFriends) {
                 if (friend.getPlayerId() == sendPlayer.getPlayerId())
                     friend.setReceivePhy(recState);   //已赠送未领取

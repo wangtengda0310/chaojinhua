@@ -12,6 +12,7 @@ import com.igame.util.LoginOutReason;
 import com.igame.work.PlayerEvents;
 import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.friend.dao.FriendDAO;
+import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
 
@@ -30,6 +31,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 	@Inject private FriendDAO dao;
 	@Inject private PVPFightService pvpFightService;
 	@Inject private PlayerDAO playerDAO;
+	@Inject private FriendService friendService;
 
 	@Override
 	public void minute() {
@@ -91,7 +93,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 
 		allPlayer.forEach(player ->
 				//加载好友
-				player.setFriends(dao.getFriendInfoByPlayerId(player.getPlayerId()))
+				friendService.setFriends(player,dao.getFriendInfoByPlayerId(player.getPlayerId()))
 		);
 	}
 

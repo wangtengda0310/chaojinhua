@@ -14,7 +14,6 @@ import com.igame.work.fight.arena.ArenaRanker;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.friend.dto.FriendInfo;
 import com.igame.work.item.dto.Item;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
@@ -245,10 +244,6 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     private Map<Long,List<Message>> privateMessages = Maps.newHashMap();    //私聊消息
-
-    @Transient
-    @JsonIgnore
-    private FriendInfo friends;    //好友 在Friends表中存储 不在Player表中存储
 
     @Transient
     @JsonIgnore
@@ -584,14 +579,6 @@ public class Player extends PlayerDto {
 
     public void setBallisticAid(String ballisticAid) {
         this.ballisticAid = ballisticAid;
-    }
-
-    public FriendInfo getFriends() {
-        return friends;
-    }
-
-    public void setFriends(FriendInfo friends) {
-        this.friends = friends;
     }
 
     public Date getLastWorldSpeak() {

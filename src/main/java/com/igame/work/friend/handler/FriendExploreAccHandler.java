@@ -8,6 +8,7 @@ import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.friend.dto.Friend;
+import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
@@ -23,10 +24,10 @@ import java.util.stream.Stream;
  * 探索加速
  */
 public class FriendExploreAccHandler extends ReconnectedHandler {
-    @Inject
-    private ResourceService resourceService;
+    @Inject private ResourceService resourceService;
     @Inject private PlayerDAO playerDAO;
     @Inject private SessionManager sessionManager;
+    @Inject private FriendService friendService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -48,7 +49,7 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
 
         //判断对方是否在自己的好友列表中
         boolean isExist = false;
-        List<Friend> curFriends = player.getFriends().getCurFriends();
+        List<Friend> curFriends = friendService.getFriends(player).getCurFriends();
         for (Friend curFriend : curFriends) {
             if (curFriend.getPlayerId() == playerId)
                 isExist = true;
@@ -89,7 +90,7 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
         }
 
         //减少可加速次数
-        player.getFriends().getCurFriends().stream()
+        friendService.getFriends(player).getCurFriends().stream()
                 .filter(friend -> friend.getPlayerId() == playerId)
                 .forEach(friend -> friend.setHelpAcc(1));
 
@@ -114,6 +115,6 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
     }
 
     private Stream<Friend> helpedFriendsOf(Player player) {
-        return player.getFriends().getCurFriends().stream().filter(friend -> friend.getHelpAcc() == 1);
+        return friendService.getFriends(player).getCurFriends().stream().filter(friend -> friend.getHelpAcc() == 1);
     }
 }

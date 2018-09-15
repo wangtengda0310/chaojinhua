@@ -73,14 +73,4 @@ public class FriendDAO extends AbsDao {
         ds.update(friendInfo,up);
     }
 
-    public void updatePlayer(Player player) {
-
-        if(player.getFriends().get_id() == null){
-            saveFriendInfo(player.getFriends());
-        }else{
-            updateFriends(player.getFriends());
-        }
-
-    }
-
 }

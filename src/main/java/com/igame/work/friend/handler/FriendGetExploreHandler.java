@@ -42,7 +42,7 @@ public class FriendGetExploreHandler extends ReconnectedHandler {
 
         //判断对方是否在自己的好友列表中
         boolean isExist = false;
-        List<Friend> curFriends = player.getFriends().getCurFriends();
+        List<Friend> curFriends = friendService.getFriends(player).getCurFriends();
         for (Friend curFriend : curFriends) {
             if (curFriend.getPlayerId() == playerId)
                 isExist = true;

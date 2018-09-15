@@ -36,7 +36,7 @@ public class FriendExploreHandler extends ReconnectedHandler {
 
         List<Map<String,Object>> helpStates = new ArrayList<>();
 
-        List<Friend> curFriends = player.getFriends().getCurFriends();
+        List<Friend> curFriends = friendService.getFriends(player).getCurFriends();
         for (Friend curFriend : curFriends) {
 
             long playerId = curFriend.getPlayerId();

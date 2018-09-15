@@ -10,6 +10,7 @@ import com.igame.work.chat.dto.Message;
 import com.igame.work.chat.exception.MessageException;
 import com.igame.work.chat.service.PrivateMessageService;
 import com.igame.work.friend.dto.Friend;
+import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
@@ -32,6 +33,7 @@ public class PrivateMessageEventHandler extends EventDispatcherHandler {
 
 	@Inject private SessionManager sessionManager;
 	@Inject private PrivateMessageService privateMessageService;
+	@Inject private FriendService friendService;
 
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
@@ -59,7 +61,7 @@ public class PrivateMessageEventHandler extends EventDispatcherHandler {
 		}
 
 		//判断对方是否在自己的好友列表中
-		List<Friend> curFriends = senderPlayer.getFriends().getCurFriends();
+		List<Friend> curFriends = friendService.getFriends(senderPlayer).getCurFriends();
 		boolean isExist = false;
 		for (Friend curFriend : curFriends) {
 			if (curFriend.getPlayerId() == recPlayer.getPlayerId())

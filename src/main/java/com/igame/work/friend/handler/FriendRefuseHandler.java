@@ -37,7 +37,7 @@ public class FriendRefuseHandler extends ReconnectedHandler {
         vo.addData("playerId",playerId);
 
         //判断对方是否在自己的请求列表中
-        List<Friend> reqFriends = player.getFriends().getReqFriends();
+        List<Friend> reqFriends = friendService.getFriends(player).getReqFriends();
         if (playerId != -1 && reqFriends.stream().noneMatch(req -> req.getPlayerId() == playerId)){
             return error(ErrorCode.ERROR);
         }

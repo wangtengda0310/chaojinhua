@@ -40,7 +40,7 @@ public class FriendDeleteHandler extends ReconnectedHandler {
         vo.addData("playerId",playerId);
 
         //判断对方是否在自己的好友列表中
-        List<Friend> curFriends = player.getFriends().getCurFriends();
+        List<Friend> curFriends = friendService.getFriends(player).getCurFriends();
         if (curFriends.stream().noneMatch(friend -> friend.getPlayerId() == playerId)){
             return error(ErrorCode.ERROR);
         }

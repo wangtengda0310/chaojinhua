@@ -456,16 +456,4 @@ public class MessageUtil {
 	}
 
 
-	/**
-	 * 推送玩家好友更新
-	 */
-	public static void notifyFriendInfo(Player player) {
-
-		//推送
-		RetVO vo = new RetVO();
-
-		vo.addData("friends",player.getFriends());
-		MessageUtil.sendMessageToPlayer(player, MProtrol.FRIENDS_UPDATE, vo);
-
-	}
 }

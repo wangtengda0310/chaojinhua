@@ -46,13 +46,13 @@ public class FriendAgreeHandler extends ReconnectedHandler {
         vo.addData("playerId",playerId);
 
         //判断对方是否在自己的请求列表中
-        List<Friend> reqFriends = player.getFriends().getReqFriends();
+        List<Friend> reqFriends = friendService.getFriends(player).getReqFriends();
         if (playerId != -1 && reqFriends.stream().noneMatch(req -> req.getPlayerId() == playerId)){
             return error(ErrorCode.ERROR);
         }
 
         //判断对方是否在自己的好友列表中
-        List<Friend> curFriends = player.getFriends().getCurFriends();
+        List<Friend> curFriends = friendService.getFriends(player).getCurFriends();
         if (curFriends.stream().anyMatch(req->req.getPlayerId() == playerId)){
             vo.addData("state",FRIEND_STATE_ADDED);
             return vo;
@@ -111,7 +111,7 @@ public class FriendAgreeHandler extends ReconnectedHandler {
         }
 
         //判断自己好友上限
-        int myCurFriendCount = player.getFriends().getCurFriends().size();
+        int myCurFriendCount = friendService.getFriends(player).getCurFriends().size();
         if (myCurFriendCount >= max){
             return FRIEND_STATE_MYUP;
         }
@@ -119,9 +119,9 @@ public class FriendAgreeHandler extends ReconnectedHandler {
         //校验对方角色好友上限
         int curFriendCount;
         if (reqPlayer != null){ //如果对方在线，则取session
-            curFriendCount = reqPlayer.getFriends().getCurFriends().size();
+            curFriendCount = friendService.getFriends(reqPlayer).getCurFriends().size();
         } else {    //如果不在线，则取cache
-            curFriendCount = reqPlayerCache.getFriends().getCurFriends().size();
+            curFriendCount = friendService.getFriends(reqPlayerCache).getCurFriends().size();
         }
 
         if (curFriendCount >= max){

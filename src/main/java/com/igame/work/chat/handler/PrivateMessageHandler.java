@@ -9,6 +9,7 @@ import com.igame.core.handler.RetVO;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.chat.dto.PlayerInfo;
 import com.igame.work.friend.dto.Friend;
+import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
@@ -23,6 +24,7 @@ import java.util.List;
 public class PrivateMessageHandler extends ReconnectedHandler {
 
     @Inject private SessionManager sessionManager;
+    @Inject private FriendService friendService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -39,7 +41,7 @@ public class PrivateMessageHandler extends ReconnectedHandler {
         }
 
         //判断对方是否在自己的好友列表中
-        List<Friend> curFriends = player.getFriends().getCurFriends();
+        List<Friend> curFriends = friendService.getFriends(player).getCurFriends();
         boolean isExist = false;
         for (Friend curFriend : curFriends) {
             if (curFriend.getPlayerId() == recPlayer.getPlayerId())

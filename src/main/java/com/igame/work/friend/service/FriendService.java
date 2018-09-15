@@ -15,6 +15,7 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.PlayerCacheService;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.igame.work.friend.FriendConstants.FRIEND_STATE_CAN_HELP;
 import static com.igame.work.friend.FriendConstants.FRIEND_STATE_NO_HELP;
@@ -31,6 +32,8 @@ public class FriendService {
     @Inject private FriendDAO dao;
     @Inject private SessionManager sessionManager;
     @Inject private PlayerCacheService playerCacheService;
+
+    private Map<Long, FriendInfo> playerFriends= new ConcurrentHashMap<>();    //好友 在Friends表中存储 不在Player表中存储
 
     /**
      * 获取好友探索列表
@@ -93,9 +96,9 @@ public class FriendService {
         }
 
         Friend friend = new Friend(sendPlayer);
-        if (reqPlayer != null && !reqPlayer.getFriends().getReqFriends().contains(friend)){ //在线 并且自己不存在于对方好友列表中
+        if (reqPlayer != null && !playerFriends.get(reqPlayer).getReqFriends().contains(friend)){ //在线 并且自己不存在于对方好友列表中
 
-            reqPlayer.getFriends().getReqFriends().add(friend);
+            playerFriends.get(reqPlayer).getReqFriends().add(friend);
 
             //推送
             List<Friend> reqFriends = new ArrayList<>();
@@ -131,7 +134,7 @@ public class FriendService {
      */
     public void delReqFriend(Player player, long delReqPlayerId){
 
-        List<Friend> reqFriends = player.getFriends().getReqFriends();
+        List<Friend> reqFriends = playerFriends.get(player.getPlayerId()).getReqFriends();
 
         for (int i = 0; i < reqFriends.size(); i++) {
             Friend reqFriend = reqFriends.get(i);
@@ -166,12 +169,12 @@ public class FriendService {
             reqFriend = new Friend(reqPlayerCache);
         }
 
-        player.getFriends().getCurFriends().add(reqFriend);
+        playerFriends.get(player.getPlayerId()).getCurFriends().add(reqFriend);
 
         //对方添加好友
         if (reqPlayer != null){ //在线,更新缓存
 
-            reqPlayer.getFriends().getCurFriends().add(new Friend(player));
+            playerFriends.get(reqPlayer.getPlayerId()).getCurFriends().add(new Friend(player));
 
             //推送对方好友列表更新
             List<Friend> reqAddFriends = new ArrayList<>();
@@ -227,13 +230,13 @@ public class FriendService {
             delFriend = new Friend(delPlayerCache);
         }
 
-        player.getFriends().getCurFriends().remove(delFriend);
+        playerFriends.get(player.getPlayerId()).getCurFriends().remove(delFriend);
 
         //如果对方在线，推送好友更新，不在线，则增加好友数量并存库
         if (delPlayer != null){
 
             //对方删除好友
-            delPlayer.getFriends().getCurFriends().remove(new Friend(player));
+            playerFriends.get(delPlayer.getPlayerId()).getCurFriends().remove(new Friend(player));
 
             //推送对方好友列表更新
             List<Long> reqDelFriends = new ArrayList<>();
@@ -297,7 +300,7 @@ public class FriendService {
 
         FriendInfo friendInfo = new FriendInfo(player.getPlayerId());
 
-        player.setFriends(friendInfo);
+        playerFriends.put(player.getPlayerId(),friendInfo);
     }
 
     /**
@@ -315,7 +318,7 @@ public class FriendService {
         instance.set(Calendar.SECOND,0);
         instance.set(Calendar.MILLISECOND,0);
 
-        FriendInfo friendInfo = player.getFriends();
+        FriendInfo friendInfo = playerFriends.get(player.getPlayerId());
 
         List<Friend> curFriends = friendInfo.getCurFriends();
         for (Friend curFriend : curFriends) {
@@ -331,11 +334,32 @@ public class FriendService {
     }
 
     public void loadPlayer(Player player) {
-        player.setFriends(dao.getFriendInfoByPlayerId(player.getPlayerId()));
-        long explorerCount = player.getFriends().getCurFriends().stream().filter(friend -> friend.getHelpAcc() == 1).count();
-        player.getFriends().setExploreCount((int) explorerCount);
-        player.getFriends().setMaxFriendCount(20);
-        long phyCount = player.getFriends().getCurFriends().stream().filter(friend -> friend.getReceivePhy() == 2).count();
-        player.getFriends().setPhysicalCount((int) phyCount);
+        playerFriends.put(player.getPlayerId(), dao.getFriendInfoByPlayerId(player.getPlayerId()));
+        FriendInfo friendInfo = playerFriends.get(player.getPlayerId());
+        long explorerCount = friendInfo.getCurFriends().stream().filter(friend -> friend.getHelpAcc() == 1).count();
+        friendInfo.setExploreCount((int) explorerCount);
+        friendInfo.setMaxFriendCount(20);
+        long phyCount = friendInfo.getCurFriends().stream().filter(friend -> friend.getReceivePhy() == 2).count();
+        friendInfo.setPhysicalCount((int) phyCount);
+    }
+
+    public void setFriends(Player player, FriendInfo friendInfo) {
+        playerFriends.put(player.getPlayerId(),friendInfo);
+    }
+
+    public FriendInfo getFriends(Player player) {
+        return playerFriends.get(player.getPlayerId());
+    }
+    /**
+     * 推送玩家好友更新
+     */
+    public void notifyFriendInfo(Player player) {
+
+        //推送
+        RetVO vo = new RetVO();
+
+        vo.addData("friends", playerFriends.get(player));
+        MessageUtil.sendMessageToPlayer(player, MProtrol.FRIENDS_UPDATE, vo);
+
     }
 }

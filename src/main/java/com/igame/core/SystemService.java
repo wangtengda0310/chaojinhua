@@ -111,7 +111,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
             MessageUtil.notifyWuResetChange(player);
             MessageUtil.notifyDeInfoChange(player);
             MessageUtil.notifyVipPrivilegesChange(player);
-            MessageUtil.notifyFriendInfo(player);
+            friendService.notifyFriendInfo(player);
         }
     }
 

@@ -1,9 +1,11 @@
 package com.igame.work.friend.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.friend.dto.Friend;
+import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.PlayerCacheService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -22,13 +24,14 @@ import java.util.stream.Collectors;
  * 离线24小时以内，等级差10级以内的优先抽取推荐
  */
 public class FriendNominateHandler extends ReconnectedHandler {
+    @Inject private FriendService friendService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
         //搜索好友的优先级：离线24小时以内，等级差10级以内的优先抽取推荐
         int playerLevel = player.getPlayerLevel();
-        Set<Long> curFriends = player.getFriends().getCurFriends().stream()
+        Set<Long> curFriends = friendService.getFriends(player).getCurFriends().stream()
                 .map(Friend::getPlayerId)
                 .collect(Collectors.toSet());
 
@@ -58,7 +61,7 @@ public class FriendNominateHandler extends ReconnectedHandler {
     }
 
     private Set<Long> reqFriends(Player player) {
-        return player.getFriends().getReqFriends().stream()
+        return friendService.getFriends(player).getReqFriends().stream()
                 .map(Friend::getPlayerId)
                 .collect(Collectors.toSet());
     }

@@ -1,10 +1,12 @@
 package com.igame.work.friend.handler;
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.friend.dto.Friend;
+import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -20,7 +22,10 @@ import java.util.List;
  * 领取体力
  */
 public class FriendReceivePhyHandler extends ReconnectedHandler {
+    @Inject
     private ResourceService resourceService;
+    @Inject
+    private FriendService friendService;
 
     private int state_ungive = 0;   //对方未赠送
     private int state_gave = 1;   //已赠送未领取
@@ -41,13 +46,13 @@ public class FriendReceivePhyHandler extends ReconnectedHandler {
 
         //校验体力领取次数
 
-        long receivedCount = player.getFriends().getCurFriends().stream().filter(friend -> friend.getReceivePhy() == state_rec).count();
+        long receivedCount = friendService.getFriends(player).getCurFriends().stream().filter(friend -> friend.getReceivePhy() == state_rec).count();
         if(receivedCount > max){
             return error(ErrorCode.RECEIVEPHY_NOT_ENOUGH);
         }
 
         //判断对方是否在自己的好友列表中
-        List<Friend> curFriends = player.getFriends().getCurFriends();
+        List<Friend> curFriends = friendService.getFriends(player).getCurFriends();
         if (playerId != -1){
             boolean isExist = false;
             for (Friend curFriend : curFriends) {
@@ -71,7 +76,7 @@ public class FriendReceivePhyHandler extends ReconnectedHandler {
                     if (receivePhy != state_gave){   //如果当前状态不等于 已赠送未领取
                         return error(ErrorCode.ERROR);
                     }else {
-                        voList.add(recPhy(player, curFriend));
+                        voList.add(recPhy(curFriend));
                     }
                     break;
                 }
@@ -81,11 +86,11 @@ public class FriendReceivePhyHandler extends ReconnectedHandler {
             curFriends.stream()
                     .filter(friend -> friend.getReceivePhy() == state_gave)
                     .limit(max - receivedCount)
-                    .forEach(friend -> voList.add(recPhy(player, friend)));
+                    .forEach(friend -> voList.add(recPhy(friend)));
 
         }
 
-        long count = player.getFriends().getCurFriends().stream().filter(friend -> friend.getReceivePhy() == state_rec).count();
+        long count = friendService.getFriends(player).getCurFriends().stream().filter(friend -> friend.getReceivePhy() == state_rec).count();
         //推送体力更新
         resourceService.addPhysica(player,(int)count - (int)receivedCount);
 
@@ -102,11 +107,10 @@ public class FriendReceivePhyHandler extends ReconnectedHandler {
 
     /**
      * 领取体力
-     * @param player 当前角色
      * @param curFriend 好友
      * @return voMap 当前角色体力领取状态
      */
-    private HashedMap recPhy(Player player, Friend curFriend) {
+    private HashedMap recPhy(Friend curFriend) {
 
         //更新状态为已领取
         curFriend.setReceivePhy(state_rec);
