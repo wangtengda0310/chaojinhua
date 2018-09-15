@@ -11,6 +11,7 @@ import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
+import com.igame.work.checkpoint.worldEvent.WorldEventService;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
@@ -25,6 +26,7 @@ public class FightAgainHandler extends ReconnectedHandler {
     private ResourceService resourceService;
     @Inject
     private CheckPointService checkPointService;
+    @Inject private WorldEventService worldEventService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -114,7 +116,7 @@ public class FightAgainHandler extends ReconnectedHandler {
 
             //防作弊
             checkPointService.setEnterWordEventTime(player);
-            player.setEnterWordEventId(eventType+"_"+level);
+            worldEventService.setEnterWordEventId(player,eventType+"_"+level);
 
         } else if (battleType == 3) {  // 从BallisticEnterHandler复制过来
             //校验等级

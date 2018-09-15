@@ -174,10 +174,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private String enterWordEventId;//进入世界事件关卡ID
-
-    @Transient
-    @JsonIgnore
     private Object timeLock = new Object();//定时同步锁
 
     @Transient
@@ -278,14 +274,6 @@ public class Player extends PlayerDto {
 
     public void setRemoves(List<Item> removes) {
         this.removes = removes;
-    }
-
-    public String getEnterWordEventId() {
-        return enterWordEventId;
-    }
-
-    public void setEnterWordEventId(String enterWordEventId) {
-        this.enterWordEventId = enterWordEventId;
     }
 
     public Map<Integer, Integer> getTimeResCheck() {

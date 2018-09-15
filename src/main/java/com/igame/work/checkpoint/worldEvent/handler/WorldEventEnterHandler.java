@@ -10,6 +10,7 @@ import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
+import com.igame.work.checkpoint.worldEvent.WorldEventService;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
@@ -34,6 +35,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 
 	@Inject private ResourceService resourceService;
 	@Inject private CheckPointService checkPointService;
+	@Inject private WorldEventService worldEventService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -80,7 +82,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 
 		//防作弊
 		checkPointService.setEnterWordEventTime(player);
-		player.setEnterWordEventId(eventType+"_"+level);
+		worldEventService.setEnterWordEventId(player,eventType+"_"+level);
 
 		//生成怪兽
 		FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(wt.getMonsterId(), wt.getMlevel(), wt.getSite(),"","")));

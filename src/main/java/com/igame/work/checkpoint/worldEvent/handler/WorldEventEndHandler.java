@@ -50,7 +50,7 @@ public class WorldEventEndHandler extends ReconnectedHandler {
 		vo.addData("win", win);
 
 		//防作弊校验
-		if (!(eventType+"_"+level).equals(player.getEnterWordEventId())){
+		if (!(eventType+"_"+level).equals(worldEventService.getEnterWordEventId(player))){
 			return error(ErrorCode.CHECKPOINT_END_ERROR);
 		}
 
