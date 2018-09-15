@@ -45,6 +45,8 @@ public class CheckPointService implements ISFSModule, TimeListener {
 	@Inject private ResourceService resourceService;
 	@Inject private SessionManager sessionManager;
 
+	private Map<Long, Long> enterCheckPointTime = new ConcurrentHashMap<>();//进入的关卡时间
+
 	private Map<Long, Map<String,Object>> lastBattleParam = new ConcurrentHashMap<>();//上次战斗的关卡参数
 
 	public Map<String, Object> getLastBattleParam(long playerId) {
@@ -384,4 +386,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 	}
 
 
+	public void setEnterCheckPointTime(Player player) {
+		enterCheckPointTime.put(player.getPlayerId(), System.currentTimeMillis());
+	}
 }

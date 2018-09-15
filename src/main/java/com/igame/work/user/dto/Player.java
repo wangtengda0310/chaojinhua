@@ -175,10 +175,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private long enterCheckPointTime;//进入的关卡时间
-
-    @Transient
-    @JsonIgnore
     private long enterWordEventTime;//进入世界事件关卡时间
 
     @Transient
@@ -295,14 +291,6 @@ public class Player extends PlayerDto {
 
     public void setRemoves(List<Item> removes) {
         this.removes = removes;
-    }
-
-    public long getEnterCheckPointTime() {
-        return enterCheckPointTime;
-    }
-
-    public void setEnterCheckPointTime(long enterCheckPointTime) {
-        this.enterCheckPointTime = enterCheckPointTime;
     }
 
     public long getEnterWordEventTime() {

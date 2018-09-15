@@ -136,7 +136,7 @@ public class CheckEnterHandler extends ReconnectedHandler {
 
 		resourceService.addPhysica(player, 0-ct.getPhysical());
 		player.setEnterCheckpointId(chapterId);
-		player.setEnterCheckPointTime(System.currentTimeMillis());
+		checkPointService.setEnterCheckPointTime(player);
 
 		//减少可挑战次数
         player.getPlayerCount().addCheckPoint(player,ct,-1);
