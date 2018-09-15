@@ -6,6 +6,7 @@ import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.baozouShike.BallisticConstant;
+import com.igame.work.checkpoint.baozouShike.BallisticService;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
@@ -27,6 +28,7 @@ public class FightAgainHandler extends ReconnectedHandler {
     @Inject
     private CheckPointService checkPointService;
     @Inject private WorldEventService worldEventService;
+    @Inject private BallisticService ballisticService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -138,7 +140,7 @@ public class FightAgainHandler extends ReconnectedHandler {
             }
 
             //记录开始时间
-            player.setBallisticEnter(new Date());
+            ballisticService.setBallisticEnter(player,new Date());
 
         }
 

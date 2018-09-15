@@ -15,6 +15,8 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.MailService;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author xym
@@ -62,7 +64,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
     private void updateRank(Player player, int killNum) {
 
         //统计用时
-        long timeCost = new Date().getTime() - player.getBallisticEnter().getTime();    // todo 这里改成了时间出发 结束时间是不是需要传过来 不要用new的
+        long timeCost = new Date().getTime() - getBallisticEnter(player).getTime();    // todo 这里改成了时间出发 结束时间是不是需要传过来 不要用new的
 
         //初始化排行榜
         Map<Long, BallisticRanker> rankMap = rankDto.getRank();
@@ -258,5 +260,37 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
      */
     private void saveData() {
         dao.update(rankDto);
+    }
+
+    private Map<Long, Date> ballisticEnter = new ConcurrentHashMap<>();    //记录暴走时刻开始挑战时间
+    private Map<Long, AtomicInteger> ballisticMonsters = new ConcurrentHashMap<>();    //记录暴走时刻刷新怪兽数量
+    private Map<Long, String> ballisticAid = new ConcurrentHashMap<>();    //记录暴走时刻援助怪兽
+
+    public void addBallisticMonsters(Player player, int value) {
+        ballisticMonsters.computeIfAbsent(player.getPlayerId(), pid -> new AtomicInteger(0)).addAndGet(value);
+    }
+
+    public int getBallisticMonsters(Player player) {
+        return ballisticMonsters.computeIfAbsent(player.getPlayerId(), pid -> new AtomicInteger(0)).get();
+    }
+
+    public void setBallisticMonsters(Player player, int ballMonsterInit) {
+        ballisticMonsters.get(player.getPlayerId()).set(ballMonsterInit);
+    }
+
+    public void setBallisticEnter(Player player, Date date) {
+        ballisticEnter.put(player.getPlayerId(), date);
+    }
+
+    public Date getBallisticEnter(Player player) {
+        return ballisticEnter.get(player.getPlayerId());
+    }
+
+    public void setBallisticAid(Player player, String aidMonsters) {
+        ballisticAid.put(player.getPlayerId(), aidMonsters);
+    }
+
+    public String getBallisticAid(Player player) {
+        return ballisticAid.get(player.getPlayerId());
     }
 }

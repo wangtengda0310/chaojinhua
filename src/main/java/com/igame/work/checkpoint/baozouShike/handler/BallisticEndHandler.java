@@ -1,12 +1,14 @@
 package com.igame.work.checkpoint.baozouShike.handler;
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.PlayerEvents;
+import com.igame.work.checkpoint.baozouShike.BallisticService;
 import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
 import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardData;
 import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardTemplate;
@@ -29,7 +31,10 @@ import static com.igame.work.checkpoint.baozouShike.BallisticConstant.BALL_REWAR
  */
 public class BallisticEndHandler extends ReconnectedHandler {
 
+    @Inject
     private ResourceService resourceService;
+    @Inject
+    private BallisticService ballisticService;
     
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -44,7 +49,7 @@ public class BallisticEndHandler extends ReconnectedHandler {
         vo.addData("killNum",killNum);
 
         //校验杀敌数
-        if (player.getBallisticMonsters() < killNum){
+        if (ballisticService.getBallisticMonsters(player) < killNum){
             return error(ErrorCode.CHECKPOINT_END_ERROR);
         }
 
@@ -54,7 +59,7 @@ public class BallisticEndHandler extends ReconnectedHandler {
         }*/
 
         //校验暴走时刻挑战时间
-        if (player.getBallisticEnter() == null){
+        if (ballisticService.getBallisticEnter(player) == null){
             return error(ErrorCode.CHECKPOINT_END_ERROR);
         }
 
@@ -76,11 +81,11 @@ public class BallisticEndHandler extends ReconnectedHandler {
         player.addBallisticCount(1);
 
         //重置开始时间
-        player.setBallisticEnter(null);
+        ballisticService.setBallisticEnter(player,null);
         //重置怪兽刷新数量
-        player.setBallisticMonsters(0);
+        ballisticService.setBallisticMonsters(player,0);
         //重置援助怪兽
-        player.setBallisticAid("");
+        ballisticService.setBallisticAid(player,"");
 
         //返回
         vo.addData("playerExp", BALL_REWARD_EXP);
@@ -110,7 +115,7 @@ public class BallisticEndHandler extends ReconnectedHandler {
         }
 
         //援助怪兽
-        String aidMonsters = player.getBallisticAid();
+        String aidMonsters = ballisticService.getBallisticAid(player);
         if (!aidMonsters.isEmpty()){
             String[] aidMonstersArr = aidMonsters.split(",");
             for (String mid : aidMonstersArr) {

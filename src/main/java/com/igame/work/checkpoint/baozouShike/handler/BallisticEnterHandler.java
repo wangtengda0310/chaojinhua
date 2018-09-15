@@ -1,5 +1,6 @@
 package com.igame.work.checkpoint.baozouShike.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
@@ -22,6 +23,7 @@ import java.util.List;
  * 暴走时刻进入战斗
  */
 public class BallisticEnterHandler extends ReconnectedHandler {
+    @Inject private BallisticService ballisticService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -56,11 +58,11 @@ public class BallisticEnterHandler extends ReconnectedHandler {
         List<MatchMonsterDto> matchMonsterDtos = BallisticService.buildMonster(template, BallisticConstant.BALL_MONSTER_INIT);
 
         //记录开始时间
-        player.setBallisticEnter(new Date());
+        ballisticService.setBallisticEnter(player, new Date());
         //记录怪兽刷新数量
-        player.setBallisticMonsters(BallisticConstant.BALL_MONSTER_INIT);
+        ballisticService.setBallisticMonsters(player, BallisticConstant.BALL_MONSTER_INIT);
         //记录援助怪兽
-        player.setBallisticAid(aidMonsters);
+        ballisticService.setBallisticAid(player, aidMonsters);
         for(MatchMonsterDto mto : matchMonsterDtos){
 			mto.reCalGods(player.callFightGods(), null);
         }

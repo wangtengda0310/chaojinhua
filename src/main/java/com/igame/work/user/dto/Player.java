@@ -193,18 +193,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private Date ballisticEnter;    //记录暴走时刻开始挑战时间
-
-    @Transient
-    @JsonIgnore
-    private int ballisticMonsters;    //记录暴走时刻刷新怪兽数量
-
-    @Transient
-    @JsonIgnore
-    private String ballisticAid;    //记录暴走时刻援助怪兽
-
-    @Transient
-    @JsonIgnore
     private Map<Integer,MessageCache> proTuiMap = new ConcurrentHashMap<>();//推送消息缓存
 
     @Transient
@@ -459,36 +447,12 @@ public class Player extends PlayerDto {
         this.xuanshangScore = xuanshangScore;
     }
 
-    public Date getBallisticEnter() {
-        return ballisticEnter;
-    }
-
-    public void setBallisticEnter(Date ballisticEnter) {
-        this.ballisticEnter = ballisticEnter;
-    }
-
     public int getBallisticCount() {
         return ballisticCount;
     }
 
     public void setBallisticCount(int ballisticCount) {
         this.ballisticCount = ballisticCount;
-    }
-
-    public int getBallisticMonsters() {
-        return ballisticMonsters;
-    }
-
-    public void setBallisticMonsters(int ballisticMonsters) {
-        this.ballisticMonsters = ballisticMonsters;
-    }
-
-    public String getBallisticAid() {
-        return ballisticAid;
-    }
-
-    public void setBallisticAid(String ballisticAid) {
-        this.ballisticAid = ballisticAid;
     }
 
     public Map<String, Date> getLastMessageBoard() {
@@ -677,10 +641,6 @@ public class Player extends PlayerDto {
 
     public synchronized void addAreaCount(int value) {
         this.areaCount += value;
-    }
-
-    public synchronized void addBallisticMonsters(int value) {
-        this.ballisticMonsters += value;
     }
 
     public synchronized void addBagSpace(int value) {
