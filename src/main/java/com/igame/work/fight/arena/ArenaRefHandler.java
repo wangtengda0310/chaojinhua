@@ -28,8 +28,8 @@ public class ArenaRefHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 		
 		List<ArenaRanker> opponent = Lists.newArrayList();
-		List<ArenaRanker> rank = arenaService.getRank(player.getAreaType());
-		if(player.getAreaType() < 1 || player.getAreaType() > 9 || rank == null){
+		List<ArenaRanker> rank = arenaService.getRank(arenaService.getArenaType(player));
+		if(arenaService.getArenaType(player) < 1 || arenaService.getArenaType(player) > 9 || rank == null){
 			return error(ErrorCode.ERROR);
 		}else{
 			if(!rank.isEmpty()){

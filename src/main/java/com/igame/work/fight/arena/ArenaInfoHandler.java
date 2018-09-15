@@ -2,6 +2,7 @@ package com.igame.work.fight.arena;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.MProtrol;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class ArenaInfoHandler extends ReconnectedHandler {
 
-	private ArenaService arenaService;
+	@Inject private ArenaService arenaService;
 	
 
 	@Override
@@ -51,7 +52,7 @@ public class ArenaInfoHandler extends ReconnectedHandler {
 				break;
 			}
 		}
-		player.setAreaType(atype);
+		arenaService.setArenaType(player,atype);
 
 		vo.addData("myRank", myRank);
 		vo.addData("rank", rank);

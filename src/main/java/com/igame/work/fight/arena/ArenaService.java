@@ -15,11 +15,23 @@ import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.service.RobotService;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ArenaService extends EventService implements ISFSModule, TimeListener {
     private ArenaServiceDto as;
 
     @Inject private ArenaRobotDAO dao;
+
+    private Map<Long, Integer> arenaType = new ConcurrentHashMap<>();//临时竞技场ID
+
+
+    public void setArenaType(Player player, int atype) {
+        arenaType.put(player.getPlayerId(), atype);
+    }
+
+    public int getArenaType(Player player) {
+        return arenaType.get(player.getPlayerId());
+    }
 
     @Override
     public void minute5() {
@@ -224,9 +236,13 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     }
 
 
-    public List<ArenaRanker> getRank(int type) {
+    public List<ArenaRanker> getRank(Player player) {
+        int type = arenaType.get(player.getPlayerId());
+        return getRank(type);
+    }
 
-        return getIntegerListMap(type);
+    public List<ArenaRanker> getRank(int arenaType) {
+        return getIntegerListMap(arenaType);
     }
 
     /**

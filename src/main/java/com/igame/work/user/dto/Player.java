@@ -225,10 +225,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private int areaType;//临时竞技场ID
-    
-    @Transient
-    @JsonIgnore
     private long tempAreaPlayerId;//临时竞技场对手ID
 
     @Transient
@@ -597,14 +593,6 @@ public class Player extends PlayerDto {
 
     public void setBallisticCount(int ballisticCount) {
         this.ballisticCount = ballisticCount;
-    }
-
-    public int getAreaType() {
-        return areaType;
-    }
-
-    public void setAreaType(int areaType) {
-        this.areaType = areaType;
     }
 
     public long getTempAreaPlayerId() {

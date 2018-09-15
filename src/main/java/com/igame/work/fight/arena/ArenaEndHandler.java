@@ -2,6 +2,7 @@ package com.igame.work.fight.arena;
 
 
 import com.google.common.collect.Maps;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
@@ -21,9 +22,9 @@ import java.util.Map;
  *
  */
 public class ArenaEndHandler extends ReconnectedHandler {
+	@Inject private ArenaService arenaService;
 
 	private Map<Integer, Object> lock = Maps.newHashMap();
-	private ArenaService arenaService;
 
 	private Object getLockByPlayer(int severId) {
 
@@ -48,7 +49,7 @@ public class ArenaEndHandler extends ReconnectedHandler {
 
 		//处理排行信息
 		int myRank = arenaService.getPlayerRank(player.getPlayerId());
-		List<ArenaRanker> rank = arenaService.getRank(player.getAreaType());
+		List<ArenaRanker> rank = arenaService.getRank(player);
 		if(win == 1){
 			synchronized (getLockByPlayer(player.getSeverId())) {
 
