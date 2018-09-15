@@ -226,10 +226,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private int tempBufferId;//临时ID
-
-    @Transient
-    @JsonIgnore
     private ShopInfo shopInfo;    //商店信息
 
     @Transient
@@ -534,14 +530,6 @@ public class Player extends PlayerDto {
 
     public void setWuEffect(List<WuEffect> wuEffect) {
         this.wuEffect = wuEffect;
-    }
-
-    public int getTempBufferId() {
-        return tempBufferId;
-    }
-
-    public void setTempBufferId(int tempBufferId) {
-        this.tempBufferId = tempBufferId;
     }
 
     public int getWuScore() {

@@ -2,13 +2,15 @@ package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
@@ -26,8 +28,9 @@ import java.util.List;
  */
 public class EndlessEndHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
-	private QuestService questService;
+	@Inject private ResourceService resourceService;
+	@Inject private QuestService questService;
+	@Inject private EndlessService endlessService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -83,9 +86,9 @@ public class EndlessEndHandler extends ReconnectedHandler {
 				player.getWuMap().put(currIndex, MyUtil.toString(ct, ";"));
 				MessageUtil.notifyWuZhengChange(player);
 				MessageUtil.notifyWuChange(player);
-				if(player.getTempBufferId() > 0){
-		    		player.getWuEffect().add(new WuEffect(player.getTempBufferId()));
-		    		player.setTempBufferId(0);
+				if(endlessService.tempBufferId.containsKey(player.getPlayerId())){
+		    		player.getWuEffect().add(new WuEffect(endlessService.tempBufferId.get(player.getPlayerId())));
+					endlessService.tempBufferId.remove(player.getPlayerId());
 				}
 			}else{
 				MessageUtil.notifyWuBufferChange(player,player.getWuEffect());

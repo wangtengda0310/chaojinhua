@@ -2,13 +2,15 @@ package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
+import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.checkpoint.wujinZhiSen.EndlessdataTemplate;
 import com.igame.work.checkpoint.wujinZhiSen.WujinZhiSenDataManager;
 import com.igame.work.fight.dto.FightBase;
@@ -31,7 +33,9 @@ import java.util.List;
  *
  */
 public class EndlessEnterHandler extends ReconnectedHandler {
-	
+
+
+	@Inject private EndlessService endlessService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -106,7 +110,7 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 	    	}
 	    	List<WuEffect> ls = Lists.newArrayList();
 	    	if(buffer > 0 && currIndex != Integer.parseInt(ll.get(0).split(";")[0]) && player.getWuEffect().size() < total){
-	    		player.setTempBufferId(buffer);
+				endlessService.tempBufferId.put(player.getPlayerId(), buffer);
 	    		ls.addAll(player.getWuEffect());
 	    		ls.add(new WuEffect(buffer));
 	    		MessageUtil.notifyWuBufferChange(player,ls);
