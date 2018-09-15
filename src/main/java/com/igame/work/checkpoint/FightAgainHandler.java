@@ -113,7 +113,7 @@ public class FightAgainHandler extends ReconnectedHandler {
             resourceService.addPhysica(player, 0-wt.getPhysical());
 
             //防作弊
-            player.setEnterWordEventTime(System.currentTimeMillis());
+            checkPointService.setEnterWordEventTime(player);
             player.setEnterWordEventId(eventType+"_"+level);
 
         } else if (battleType == 3) {  // 从BallisticEnterHandler复制过来

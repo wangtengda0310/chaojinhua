@@ -79,7 +79,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 		resourceService.addPhysica(player, 0-wt.getPhysical());
 
 		//防作弊
-		player.setEnterWordEventTime(System.currentTimeMillis());
+		checkPointService.setEnterWordEventTime(player);
 		player.setEnterWordEventId(eventType+"_"+level);
 
 		//生成怪兽
