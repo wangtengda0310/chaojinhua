@@ -10,7 +10,6 @@ import com.igame.work.checkpoint.mingyunZhiMen.FateSelfData;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
-import com.igame.work.fight.arena.ArenaRanker;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
@@ -216,10 +215,6 @@ public class Player extends PlayerDto {
     @Transient
     @JsonIgnore
     private String ballisticAid;    //记录暴走时刻援助怪兽
-    
-    @Transient
-    @JsonIgnore
-    private List<ArenaRanker> tempOpponent = Lists.newArrayList();
 
     @Transient
     @JsonIgnore
@@ -531,14 +526,6 @@ public class Player extends PlayerDto {
 
     public void setBallisticCount(int ballisticCount) {
         this.ballisticCount = ballisticCount;
-    }
-
-    public List<ArenaRanker> getTempOpponent() {
-        return tempOpponent;
-    }
-
-    public void setTempOpponent(List<ArenaRanker> tempOpponent) {
-        this.tempOpponent = tempOpponent;
     }
 
     public int getBallisticMonsters() {

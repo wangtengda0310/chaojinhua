@@ -56,7 +56,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 		Map<Long,RobotDto> map = arenaService.getRobot();
 //		List<ArenaRanker> rank = arenaServiceDto.getRankDto(player.getAreaType(), player.getSeverId());
 		ArenaRanker oter = null;
-		for(ArenaRanker ar : player.getTempOpponent()){
+		for(ArenaRanker ar : arenaService.getTempOpponent(player)){
 			if(ar.getPlayerId() == playerId){
 				oter = ar;
 				break;

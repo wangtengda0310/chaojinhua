@@ -55,7 +55,7 @@ public class ArenaEndHandler extends ReconnectedHandler {
 
 				ArenaRanker self = null;
 				ArenaRanker oter = null;
-				for(ArenaRanker ar : player.getTempOpponent()){
+				for(ArenaRanker ar : arenaService.getTempOpponent(player)){
 					if(ar.getPlayerId() == arenaService.getTempAreaPlayerId(player)){
 						oter = ar;
 						break;

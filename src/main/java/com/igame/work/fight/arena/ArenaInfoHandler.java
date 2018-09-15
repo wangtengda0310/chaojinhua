@@ -41,7 +41,7 @@ public class ArenaInfoHandler extends ReconnectedHandler {
 		}
 		if(!rank.isEmpty()){
 			opponent = ArenaService.getOpponent(rank, myRank);
-			player.setTempOpponent(opponent);
+			arenaService.setTempOpponent(player,opponent);
 		}
 		if(rank.size()>10){
 			rank = rank.subList(0, 10);

@@ -309,4 +309,13 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     public void setTempAreaPlayerId(Player player, long playerId) {
         tempAreaPlayerId.put(player.getPlayerId(), playerId);
     }
+    private Map<Long, List<ArenaRanker>> tempOpponent = new ConcurrentHashMap<>();
+
+    public List<ArenaRanker> getTempOpponent(Player player) {
+        return tempOpponent.get(player.getPlayerId());
+    }
+
+    public void setTempOpponent(Player player, List<ArenaRanker> opponent) {
+        tempOpponent.put(player.getPlayerId(), opponent);
+    }
 }
