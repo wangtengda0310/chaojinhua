@@ -57,7 +57,7 @@ public class ArenaEnterHandler extends ReconnectedHandler {
 			return error(ErrorCode.AREA_NOT_LOW);
 		}
 
-		player.setTempAreaPlayerId(playerId);
+		arenaService.setTempAreaPlayerId(player,playerId);
 		resourceService.addAreaCount(player, 1);
 
 		return vo;

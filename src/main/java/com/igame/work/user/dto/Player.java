@@ -211,10 +211,6 @@ public class Player extends PlayerDto {
 
     @Transient
     @JsonIgnore
-    private long tempAreaPlayerId;//临时竞技场对手ID
-
-    @Transient
-    @JsonIgnore
     private Date ballisticEnter;    //记录暴走时刻开始挑战时间
 
     @Transient
@@ -547,14 +543,6 @@ public class Player extends PlayerDto {
 
     public void setBallisticCount(int ballisticCount) {
         this.ballisticCount = ballisticCount;
-    }
-
-    public long getTempAreaPlayerId() {
-        return tempAreaPlayerId;
-    }
-
-    public void setTempAreaPlayerId(long tempAreaPlayerId) {
-        this.tempAreaPlayerId = tempAreaPlayerId;
     }
 
     public List<ArenaRanker> getTempOpponent() {

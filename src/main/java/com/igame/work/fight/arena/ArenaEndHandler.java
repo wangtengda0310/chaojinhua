@@ -43,7 +43,7 @@ public class ArenaEndHandler extends ReconnectedHandler {
 		vo.addData("win", win);
 
 		//异常校验
-		if(player.getTempAreaPlayerId() == 0){
+		if(arenaService.getTempAreaPlayerId(player) == 0){
 			return error(ErrorCode.ERROR);
 		}
 
@@ -56,7 +56,7 @@ public class ArenaEndHandler extends ReconnectedHandler {
 				ArenaRanker self = null;
 				ArenaRanker oter = null;
 				for(ArenaRanker ar : player.getTempOpponent()){
-					if(ar.getPlayerId() == player.getTempAreaPlayerId()){
+					if(ar.getPlayerId() == arenaService.getTempAreaPlayerId(player)){
 						oter = ar;
 						break;
 					}
@@ -89,7 +89,7 @@ public class ArenaEndHandler extends ReconnectedHandler {
 			}
 		}
 
-		vo.addData("playerId", player.getTempAreaPlayerId());
+		vo.addData("playerId", arenaService.getTempAreaPlayerId(player));
 		vo.addData("myRank", myRank);
 
 		return vo;

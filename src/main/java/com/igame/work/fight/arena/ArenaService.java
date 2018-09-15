@@ -22,6 +22,8 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
 
     @Inject private ArenaRobotDAO dao;
 
+    private Map<Long, Long> tempAreaPlayerId = new ConcurrentHashMap<>();//临时竞技场对手ID
+
     private Map<Long, Integer> arenaType = new ConcurrentHashMap<>();//临时竞技场ID
 
 
@@ -298,5 +300,13 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
 
     public void setPlayerRank(long playerId, int rank) {
         playerRank.put(playerId, rank);
+    }
+
+    public long getTempAreaPlayerId(Player player) {
+        return tempAreaPlayerId.get(player.getPlayerId());
+    }
+
+    public void setTempAreaPlayerId(Player player, long playerId) {
+        tempAreaPlayerId.put(player.getPlayerId(), playerId);
     }
 }
