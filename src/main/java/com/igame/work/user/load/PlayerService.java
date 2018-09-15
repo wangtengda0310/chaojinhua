@@ -23,6 +23,7 @@ import com.igame.work.monster.dao.MonsterDAO;
 import com.igame.work.monster.data.StrengthenplaceTemplate;
 import com.igame.work.monster.data.StrengthenrewardTemplate;
 import com.igame.work.quest.dao.QuestDAO;
+import com.igame.work.quest.service.QuestService;
 import com.igame.work.shop.dao.ShopDAO;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.turntable.service.TurntableService;
@@ -62,6 +63,7 @@ public class PlayerService extends EventService implements ISFSModule {
 	@Inject private TurntableService turntableService;
 	@Inject private ShopService shopService;
 	@Inject private MailService mailService;
+	@Inject private QuestService questService;
 
 	public TongHuaDto getRandomTongHuaDto(){
 		
@@ -300,7 +302,7 @@ public class PlayerService extends EventService implements ISFSModule {
 			wordEventDAO.updatePlayer(player);
 			godsDAO.updatePlayer(player);
 			mailService.updatePlayer(player);
-			questDAO.updatePlayer(player);
+			questService.updatePlayer(player);
 			shopService.updatePlayer(player);
 			friendDAO.updatePlayer(player);
 			playerMessageDAO.updatePlayer(player);

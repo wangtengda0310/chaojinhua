@@ -1,6 +1,5 @@
 package com.igame.core;
 
-import com.google.common.collect.Lists;
 import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
@@ -11,14 +10,11 @@ import com.igame.work.MessageUtil;
 import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.friend.service.FriendService;
-import com.igame.work.quest.QuestDataManager;
-import com.igame.work.quest.dto.TaskDayInfo;
+import com.igame.work.quest.service.QuestService;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.service.VIPService;
 import org.apache.commons.beanutils.BeanUtils;
-
-import java.util.List;
 
 public class SystemService extends EventService implements ISFSModule, TimeListener {
     @Inject private FriendService friendService;
@@ -26,6 +22,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
     @Inject private SessionManager sessionManager;
     @Inject private SystemServiceDAO systemServiceDAO;
     @Inject private ShopService shopService;
+    @Inject private QuestService questService;
 
     @Override
     public void zero() {
@@ -89,18 +86,6 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
             wt.setCount(0);
             wt.setDtate(2);
         }
-        List<TaskDayInfo> qList = Lists.newArrayList();
-        for(TaskDayInfo td : player.getAchievement().values()){
-            if(QuestDataManager.QuestData.getTemplate(td.getQuestId()) != null && QuestDataManager.QuestData.getTemplate(td.getQuestId()).getQuestType() == 1){
-                if(td.getVars() > 0){
-                    td.setVars(0);
-                    td.setStatus(1);
-                    td.setAction(2);
-                    td.setDtate(2);
-                    qList.add(td);
-                }
-            }
-        }
 
         shopService.resetShopInfo(player);
 
@@ -122,7 +107,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
         }
 
         if(notify){
-            MessageUtil.notifyQuestChange(player, qList);
+            MessageUtil.notifyQuestChange(player, questService.reset(player));
             MessageUtil.notifyWuResetChange(player);
             MessageUtil.notifyDeInfoChange(player);
             MessageUtil.notifyVipPrivilegesChange(player);

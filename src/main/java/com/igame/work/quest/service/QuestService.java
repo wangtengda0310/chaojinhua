@@ -18,6 +18,7 @@ import com.igame.work.user.load.ResourceService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -30,12 +31,14 @@ public class QuestService implements ISFSModule {
 	@Inject private ResourceService resourceService;
 	@Inject private QuestService questService;
 
+	private Map<Long, Map<Integer, TaskDayInfo>> achievement = new ConcurrentHashMap<>();//成就任务
+
 	/**
 	 * 检测玩家任务
 	 */
 	public void checkPlayerQuest(Player player){
 			
-		for(TaskDayInfo td :player.getAchievement().values()){
+		for(TaskDayInfo td :achievement.get(player.getPlayerId()).values()){
 			if(QuestDataManager.QuestData.getTemplate(td.getQuestId()) == null){
 				td.setDtate(3);
 			}
@@ -43,14 +46,14 @@ public class QuestService implements ISFSModule {
 		for(QuestTemplate qt : QuestDataManager.QuestData.getAll()){
 			
 			//成就
-			TaskDayInfo tf = player.getAchievement().get(qt.getQuestId());
+			TaskDayInfo tf = achievement.get(player.getPlayerId()).get(qt.getQuestId());
 			if(tf == null){
-				if(canOpenQuest(player,player.getAchievement(),qt)){
+				if(canOpenQuest(player,achievement.get(player.getPlayerId()),qt)){
 					TaskDayInfo value = new TaskDayInfo(player, qt.getQuestId());
 					if(qt.getQuestType()==2 && qt.getClaim()>1 && qt.getClaim()<=25){
 						questService.processTaskDetail(player, Lists.newArrayList(), value, qt.getClaim(), 0);
 					}
-					player.getAchievement().put(qt.getQuestId(), value);//添加新任务
+					achievement.get(player.getPlayerId()).put(qt.getQuestId(), value);//添加新任务
 				}
 			}else{
 //				if((qt.getClaim() == 17 && tf.getVars() == qt.getFinish() 
@@ -122,7 +125,7 @@ public class QuestService implements ISFSModule {
 			if(!MyUtil.isNullOrEmpty(qt.getUnlock())){
 				String[] uc = qt.getUnlock().split(",");
 				if("2".equals(uc[0])){
-					if(td.getQuestId() == Integer.parseInt(uc[1]) && player.getAchievement().get(Integer.parseInt(uc[1])) == null){
+					if(td.getQuestId() == Integer.parseInt(uc[1]) && achievement.get(player.getPlayerId()).get(Integer.parseInt(uc[1])) == null){
 						TaskDayInfo e = new TaskDayInfo(player, Integer.parseInt(uc[1]));
 						QuestTemplate qtt = QuestDataManager.QuestData.getTemplate(e.getQuestId());
 						if(qtt.getQuestType()==2 && qtt.getClaim()>1 && qtt.getClaim()<=25){
@@ -145,7 +148,7 @@ public class QuestService implements ISFSModule {
 		List<TaskDayInfo> qList = Lists.newArrayList();
 		for(QuestTemplate qt : QuestDataManager.QuestData.getAll()){
 			
-			TaskDayInfo tf = player.getAchievement().get(qt.getQuestId());
+			TaskDayInfo tf = achievement.get(player.getPlayerId()).get(qt.getQuestId());
 			if(tf == null){
 				if(!MyUtil.isNullOrEmpty(qt.getUnlock())){
 					String[] uc = qt.getUnlock().split(",");
@@ -156,7 +159,7 @@ public class QuestService implements ISFSModule {
 								questService.processTaskDetail(player, Lists.newArrayList(), tt, qt.getClaim(), 0);
 							}
 							qList.add(tt);
-							player.getAchievement().put(tt.getQuestId(), tt);
+							achievement.get(player.getPlayerId()).put(tt.getQuestId(), tt);
 						}
 					}
 				}
@@ -171,7 +174,7 @@ public class QuestService implements ISFSModule {
 	public List<TaskDayInfo> processTask(Player player,int claim,int count){
 		
 		List<TaskDayInfo> qList = Lists.newArrayList();
-		for(TaskDayInfo td : player.getAchievement().values()){
+		for(TaskDayInfo td : achievement.get(player.getPlayerId()).values()){
 			processTaskDetail(player,qList,td,claim,count);
 		}
 		MessageUtil.notifyQuestChange(player, qList);
@@ -344,6 +347,30 @@ public class QuestService implements ISFSModule {
 
 
 	public void loadPlayer(Player player) {
-		questDAO.getByPlayer(player);
+		achievement.put(player.getPlayerId(), questDAO.getByPlayer(player));
+	}
+
+	public Map<Integer, TaskDayInfo> getAchievement(long playerId) {
+		return achievement.get(playerId);
+	}
+
+	public List<TaskDayInfo> reset(Player player) {
+		List<TaskDayInfo> qList = Lists.newArrayList();
+		for(TaskDayInfo td : achievement.get(player.getPlayerId()).values()){
+			if(QuestDataManager.QuestData.getTemplate(td.getQuestId()) != null && QuestDataManager.QuestData.getTemplate(td.getQuestId()).getQuestType() == 1){
+				if(td.getVars() > 0){
+					td.setVars(0);
+					td.setStatus(1);
+					td.setAction(2);
+					td.setDtate(2);
+					qList.add(td);
+				}
+			}
+		}
+		return qList;
+	}
+
+	public void updatePlayer(Player player) {
+		questDAO.updatePlayer(achievement.get(player.getPlayerId()));
 	}
 }

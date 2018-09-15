@@ -207,10 +207,6 @@ public class Player extends PlayerDto {
     @JsonIgnore
     private FightBase fightBase;
 
-    @Transient
-    @JsonIgnore
-    private Map<Integer, TaskDayInfo> achievement = Maps.newHashMap();//成就任务
-
 //	@Transient
 //	@JsonIgnore
 //	private Map<Integer,TaskDayInfo> dayTask = Maps.newHashMap();//每日任务
@@ -449,14 +445,6 @@ public class Player extends PlayerDto {
 
     public void setFightBase(FightBase fightBase) {
         this.fightBase = fightBase;
-    }
-
-    public Map<Integer, TaskDayInfo> getAchievement() {
-        return achievement;
-    }
-
-    public void setAchievement(Map<Integer, TaskDayInfo> achievement) {
-        this.achievement = achievement;
     }
 
     public Map<Integer, Integer> getCountMap() {

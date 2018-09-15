@@ -34,7 +34,7 @@ public class QuestRewardHandler extends ReconnectedHandler {
 		int questId = jsonObject.getInt("questId");
 		vo.addData("questId", questId);
 
-		TaskDayInfo td = player.getAchievement().get(questId);
+		TaskDayInfo td = questService.getAchievement(player.getPlayerId()).get(questId);
 		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(questId);
 		if(td == null || qt == null || td.getVars() < qt.getFinish() || td.getStatus() == 3){
 			return error(ErrorCode.QUEST_REWARD_NOT);

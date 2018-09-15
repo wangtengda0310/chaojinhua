@@ -151,7 +151,7 @@ public class PlayerHandler extends BaseHandler {
 		}
 
 		List<TaskDayInfo> qs = Lists.newArrayList();
-		for(TaskDayInfo td :player.getAchievement().values()){
+		for(TaskDayInfo td :questService.getAchievement(player.getPlayerId()).values()){
 			if(td.getDtate() != 3){
 				qs.add(td);
 			}

@@ -9,7 +9,9 @@ import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.query.UpdateOperations;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -21,8 +23,8 @@ public class QuestDAO extends AbsDao {
     /**
      * 查询
      */
-    public void getByPlayer(Player player){
-    	
+    public Map<Integer, TaskDayInfo> getByPlayer(Player player){
+		Map<Integer, TaskDayInfo> ret = new HashMap();
     	List<TaskDayInfo> ls = getDatastore().find(TaskDayInfo.class, "playerId", player.getPlayerId()).asList();
     	for(TaskDayInfo tk :ls){
     		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(tk.getQuestId());
@@ -30,11 +32,11 @@ public class QuestDAO extends AbsDao {
 //    			if(qt.getQuestType() == 1){
 //    				player.getDayTask().put(tk.getQuestId(), tk);
 //    			}else if(qt.getQuestType() == 2){
-    				player.getAchievement().put(tk.getQuestId(), tk);
+				ret.put(tk.getQuestId(), tk);
 //    			}
     		}
     	}
-    	
+    	return ret;
     }
 
     
@@ -66,9 +68,9 @@ public class QuestDAO extends AbsDao {
     /**
      * 更新玩家
      */
-    public void updatePlayer(Player player){
+    public void updatePlayer(Map<Integer, TaskDayInfo> archievements){
     	
-    	for(TaskDayInfo m : player.getAchievement().values()){
+    	for(TaskDayInfo m : archievements.values()){
     		if(m.getDtate() == 1){
     			save(m);
     		}else if(m.getDtate() == 2){
