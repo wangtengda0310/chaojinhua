@@ -1,7 +1,6 @@
 package com.igame.server;
 
 import com.igame.core.ISFSModule;
-import com.igame.core.data.DataManager;
 import com.igame.core.db.DBManager;
 import com.igame.core.di.JarApplicationContext;
 import com.igame.core.event.EventManager;
@@ -38,8 +37,6 @@ public class GameServerExtension extends SFSExtension {
 	@Override
 	public void init() {
 		try {
-			DataManager dataManager = new DataManager();
-			dataManager.load("resource/");
 
 			dbManager = (DBManager) context.cachedObjects.get(DBManager.class);
 			dbManager.init(this);	// 数据库被其他模块init的时候依赖

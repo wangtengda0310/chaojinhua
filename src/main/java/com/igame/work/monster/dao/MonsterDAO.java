@@ -1,11 +1,8 @@
 package com.igame.work.monster.dao;
 
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
-import com.igame.work.monster.MonsterDataManager;
-import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -44,31 +41,6 @@ public class MonsterDAO extends AbsDao {
     	List<Monster> ls = getDatastore().find(Monster.class, "playerId", playerId).asList();
     	if(ls != null){
     		for(Monster mm : ls){
-    			MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
-    			if(mt != null && mt.getSkill() != null){
-    				String[] skills = mt.getSkill().split(",");
-    				if(skills != null){
-    					if(mm.getSkillMap().isEmpty()){
-    						mm.setDtate(2);
-    					}
-    					for(String skill : skills){
-    						if(!mm.getSkillMap().containsKey(Integer.parseInt(skill))){
-    							mm.getSkillMap().put(Integer.parseInt(skill), 1);
-    						}
-    					}
-    	    			List<Integer> temp = Lists.newArrayList();
-    	    			for(Integer skill : mm.getSkillMap().keySet()){
-    	    				if(mt.getSkill().indexOf(String.valueOf(skill)) == -1){
-    	    					temp.add(skill);
-    	    				}
-    	    			}
-    	    			for(Integer rem : temp){
-    	    				 mm.getSkillMap().remove(rem);
-    	    			}
-    				}
-    			}
-    			mm.initSkillString();//初始化技能列表字符串
-    			mm.reCalculate(player,true);//计算值
     			all.put(mm.getObjectId(), mm);
     		}
     	}   	

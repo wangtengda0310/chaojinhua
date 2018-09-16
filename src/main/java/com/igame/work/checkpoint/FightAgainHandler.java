@@ -8,9 +8,7 @@ import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.baozouShike.BallisticConstant;
 import com.igame.work.checkpoint.baozouShike.BallisticService;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
-import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventService;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
@@ -49,7 +47,7 @@ public class FightAgainHandler extends ReconnectedHandler {
             int chapterId = (int) param.get("chapterId");
 
             //校验关卡ID
-            CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
+            CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
             if(ct == null){
                 return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
             }
@@ -88,7 +86,7 @@ public class FightAgainHandler extends ReconnectedHandler {
 
             //入参校验
             WorldEventDto wd = player.getWordEvent().get(eventType);
-            WorldEventTemplate wt = WorldEventDataManager.WorldEventData.getTemplate(eventType+"_"+level);
+            WorldEventTemplate wt = checkPointService.worldEventData.getTemplate(eventType+"_"+level);
             if (wd == null || wt ==null){
                 return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
             }

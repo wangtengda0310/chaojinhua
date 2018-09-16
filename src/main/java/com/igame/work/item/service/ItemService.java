@@ -1,9 +1,13 @@
 package com.igame.work.item.service;
 
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.work.item.dao.ItemDAO;
+import com.igame.work.item.data.PropGroupData;
 import com.igame.work.item.dto.Item;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.user.data.ItemData;
+import com.igame.work.user.data.ItemGroupData;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;
 
@@ -17,6 +21,18 @@ import java.util.Map;
  * 道具服务
  */
 public class ItemService {
+    /**
+     * 装备合成
+     */
+    @LoadXml("propgroup.xml")public PropGroupData propGroupData;
+    /**
+     * 道具数据
+     */
+    @LoadXml("itemdata.xml")public ItemData itemData;
+    /**
+     * 道具合成数据
+     */
+    @LoadXml("itemgroup.xml") public ItemGroupData itemGroupData;
 
     @Inject private ItemDAO itemDAO;
 

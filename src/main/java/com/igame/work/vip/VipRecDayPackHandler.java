@@ -1,11 +1,11 @@
 package com.igame.work.vip;
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.gm.service.GMService;
-import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
@@ -18,7 +18,8 @@ import static com.igame.work.vip.VIPConstants.KEY_DAY_PACK;
  */
 public class VipRecDayPackHandler extends ReconnectedHandler {
 
-    private GMService gmService;
+    @Inject private GMService gmService;
+    @Inject private VIPService vipService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -35,7 +36,7 @@ public class VipRecDayPackHandler extends ReconnectedHandler {
             return error(ErrorCode.PACK_PURCHASED);
         }
 
-        VipPackTemplate template = PlayerDataManager.vipPackData.getTemplate(vip);
+        VipPackTemplate template = vipService.vipPackData.getTemplate(vip);
         if (template == null){
             return error(ErrorCode.PARAMS_INVALID);
         }

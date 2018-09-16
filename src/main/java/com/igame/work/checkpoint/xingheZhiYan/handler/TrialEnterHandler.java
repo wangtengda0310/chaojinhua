@@ -2,20 +2,20 @@ package com.igame.work.checkpoint.xingheZhiYan.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.xingheZhiYan.TrialdataTemplate;
-import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanDataManager;
+import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanService;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.fight.service.FightUtil;
 import com.igame.work.monster.dto.Monster;
-import com.igame.work.monster.handler.TuJianHandler;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -30,7 +30,12 @@ import java.util.List;
  */
 public class TrialEnterHandler extends ReconnectedHandler {
 
+	@Inject
 	private ResourceService resourceService;
+	@Inject
+	private XingheZhiYanService xingheZhiYanService;
+	@Inject
+	private MonsterService monsterService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -40,7 +45,7 @@ public class TrialEnterHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
     	List<MatchMonsterDto> lb = Lists.newArrayList();
-		TrialdataTemplate ct = XingheZhiYanDataManager.TrialData.getTemplate(player.getTowerId() + 1);
+		TrialdataTemplate ct = xingheZhiYanService.trialData.getTemplate(player.getTowerId() + 1);
 		if(ct == null){
 			return error(ErrorCode.ERROR);
 		}else if (player.getItems().size() >= player.getBagSpace()){
@@ -66,7 +71,7 @@ public class TrialEnterHandler extends ReconnectedHandler {
 				
 				if(!MyUtil.isNullOrEmpty(meetM)){
 					boolean change = false;
-					change = TuJianHandler.isChange(player, meetM, change);
+					change = monsterService.isChange(player, meetM, change);
 					if(change){
 						MessageUtil.notifyMeetM(player);
 					}
@@ -80,7 +85,7 @@ public class TrialEnterHandler extends ReconnectedHandler {
 					equips = equips.substring(1);
 				}
 				
-				FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(ct.getMonsterData(), ct.getMonsterLv(), "",ct.getMonsterSkilllv(),equips)));
+				FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(ct.getMonsterData(), ct.getMonsterLv(), "",ct.getMonsterSkilllv(),equips)));
 //				player.setFightBase(fb);
 		    	for(Monster m : fb.getFightB().getMonsters().values()){
 		    		MatchMonsterDto mto = new MatchMonsterDto(m);

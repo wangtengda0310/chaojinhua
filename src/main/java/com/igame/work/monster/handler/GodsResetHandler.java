@@ -2,6 +2,7 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -9,7 +10,7 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.work.checkpoint.guanqia.RewardDto;
-import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.FightService;
 import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.user.dto.Player;
@@ -27,7 +28,7 @@ import java.util.Map;
  */
 public class GodsResetHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
+	@Inject private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -43,7 +44,7 @@ public class GodsResetHandler extends ReconnectedHandler {
 		if(gods == null){
 			return error(ErrorCode.ERROR);
 		}else{
-			List<GodsdataTemplate> preList = FightDataManager.GodsData.getPreList(gods.getGodsType(), gods.getGodsLevel());
+			List<GodsdataTemplate> preList = FightService.godsData.getPreList(gods.getGodsType(), gods.getGodsLevel());
 			if(preList == null || preList.isEmpty()){
 				return error(ErrorCode.GODS_ZERO);
 			}else{

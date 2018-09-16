@@ -1,11 +1,12 @@
 package com.igame.work.checkpoint.tansuo.handler;
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
-import com.igame.work.checkpoint.tansuo.TansuoDataManager;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.checkpoint.tansuo.TansuoTemplate;
 import com.igame.work.user.dto.Player;
@@ -20,7 +21,8 @@ import net.sf.json.JSONObject;
  */
 public class TansuoUnLockHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
+	@Inject private CheckPointService checkPointService;
+	@Inject private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -33,7 +35,7 @@ public class TansuoUnLockHandler extends ReconnectedHandler {
 		int index = jsonObject.getInt("index");
 
 		TansuoDto dto = player.getTangSuo().get(sid);
-		TansuoTemplate ts = TansuoDataManager.TansuoData.getTemplate(sid);
+		TansuoTemplate ts = checkPointService.tansuoData.getTemplate(sid);
 		if(dto == null || index < 1 || index > 5 || ts == null || dto.getState()> 0){
 			return error(ErrorCode.ERROR);
 		}else{

@@ -2,6 +2,7 @@ package com.igame.work.activitylimit;
 
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
@@ -16,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ShopActivityService extends EventService implements ISFSModule {
+    @LoadXml("activitylimit.xml") public ShopActivityData Configs;
     @Inject
     private ShopActivityDAO shopActivityDAO;
 
@@ -111,7 +113,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
                 long timeMillis = (long) customEvent[0];
                 long amount = (long) customEvent[1];
 
-                Map<Integer, String> result = ShopActivityDataManager.Configs.getAll().stream()
+                Map<Integer, String> result = Configs.getAll().stream()
                         .filter(c -> c.getTouch_limit() == 1)                       // 找出消耗金币类的配置
                         .filter(c -> !isOpen(player, c))                           // 判断是否已经开启，避免重复记录数据
                         .filter(c -> notCd(player, c))                              // 是否cd
@@ -142,7 +144,7 @@ public class ShopActivityService extends EventService implements ISFSModule {
                 int itemId = (int) customEvent[0];
                 int count = (int) customEvent[1];
 
-                Map<Integer, String> result = ShopActivityDataManager.Configs.getAll().stream()               // 判断每个活动
+                Map<Integer, String> result = Configs.getAll().stream()               // 判断每个活动
                         .filter(c -> c.getTouch_limit() == 3)                   // 找出消耗道具类的配置
                         .filter(c -> !isOpen(player, c))                       // 判断是否已经开启，避免重复记录数据
                         .filter(c -> notCd(player, c))                          // 是否cd
@@ -183,9 +185,9 @@ public class ShopActivityService extends EventService implements ISFSModule {
 
     public Map<Integer,String> clientData(Player player) {
         shopActivityDAO.listAll().forEach(e->dto.put(e.getActivityId(),e));
-        ShopActivityDataManager.Configs.getAll().forEach(c->dto.computeIfAbsent(c.getNum(), this::createShopActivityDto));
+        Configs.getAll().forEach(c->dto.computeIfAbsent(c.getNum(), this::createShopActivityDto));
 
-        return ShopActivityDataManager.Configs.getAll().stream()
+        return Configs.getAll().stream()
                 .filter(c -> dto.containsKey(c.getNum()))
                 .filter(c -> dto.get(c.getNum()).players.containsKey(player.getPlayerId()))
                 .filter(c -> !dto.get(c.getNum()).players.get(player.getPlayerId()).received)

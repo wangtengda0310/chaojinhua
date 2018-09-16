@@ -1,14 +1,10 @@
 package com.igame.work.fight.service;
 
-import com.igame.work.fight.FightDataManager;
-import com.igame.work.fight.data.SkillTemplate;
 import com.igame.util.MyUtil;
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.fight.FightService;
+import com.igame.work.fight.data.SkillTemplate;
 import com.igame.work.monster.dto.Effect;
 import com.igame.work.monster.dto.Monster;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * 
@@ -16,42 +12,7 @@ import java.util.Map;
  *
  */
 public class FightUtil {
-	
-	/**
-	 * 根据配置生成怪物对象
-	 */
-	public static Map<Long,Monster> createMonster(String monsterId,String monsterLevel,String site,String skillLv,String equips){
-		
-		Map<Long,Monster> ms = new LinkedHashMap<Long, Monster>();
-		if(!MyUtil.isNullOrEmpty(monsterId) && !MyUtil.isNullOrEmpty(monsterLevel)){
-			if(site == null){
-				site = "";
-			}
-			if(equips == null){
-				equips = "-1,-1,-1,-1";
-			}
-			long id = 1;
-			String[] mms = monsterId.split(",");
-			String[] lvs = monsterLevel.split(",");
-			String[] ss = site.split(",");
-			String[] skills = skillLv.split(",");
-			String[] equs = equips.split(";");
-			for(int i = 0;i < mms.length;i++){
-				if(MonsterDataManager.MONSTER_DATA.getMonsterTemplate(Integer.parseInt(mms[i])) != null){
-					int j = i+1;
-					if(j > 5){
-						j=j%5 + 1;
-					}
-					ms.put(id, new Monster(id,Integer.parseInt(mms[i]),Integer.parseInt(lvs[i]),
-							MyUtil.isNullOrEmpty(site)?j:Integer.parseInt(ss[i]),
-							MyUtil.isNullOrEmpty(skillLv)?0:Integer.parseInt(skills[i]),MyUtil.isNullOrEmpty(equips)?"":(equs.length>=mms.length ? equs[i]: equs[0])));
-					id++;
-				}
-			}
-		}
-		return ms;
-	}
-	
+
 	
 	/**
 	 * 普通攻击伤害值
@@ -94,7 +55,7 @@ public class FightUtil {
 		float skillUpAdd = 0;//技能up加成
 		if(skillTemplate.getSubtype() == 1){//直接触发类型有技能UP加成  
 			skillUpAdd = (1 + (skillLevel-1)*5 +
-					skillLevel>= FightDataManager.SkillLvData.getMaxLevel() ? 0 : (int)(skillExp/(FightDataManager.SkillLvData.getTemplate(skillTemplate.getSkillId()).getSkillExp()+.0)*5))
+					skillLevel>= FightService.skillLvData.getMaxLevel() ? 0 : (int)(skillExp/(FightService.skillLvData.getTemplate(skillTemplate.getSkillId()).getSkillExp()+.0)*5))
 							* skillTemplate.getHurtUp();
 		}
 		//攻击力 * 技能加成(基本数值+UP值*等级)
@@ -156,7 +117,8 @@ public class FightUtil {
 	public static int effectSacle(Effect effect){
 		
 		int ret = 0;
-		if(String.valueOf(effect.getEffectId()).indexOf("101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,131,135,136,137,139,140,141,142,143") != -1){
+		if(String.valueOf(effect.getEffectId())
+				.contains("101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,131,135,136,137,139,140,141,142,143")){
 			if(effect.getValue() >= 0){
 				return 1;
 			}else{

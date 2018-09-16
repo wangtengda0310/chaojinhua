@@ -1,8 +1,9 @@
 package com.igame.work.fight.service;
 
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.core.di.Inject;
 import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;
 
@@ -13,13 +14,7 @@ import com.igame.work.user.dto.Team;
  *
  */
 public class ComputeFightService {
-
-    private static final ComputeFightService domain = new ComputeFightService();
-
-    public static final ComputeFightService ins() {
-        return domain;
-    }
-
+    @Inject private MonsterService monsterService;
 
     /**
      * 计算 玩家战力
@@ -34,8 +29,6 @@ public class ComputeFightService {
     /**
      *
      * 计算玩家阵容战力
-     * @param player
-     * @param teamId
      */
     public long computeTeamFight(Player player, int teamId) {
 
@@ -61,7 +54,7 @@ public class ComputeFightService {
      */
     public long computeMonsterFight(Monster monster){
 
-        MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monster.getMonsterId());
+        MonsterTemplate mt = monsterService.MONSTER_DATA.getMonsterTemplate(monster.getMonsterId());
         if(mt != null){
             String[] types = mt.getMonstertype().split(",");
             if(types.length != 0){

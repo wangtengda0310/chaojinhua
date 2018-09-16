@@ -3,13 +3,17 @@ package com.igame.work.checkpoint.mingyunZhiMen;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
+import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.GameMath;
-import com.igame.work.checkpoint.guanqia.CheckPointService;
+import com.igame.work.checkpoint.mingyunZhiMen.data.DestinyData;
 import com.igame.work.checkpoint.mingyunZhiMen.data.DestinyrateTemplate;
+import com.igame.work.checkpoint.mingyunZhiMen.data.FateData;
 import com.igame.work.checkpoint.mingyunZhiMen.data.FatedataTemplate;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 
 import java.util.ArrayList;
@@ -18,6 +22,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GateService implements ISFSModule, TimeListener {
+    /**
+     * 命运之门概率
+     */
+    @LoadXml("destinyrate.xml")public static DestinyData destinyData;
+    /**
+     * 命运之门
+     */
+    @LoadXml("destinydata.xml")public static FateData fateData;
+
+    @Inject
+    private MonsterService monsterService;
+
     @Override
     public void zero() {
         refFateMap();
@@ -76,7 +92,7 @@ public class GateService implements ISFSModule, TimeListener {
 
 
         //生成特殊门
-        DestinyrateTemplate dt = MingyunZhiMenDataManager.DestinyData.getTemplate(type);
+        DestinyrateTemplate dt = destinyData.getTemplate(type);
         if(dt != null){
             if(player.getFateData().getTempSpecialCount() >= dt.getMaxTimes()){//已经最大特殊门次数
                 // do nothing
@@ -120,13 +136,53 @@ public class GateService implements ISFSModule, TimeListener {
     private void refFateMap(){
 
         fateMap.clear();
-        for(FatedataTemplate ft : MingyunZhiMenDataManager.FateData.getAll()){
+        for(FatedataTemplate ft : fateData.getAll()){
             List<Map<Long,Monster>> ls = Lists.newArrayList();
             for(int i = 1;i <= 3;i++){
-                ls.add(CheckPointService.getNormalFateMonster(ft.getFloorNum()));
+                ls.add(getNormalFateMonster(ft.getFloorNum()));
             }
             fateMap.put(ft.getFloorNum(), ls);
         }
+    }
+
+    /**
+     * 生成命运之门普通门怪物数据
+     */
+    public Map<Long,Monster> getNormalFateMonster(int floorNum){
+
+        FatedataTemplate ft  = fateData.getTemplate(floorNum);
+        if(ft == null){
+            return Maps.newHashMap();
+        }
+        StringBuilder monsterId = new StringBuilder();
+        StringBuilder monsterLevel = new StringBuilder();
+        StringBuilder skillLv = new StringBuilder();
+        String[] m1 = ft.getMonste1rLibrary().split(",");
+//		if(ft.getMonste2rLibrary() == null){
+//			System.err.println(ft.getFloorNum());
+//		}
+        String[] m2 = ft.getMonste2rLibrary().split(",");
+        for(int i = 1;i<=2;i++){
+            monsterId.append(",").append(m1[GameMath.getRandInt(m1.length)]);
+            monsterLevel.append(",").append(ft.getMonster1Lv());
+            skillLv.append(",").append(ft.getSkill1Lv());
+        }
+        for(int i = 1;i<=8;i++){
+            monsterId.append(",").append(m2[GameMath.getRandInt(m2.length)]);
+            monsterLevel.append(",").append(ft.getMonster2Lv());
+            skillLv.append(",").append(ft.getSkill2Lv());
+        }
+        if(monsterId.length() > 0){
+            monsterId = new StringBuilder(monsterId.substring(1));
+        }
+        if(monsterLevel.length() > 0){
+            monsterLevel = new StringBuilder(monsterLevel.substring(1));
+        }
+        if(skillLv.length() > 0){
+            skillLv = new StringBuilder(skillLv.substring(1));
+        }
+        return monsterService.createMonster(monsterId.toString(), monsterLevel.toString(), "", skillLv.toString(),"");
+
     }
 
 }

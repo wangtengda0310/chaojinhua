@@ -2,18 +2,19 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.monster.data.MonsterBreakTemplate;
 import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.JiyinType;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -29,6 +30,9 @@ import java.util.List;
  */
 public class MonsterTUPOChangeHandler extends ReconnectedHandler {
 
+	@Inject
+	private MonsterService monseterService;
+	@Inject
 	private ResourceService resourceService;
 
 	@Override
@@ -44,18 +48,18 @@ public class MonsterTUPOChangeHandler extends ReconnectedHandler {
 
 		String type;
 		Monster mm = player.getMonsters().get(objectId);
-		MonsterTemplate mont = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
+		MonsterTemplate mont = monseterService.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
 		if(mont == null){
 			return error(ErrorCode.MONSTER_NOT);//没有此怪物
 		}else{
 			String[] jiying = mm.getBreaklv().split(",");
-			if(rank <=0 || rank > MonsterDataManager.MonsterBreakData.size()){
+			if(rank <=0 || rank > monseterService.monsterBreakData.size()){
 				return error(ErrorCode.MONSTER_CHANGE_NOT);//此阶无法突破
 			}else{
 				if("-1".equals(jiying[rank - 1])){
 					return error(ErrorCode.MONSTER_TUPO_NOT);//此阶尚未突破
 				}else{
-					MonsterBreakTemplate mt = MonsterDataManager.MonsterBreakData.getTemplate(rank);
+					MonsterBreakTemplate mt = monseterService.monsterBreakData.getTemplate(rank);
 					if(costType == 1){//gold
 						if(player.getGold() < mt.getChange_gold()){
 							return error(ErrorCode.GOLD_NOT_ENOUGH);
@@ -76,7 +80,7 @@ public class MonsterTUPOChangeHandler extends ReconnectedHandler {
 						resourceService.addDiamond(player, 0-mt.getDiamond());
 					}
 					mm.setBreaklv(MyUtil.toString(jiying, ","));
-					mm.reCalculate(player,true);
+					monseterService.reCalculate(player, mm.getMonsterId(), mm,true);
 					mm.setDtate(2);
 					List<Monster> mons = Lists.newArrayList();
 					mons.add(mm);

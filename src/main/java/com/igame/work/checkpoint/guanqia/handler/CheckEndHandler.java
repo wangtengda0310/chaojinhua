@@ -3,6 +3,7 @@ package com.igame.work.checkpoint.guanqia.handler;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -11,19 +12,16 @@ import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
-import com.igame.work.checkpoint.tansuo.TansuoDataManager;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.checkpoint.tansuo.TansuoTemplate;
-import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.load.PlayerService;
+import com.igame.work.user.PlayerService;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
@@ -38,10 +36,10 @@ import java.util.Set;
  *
  */
 public class CheckEndHandler extends ReconnectedHandler {
-	private CheckPointService checkPointService;
-	private ResourceService resourceService;
-	private QuestService questService;
-	private PlayerService playerService;
+	@Inject private CheckPointService checkPointService;
+	@Inject private ResourceService resourceService;
+	@Inject private QuestService questService;
+	@Inject private PlayerService playerService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -57,7 +55,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 		vo.addData("chapterId", chapterId);
 		vo.addData("win", win);
 
-		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
+		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
 		if(ct == null || chapterId != checkPointService.getEnterCheckpointId(player)){
 			GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 					+"#act:cheat" + "#type:endC#chapterId:"+chapterId);
@@ -107,13 +105,13 @@ public class CheckEndHandler extends ReconnectedHandler {
 
 			notiyUnLockCheck(player, ct.getUnlock(),chapterId);//推送解锁关卡
 
-			for(TansuoTemplate ts : TansuoDataManager.TansuoData.getAll()){//解锁探索关卡
+			for(TansuoTemplate ts : checkPointService.tansuoData.getAll()){//解锁探索关卡
 				if(chapterId ==  ts.getUnlock() && player.getTangSuo().get(ts.getNum()) == null){
 					player.getTangSuo().put(ts.getNum(), new TansuoDto(ts));
 				}
 			}
 
-			for(WorldEventTemplate ts : WorldEventDataManager.WorldEventData.getAll()){//解锁世界事件
+			for(WorldEventTemplate ts : checkPointService.worldEventData.getAll()){//解锁世界事件
 				if(ts.getLevel() == 1 && chapterId ==  ts.getUnlock()){
 					WorldEventDto wet = new WorldEventDto(player.getPlayerId(), ts.getEvent_type(), "", 0,1);
 					player.getWordEvent().put(ts.getEvent_type(), wet);
@@ -175,14 +173,14 @@ public class CheckEndHandler extends ReconnectedHandler {
 			if(player.getCheckPoint() != null && !MyUtil.isNullOrEmpty(player.getCheckPoint())){//已过章节
 				String[] cc = player.getCheckPoint().split(",");
 				for(String c : cc){
-					CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(c));
+					CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(Integer.parseInt(c));
 					if(ct != null){
 						ccs.add(ct.getCityId());
 					}
 				}
 			}
 			for(String u : us){
-				CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(u));
+				CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(Integer.parseInt(u));
 				if(!player.hasCheckPoint(u)){//真正第一次已过关卡更新
 					if(ct.getChapterType()!=2){
 						str.append(",").append(u);
@@ -239,7 +237,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 
 		String[] ssc = checkpoint.split(",");
 		for(String ss : ssc){
-			CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(ss));
+			CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(Integer.parseInt(ss));
 			if(ct.getRound() == 2){
 				return true;
 			}

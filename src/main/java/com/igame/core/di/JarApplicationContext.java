@@ -1,6 +1,7 @@
 package com.igame.core.di;
 
 import com.igame.core.ISFSModule;
+import com.igame.core.data.ClassXmlDataLoader;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class JarApplicationContext {
 
             return needInjectField;
         } catch (InstantiationException | IllegalAccessException e) {
-            getLogger().error("init {} error", needInjectField, e);
+            getLogger().error("initPlayerTop {} error", needInjectField, e);
             throw new Error(e);
         }
     }
@@ -39,11 +40,13 @@ public class JarApplicationContext {
 
             return handler;
         } catch (InstantiationException | IllegalAccessException e) {
-            getLogger().error("init {} error", clazz.getSimpleName(), e);
+            getLogger().error("initPlayerTop {} error", clazz.getSimpleName(), e);
             throw new Error(e);
         }
 
     }
+
+    ClassXmlDataLoader loader = new ClassXmlDataLoader("resource/");
 
     private <T> void doReflact(T component) throws IllegalAccessException, InstantiationException {
         Class<?> aClass = component.getClass();
@@ -55,6 +58,10 @@ public class JarApplicationContext {
                     continue;
                 }
                 Class<?> fieldClass = field.getType();
+                if (field.isAnnotationPresent(LoadXml.class)) {    // todo observer?
+                    Object data = loader.loadData(fieldClass, field.getAnnotation(LoadXml.class).value());
+                    field.set(component, data);
+                }
                 if (!field.isAnnotationPresent(Inject.class)
                         && !Injectable.class.isAssignableFrom(fieldClass)) {
                     continue;

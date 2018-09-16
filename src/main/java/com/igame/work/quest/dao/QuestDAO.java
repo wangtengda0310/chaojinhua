@@ -3,8 +3,6 @@ package com.igame.work.quest.dao;
 
 
 import com.igame.core.db.AbsDao;
-import com.igame.work.quest.QuestDataManager;
-import com.igame.work.quest.data.QuestTemplate;
 import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -24,17 +22,10 @@ public class QuestDAO extends AbsDao {
      * 查询
      */
     public Map<Integer, TaskDayInfo> getByPlayer(Player player){
-		Map<Integer, TaskDayInfo> ret = new HashMap();
+		Map<Integer, TaskDayInfo> ret = new HashMap<>();
     	List<TaskDayInfo> ls = getDatastore().find(TaskDayInfo.class, "playerId", player.getPlayerId()).asList();
     	for(TaskDayInfo tk :ls){
-    		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(tk.getQuestId());
-    		if(qt!= null){
-//    			if(qt.getQuestType() == 1){
-//    				player.getDayTask().put(tk.getQuestId(), tk);
-//    			}else if(qt.getQuestType() == 2){
 				ret.put(tk.getQuestId(), tk);
-//    			}
-    		}
     	}
     	return ret;
     }

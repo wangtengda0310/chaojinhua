@@ -1,14 +1,15 @@
 package com.igame.work.checkpoint.xingheZhiYan.handler;
 
 
+import com.igame.core.di.Inject;
+import com.igame.core.handler.ReconnectedHandler;
+import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
-import com.igame.core.handler.ReconnectedHandler;
-import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.xingheZhiYan.TrialdataTemplate;
-import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanDataManager;
+import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -21,6 +22,9 @@ import net.sf.json.JSONObject;
  */
 public class WaKuangHandler extends ReconnectedHandler {
 
+	@Inject
+	private XingheZhiYanService xingheZhiYanService;
+	@Inject
 	private ResourceService resourceService;
 
 	@Override
@@ -31,7 +35,7 @@ public class WaKuangHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		String reward;
-		TrialdataTemplate ct = XingheZhiYanDataManager.TrialData.getTemplate(player.getTowerId());
+		TrialdataTemplate ct = xingheZhiYanService.trialData.getTemplate(player.getTowerId());
 		if(ct == null){
 			return error(ErrorCode.ERROR);
 		}else{

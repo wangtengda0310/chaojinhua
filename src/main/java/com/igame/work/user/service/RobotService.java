@@ -8,16 +8,16 @@ import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.GameMath;
+import com.igame.work.fight.arena.ArenaService;
 import com.igame.work.fight.arena.ArenadataTemplate;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.fight.service.ComputeFightService;
-import com.igame.work.fight.service.FightUtil;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
-import com.igame.work.user.PlayerDataManager;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dao.RobotDAO;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
@@ -36,6 +36,8 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 	@Inject private ComputeFightService computeFightService;
 	@Inject private RobotDAO dao;
 	@Inject private SessionManager sessionManager;
+	@Inject private ArenaService arenaService;
+	@Inject private MonsterService monsterService;
 
 	@Override
 	public void minute5() {
@@ -108,7 +110,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
      */
     public RobotDto createRobotDto(Player player,long playerId,String name,int level){
     	RobotDto rto = null;
-    	ArenadataTemplate at = PlayerDataManager.ArenaData.getTemplateByPlayerLevel(player.getPlayerLevel());
+    	ArenadataTemplate at = arenaService.arenaData.getTemplateByPlayerLevel(player.getPlayerLevel());
     	if(at != null){
     		rto = new RobotDto();
     		rto.setSeverId(player.getSeverId());
@@ -139,7 +141,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     		if(monsterLevel.length() > 0){
     			monsterLevel = new StringBuilder(monsterLevel.substring(1));
     		}
-			FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(monsterId.toString(), monsterLevel.toString(), "", "","")));
+			FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(monsterId.toString(), monsterLevel.toString(), "", "","")));
 			
 	    	for(Monster m : fb.getFightB().getMonsters().values()){
 	    		MatchMonsterDto mto = new MatchMonsterDto(m);

@@ -1,15 +1,11 @@
 package com.igame.work.quest.dto;
 
-import com.igame.work.quest.QuestDataManager;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Lists;
-import com.igame.work.quest.data.QuestTemplate;
 import com.igame.core.db.BasicDto;
-import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 
 

@@ -9,8 +9,8 @@ import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.monster.dao.MonsterDAO;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
@@ -32,7 +32,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 	private ArenaService arenaService;
 	@Inject private PlayerDAO playerDAO;
 	@Inject private RobotService robotService;
-	@Inject private MonsterDAO monsterDAO;
+	@Inject private MonsterService monsterService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -69,7 +69,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 
 		Player opponent = playerDAO.getPlayerByPlayerId(playerId);
 		if(opponent != null){	// TODO 监听上下阵事件
-			Map<Long, Monster> mons = monsterDAO.getMonsterByPlayer(opponent, opponent.getPlayerId());
+			Map<Long, Monster> mons = monsterService.getMonsterByPlayer(opponent);
 			opponent.setMonsters(mons);
 			rto = RobotService.createRobotLike(opponent);
 			

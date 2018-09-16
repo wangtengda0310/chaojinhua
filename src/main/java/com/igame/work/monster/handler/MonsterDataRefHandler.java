@@ -1,12 +1,13 @@
 package com.igame.work.monster.handler;
 
 
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.MProtrol;
 import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
@@ -17,6 +18,7 @@ import net.sf.json.JSONObject;
  *
  */
 public class MonsterDataRefHandler extends ReconnectedHandler {
+	@Inject private MonsterService monseterService;
 	
 
 	@Override
@@ -34,7 +36,7 @@ public class MonsterDataRefHandler extends ReconnectedHandler {
 
 		Monster mm = player.getMonsters().get(objectId);
 		if(mm != null){
-			MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
+			MonsterTemplate mt = monseterService.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
 			if(mt != null){
 				hp = (int)(mm.getHpInit() + (level - mm.getLevel()) * mt.getHp_up());
 				attack = (int)(mm.getAttack() + (level - mm.getLevel()) * mt.getAtk_up());

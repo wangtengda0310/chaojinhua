@@ -2,6 +2,7 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -9,12 +10,12 @@ import com.igame.util.MyUtil;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
-import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.data.MonsterBreakTemplate;
 import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.JiyinType;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.RandoRes;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -31,7 +32,10 @@ import java.util.List;
 public class MonsterTUPOAllHandler extends ReconnectedHandler {
 
 
-	private static ResourceService resourceService;
+	@Inject
+	private MonsterService monsterService;
+	@Inject
+	private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -49,13 +53,13 @@ public class MonsterTUPOAllHandler extends ReconnectedHandler {
 		int result;
 		long cost;
 		Monster mm = player.getMonsters().get(objectId);
-		MonsterTemplate mont = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
+		MonsterTemplate mont = monsterService.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
 		if(mont == null){
 			return error(ErrorCode.MONSTER_NOT);//没有此怪物
 		}else{
 			String[] jiying = mm.getBreaklv().split(",");				
 
-			if(rank <=0 || rank > MonsterDataManager.MONSTER_DATA.size()){
+			if(rank <=0 || rank > monsterService.MONSTER_DATA.size()){
 				return error(ErrorCode.MONSTER_CHANGE_NOT);//此阶无法改造
 			}else{
 				if("-1".equals(jiying[rank - 1])){
@@ -72,7 +76,7 @@ public class MonsterTUPOAllHandler extends ReconnectedHandler {
 						cost = res.getTotal();
 						jiying[rank - 1] = rtype;
 						mm.setBreaklv(MyUtil.toString(jiying, ","));
-						mm.reCalculate(player,true);
+						monsterService.reCalculate(player, mm.getMonsterId(), mm,true);
 						mm.setDtate(2);
 						List<Monster> mons = Lists.newArrayList();
 						mons.add(mm);
@@ -114,7 +118,7 @@ public class MonsterTUPOAllHandler extends ReconnectedHandler {
 	 * @param rank  当前改造阶数
 	 * @param jingzhan 是否近战
 	 */
-	static RandoRes getRandType(Player player,int rankType,int type,int costType,int rank,boolean jingzhan){
+	private RandoRes getRandType(Player player,int rankType,int type,int costType,int rank,boolean jingzhan){
 		RandoRes res = new RandoRes();
 		if(costType < 1 || costType > 2){//货币错误
 			return new RandoRes(-1,"-1");
@@ -141,7 +145,7 @@ public class MonsterTUPOAllHandler extends ReconnectedHandler {
 		}
 		if(randow != null){
 
-			MonsterBreakTemplate mt = MonsterDataManager.MonsterBreakData.getTemplate(rank);
+			MonsterBreakTemplate mt = monsterService.monsterBreakData.getTemplate(rank);
 			if(costType == 1){//金币改造
 				long totalCost = 0;//总花销
 				if(player.getGold() < mt.getChange_gold()){

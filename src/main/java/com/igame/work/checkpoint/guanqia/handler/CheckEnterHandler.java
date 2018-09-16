@@ -9,10 +9,9 @@ import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.monster.dto.Monster;
-import com.igame.work.monster.handler.TuJianHandler;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -31,6 +30,7 @@ public class CheckEnterHandler extends ReconnectedHandler {
 
 	@Inject private ResourceService resourceService;
 	@Inject private CheckPointService checkPointService;
+	@Inject private MonsterService monsterService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -44,7 +44,7 @@ public class CheckEnterHandler extends ReconnectedHandler {
 		vo.addData("chapterId", chapterId);
 
 		//校验关卡ID
-		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
+		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
 		if(ct == null){
 			return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 		}
@@ -107,12 +107,12 @@ public class CheckEnterHandler extends ReconnectedHandler {
 
 					MessageUtil.notiyUnLockCheck(player, ct.getUnlock(),chapterId);//推送解锁关卡
 
-					for(TansuoTemplate ts : DataManager.TansuoData.getAll()){//解锁探索关卡
+					for(TansuoTemplate ts : DataManager.tansuoData.getAll()){//解锁探索关卡
 						if(chapterId ==  ts.getUnlock() && player.getTangSuo().get(ts.getNum()) == null){
 							player.getTangSuo().put(ts.getNum(), new TansuoDto(ts));
 						}
 					}
-					for(WorldEventTemplate ts : DataManager.WorldEventData.getAll()){//解锁世界事件
+					for(WorldEventTemplate ts : DataManager.worldEventData.getAll()){//解锁世界事件
 						if(ts.getLevel() == 1 && chapterId ==  ts.getUnlock()){
 							WorldEventDto wet = player.getWordEvent().get(ts.getEvent_type());
 							if(wet == null){
@@ -180,7 +180,7 @@ public class CheckEnterHandler extends ReconnectedHandler {
 
             boolean change = false;
             for(String ids :meetM.split(":")){
-				change = TuJianHandler.isChange(player, ids, change);
+				change = monsterService.isChange(player, ids, change);
 			}
 
             if(change){

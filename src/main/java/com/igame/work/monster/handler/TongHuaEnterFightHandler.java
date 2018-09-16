@@ -2,17 +2,17 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.fight.service.FightUtil;
-import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.data.StrengthenmonsterTemplate;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -26,6 +26,8 @@ import java.util.List;
  *
  */
 public class TongHuaEnterFightHandler extends ReconnectedHandler {
+	@Inject
+	private MonsterService monsterService;
 	
 
 	@Override
@@ -71,8 +73,8 @@ public class TongHuaEnterFightHandler extends ReconnectedHandler {
 						}						
 					}
 
-					StrengthenmonsterTemplate mt = MonsterDataManager.StrengthenmonsterData.getTemplate(Integer.parseInt(t[3]));
-					FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(String.valueOf(mt.getMonster_id()), String.valueOf(mt.getMonster_lv()), "1","","")));
+					StrengthenmonsterTemplate mt = monsterService.strengthenmonsterData.getTemplate(Integer.parseInt(t[3]));
+					FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null, monsterService.createMonster(String.valueOf(mt.getMonster_id()), String.valueOf(mt.getMonster_lv()), "1","","")));
 					player.setFightBase(fb);
 					for(Monster m : fb.getFightB().getMonsters().values()){
 						MatchMonsterDto mto = new MatchMonsterDto(m);

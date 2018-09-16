@@ -1,11 +1,11 @@
 package com.igame.work.quest.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
-import com.igame.work.quest.QuestDataManager;
 import com.igame.work.quest.data.QuestTemplate;
 import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.quest.service.QuestService;
@@ -21,6 +21,7 @@ import net.sf.json.JSONObject;
 public class QuestRewardHandler extends ReconnectedHandler {
 
 
+	@Inject
 	private QuestService questService;
 
 	@Override
@@ -35,7 +36,7 @@ public class QuestRewardHandler extends ReconnectedHandler {
 		vo.addData("questId", questId);
 
 		TaskDayInfo td = questService.getAchievement(player.getPlayerId()).get(questId);
-		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(questId);
+		QuestTemplate qt = questService.questData.getTemplate(questId);
 		if(td == null || qt == null || td.getVars() < qt.getFinish() || td.getStatus() == 3){
 			return error(ErrorCode.QUEST_REWARD_NOT);
 		}

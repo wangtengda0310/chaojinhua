@@ -1,10 +1,11 @@
 package com.igame.work.user.handler;
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.PlayerService;
 import com.igame.work.user.data.HeadTemplate;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -16,6 +17,8 @@ import net.sf.json.JSONObject;
  * 更换头像
  */
 public class ChangeHeadHandler extends ReconnectedHandler {
+
+    @Inject private PlayerService playerService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -30,7 +33,7 @@ public class ChangeHeadHandler extends ReconnectedHandler {
         vo.addData("headId",headId);
 
         //校验头像是否存在
-        HeadTemplate template = PlayerDataManager.headData.getTemplate(headId);
+        HeadTemplate template = playerService.headData.getTemplate(headId);
         if (template == null){
             return error(ErrorCode.PARAMS_INVALID);
         }

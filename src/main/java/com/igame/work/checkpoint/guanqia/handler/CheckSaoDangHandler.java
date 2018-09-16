@@ -2,6 +2,7 @@ package com.igame.work.checkpoint.guanqia.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -9,7 +10,6 @@ import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.monster.dto.Monster;
@@ -26,8 +26,8 @@ import java.util.List;
  *
  */
 public class CheckSaoDangHandler extends ReconnectedHandler {
-	private CheckPointService checkPointService;
-	private ResourceService resourceService;
+	@Inject private CheckPointService checkPointService;
+	@Inject private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -41,7 +41,7 @@ public class CheckSaoDangHandler extends ReconnectedHandler {
 		vo.addData("chapterId", chapterId);
 
 		//入参校验
-		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
+		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
 		if(ct == null || !player.hasCheckPoint(String.valueOf(chapterId))){
 	    	GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 	    			+"#act:cheat" + "#type:saoC#chapterId:"+chapterId);

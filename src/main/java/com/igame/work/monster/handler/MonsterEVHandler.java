@@ -1,9 +1,10 @@
 package com.igame.work.monster.handler;
 
 
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.MProtrol;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
@@ -18,8 +19,8 @@ import net.sf.json.JSONObject;
 public class MonsterEVHandler extends ReconnectedHandler {
 
 
-	private QuestService questService;
-	private MonsterService monsterService;
+	@Inject private QuestService questService;
+	@Inject private MonsterService monsterService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {

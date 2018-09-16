@@ -12,14 +12,12 @@ import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.checkpoint.wujinZhiSen.EndlessdataTemplate;
-import com.igame.work.checkpoint.wujinZhiSen.WujinZhiSenDataManager;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.fight.service.FightUtil;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
-import com.igame.work.monster.handler.TuJianHandler;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
@@ -36,6 +34,7 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 
 
 	@Inject private EndlessService endlessService;
+	@Inject private MonsterService monsterService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -74,7 +73,7 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 			
 			//怪物装备
 			String equips = "";
-			EndlessdataTemplate edt = WujinZhiSenDataManager.EndlessData.getTemplate(currIndex);
+			EndlessdataTemplate edt = endlessService.endlessData.getTemplate(currIndex);
 			String[] props = null;
 			if(edt != null && !MyUtil.isNullOrEmpty(edt.getMonsterProp())){
 				props = edt.getMonsterProp().split(";");
@@ -85,7 +84,7 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 			if(!MyUtil.isNullOrEmpty(meetM)){
 				boolean change = false;
 
-				change = TuJianHandler.isChange(player, meetM, change);
+				change = monsterService.isChange(player, meetM, change);
 				if(change){
 					MessageUtil.notifyMeetM(player);
 				}
@@ -100,7 +99,7 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 				equips = equips.substring(1);
 			}
 			
-			FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(ct[3], ct[4], "","",equips)));
+			FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(ct[3], ct[4], "","",equips)));
 //			player.setFightBase(fb);
 			
 	    	for(Monster m : fb.getFightB().getMonsters().values()){

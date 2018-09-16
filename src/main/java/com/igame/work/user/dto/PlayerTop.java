@@ -2,12 +2,9 @@ package com.igame.work.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Maps;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
-import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -21,47 +18,22 @@ import java.util.Map;
 @Entity(noClassnameStored = true)
 public class PlayerTop {
 
-	public PlayerTop init(){
-
-		//初始化关卡挑战次数
-		List<CheckPointTemplate> all = GuanQiaDataManager.CheckPointData.getAll();
-		for (CheckPointTemplate template : all) {
-			int chapterId = template.getChapterId();
-			int chapterType = template.getChapterType();
-			Integer count = template.getCount();
-
-			if (count == null)
-				continue;
-
-			if (chapterType == 1){	//普通关卡
-				generalCheckPoint.put(chapterId,count);
-			}else if (chapterType == 3){	//boss关卡
-				bossCheckPoint.put(chapterId,count);
-			}
-		}
-
-		this.friendPhy = 20;
-		this.friendExplore = 20;
-
-		return this;
-	}
-
 	@JsonIgnore
-	private Map<Integer,Integer> bossCheckPoint = Maps.newHashMap();	//boss关卡挑战上限
+	public Map<Integer,Integer> bossCheckPoint = Maps.newHashMap();	//boss关卡挑战上限
 
 	@Transient
 	private String bossCheckPointStr = "";	//boss关卡挑战上限
 
 	@JsonIgnore
-	private Map<Integer,Integer> generalCheckPoint = Maps.newHashMap();	//一般关卡挑战上限
+	public Map<Integer,Integer> generalCheckPoint = Maps.newHashMap();	//一般关卡挑战上限
 
 	@Transient
 	@JsonIgnore
 	private String generalCheckPointStr = "";	//一般关卡挑战上限
 
-	private int friendPhy;	//好友体力领取上限
+	public int friendPhy;	//好友体力领取上限
 
-	private int friendExplore;	//好友探索加速上限
+	public int friendExplore;	//好友探索加速上限
 
 
 	public Map<Integer, Integer> getBossCheckPoint() {

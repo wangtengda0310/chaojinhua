@@ -5,7 +5,7 @@ package com.igame.work.monster.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.FightService;
 import com.igame.work.fight.data.GodsEffectTemplate;
 import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.util.MyUtil;
@@ -698,9 +698,9 @@ public class FightProp {
 	public void reCalGods(Gods selfGods,Gods enemyGods){
 		
 		if(selfGods != null){//处理己方神灵对自己的加成效果，
-			GodsdataTemplate godsTemplate = FightDataManager.GodsData.getTemplate(selfGods.getGodsType()+"_"+ selfGods.getGodsLevel());
+			GodsdataTemplate godsTemplate = FightService.godsData.getTemplate(selfGods.getGodsType()+"_"+ selfGods.getGodsLevel());
 			if(godsTemplate != null){
-				GodsEffectTemplate effectTemplate =  FightDataManager.GodsEffectData.getTemplate(godsTemplate.getGodsEffect());
+				GodsEffectTemplate effectTemplate =  FightService.godsEffectData.getTemplate(godsTemplate.getGodsEffect());
 				if(effectTemplate != null && !MyUtil.isNullOrEmpty(effectTemplate.getPassiveEffect()) && effectTemplate.getPassiveTarget() == 0){//有效的增益
 					String[] effects = effectTemplate.getPassiveEffect().split(",");
 					String[] values = effectTemplate.getPassiveValue().split(",");
@@ -712,9 +712,9 @@ public class FightProp {
 		}
 		
 		if(enemyGods != null){//处理敌方方神灵对自己的加成效果，
-			GodsdataTemplate enemyTemplate = FightDataManager.GodsData.getTemplate(enemyGods.getGodsType()+"_"+ enemyGods.getGodsLevel());
+			GodsdataTemplate enemyTemplate = FightService.godsData.getTemplate(enemyGods.getGodsType()+"_"+ enemyGods.getGodsLevel());
 			if(enemyTemplate != null){
-				GodsEffectTemplate effectTemplateE =  FightDataManager.GodsEffectData.getTemplate(enemyTemplate.getGodsEffect());
+				GodsEffectTemplate effectTemplateE =  FightService.godsEffectData.getTemplate(enemyTemplate.getGodsEffect());
 				if(effectTemplateE != null && !MyUtil.isNullOrEmpty(effectTemplateE.getPassiveEffect()) && effectTemplateE.getPassiveTarget() == 1){//有效的减益
 					String[] effectsE = effectTemplateE.getPassiveEffect().split(",");
 					String[] valuesE = effectTemplateE.getPassiveValue().split(",");

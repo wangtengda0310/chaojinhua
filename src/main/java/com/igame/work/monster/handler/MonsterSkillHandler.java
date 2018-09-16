@@ -1,11 +1,12 @@
 package com.igame.work.monster.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.FightService;
 import com.igame.work.fight.data.SkillLvTemplate;
 import com.igame.work.item.dto.Item;
 import com.igame.work.monster.dto.Monster;
@@ -27,7 +28,7 @@ import java.util.Set;
  */
 public class MonsterSkillHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
+	@Inject private ResourceService resourceService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -66,7 +67,7 @@ public class MonsterSkillHandler extends ReconnectedHandler {
 
 			Set<Integer> set = monster.getSkillMap().keySet();
 			for (Integer tempSkillId : set) {
-				SkillLvTemplate skillLvTemplate = FightDataManager.SkillLvData.getTemplate(tempSkillId);
+				SkillLvTemplate skillLvTemplate = FightService.skillLvData.getTemplate(tempSkillId);
 				if (skillLvTemplate.getUseItem().contains(String.valueOf(itemId))){
 					template = skillLvTemplate;
 					skillId = tempSkillId;

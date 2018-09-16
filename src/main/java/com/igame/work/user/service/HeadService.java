@@ -1,8 +1,9 @@
 package com.igame.work.user.service;
 
+import com.igame.core.di.Inject;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
-import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.PlayerService;
 import com.igame.work.user.data.HeadFrameTemplate;
 import com.igame.work.user.data.HeadTemplate;
 import com.igame.core.log.GoldLog;
@@ -20,13 +21,14 @@ import static com.igame.work.user.HeadConstants.*;
  * @author xym
  */
 public class HeadService {
+    @Inject PlayerService playerService;
 
     /**
      * 初始化头像
      * @param player 玩家
      */
     public void initHead(Player player) {
-        List<HeadTemplate> all = PlayerDataManager.headData.getAll();
+        List<HeadTemplate> all = playerService.headData.getAll();
         for (HeadTemplate headTemplate : all) {
             if (isUnlockHead(player,headTemplate))
                 addHead(player,headTemplate.getHeadId(),headTemplate.getTouchLimit(),false);
@@ -40,7 +42,7 @@ public class HeadService {
      * @param player 玩家
      */
     public void initFrame(Player player) {
-        List<HeadFrameTemplate> all = PlayerDataManager.headFrameData.getAll();
+        List<HeadFrameTemplate> all = playerService.headFrameData.getAll();
         for (HeadFrameTemplate frameTemplate : all) {
             if (isUnlockHeadFrame(player,frameTemplate))
                 addFrame(player,frameTemplate.getHeadFrameId(),frameTemplate.getTouchLimit(),false);
@@ -55,7 +57,7 @@ public class HeadService {
      */
     public boolean unlockHead(Player player, int touchLimit) {
 
-        List<HeadTemplate> headTemplates = PlayerDataManager.headData.getTemplates(touchLimit);
+        List<HeadTemplate> headTemplates = playerService.headData.getTemplates(touchLimit);
 
         for (HeadTemplate headTemplate : headTemplates) {
 
@@ -76,7 +78,7 @@ public class HeadService {
      */
     public boolean unlockHeadFrame(Player player, int touchLimit) {
 
-        List<HeadFrameTemplate> frameTemplates = PlayerDataManager.headFrameData.getTemplates(touchLimit);
+        List<HeadFrameTemplate> frameTemplates = playerService.headFrameData.getTemplates(touchLimit);
 
         for (HeadFrameTemplate frameTemplate : frameTemplates) {
 

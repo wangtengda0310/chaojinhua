@@ -23,13 +23,13 @@ import com.igame.work.chat.dao.PlayerMessageDAO;
 import com.igame.work.chat.service.MessageBoardService;
 import com.igame.work.chat.service.PrivateMessageService;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.mingyunZhiMen.FateDto;
 import com.igame.work.checkpoint.worldEvent.WordEventDAO;
+import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
-import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.FightService;
 import com.igame.work.fight.arena.ArenaService;
 import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.work.fight.service.ComputeFightService;
@@ -37,9 +37,10 @@ import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.dto.FriendInfo;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.item.service.ItemService;
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.mail.MailService;
 import com.igame.work.monster.dao.GodsDAO;
 import com.igame.work.monster.dao.MonsterDAO;
+import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
@@ -50,12 +51,11 @@ import com.igame.work.shop.service.ShopService;
 import com.igame.work.sign.SignService;
 import com.igame.work.turntable.dto.Turntable;
 import com.igame.work.turntable.service.TurntableService;
+import com.igame.work.user.PlayerService;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.*;
-import com.igame.work.user.load.PlayerService;
 import com.igame.work.user.load.ResourceService;
 import com.igame.work.user.service.HeadService;
-import com.igame.work.mail.MailService;
 import com.igame.work.user.service.PlayerCacheService;
 import com.igame.work.vip.VIPService;
 import com.smartfoxserver.v2.entities.User;
@@ -101,6 +101,8 @@ public class PlayerHandler extends BaseHandler {
 	@Inject private MessageBoardService messageBoardService;
 	@Inject private PrivateMessageService privateMessageService;
 	@Inject private CheckPointService checkPointService;
+	@Inject private EndlessService endlessService;
+	@Inject private PlayerCacheService playerCacheService;
 
 	private Map<Long, Map<Integer, ResCdto>> resC = new ConcurrentHashMap<>();//金币资源关卡
 
@@ -231,11 +233,38 @@ public class PlayerHandler extends BaseHandler {
 		player.setLoginTime(new Date());
 
 		//创建默认的怪物
-		Monster m1 = new Monster(player, idFactory.getNewIdMonster(serverId), player.getPlayerId(), MonsterDataManager.MONSTER_DATA.getMonsterTemplate(1001).getMonster_hp(), 0,1001);
-		Monster m2 = new Monster(player, idFactory.getNewIdMonster(serverId), player.getPlayerId(),  MonsterDataManager.MONSTER_DATA.getMonsterTemplate(1002).getMonster_hp(), 0,1002);
+		int monsterId1 = 1001;
+		Monster m1 = new Monster(player, idFactory.getNewIdMonster(serverId), player.getPlayerId(), monsterService.MONSTER_DATA.getMonsterTemplate(monsterId1).getMonster_hp(), 0, monsterId1);
+		MonsterTemplate mt1 = monsterService.MONSTER_DATA.getMonsterTemplate(monsterId1);
+		if(mt1 != null && mt1.getSkill() != null){
+			String[] skills = mt1.getSkill().split(",");
+			if(skills.length != 0){
+				for(String skill : skills){
+					m1.skillMap.put(Integer.parseInt(skill), 1);
+					m1.skillExp.put(Integer.parseInt(skill), 0);
+				}
+			}
+			m1.atkType = mt1.getAtk_type();
+		}
+		monsterService.initSkillString(m1);
 
-		m1.reCalculate(player,true);
-		m2.reCalculate(player,true);
+		int monsterId2 = 1002;
+		Monster m2 = new Monster(player, idFactory.getNewIdMonster(serverId), player.getPlayerId(),  monsterService.MONSTER_DATA.getMonsterTemplate(monsterId2).getMonster_hp(), 0, monsterId2);
+		MonsterTemplate mt2 = monsterService.MONSTER_DATA.getMonsterTemplate(monsterId1);
+		if(mt2 != null && mt2.getSkill() != null){
+			String[] skills = mt2.getSkill().split(",");
+			if(skills.length != 0){
+				for(String skill : skills){
+					m2.skillMap.put(Integer.parseInt(skill), 1);
+					m2.skillExp.put(Integer.parseInt(skill), 0);
+				}
+			}
+			m2.atkType = mt2.getAtk_type();
+		}
+		monsterService.initSkillString(m2);
+
+		monsterService.reCalculate(player,monsterId1, m1,true);
+		monsterService.reCalculate(player,monsterId2,m2,true);
 
 		monsterDAO.saveNewMonster(m1);
 		monsterDAO.saveNewMonster(m2);
@@ -265,7 +294,7 @@ public class PlayerHandler extends BaseHandler {
 		vIPService.initPrivileges(player.getVipPrivileges());
 
 		//初始化角色挑战次数上限
-		player.setPlayerTop(new PlayerTop().init());
+		player.setPlayerTop(playerService.initPlayerTop(new PlayerTop()));
 
 		//初始化角色剩余挑战次数
 		BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
@@ -278,7 +307,7 @@ public class PlayerHandler extends BaseHandler {
 
 		player.setGods(godsDAO.getByPlayer(player.getPlayerId()));
 
-		MonsterService.loadPlayer(player);
+		monsterService.loadPlayer(player);
 
 		player.setWordEvent(wordEventDAO.getByPlayer(player.getPlayerId()));
 
@@ -290,7 +319,7 @@ public class PlayerHandler extends BaseHandler {
 
 		questService.loadPlayer(player);
 
-		PlayerCacheService.remove(player);
+		playerCacheService.remove(player);
 
 	}
 
@@ -319,7 +348,7 @@ public class PlayerHandler extends BaseHandler {
 
 		//初始化角色挑战次数上限与剩余挑战次数
 		if (player.getPlayerTop() == null){
-			player.setPlayerTop(new PlayerTop().init());
+			player.setPlayerTop(playerService.initPlayerTop(new PlayerTop()));
 			BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
 		}
 
@@ -336,8 +365,8 @@ public class PlayerHandler extends BaseHandler {
 			}
 			player.getResMintues().putIfAbsent(i, 0);
 		}
-		for(Integer type : FightDataManager.GodsData.getSets()){
-			GodsdataTemplate gt = FightDataManager.GodsData.getTemplate(type+"_0");
+		for(Integer type : FightService.godsData.getSets()){
+			GodsdataTemplate gt = FightService.godsData.getTemplate(type+"_0");
 			if(gt != null && player.getPlayerLevel() >= gt.getUnlockLv() && player.getGods().get(type) == null){
 				Gods gods = new Gods(player.getPlayerId(), type, 0, 1);
 				player.getGods().put(gods.getGodsType(), gods);
@@ -348,7 +377,7 @@ public class PlayerHandler extends BaseHandler {
 		if(!MyUtil.isNullOrEmpty(player.getCheckPoint())){
 			for(String cc :player.getCheckPoint().split(",")){//已过关卡有，但是资源关卡时间计数器没有添加
 				Integer cid = Integer.parseInt(cc);
-				CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(cid);
+				CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(cid);
 				if(ct != null && ct.getChapterType() == 2 && !MyUtil.isNullOrEmpty(ct.getDropPoint())
 						&& !player.getTimeResCheck().containsKey(cid)){
 					player.getTimeResCheck().put(cid, ct.getMaxTime() * 60);
@@ -371,7 +400,7 @@ public class PlayerHandler extends BaseHandler {
 		playerService.checkDrawData(player, false);//检测造物台数据
 		questService.checkPlayerQuest(player);//检测玩家任务
 		if(player.getWuMap().isEmpty()){
-			CheckPointService.refEndlessRef(player);
+			endlessService.refEndlessRef(player);
 		}
 
 		player.getFateData().setTodayFateLevel(1);
@@ -414,7 +443,7 @@ public class PlayerHandler extends BaseHandler {
 			if(!player.getTimeResCheck().isEmpty()){
 				long now = System.currentTimeMillis();
 				for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){
-					CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(m.getKey());
+					CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(m.getKey());
 					if(ct != null && !MyUtil.isNullOrEmpty(ct.getDropPoint())){
 						int total = m.getValue();//原有分钟数
 						if(player.getLoginoutTime() != null){//计算新的
@@ -468,7 +497,7 @@ public class PlayerHandler extends BaseHandler {
 					String[] ccs =  player.getCheckPoint().split(",");
 					List<Integer> ls = Collections.synchronizedList(Lists.newArrayList());
 					for(String cc : ccs){
-						if(!player.getXinMo().containsKey(Integer.parseInt(cc)) && GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(cc)).getChapterType() != 2 && Integer.parseInt(cc) <=140){//有心魔的关卡不在生成列表中
+						if(!player.getXinMo().containsKey(Integer.parseInt(cc)) && checkPointService.checkPointData.getTemplate(Integer.parseInt(cc)).getChapterType() != 2 && Integer.parseInt(cc) <=140){//有心魔的关卡不在生成列表中
 							ls.add(Integer.parseInt(cc));
 						}
 					}

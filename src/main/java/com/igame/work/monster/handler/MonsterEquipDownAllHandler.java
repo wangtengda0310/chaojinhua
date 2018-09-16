@@ -3,17 +3,17 @@ package com.igame.work.monster.handler;
 
 import com.google.common.collect.Lists;
 import com.igame.core.di.Inject;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.item.dto.Item;
 import com.igame.work.item.service.ItemService;
-import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MonsterEquipDownAllHandler extends ReconnectedHandler {
 
 
+	@Inject private MonsterService monsterService;
 	@Inject private ItemService itemService;
 	@Inject private ComputeFightService computeFightService;
 
@@ -57,7 +58,7 @@ public class MonsterEquipDownAllHandler extends ReconnectedHandler {
 
 		//校验怪兽
 		Monster mm = player.getMonsters().get(mid);
-		if(mm == null || MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId()) == null){//没有此怪物
+		if(mm == null || monsterService.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId()) == null){//没有此怪物
 			return error(ErrorCode.MONSTER_NOT);
 		}
 
@@ -86,7 +87,7 @@ public class MonsterEquipDownAllHandler extends ReconnectedHandler {
 
 		mm.setEquip(MyUtil.toString(eqs,","));
 		mm.setTeamEquip(player.getTeams().values());
-		mm.reCalculate(player, true);
+		monsterService.reCalculate(player, mm.getMonsterId(), mm, true);
 		mm.setDtate(2);
 
 		mms.add(mm);

@@ -2,17 +2,19 @@ package com.igame.work.checkpoint.baozouShike;
 
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.quartz.TimeListener;
 import com.igame.work.PlayerEvents;
-import com.igame.work.checkpoint.baozouShike.data.RunTemplate;
-import com.igame.work.checkpoint.baozouShike.data.RunTypeTemplate;
+import com.igame.work.checkpoint.baozouShike.data.*;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.monster.dto.Monster;
-import com.igame.work.user.dto.Player;
 import com.igame.work.mail.MailService;
+import com.igame.work.monster.data.MonsterTemplate;
+import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
+import com.igame.work.user.dto.Player;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,8 +26,26 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 暴走时刻
  */
 public class BallisticService extends EventService implements ISFSModule, TimeListener {
+    /**
+     * 暴走时刻怪物数据
+     */
+    @LoadXml("rundata.xml")public RunData runData;
+    /**
+     * 暴走时刻排名奖励
+     */
+    @LoadXml("runreward.xml")public RunRewardData runRewardData;
+    /**
+     * 暴走时刻buff数据
+     */
+    @LoadXml("runtype.xml")public RunTypeData runTypeData;
+    /**
+     * 暴走时刻结束奖励
+     */
+    @LoadXml("runbattlereward.xml")public RunBattlerewardData runBattlerewardData;
+
     @Inject private BallisticRankDAO dao;
     @Inject private MailService mailService;
+    @Inject private static MonsterService monsterService;
 
     @Override
     public void minute5() {
@@ -91,7 +111,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
      * @param killNum       杀敌数
      * @param tocalBuildNum 生成数量
      */
-    public static List<MatchMonsterDto> buildMonsterByKillNum(int killNum, int tocalBuildNum) {
+    public List<MatchMonsterDto> buildMonsterByKillNum(int killNum, int tocalBuildNum) {
 
         List<MatchMonsterDto> matchMonsterDtos = new ArrayList<>();
 
@@ -117,12 +137,12 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
      * @param tocalBuildNum    剩余生成怪物个数
      * @param index            killNums下标
      */
-    private static List<MatchMonsterDto> addMonster(List<MatchMonsterDto> matchMonsterDtos, int curBuildNum, int tocalBuildNum, int index) {
+    private List<MatchMonsterDto> addMonster(List<MatchMonsterDto> matchMonsterDtos, int curBuildNum, int tocalBuildNum, int index) {
 
         if (index >= killNums.length)
             return matchMonsterDtos;
 
-        RunTemplate template = BaozouShikeDataManager.runData.getTemplate(killNums[index]);
+        RunTemplate template = runData.getTemplate(killNums[index]);
 
         if (curBuildNum >= tocalBuildNum) {  //如果当前等级可以生成的怪物数量大于需要生成的怪物数量
             matchMonsterDtos.addAll(buildMonster(template, tocalBuildNum));
@@ -141,7 +161,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
      * @param template 暴走时刻怪兽模板
      * @param buildNum 生成数量
      */
-    public static List<MatchMonsterDto> buildMonster(RunTemplate template, int buildNum) {
+    public List<MatchMonsterDto> buildMonster(RunTemplate template, int buildNum) {
 
         List<MatchMonsterDto> matchMonsterDtos = new ArrayList<>();
 
@@ -156,7 +176,27 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
 
             String monsterId = monsterIds[(new Random().nextInt(monsterIds.length))];
 
-            matchMonsterDtos.add(new MatchMonsterDto(new Monster(i, Integer.parseInt(monsterId), monsterLv, -1, skillLv, equip)));
+            Monster monster = new Monster(i, Integer.parseInt(monsterId), monsterLv, -1, skillLv, equip);
+            MonsterTemplate mt = monsterService.MONSTER_DATA.getMonsterTemplate(Integer.parseInt(monsterId));
+            if(mt != null && mt.getSkill() != null){
+                String[] skills = mt.getSkill().split(",");
+                if(skills != null){
+                    for(String skill : skills){
+                        if(skillLv<=0){
+                            monster.skillMap.put(Integer.parseInt(skill), 1);
+                        }else{
+                            monster.skillMap.put(Integer.parseInt(skill), skillLv);
+                        }
+
+                        monster.skillExp.put(Integer.parseInt(skill), 0);
+                    }
+                }
+                monster.atkType = mt.getAtk_type();
+            }
+            monsterService.initSkillString(monster);
+            monsterService.reCalLevelValue(Integer.parseInt(monsterId),monster,true);
+            monsterService.reCalEquip(Integer.parseInt(monsterId),monster);
+            matchMonsterDtos.add(new MatchMonsterDto(monster));
         }
 
         return matchMonsterDtos;
@@ -179,29 +219,29 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
 
             String reward = "";
             if (rank == 1) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(1).getReward();
+                reward = runRewardData.getTemplate(1).getReward();
             } else if (rank == 2) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(2).getReward();
+                reward = runRewardData.getTemplate(2).getReward();
             } else if (rank == 3) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(3).getReward();
+                reward = runRewardData.getTemplate(3).getReward();
             } else if (4 <= rank && rank <= 10) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(4).getReward();
+                reward = runRewardData.getTemplate(4).getReward();
             } else if (10 < rank && rankPercent <= 15) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(5).getReward();
+                reward = runRewardData.getTemplate(5).getReward();
             } else if (15 < rankPercent && rankPercent <= 25) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(6).getReward();
+                reward = runRewardData.getTemplate(6).getReward();
             } else if (15 < rankPercent && rankPercent <= 25) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(7).getReward();
+                reward = runRewardData.getTemplate(7).getReward();
             } else if (25 < rankPercent && rankPercent <= 35) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(8).getReward();
+                reward = runRewardData.getTemplate(8).getReward();
             } else if (35 < rankPercent && rankPercent <= 50) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(9).getReward();
+                reward = runRewardData.getTemplate(9).getReward();
             } else if (50 < rankPercent && rankPercent <= 70) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(10).getReward();
+                reward = runRewardData.getTemplate(10).getReward();
             } else if (70 < rankPercent && rankPercent <= 90) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(11).getReward();
+                reward = runRewardData.getTemplate(11).getReward();
             } else if (90 < rankPercent && rankPercent <= 100) {
-                reward = BaozouShikeDataManager.runRewardData.getTemplate(12).getReward();
+                reward = runRewardData.getTemplate(12).getReward();
             }
 
             mailService.senderMail(Integer.parseInt(extensionHolder.SFSExtension.getConfigProperties().getProperty("serverId"))
@@ -209,7 +249,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
         }
 
         //随机当日buff
-        List<RunTypeTemplate> all = BaozouShikeDataManager.runTypeData.getAll();
+        List<RunTypeTemplate> all = runTypeData.getAll();
         int buffMap = this.rankDto.getBuff();
 
         int newValue;
@@ -237,7 +277,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
 
             //随机buff
 
-            List<RunTypeTemplate> config = BaozouShikeDataManager.runTypeData.getAll();
+            List<RunTypeTemplate> config = runTypeData.getAll();
 
             int buffMap = new Random().nextInt(config.size() + 1);
 

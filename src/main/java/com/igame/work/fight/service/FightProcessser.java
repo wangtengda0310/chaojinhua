@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import com.igame.core.log.ExceptionLog;
 import com.igame.util.MyUtil;
 import com.igame.util.ThreadPoolManager;
-import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.FightService;
 import com.igame.work.fight.data.SkillTemplate;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightCmd;
@@ -44,7 +44,7 @@ public class FightProcessser {
     		
     		//判断是否触发技能攻击
     		for(Integer skillId : attacker.getSkillMap().keySet()){
-    			SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+    			SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
         		if(skillTemplate != null && skillTemplate.getSubtype() != 2 
         				&& skillTemplate.getTouch() == 1 && !MyUtil.isNullOrEmpty(skillTemplate.getTouchValue()) && attacker.getFightProp().getAttackCount() >= Integer.parseInt(skillTemplate.getTouchValue().split(",")[0])){
         			normalAttack = false;
@@ -106,7 +106,7 @@ public class FightProcessser {
     	//触发技能触发引起的技能触发
     	if(attacker.getFightProp().getHp() > 0){
 			for(Integer skillId : attacker.getSkillMap().keySet()){
-				SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+				SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
 	    		if(skillTemplate != null && skillTemplate.getSubtype() != 2 && skillTemplate.getTouch() == 4 ){
 	    			FightCmd fc = new FightCmd(1,  attacker.getObjectId(), 2, skillTemplate.getSkillId(), 0);
 	    			processCmd(fb, fc,retCmd);
@@ -119,7 +119,7 @@ public class FightProcessser {
 		for(Monster mm : fb.getFightA().getMonsters().values()){
 			if(mm.getFightProp().getHp() > 0){
 				for(Integer skillId : mm.getSkillMap().keySet()){
-					SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+					SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
 		    		if(skillTemplate != null && skillTemplate.getSubtype() != 2 && skillTemplate.getTouch() == 8 ){
 		    			int touchValue = Integer.parseInt(skillTemplate.getTouchValue().split(",")[0]);
 		    			if(skllId == touchValue){
@@ -133,7 +133,7 @@ public class FightProcessser {
 		for(Monster mm : fb.getFightB().getMonsters().values()){
 			if(mm.getFightProp().getHp() > 0){
 				for(Integer skillId : mm.getSkillMap().keySet()){
-					SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+					SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
 		    		if(skillTemplate != null && skillTemplate.getSubtype() != 2 && skillTemplate.getTouch() == 8 ){
 		    			int touchValue = Integer.parseInt(skillTemplate.getTouchValue().split(",")[0]);
 		    			if(skllId == touchValue){
@@ -157,7 +157,7 @@ public class FightProcessser {
 		for(Monster mm : fb.getFightA().getMonsters().values()){
 			if(mm.getFightProp().getHp() > 0){
 				for(Integer skillId : mm.getSkillMap().keySet()){
-					SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+					SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
 		    		if(skillTemplate != null && skillTemplate.getSubtype() != 2 && skillTemplate.getTouch() == 3 ){
 		    			int touchValue = Integer.parseInt(skillTemplate.getTouchValue().split(",")[0]) * 1000;
 		    			if(touchValue > 0 && (mm.getFightProp().getLastActTime().get(skillId) == null && now-fb.getStartTime() >= touchValue || now-mm.getFightProp().getLastActTime().get(skillId) >= touchValue)){
@@ -172,7 +172,7 @@ public class FightProcessser {
 		for(Monster mm : fb.getFightB().getMonsters().values()){
 			if(mm.getFightProp().getHp() > 0){
 				for(Integer skillId : mm.getSkillMap().keySet()){
-					SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+					SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
 		    		if(skillTemplate != null && skillTemplate.getSubtype() != 2 && skillTemplate.getTouch() == 3 ){
 		    			int touchValue = Integer.parseInt(skillTemplate.getTouchValue().split(",")[0]) * 1000;
 		    			if(touchValue > 0 && (mm.getFightProp().getLastActTime().get(skillId) == null && now-fb.getStartTime() >= touchValue || now-mm.getFightProp().getLastActTime().get(skillId) >= touchValue)){
@@ -234,7 +234,7 @@ public class FightProcessser {
     	if(target.getFightProp().getHp() > 0){
 			//判断是否触发技能攻击
 			for(Integer skillId : target.getSkillMap().keySet()){
-				SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+				SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
 	    		if(skillTemplate != null && skillTemplate.getSubtype() != 2 && skillTemplate.getTouch() == 2 && !MyUtil.isNullOrEmpty(skillTemplate.getTouchValue())){
 	    			int touchValue = Integer.parseInt(skillTemplate.getTouchValue().split(",")[0]);
 	    			double frontPec = frontHp*100/(target.getFightProp().getHpInit()+.0);
@@ -260,7 +260,7 @@ public class FightProcessser {
     	
 		//判断是否触发技能攻击
 		for(Integer skillId : target.getSkillMap().keySet()){
-			SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+			SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
     		if(skillTemplate != null && skillTemplate.getSubtype() != 2 && skillTemplate.getTouch() == 5 ){
     			FightCmd fc = new FightCmd(1,  target.getObjectId(), 2, skillTemplate.getSkillId(), 0);
     			processCmd(fb, fc,retCmd);
@@ -273,7 +273,7 @@ public class FightProcessser {
 		for(Monster mm : fb.getFightA().getMonsters().values()){
 			if(mm.getFightProp().getHp() > 0){
 				for(Integer skillId : mm.getSkillMap().keySet()){
-					SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+					SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
 		    		if(skillTemplate != null && skillTemplate.getSubtype() != 2 && skillTemplate.getTouch() == 9 ){
 		    			int touchValue = Integer.parseInt(skillTemplate.getTouchValue().split(",")[0]);
 		    			if(target.getMonsterId() == touchValue){
@@ -287,7 +287,7 @@ public class FightProcessser {
 		for(Monster mm : fb.getFightB().getMonsters().values()){
 			if(mm.getFightProp().getHp() > 0){
 				for(Integer skillId : mm.getSkillMap().keySet()){
-					SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+					SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
 		    		if(skillTemplate != null && skillTemplate.getSubtype() != 2 && skillTemplate.getTouch() == 9 ){
 		    			int touchValue = Integer.parseInt(skillTemplate.getTouchValue().split(",")[0]);
 		    			if(target.getMonsterId() == touchValue){
@@ -310,7 +310,7 @@ public class FightProcessser {
     		
     		//判断是否触发技能攻击
     		for(Integer skillId : target.getSkillMap().keySet()){
-    			SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+    			SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
         		if(skillTemplate != null && skillTemplate.getSubtype() != 2 
         				&& skillTemplate.getTouch() == 6 && !MyUtil.isNullOrEmpty(skillTemplate.getTouchValue()) && target.getFightProp().getAttackedCount() >= Integer.parseInt(skillTemplate.getTouchValue().split(",")[0])){
         			FightCmd fc = new FightCmd(1,  target.getObjectId(), 2, skillTemplate.getSkillId(), 0);
@@ -357,7 +357,7 @@ public class FightProcessser {
 		
     	int skillId = fc.getCmdId();
     	if(attacker.getSkillMap().containsKey(skillId)){
-    		SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(skillId);
+    		SkillTemplate skillTemplate = FightService.skillData.getTemplate(skillId);
     		if(skillTemplate != null && skillTemplate.getSubtype() != 2){
     			int skillLevel = attacker.getSkillMap().get(skillId);//技能等级
         		int skillExp = attacker.getSkillExp().get(skillId) == null ? 0 : attacker.getSkillExp().get(skillId);//技能经验值
@@ -431,7 +431,7 @@ public class FightProcessser {
     	if(!MyUtil.isNullOrEmpty(effectTouch)){
     		String[] ets = effectTouch.split(";");
     		for(String et : ets){
-    			SkillTemplate skillTemplate = FightDataManager.SkillData.getTemplate(Integer.parseInt(et));
+    			SkillTemplate skillTemplate = FightService.skillData.getTemplate(Integer.parseInt(et));
     			if(skillTemplate != null){
         			Map<Integer,List<Monster>> targets = getTarget(fb, fc,attacker, skillTemplate);
         			if(targets.isEmpty() || targets.get(1) == null || MyUtil.isNullOrEmpty(skillTemplate.getEffect())){//没有任何生效目标

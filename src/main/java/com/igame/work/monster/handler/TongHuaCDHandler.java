@@ -1,13 +1,14 @@
 package com.igame.work.monster.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.monster.data.StrengthenRouteTemplate;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
 import com.igame.work.user.load.ResourceService;
@@ -21,6 +22,9 @@ import net.sf.json.JSONObject;
  */
 public class TongHuaCDHandler extends ReconnectedHandler {
 
+	@Inject
+	private MonsterService monseterService;
+	@Inject
 	private ResourceService resourceService;
 
 	@Override
@@ -78,7 +82,7 @@ public class TongHuaCDHandler extends ReconnectedHandler {
 							if(type == 1){
 								resourceService.addDiamond(player, -120);
 							}							
-							StrengthenRouteTemplate srt = MonsterDataManager.StrengthenRouteData.getTemplate(tdo.getSid());
+							StrengthenRouteTemplate srt = monseterService.strengthenRouteData.getTemplate(tdo.getSid());
 							unlocks = getString(index, unlocks, tdo, tss, t, srt);
 							tdo.setTongStr(MyUtil.toString(tss, ";"));
 						}

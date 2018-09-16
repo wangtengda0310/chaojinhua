@@ -1,27 +1,26 @@
 package com.igame.work.checkpoint.guanqia;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
-import com.igame.work.ErrorCode;
 import com.igame.work.MessageUtil;
+import com.igame.work.checkpoint.guanqia.data.CheckPointData;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
+import com.igame.work.checkpoint.guanqia.data.DropData;
 import com.igame.work.checkpoint.guanqia.data.DropDataTemplate;
-import com.igame.work.checkpoint.mingyunZhiMen.MingyunZhiMenDataManager;
-import com.igame.work.checkpoint.mingyunZhiMen.data.FatedataTemplate;
-import com.igame.work.checkpoint.wujinZhiSen.EndlessdataTemplate;
+import com.igame.work.checkpoint.mingyunZhiMen.GateService;
+import com.igame.work.checkpoint.tansuo.TansuoData;
+import com.igame.work.checkpoint.worldEvent.WorldEventData;
+import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.checkpoint.wujinZhiSen.WuZhengDto;
-import com.igame.work.checkpoint.wujinZhiSen.WujinZhiSenDataManager;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
-import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.fight.service.FightUtil;
 import com.igame.work.monster.dto.JiyinType;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
@@ -41,9 +40,22 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class CheckPointService implements ISFSModule, TimeListener {
+	/**
+	 * 关卡列表
+	 */
+	@LoadXml("chapterdata.xml") public CheckPointData checkPointData;
+	/**
+	 * 掉落包
+	 */
+	@LoadXml("dropdata.xml") public DropData dropData;
+	@LoadXml("questteam.xml") public TansuoData tansuoData;
+	@LoadXml("worldevent.xml")public WorldEventData worldEventData;
+
+	@Inject private GateService gateService;
 	@Inject private RobotService robotService;
 	@Inject private ResourceService resourceService;
 	@Inject private SessionManager sessionManager;
+	@Inject private EndlessService endlessService;
 
 	private Map<Long, Long> enterCheckPointTime = new ConcurrentHashMap<>();//进入的关卡时间
 	private Map<Long, Long> enterWordEventTime = new ConcurrentHashMap<>();//进入世界事件关卡时间
@@ -99,7 +111,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 			synchronized (getTimeLock(player)) {
 				if(!player.getTimeResCheck().isEmpty()){
 					for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){
-						CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(m.getKey());
+						CheckPointTemplate ct = checkPointData.getTemplate(m.getKey());
 						if(ct != null && !MyUtil.isNullOrEmpty(ct.getDropPoint())){
 							if(m.getValue() < ct.getMaxTime() * 60){//没到上限
 								player.getTimeResCheck().put(m.getKey(), m.getValue()+ 1);
@@ -193,7 +205,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 					String[] ccs =  player.getCheckPoint().split(",");
 					List<Integer> ls = Lists.newArrayList();
 					for(String cc : ccs){
-						if(!player.getXinMo().containsKey(Integer.parseInt(cc)) && GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(cc)).getChapterType() != 2 && Integer.parseInt(cc) <=140){//有心魔的关卡不在生成列表中
+						if(!player.getXinMo().containsKey(Integer.parseInt(cc)) && checkPointData.getTemplate(Integer.parseInt(cc)).getChapterType() != 2 && Integer.parseInt(cc) <=140){//有心魔的关卡不在生成列表中
 							ls.add(Integer.parseInt(cc));
 						}
 					}
@@ -241,8 +253,8 @@ public class CheckPointService implements ISFSModule, TimeListener {
 		
 		RewardDto reward = new RewardDto();
 		int ret = 0;
-		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
-		DropDataTemplate dt = GuanQiaDataManager.DropData.getTemplate(ct.getDropId());
+		CheckPointTemplate ct = checkPointData.getTemplate(chapterId);
+		DropDataTemplate dt = dropData.getTemplate(ct.getDropId());
 
 		if(win == 1){//赢了
 			reward.setExp(ct.getExp());
@@ -280,52 +292,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 		
 	}
 	
-	
-	/**
-	 * 无尽之森刷新
-	 */
-	public static int refEndlessRef(Player player){
-		
-		int ret = 0;
-		int lv = player.getPlayerLevel();
-		if(lv < 21){
-			lv = 21;
-		}
-		List<EndlessdataTemplate> ls = Lists.newArrayList();
-		for(EndlessdataTemplate et : WujinZhiSenDataManager.EndlessData.getAll()){
-			if(lv >= Integer.parseInt(et.getLvRange().split(",")[0]) && lv <= Integer.parseInt(et.getLvRange().split(",")[1])){
-				ls.add(et);
-			}
-		}
-		if(ls.isEmpty()){
-			ret = ErrorCode.ERROR;
-		}else{
-			player.getWuMap().clear();
-			player.getWuZheng().clear();
-			player.setWuGods(new GodsDto());
-			player.setWuNai(0);
-			player.getWuEffect().clear();
-			for(EndlessdataTemplate et : ls){
-				String str = String.valueOf(et.getNum());
-				str+=";"+String.valueOf(et.getDifficulty())+";0";
-				String[] mons = et.getMonsterId().split(",");
-				List<String> temp = Lists.newArrayList();
-				List<Integer> lvs = Lists.newArrayList();
-				for(int i = 1;i <=5;i++){
-					temp.add(mons[GameMath.getRandInt(mons.length)]);
-					lvs.add(GameMath.getRandomInt(lv+Integer.parseInt(et.getMonsterLv().split(",")[0]), lv+Integer.parseInt(et.getMonsterLv().split(",")[1])));
-				}
-				str += ";"+MyUtil.toString(temp, ",");
-				str += ";"+MyUtil.toStringInt(lvs, ",");
-				str += ";0;0";
-				player.getWuMap().put(et.getNum(), str);
-			}
-			
-		}
-		return ret;
-	}
-	
-	
+
 	public static WuZhengDto parsePlayer(Player player){
 		WuZhengDto wd = new WuZhengDto();
 		wd.setWuGods(player.getWuGods().getGodsType() + ","+player.getWuGods().getGodsLevel());
@@ -352,46 +319,6 @@ public class CheckPointService implements ISFSModule, TimeListener {
 			}
 		}
 		return is;
-	}
-	
-	/**
-	 * 生成命运之门普通门怪物数据
-	 */
-	public static Map<Long,Monster> getNormalFateMonster(int floorNum){
-		
-		FatedataTemplate ft  = MingyunZhiMenDataManager.FateData.getTemplate(floorNum);
-		if(ft == null){
-			return Maps.newHashMap();
-		}
-		StringBuilder monsterId = new StringBuilder();
-		StringBuilder monsterLevel = new StringBuilder();
-		StringBuilder skillLv = new StringBuilder();
-		String[] m1 = ft.getMonste1rLibrary().split(",");
-//		if(ft.getMonste2rLibrary() == null){
-//			System.err.println(ft.getFloorNum());
-//		}
-		String[] m2 = ft.getMonste2rLibrary().split(",");
-		for(int i = 1;i<=2;i++){
-			monsterId.append(",").append(m1[GameMath.getRandInt(m1.length)]);
-			monsterLevel.append(",").append(ft.getMonster1Lv());
-			skillLv.append(",").append(ft.getSkill1Lv());
-		}
-		for(int i = 1;i<=8;i++){
-			monsterId.append(",").append(m2[GameMath.getRandInt(m2.length)]);
-			monsterLevel.append(",").append(ft.getMonster2Lv());
-			skillLv.append(",").append(ft.getSkill2Lv());
-		}
-		if(monsterId.length() > 0){
-			monsterId = new StringBuilder(monsterId.substring(1));
-		}
-		if(monsterLevel.length() > 0){
-			monsterLevel = new StringBuilder(monsterLevel.substring(1));
-		}
-		if(skillLv.length() > 0){
-			skillLv = new StringBuilder(skillLv.substring(1));
-		}
-		return FightUtil.createMonster(monsterId.toString(), monsterLevel.toString(), "", skillLv.toString(),"");
-		
 	}
 
 

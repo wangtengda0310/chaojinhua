@@ -2,6 +2,7 @@ package com.igame.work.activity;
 
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
@@ -39,7 +40,7 @@ public class ActivityService extends EventService implements ISFSModule {
     /**
      * 大部分活动共用的配置
      */
-    public static ActivityConfig activityConfig;
+    @LoadXml("activity.xml") public ActivityConfig activityConfig;
 
     @Inject public ResourceService resourceService;
     @Inject private DengluService dengluService;

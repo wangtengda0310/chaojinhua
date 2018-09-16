@@ -1,8 +1,8 @@
 package com.igame.work.sign;
 
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.util.DateUtil;
-import com.igame.work.activity.ActivityDataManager;
 import com.igame.work.gm.service.GMService;
 import com.igame.work.user.dto.Player;
 
@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignService {
+    /**
+     * 签到
+     */
+    @LoadXml("signreward.xml")public SignConfig signConfig;
     @Inject private GMService gmService;
 
     public void loadPlayer(Player player) {
@@ -25,12 +29,12 @@ public class SignService {
 
         if (!DateUtil.formatToday().equals(lastSignDate)) {
             // 昨天已经签满上个周期，今天应该给客户端的数据是新的周期签到0天，今天刚签满这个周期则显示全部签到，累签数据保留到玩家签到操作为止
-            SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(round);
+            SignConfigTemplate template = signConfig.getTemplate(round);
             String[] split = template.getRewardData().split(";");
             if (signedDays >= split.length) {
                 signedDays = 0;
                 round += 1;
-                if (round > ActivityDataManager.signConfig.size()) {
+                if (round > signConfig.size()) {
                     round = 1;
                 }
                 player.getSign().setSignData(round + "," + signedDays + "," + lastSignDate);
@@ -49,7 +53,7 @@ public class SignService {
         String signData = playerSignData.getSignData();
         if (signData == null || "".equals(signData)) {
             playerSignData.setSignData("1,1," + today);
-            SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
+            SignConfigTemplate template = signConfig.getTemplate(1);
             String reward = template.getRewardData().split(";")[0];
             gmService.processGM(player, reward);
 
@@ -66,7 +70,7 @@ public class SignService {
                 int round = Integer.parseInt(data[0]);
                 int signed = Integer.parseInt(data[1]);
 
-                SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(round);
+                SignConfigTemplate template = signConfig.getTemplate(round);
                 String[] split = template.getRewardData().split(";");
                 String reward = split[signed];
 
@@ -119,7 +123,7 @@ public class SignService {
         totalSigns[index - 1] = "1";
         playerSignData.setTotalSign(totalSign = String.join(",", totalSigns));
 
-        SignConfigTemplate template = ActivityDataManager.signConfig.getTemplate(1);
+        SignConfigTemplate template = signConfig.getTemplate(1);
         if (index == 1) {
             gmService.processGM(player, template.getTotalSign3());
         }

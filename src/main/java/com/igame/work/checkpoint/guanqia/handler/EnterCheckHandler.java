@@ -2,12 +2,13 @@ package com.igame.work.checkpoint.guanqia.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.dto.FightBase;
@@ -16,6 +17,7 @@ import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.fight.service.FightUtil;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.service.RobotService;
@@ -33,8 +35,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class EnterCheckHandler extends ReconnectedHandler {
 
-	private RobotService robotService;
-	
+	@Inject private RobotService robotService;
+	@Inject private CheckPointService checkPointService;
+	@Inject private MonsterService monsterService;
+
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -48,7 +52,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 		vo.addData("chapterId", chapterId);
 
 		//入参校验
-		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
+		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
 		if(ct == null){
 			return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 		}
@@ -106,7 +110,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 				}
 				if(ct.getRound() == 2){
 					int front =  chapterId-140;
-					CheckPointTemplate ft = GuanQiaDataManager.CheckPointData.getTemplate(front);
+					CheckPointTemplate ft = checkPointService.checkPointData.getTemplate(front);
 					if(ft != null && !player.hasCheckPoint(String.valueOf(front))){
 						return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 					}else{
@@ -117,7 +121,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 				}
 				if(ct.getRound() == 3){
 					int front =  chapterId-280;
-					CheckPointTemplate ft = GuanQiaDataManager.CheckPointData.getTemplate(front);
+					CheckPointTemplate ft = checkPointService.checkPointData.getTemplate(front);
 					if(ft != null && !player.hasCheckPoint(String.valueOf(front))){
 						return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 					}else{
@@ -183,10 +187,10 @@ public class EnterCheckHandler extends ReconnectedHandler {
 	}
 
 	private void process(Player player,List<MatchMonsterDto> lb,int chapterId,AtomicInteger idx){
-		CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
+		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
 		if(ct != null){
 			if(ct.getRound() == 1){//一周目
-				FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(ct.getMonsterId(), ct.getLevel(), ct.getSite(),"",ct.getMonsterProp())));
+				FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(ct.getMonsterId(), ct.getLevel(), ct.getSite(),"",ct.getMonsterProp())));
 
 		    	for(Monster m : fb.getFightB().getMonsters().values()){
 		    		m.setObjectId(idx.incrementAndGet());
@@ -203,7 +207,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 				if(mid.length > 0){
 					int index = 1;
 					for(int i =0;i<mid.length;i++){
-						FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(mid[i], lv[i], site[i],"",ct.getMonsterProp())));
+						FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(mid[i], lv[i], site[i],"",ct.getMonsterProp())));
 
 				    	for(Monster m : fb.getFightB().getMonsters().values()){
 				    		m.setObjectId(idx.incrementAndGet());

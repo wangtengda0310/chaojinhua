@@ -1,14 +1,15 @@
 package com.igame.work.item.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.item.dto.Item;
-import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.data.MonsterGroupTemplate;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -26,7 +27,8 @@ import java.util.Map;
  */
 public class ItemSummonHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
+	@Inject private ResourceService resourceService;
+	@Inject private MonsterService monsterService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -53,7 +55,7 @@ public class ItemSummonHandler extends ReconnectedHandler {
 		}
 
 		//检验道具是否可召唤怪兽
-		MonsterGroupTemplate template = MonsterDataManager.monsterGroupData.getTemplate(itemId);
+		MonsterGroupTemplate template = monsterService.monsterGroupData.getTemplate(itemId);
 		if (template == null){
 			return error(ErrorCode.PARAMS_INVALID);
 		}

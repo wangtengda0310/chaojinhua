@@ -2,14 +2,15 @@ package com.igame.work.turntable.service;
 
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.handler.RetVO;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.DateUtil;
 import com.igame.util.GameMath;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
-import com.igame.work.turntable.LuckTableDataManager;
 import com.igame.work.turntable.dao.TurntableDAO;
+import com.igame.work.turntable.data.LuckTableData;
 import com.igame.work.turntable.data.LuckTableTemplate;
 import com.igame.work.turntable.dto.Turntable;
 import com.igame.work.user.dto.Player;
@@ -22,6 +23,7 @@ import java.util.*;
  * 幸运大转盘服务
  */
 public class TurntableService implements TimeListener {
+    @LoadXml("lucktable.xml")public LuckTableData luckTableData;
     @Inject
     TurntableDAO dao;
     @Inject private SessionManager sessionManager;
@@ -98,7 +100,7 @@ public class TurntableService implements TimeListener {
         results.clear();
 
         //随机十二个位置的商品
-        List<LuckTableTemplate> templates = LuckTableDataManager.luckTableData.getTemplate(player.getPlayerLevel());
+        List<LuckTableTemplate> templates = luckTableData.getTemplate(player.getPlayerLevel());
         for (LuckTableTemplate template : templates) {
 
             int site = template.getSite();
@@ -135,7 +137,7 @@ public class TurntableService implements TimeListener {
 
         //计算概率
         Float[] floats = new Float[rewards.size()];
-        List<LuckTableTemplate> templates = LuckTableDataManager.luckTableData.getTemplate(playerLevel);
+        List<LuckTableTemplate> templates = luckTableData.getTemplate(playerLevel);
         for (LuckTableTemplate template : templates) {
 
             int site = template.getSite();

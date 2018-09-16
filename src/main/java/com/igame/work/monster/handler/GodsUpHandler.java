@@ -2,13 +2,14 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
+import com.igame.core.handler.ReconnectedHandler;
+import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
-import com.igame.core.handler.ReconnectedHandler;
-import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.RewardDto;
-import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.FightService;
 import com.igame.work.fight.data.GodsdataTemplate;
 import com.igame.work.item.dto.Item;
 import com.igame.work.monster.dto.Gods;
@@ -28,8 +29,8 @@ import java.util.Map;
  */
 public class GodsUpHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
-	private QuestService questService;
+	@Inject private ResourceService resourceService;
+	@Inject private QuestService questService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -44,8 +45,8 @@ public class GodsUpHandler extends ReconnectedHandler {
 		if(gods == null){
 			return error(ErrorCode.ERROR);
 		}else{
-			GodsdataTemplate curr = FightDataManager.GodsData.getTemplate(gods.getGodsType()+"_"+ gods.getGodsLevel());
-			GodsdataTemplate gt = FightDataManager.GodsData.getNextLevelTemplate(gods.getGodsType(), gods.getGodsLevel());
+			GodsdataTemplate curr = FightService.godsData.getTemplate(gods.getGodsType()+"_"+ gods.getGodsLevel());
+			GodsdataTemplate gt = FightService.godsData.getNextLevelTemplate(gods.getGodsType(), gods.getGodsLevel());
 			if(curr == null || gt == null){
 				return error(ErrorCode.GODS_MAX);
 			}else{

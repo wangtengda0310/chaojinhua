@@ -1,12 +1,13 @@
 package com.igame.work.monster.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.monster.data.ExchangedataTemplate;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -19,6 +20,9 @@ import net.sf.json.JSONObject;
  */
 public class TongHuaBuyHandler extends ReconnectedHandler {
 
+	@Inject
+	private MonsterService monseterService;
+	@Inject
 	private ResourceService resourceService;
 
 	@Override
@@ -31,7 +35,7 @@ public class TongHuaBuyHandler extends ReconnectedHandler {
 		int type = jsonObject.getInt("type");
 		int tongBuyCount = player.getTongAdd().getTongBuyCount();
 
-		ExchangedataTemplate et = MonsterDataManager.ExchangeData.getTemplate(2+"_"+type);
+		ExchangedataTemplate et = monseterService.exchangeData.getTemplate(2+"_"+type);
 		if(et == null){
 			return error(ErrorCode.ERROR);
 		}else{

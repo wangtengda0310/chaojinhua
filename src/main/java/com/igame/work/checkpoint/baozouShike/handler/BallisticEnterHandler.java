@@ -7,7 +7,6 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.baozouShike.BallisticConstant;
 import com.igame.work.checkpoint.baozouShike.BallisticService;
-import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
 import com.igame.work.checkpoint.baozouShike.data.RunTemplate;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.user.dto.Player;
@@ -54,8 +53,8 @@ public class BallisticEnterHandler extends ReconnectedHandler {
         }
 
         //生成怪兽
-        RunTemplate template = BaozouShikeDataManager.runData.getTemplate(BallisticConstant.BALL_MONSTER_INIT);
-        List<MatchMonsterDto> matchMonsterDtos = BallisticService.buildMonster(template, BallisticConstant.BALL_MONSTER_INIT);
+        RunTemplate template = ballisticService.runData.getTemplate(BallisticConstant.BALL_MONSTER_INIT);
+        List<MatchMonsterDto> matchMonsterDtos = ballisticService.buildMonster(template, BallisticConstant.BALL_MONSTER_INIT);
 
         //记录开始时间
         ballisticService.setBallisticEnter(player, new Date());

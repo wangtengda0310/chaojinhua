@@ -25,7 +25,7 @@ public class ShopActivityHandler extends ReconnectedHandler {
 
         int id = jsonObject.getInt("id");
 
-        ShopActivityDataTemplate config = ShopActivityDataManager.Configs.getTemplate(id);
+        ShopActivityDataTemplate config = shopActivityService.Configs.getTemplate(id);
         if (config == null) {
             return error(ErrorCode.CAN_NOT_RECEIVE);
         }

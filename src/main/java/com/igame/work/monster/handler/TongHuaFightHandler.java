@@ -1,18 +1,19 @@
 package com.igame.work.monster.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.monster.data.StrengthenRouteTemplate;
 import com.igame.work.monster.data.StrengthenlevelTemplate;
 import com.igame.work.monster.data.StrengthenmonsterTemplate;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
 import com.igame.work.user.load.ResourceService;
@@ -26,6 +27,9 @@ import net.sf.json.JSONObject;
  */
 public class TongHuaFightHandler extends ReconnectedHandler {
 
+	@Inject
+	private MonsterService monsterService;
+	@Inject
 	private ResourceService resourceService;
 
 	@Override
@@ -89,8 +93,8 @@ public class TongHuaFightHandler extends ReconnectedHandler {
 							leftTime = tdo.calLeftTime();
 						}						
 					}
-					StrengthenlevelTemplate st = MonsterDataManager.TongHuaData.getTemplate(player.getTongAdd().getTongLevel());
-					StrengthenmonsterTemplate mt = MonsterDataManager.StrengthenmonsterData.getTemplate(Integer.parseInt(t[3]));
+					StrengthenlevelTemplate st = monsterService.tongHuaData.getTemplate(player.getTongAdd().getTongLevel());
+					StrengthenmonsterTemplate mt = monsterService.strengthenmonsterData.getTemplate(Integer.parseInt(t[3]));
 					if(win == 1){
 						tongExp = mt.getMonster_rarity() * 5;
 						resourceService.addTongExp(player, tongExp);
@@ -157,7 +161,7 @@ public class TongHuaFightHandler extends ReconnectedHandler {
 							addString = GameMath.formatNumber(repeledAddPer);
 						}
 
-						StrengthenRouteTemplate srt = MonsterDataManager.StrengthenRouteData.getTemplate(tdo.getSid());
+						StrengthenRouteTemplate srt = monsterService.strengthenRouteData.getTemplate(tdo.getSid());
 						if(srt != null && "1".equals(t[0])){
 							String points = null;
 							for(String temp : srt.getCoordinate().split(";")){
@@ -174,7 +178,7 @@ public class TongHuaFightHandler extends ReconnectedHandler {
 
 
 						MessageUtil.notifyTongHuaAddChange(player);
-						MessageUtil.notifyMonsterChange(player, player.reCalMonsterValue());
+						MessageUtil.notifyMonsterChange(player, monsterService.reCalMonsterValue(player));
 						t[1] = "3";
 					}
 

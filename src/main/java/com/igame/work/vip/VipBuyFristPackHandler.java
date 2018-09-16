@@ -1,12 +1,12 @@
 package com.igame.work.vip;
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.gm.service.GMService;
-import com.igame.work.user.PlayerDataManager;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -20,8 +20,9 @@ import static com.igame.work.vip.VIPConstants.KEY_FIRST_PACK;
  * 会员购买礼包
  */
 public class VipBuyFristPackHandler extends ReconnectedHandler {
-    private ResourceService resourceService;
-    private GMService gmService;
+    @Inject private ResourceService resourceService;
+    @Inject private GMService gmService;
+    @Inject private VIPService vipService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -46,7 +47,7 @@ public class VipBuyFristPackHandler extends ReconnectedHandler {
             return error(ErrorCode.PACK_PURCHASED);
         }
 
-        VipPackTemplate template = PlayerDataManager.vipPackData.getTemplate(vipLv);
+        VipPackTemplate template = vipService.vipPackData.getTemplate(vipLv);
         if (template == null){
             return error(ErrorCode.PARAMS_INVALID);
         }

@@ -3,16 +3,17 @@ package com.igame.work.monster.handler;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.item.dto.Item;
-import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -28,6 +29,9 @@ import java.util.Map;
  */
 public class MonsterChangeHandler extends ReconnectedHandler {
 
+	@Inject
+	private MonsterService monsterService;
+	@Inject
 	private ResourceService resourceService;
 
 	@Override
@@ -44,8 +48,8 @@ public class MonsterChangeHandler extends ReconnectedHandler {
 		if(mm1 == null || mm2 == null){
 			return error(ErrorCode.MONSTER_NOT);//没有此怪物
 		}else{
-			MonsterTemplate mont1 = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm1.getMonsterId());
-			MonsterTemplate mont2 = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm2.getMonsterId());
+			MonsterTemplate mont1 = monsterService.MONSTER_DATA.getMonsterTemplate(mm1.getMonsterId());
+			MonsterTemplate mont2 = monsterService.MONSTER_DATA.getMonsterTemplate(mm2.getMonsterId());
 			if(mont1 == null || mont2 == null){
 				return error(ErrorCode.MONSTER_NOT);//没有此怪物
 			}else{
@@ -90,8 +94,8 @@ public class MonsterChangeHandler extends ReconnectedHandler {
 										mm1.getSkillMap().put(Integer.parseInt(skill1[i]), sm2.get(Integer.parseInt(skill2[i])) == null ? 1 : sm2.get(Integer.parseInt(skill2[i])));
 									}
 								}
-								mm1.initSkillString();
-								mm2.initSkillString();
+								monsterService.initSkillString(mm1);
+								monsterService.initSkillString(mm2);
 							}
 						}
 						
@@ -104,9 +108,9 @@ public class MonsterChangeHandler extends ReconnectedHandler {
 						addItem(player, items, eqs2);
 						mm2.setEquip(MyUtil.toString(eqs2, ","));
 						
-						mm1.reCalculate(player, true);
+						monsterService.reCalculate(player, mm1.getMonsterId(), mm1, true);
 						mm1.setDtate(2);
-						mm2.reCalculate(player, true);
+						monsterService.reCalculate(player, mm2.getMonsterId(), mm2, true);
 						mm2.setDtate(2);
 						List<Monster> ll = Lists.newArrayList();
 						ll.add(mm1);

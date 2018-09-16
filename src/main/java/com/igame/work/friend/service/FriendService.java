@@ -5,7 +5,7 @@ import com.igame.core.di.Inject;
 import com.igame.core.handler.RetVO;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
-import com.igame.work.checkpoint.tansuo.TansuoDataManager;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.checkpoint.tansuo.TansuoTemplate;
 import com.igame.work.friend.dao.FriendDAO;
@@ -32,6 +32,7 @@ public class FriendService {
     @Inject private FriendDAO dao;
     @Inject private SessionManager sessionManager;
     @Inject private PlayerCacheService playerCacheService;
+    @Inject public CheckPointService checkPointService;
 
     private Map<Long, FriendInfo> playerFriends= new ConcurrentHashMap<>();    //好友 在Friends表中存储 不在Player表中存储
 
@@ -43,7 +44,7 @@ public class FriendService {
     public List<TansuoDto> getExploreList(Player friendPlayer) {
 
         //计算剩余时间
-        for(TansuoTemplate ts : TansuoDataManager.TansuoData.getAll()){
+        for(TansuoTemplate ts : checkPointService.tansuoData.getAll()){
             if(friendPlayer.hasCheckPoint(String.valueOf(ts.getUnlock())) && friendPlayer.getTangSuo().get(ts.getNum()) == null){
                 friendPlayer.getTangSuo().put(ts.getNum(), new TansuoDto(ts));
             }

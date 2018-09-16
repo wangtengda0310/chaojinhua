@@ -3,18 +3,17 @@ package com.igame.work.monster.handler;
 
 import com.google.common.collect.Lists;
 import com.igame.core.di.Inject;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
 import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.item.dto.Item;
 import com.igame.work.item.service.ItemService;
-import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.dto.Monster;
-import com.igame.work.user.PlayerDataManager;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.data.ItemTemplate;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -34,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MonsterEquipHandler extends ReconnectedHandler {
 
 
+	@Inject private MonsterService monseterService;
 	@Inject private ItemService itemService;
 	@Inject private ComputeFightService computeFightService;
 
@@ -64,7 +64,7 @@ public class MonsterEquipHandler extends ReconnectedHandler {
 
 		//校验怪兽
 		Monster mm = player.getMonsters().get(mid);
-		if(mm == null || MonsterDataManager.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId()) == null){//没有此怪物
+		if(mm == null || monseterService.MONSTER_DATA.getMonsterTemplate(mm.getMonsterId()) == null){//没有此怪物
 			return error(ErrorCode.MONSTER_NOT);
 		}
 
@@ -90,7 +90,7 @@ public class MonsterEquipHandler extends ReconnectedHandler {
 
 			//校验道具
 			Item item = player.getItems().get(itemId);
-			ItemTemplate it = PlayerDataManager.ItemData.getTemplate(itemId);
+			ItemTemplate it = itemService.itemData.getTemplate(itemId);
 			if(item == null || item.getUsableCount(teamId) < 0 ||it == null || it.getItemType() != 1){
 				return error(ErrorCode.ITEM_NOT_EXIT);
 			}
@@ -113,7 +113,7 @@ public class MonsterEquipHandler extends ReconnectedHandler {
 
 		mm.setEquip(MyUtil.toString(eqs,","));
 		mm.setTeamEquip(player.getTeams().values());
-		mm.reCalculate(player, true);
+		monseterService.reCalculate(player, mm.getMonsterId(), mm, true);
 		mm.setDtate(2);
 
 		mms.add(mm);

@@ -1,12 +1,11 @@
 package com.igame.work.shop.handler;
 
 import com.igame.core.di.Inject;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.shop.ShopConstants;
-import com.igame.work.shop.ShopDataManager;
 import com.igame.work.shop.data.ShopTemplate;
 import com.igame.work.shop.dto.GeneralShop;
 import com.igame.work.shop.dto.MysticalShop;
@@ -43,7 +42,7 @@ public class ReloadShopHandler extends ReconnectedHandler {
         }
 
         ShopInfo shopInfo = shopService.getShopInfo(player);
-        ShopTemplate shopTemplate = ShopDataManager.shopData.getTemplate(shopId);
+        ShopTemplate shopTemplate = shopService.shopData.getTemplate(shopId);
 
         //校验刷新次数
         if (shopTemplate.getResestMax() != -1 && shopTemplate.getResestMax() <= shopInfo.getReloadCount(shopId)){

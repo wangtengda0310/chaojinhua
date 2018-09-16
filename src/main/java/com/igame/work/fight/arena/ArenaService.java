@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
@@ -18,6 +19,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ArenaService extends EventService implements ISFSModule, TimeListener {
+    /**
+     * 竞技场数据
+     */
+    @LoadXml("arenadata.xml") public ArenaData arenaData;
     private ArenaServiceDto as;
 
     @Inject private ArenaRobotDAO dao;

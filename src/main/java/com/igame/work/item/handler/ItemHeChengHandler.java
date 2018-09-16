@@ -10,7 +10,6 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.util.GameMath;
-import com.igame.work.item.ItemDataManager;
 import com.igame.work.item.data.PropGroupTemplate;
 import com.igame.work.item.dto.Item;
 import com.igame.work.item.service.ItemService;
@@ -59,7 +58,7 @@ public class ItemHeChengHandler extends ReconnectedHandler {
 			return error(ErrorCode.ITEM_NOT_EXIT);
 		}
 
-		PropGroupTemplate pt = ItemDataManager.PropGroupData.getTemplate(itemId);
+		PropGroupTemplate pt = itemService.propGroupData.getTemplate(itemId);
 		if(pt == null){
 			return error(ErrorCode.EQ_HECHENG_CANT);
 		}

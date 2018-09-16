@@ -9,7 +9,6 @@ import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.baozouShike.BallisticService;
-import com.igame.work.checkpoint.baozouShike.BaozouShikeDataManager;
 import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardData;
 import com.igame.work.checkpoint.baozouShike.data.RunBattlerewardTemplate;
 import com.igame.work.monster.dto.Monster;
@@ -152,7 +151,7 @@ public class BallisticEndHandler extends ReconnectedHandler {
 
         int gold = 0;
 
-        RunBattlerewardData runBattlerewardData = BaozouShikeDataManager.runBattlerewardData;
+        RunBattlerewardData runBattlerewardData = ballisticService.runBattlerewardData;
         List<RunBattlerewardTemplate> runBattlerewardDataAll = runBattlerewardData.getAll();
         int i = runBattlerewardDataAll.indexOf(runBattlerewardData.getTemplate(killNum));
         for (int j = 0; j <= i; j++) {

@@ -1,9 +1,10 @@
-package com.igame.work.user.load;
+package com.igame.work.user;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
@@ -14,27 +15,34 @@ import com.igame.work.MessageUtil;
 import com.igame.work.PlayerEvents;
 import com.igame.work.chat.dao.PlayerMessageDAO;
 import com.igame.work.chat.service.MessageBoardService;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.RewardDto;
+import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.worldEvent.WordEventDAO;
+import com.igame.work.draw.DrawService;
+import com.igame.work.draw.DrawdataTemplate;
+import com.igame.work.draw.DrawrewardTemplate;
 import com.igame.work.item.dao.ItemDAO;
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.mail.MailDAO;
+import com.igame.work.mail.MailService;
 import com.igame.work.monster.dao.GodsDAO;
 import com.igame.work.monster.dao.MonsterDAO;
 import com.igame.work.monster.data.StrengthenplaceTemplate;
 import com.igame.work.monster.data.StrengthenrewardTemplate;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.quest.dao.QuestDAO;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.shop.dao.ShopDAO;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.turntable.service.TurntableService;
-import com.igame.work.user.PlayerDataManager;
-import com.igame.work.mail.MailDAO;
 import com.igame.work.user.dao.PlayerDAO;
-import com.igame.work.draw.DrawdataTemplate;
-import com.igame.work.draw.DrawrewardTemplate;
+import com.igame.work.user.data.HeadData;
+import com.igame.work.user.data.HeadFrameData;
+import com.igame.work.user.data.PlayerLvData;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.dto.PlayerTop;
 import com.igame.work.user.dto.TongHuaDto;
-import com.igame.work.mail.MailService;
+import com.igame.work.user.load.ResourceService;
 import com.igame.work.user.service.PlayerCacheService;
 
 import java.util.Collections;
@@ -48,7 +56,21 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class PlayerService extends EventService implements ISFSModule {
-	private ResourceService resourceService;
+	/**
+	 * 头像数据
+	 */
+	@LoadXml("headdata.xml") public HeadData headData;
+	/**
+	 * 头像框数据
+	 */
+	@LoadXml("headframe.xml") public HeadFrameData headFrameData;
+	/**
+	 * 人物等级模板
+	 */
+	@LoadXml("playerlevel.xml")public PlayerLvData playerLvData;
+
+	@Inject private CheckPointService checkPointService;
+	@Inject private ResourceService resourceService;
 	@Inject private PlayerMessageDAO friendDAO;
 	@Inject private PlayerDAO playerDAO;
 	@Inject private MonsterDAO monsterDAO;
@@ -64,13 +86,15 @@ public class PlayerService extends EventService implements ISFSModule {
 	@Inject private ShopService shopService;
 	@Inject private MailService mailService;
 	@Inject private QuestService questService;
+	@Inject private DrawService drawService;
+	@Inject private MonsterService monsterService;
 
 	public TongHuaDto getRandomTongHuaDto(){
 		
 		TongHuaDto td = new TongHuaDto();
-		int id = MonsterDataManager.StrengthenplaceData.getSet().get(GameMath.getRandInt(MonsterDataManager.StrengthenplaceData.getSet().size()));
+		int id = monsterService.strengthenplaceData.getSet().get(GameMath.getRandInt(monsterService.strengthenplaceData.getSet().size()));
 		td.setId(id);
-		List<StrengthenplaceTemplate> ls = MonsterDataManager.StrengthenplaceData.getRandom(id);
+		List<StrengthenplaceTemplate> ls = monsterService.strengthenplaceData.getRandom(id);
 		int total = 11;
 		td.setSid(1);
 		if(ls.get(0).getTotal() > 0){
@@ -86,14 +110,14 @@ public class PlayerService extends EventService implements ISFSModule {
 				maps.put(Integer.parseInt(counts[i]), Integer.parseInt(rates[i]));
 			}
 			int rcount = GameMath.getAIRate100(maps);//个数
-			StrengthenrewardTemplate sw = MonsterDataManager.StrengthenrewardData.getTemplate(st.getStrengthen_type());
+			StrengthenrewardTemplate sw = monsterService.strengthenrewardData.getTemplate(st.getStrengthen_type());
 			
 			for(int i = 0;i < rcount;i++){
 				String temp = String.valueOf(st.getStrengthen_type());
 				if(st.getStrengthen_type() == 1){//怪物
 					temp += ",-1";
 					temp += ",1";
-					temp += "," + MonsterDataManager.StrengthenmonsterData.getAll().get(GameMath.getRandInt(MonsterDataManager.StrengthenmonsterData.getAll().size())).getNum();
+					temp += "," + monsterService.strengthenmonsterData.getAll().get(GameMath.getRandInt(monsterService.strengthenmonsterData.getAll().size())).getNum();
 					temp += ",1";
 				}else{
 					temp += ",-1";
@@ -130,7 +154,7 @@ public class PlayerService extends EventService implements ISFSModule {
 		
 		int normal = total - points.size();
 		if(normal > 0){
-			StrengthenrewardTemplate sw = MonsterDataManager.StrengthenrewardData.getTemplate(0);
+			StrengthenrewardTemplate sw = monsterService.strengthenrewardData.getTemplate(0);
 			String[] r1 = sw.getStrengthen_reward().split(",");
 			String[] v1 = sw.getValue().split(",");
 			String[] rate1 = sw.getRate().split(",");
@@ -186,7 +210,7 @@ public class PlayerService extends EventService implements ISFSModule {
 
 		String tempDraw = player.getDraw().getDrawList();
 		
-		for(DrawdataTemplate dt : PlayerDataManager.DrawdataData.getAll()){
+		for(DrawdataTemplate dt : drawService.drawdataData.getAll()){
 			if(dt.getLimit().equals("-1") && !player.hasCheckPointDraw(String.valueOf(dt.getDrawType()))){
 				player.getDraw().setDrawList(player.getDraw().getDrawList() + ","+String.valueOf(dt.getDrawType()));
 			}
@@ -214,7 +238,7 @@ public class PlayerService extends EventService implements ISFSModule {
 	public List<RewardDto> couKa(int rewardId,int count){
 		
 		List<RewardDto> rt = Lists.newArrayList();
-		DrawrewardTemplate dt = PlayerDataManager.DrawrewardData.getTemplate(rewardId);
+		DrawrewardTemplate dt = drawService.drawrewardData.getTemplate(rewardId);
 		if(dt != null){
 			Map<Integer,Integer> rates = Maps.newHashMap();//概率
 			Map<Integer,Integer> rateInc = Maps.newHashMap();//概率提升
@@ -327,4 +351,30 @@ public class PlayerService extends EventService implements ISFSModule {
             }
         };
     }
+
+	public PlayerTop initPlayerTop(PlayerTop playerTop){
+
+		//初始化关卡挑战次数
+		List<CheckPointTemplate> all = checkPointService.checkPointData.getAll();
+		for (CheckPointTemplate template : all) {
+			int chapterId = template.getChapterId();
+			int chapterType = template.getChapterType();
+			Integer count = template.getCount();
+
+			if (count == null)
+				continue;
+
+			if (chapterType == 1){	//普通关卡
+				playerTop.generalCheckPoint.put(chapterId,count);
+			}else if (chapterType == 3){	//boss关卡
+				playerTop.bossCheckPoint.put(chapterId,count);
+			}
+		}
+
+		playerTop.friendPhy = 20;
+		playerTop.friendExplore = 20;
+
+		return playerTop;
+	}
+
 }

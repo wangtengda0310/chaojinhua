@@ -1,11 +1,12 @@
 package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.work.checkpoint.guanqia.CheckPointService;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
+import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -18,7 +19,8 @@ import net.sf.json.JSONObject;
  */
 public class EndlessRefHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
+	@Inject private ResourceService resourceService;
+	@Inject private EndlessService endlessService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -32,11 +34,11 @@ public class EndlessRefHandler extends ReconnectedHandler {
 			if(player.getDiamond()<100){
 				return vo;
 			}else{
-				ret = CheckPointService.refEndlessRef(player);
+				ret = endlessService.refEndlessRef(player);
 				resourceService.addDiamond(player, -100);
 			}
 		}else{
-			ret = CheckPointService.refEndlessRef(player);
+			ret = endlessService.refEndlessRef(player);
 			player.setWuReset(1);
 			MessageUtil.notifyWuResetChange(player);
 		}

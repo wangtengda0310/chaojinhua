@@ -1,13 +1,14 @@
 package com.igame.work.user.handler;
 
 
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
-import com.igame.work.monster.MonsterDataManager;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.monster.data.ExchangedataTemplate;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
@@ -20,8 +21,9 @@ import net.sf.json.JSONObject;
  *
  */
 public class ResBuyHandler extends ReconnectedHandler {
-	private QuestService questService;
-	private ResourceService resourceService;
+	@Inject private QuestService questService;
+	@Inject private ResourceService resourceService;
+	@Inject private MonsterService monsterService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -42,7 +44,7 @@ public class ResBuyHandler extends ReconnectedHandler {
 			buyCount = player.getGoldBuyCount();
 		}
 		int type = buyCount + 1;
-		ExchangedataTemplate et = MonsterDataManager.ExchangeData.getTemplate(extype+"_"+type);
+		ExchangedataTemplate et = monsterService.exchangeData.getTemplate(extype+"_"+type);
 		if(et == null){
 			return error(ErrorCode.ERROR);
 		}else{

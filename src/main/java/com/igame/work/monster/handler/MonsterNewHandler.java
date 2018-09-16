@@ -2,17 +2,18 @@ package com.igame.work.monster.handler;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
+import com.igame.core.handler.ReconnectedHandler;
+import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
-import com.igame.core.handler.ReconnectedHandler;
-import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.item.dto.Item;
-import com.igame.work.monster.MonsterDataManager;
 import com.igame.work.monster.data.MonsterTemplate;
 import com.igame.work.monster.data.NewMonsterTemplate;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -28,6 +29,9 @@ import java.util.Map;
  */
 public class MonsterNewHandler extends ReconnectedHandler {
 
+	@Inject
+	private MonsterService monseterService;
+	@Inject
 	private ResourceService resourceService;
 
 	@Override
@@ -38,8 +42,8 @@ public class MonsterNewHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		int newMonster = jsonObject.getInt("newMonster");
-		NewMonsterTemplate nt = MonsterDataManager.NewMonsterData.getTemplate(newMonster);
-		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(newMonster);
+		NewMonsterTemplate nt = monseterService.newMonsterData.getTemplate(newMonster);
+		MonsterTemplate mt = monseterService.MONSTER_DATA.getMonsterTemplate(newMonster);
 		if(nt == null || mt == null){
 			return error(ErrorCode.ERROR);
 		}else{

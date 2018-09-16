@@ -2,6 +2,7 @@ package com.igame.work.draw;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
@@ -12,9 +13,8 @@ import com.igame.work.MessageUtil;
 import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.item.dto.Item;
-import com.igame.work.user.PlayerDataManager;
+import com.igame.work.user.PlayerService;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.load.PlayerService;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
@@ -28,8 +28,9 @@ import java.util.List;
  */
 public class DrawGetHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
-	private PlayerService playerService;
+	@Inject private ResourceService resourceService;
+	@Inject private PlayerService playerService;
+	@Inject private DrawService drawService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -51,7 +52,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 		}else if (player.getItems().size() >= player.getBagSpace()){
 			return error(ErrorCode.BAGSPACE_ALREADY_FULL);
 		}else{
-			DrawdataTemplate dt  =  PlayerDataManager.DrawdataData.getTemplate(drawType+"_"+player.getDraw().getDrawLv());
+			DrawdataTemplate dt  =  drawService.drawdataData.getTemplate(drawType+"_"+player.getDraw().getDrawLv());
 			if(dt == null){
 				return error(ErrorCode.ERROR);
 			}else{

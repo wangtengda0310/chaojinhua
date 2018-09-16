@@ -5,7 +5,7 @@ import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.util.ThreadPoolManager;
-import com.igame.work.fight.FightDataManager;
+import com.igame.work.fight.FightService;
 import com.igame.work.fight.data.EffectTemplate;
 import com.igame.work.fight.data.SkillTemplate;
 import com.igame.work.fight.dto.FightBase;
@@ -42,7 +42,7 @@ public class FightEffectService extends EventService implements ISFSModule {
     public static List<Effect> processAddEffect(FightBase fb,FightCmd fc,Monster attacker,SkillTemplate skillTemplate, List<Monster> targets,RetFightCmd rcd,List<RetFightCmd> retCmd){
     	
     	List<Effect> ls = Lists.newArrayList();
-		EffectTemplate et = FightDataManager.EffectData.getTemplate(Integer.parseInt(skillTemplate.getEffect()));
+		EffectTemplate et = FightService.effectData.getTemplate(Integer.parseInt(skillTemplate.getEffect()));
 		if(et != null){
 			
 			String[] efs = et.getEffectId().split(et.getEffectId());

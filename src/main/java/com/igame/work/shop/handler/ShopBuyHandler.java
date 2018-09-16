@@ -1,12 +1,11 @@
 package com.igame.work.shop.handler;
 
 import com.igame.core.di.Inject;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
 import com.igame.work.shop.ShopConstants;
-import com.igame.work.shop.ShopDataManager;
 import com.igame.work.shop.data.ShopOutPutTemplate;
 import com.igame.work.shop.data.ShopRandomTemplate;
 import com.igame.work.shop.dto.ShopInfo;
@@ -68,8 +67,8 @@ public class ShopBuyHandler extends ReconnectedHandler {
         }
 
         //校验积分
-        ShopOutPutTemplate outPutTemplate = ShopDataManager.shopOutPutData.getTemplate(shopId);
-        ShopRandomTemplate randomTemplate = ShopDataManager.shopRandomData.getTemplate(shopInfo.getMysticalShop().getShopLv());
+        ShopOutPutTemplate outPutTemplate = shopService.shopOutPutData.getTemplate(shopId);
+        ShopRandomTemplate randomTemplate = shopService.shopRandomData.getTemplate(shopInfo.getMysticalShop().getShopLv());
         int price;
 
         switch (shopId){
@@ -84,7 +83,7 @@ public class ShopBuyHandler extends ReconnectedHandler {
                 } else {     //减少商品数量，减少钻石
 
                     //增加神秘商店经验
-                    int exp = ShopDataManager.shopRandomLvData.getTemplate(shopInfo.getMysticalShop().getShopLv())
+                    int exp = shopService.shopRandomLvData.getTemplate(shopInfo.getMysticalShop().getShopLv())
                             .getUnitExp() * discountedPrice;
                     shopService.addMysticalExp(player, exp);
 

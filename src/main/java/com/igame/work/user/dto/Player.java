@@ -552,34 +552,6 @@ public class Player extends PlayerDto {
         }
     }
 
-    public List<Monster> reCalMonsterValue() {
-        List<Monster> ll = Lists.newArrayList();
-        this.fightValue = 0;
-        /*String[] mms = this.teams[0].split(",");
-        for (String mid : mms) {
-            if (!"-1".equals(mid)) {
-                Monster mm = this.monsters.get(Long.parseLong(mid));
-                if (mm != null) {
-                    mm.reCalculate(this, true);
-                    this.fightValue += mm.getFightValue();
-                    ll.add(mm);
-                }
-            }
-        }*/
-        long[] teamMonster = this.teams.get(this.curTeam).getTeamMonster();
-        for (long mid : teamMonster) {
-            if (-1 != mid) {
-                Monster mm = this.monsters.get(mid);
-                if (mm != null) {
-                    mm.reCalculate(this, true);
-                    this.fightValue += mm.getFightValue();
-                    ll.add(mm);
-                }
-            }
-        }
-        return ll;
-    }
-
     public synchronized void addDoujiScore(int value) {
         this.doujiScore += value;
     }

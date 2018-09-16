@@ -2,15 +2,16 @@ package com.igame.work.checkpoint.worldEvent.handler;
 
 
 import com.google.common.collect.Lists;
-import com.igame.work.ErrorCode;
-import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
+import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.RewardDto;
-import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventService;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
@@ -29,9 +30,10 @@ import java.util.List;
  *
  */
 public class WorldEventEndHandler extends ReconnectedHandler {
-	private WorldEventService worldEventService;
-	private ResourceService resourceService;
-	private QuestService questService;
+	@Inject private CheckPointService checkPointService;
+	@Inject private WorldEventService worldEventService;
+	@Inject private ResourceService resourceService;
+	@Inject private QuestService questService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -55,7 +57,7 @@ public class WorldEventEndHandler extends ReconnectedHandler {
 		}
 
 		WorldEventDto wd = player.getWordEvent().get(eventType);
-		WorldEventTemplate wt = WorldEventDataManager.WorldEventData.getTemplate(eventType+"_"+level);
+		WorldEventTemplate wt = checkPointService.worldEventData.getTemplate(eventType+"_"+level);
 		if(wd == null ||wt ==null){
 			return error(ErrorCode.CHECKPOINT_END_ERROR);
 		}

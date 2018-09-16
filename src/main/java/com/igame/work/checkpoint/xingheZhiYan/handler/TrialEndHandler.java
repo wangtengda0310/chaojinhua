@@ -1,6 +1,7 @@
 package com.igame.work.checkpoint.xingheZhiYan.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -8,7 +9,7 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.xingheZhiYan.TrialdataTemplate;
-import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanDataManager;
+import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanService;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
@@ -21,8 +22,9 @@ import net.sf.json.JSONObject;
  *
  */
 public class TrialEndHandler extends ReconnectedHandler {
-	private QuestService questService;
-	private ResourceService resourceService;
+	@Inject private QuestService questService;
+	@Inject private ResourceService resourceService;
+	@Inject private XingheZhiYanService xingheZhiYanService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -33,7 +35,7 @@ public class TrialEndHandler extends ReconnectedHandler {
 
 		int win = jsonObject.getInt("win");
 		String reward = "";
-		TrialdataTemplate ct = XingheZhiYanDataManager.TrialData.getTemplate(player.getTowerId() + 1);
+		TrialdataTemplate ct = xingheZhiYanService.trialData.getTemplate(player.getTowerId() + 1);
 		if(ct == null){
 			return error(ErrorCode.CHECKPOINT_END_ERROR);
 		}else{

@@ -1,7 +1,7 @@
 package com.igame.work.vip;
 
 import com.igame.core.di.Inject;
-import com.igame.work.user.PlayerDataManager;
+import com.igame.core.di.LoadXml;
 import com.igame.core.log.ExceptionLog;
 import com.igame.work.user.dto.Player;
 
@@ -15,6 +15,18 @@ import static com.igame.work.vip.VIPConstants.*;
  * 会员服务
  */
 public class VIPService {
+    /**
+     * vip礼包数据
+     */
+    @LoadXml("vippack.xml") public VipPackData vipPackData;
+    /**
+     * vip配置
+     */
+    @LoadXml("vipdata.xml") public VipData vipData;
+    /**
+     * vip等级数据
+     */
+    @LoadXml("viplevel.xml") public VipLevelData vipLevelData;
 
     @Inject private VIPConfig vipConfig;
 
@@ -26,7 +38,7 @@ public class VIPService {
         int vip = player.getVip();
         double totalMoney = player.getTotalMoney();
 
-        VipLevelTemplate template = PlayerDataManager.vipLevelData.getTemplate(vip);
+        VipLevelTemplate template = vipLevelData.getTemplate(vip);
         double vipExp = template.getVipExp();
 
         return vipExp != -1 && totalMoney >= vipExp;

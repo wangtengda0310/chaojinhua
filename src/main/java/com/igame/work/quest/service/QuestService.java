@@ -3,14 +3,15 @@ package com.igame.work.quest.service;
 import com.google.common.collect.Lists;
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
 import com.igame.work.MessageUtil;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.monster.dto.Gods;
-import com.igame.work.quest.QuestDataManager;
 import com.igame.work.quest.dao.QuestDAO;
+import com.igame.work.quest.data.QuestData;
 import com.igame.work.quest.data.QuestTemplate;
 import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.user.dto.Player;
@@ -27,9 +28,15 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public class QuestService implements ISFSModule {
+	/**
+	 * 任务成就数据
+	 */
+	@LoadXml("questdata.xml") public QuestData questData;
+	
 	@Inject private QuestDAO questDAO;
 	@Inject private ResourceService resourceService;
 	@Inject private QuestService questService;
+	@Inject private CheckPointService checkPointService;
 
 	private Map<Long, Map<Integer, TaskDayInfo>> achievement = new ConcurrentHashMap<>();//成就任务
 
@@ -39,11 +46,11 @@ public class QuestService implements ISFSModule {
 	public void checkPlayerQuest(Player player){
 			
 		for(TaskDayInfo td :achievement.get(player.getPlayerId()).values()){
-			if(QuestDataManager.QuestData.getTemplate(td.getQuestId()) == null){
+			if(questData.getTemplate(td.getQuestId()) == null){
 				td.setDtate(3);
 			}
 		}
-		for(QuestTemplate qt : QuestDataManager.QuestData.getAll()){
+		for(QuestTemplate qt : questData.getAll()){
 			
 			//成就
 			TaskDayInfo tf = achievement.get(player.getPlayerId()).get(qt.getQuestId());
@@ -100,7 +107,7 @@ public class QuestService implements ISFSModule {
 	 */
 	public String getReward(Player player,TaskDayInfo td){
 		
-		QuestTemplate qt = QuestDataManager.QuestData.getTemplate(td.getQuestId());
+		QuestTemplate qt = questData.getTemplate(td.getQuestId());
 		RewardDto reward = resourceService.getRewardDto(qt.getReward(), "100");
 		resourceService.addRewarToPlayer(player, reward);
 		td.setStatus(3);
@@ -121,13 +128,13 @@ public class QuestService implements ISFSModule {
 	public List<TaskDayInfo> endQuest(Player player,TaskDayInfo td){
 		
 		List<TaskDayInfo> qs = Lists.newArrayList();
-		for(QuestTemplate qt : QuestDataManager.QuestData.getAll()){
+		for(QuestTemplate qt : questData.getAll()){
 			if(!MyUtil.isNullOrEmpty(qt.getUnlock())){
 				String[] uc = qt.getUnlock().split(",");
 				if("2".equals(uc[0])){
 					if(td.getQuestId() == Integer.parseInt(uc[1]) && achievement.get(player.getPlayerId()).get(Integer.parseInt(uc[1])) == null){
 						TaskDayInfo e = new TaskDayInfo(player, Integer.parseInt(uc[1]));
-						QuestTemplate qtt = QuestDataManager.QuestData.getTemplate(e.getQuestId());
+						QuestTemplate qtt = questData.getTemplate(e.getQuestId());
 						if(qtt.getQuestType()==2 && qtt.getClaim()>1 && qtt.getClaim()<=25){
 							questService.processTaskDetail(player, Lists.newArrayList(), e, qtt.getClaim(), 0);
 						}
@@ -146,7 +153,7 @@ public class QuestService implements ISFSModule {
 	public void onLevelUp(Player player){
 		
 		List<TaskDayInfo> qList = Lists.newArrayList();
-		for(QuestTemplate qt : QuestDataManager.QuestData.getAll()){
+		for(QuestTemplate qt : questData.getAll()){
 			
 			TaskDayInfo tf = achievement.get(player.getPlayerId()).get(qt.getQuestId());
 			if(tf == null){
@@ -185,7 +192,7 @@ public class QuestService implements ISFSModule {
 	
 	public void processTaskDetail(Player player,List<TaskDayInfo> qList,TaskDayInfo td,int claim,int count){
 		if(td.getStatus() != 3){
-			QuestTemplate qt = QuestDataManager.QuestData.getTemplate(td.getQuestId());
+			QuestTemplate qt = questData.getTemplate(td.getQuestId());
 			if(qt != null && qt.getClaim() == claim){
 				switch (claim){
 					case 1://怪物提升一级
@@ -293,7 +300,7 @@ public class QuestService implements ISFSModule {
 						int total = 0;
 						if(!MyUtil.isNullOrEmpty(player.getCheckPoint())){
 							for(String cc : player.getCheckPoint().split(",")){
-								if(GuanQiaDataManager.CheckPointData.getTemplate(Integer.parseInt(cc)).getChapterType() == 2){
+								if(checkPointService.checkPointData.getTemplate(Integer.parseInt(cc)).getChapterType() == 2){
 									total++;
 								}
 							}
@@ -308,7 +315,7 @@ public class QuestService implements ISFSModule {
 					case 25://城市占领度达到x%
 						int tal = 0;
 						if(!MyUtil.isNullOrEmpty(player.getCheckPoint())){
-							tal = (int)(player.getCheckPoint().split(",").length/(GuanQiaDataManager.CheckPointData.size()+.0) * 100);
+							tal = (int)(player.getCheckPoint().split(",").length/(checkPointService.checkPointData.size()+.0) * 100);
 						}
 						if(tal > td.getVars()){
 							td.setVars(tal);
@@ -347,7 +354,17 @@ public class QuestService implements ISFSModule {
 
 
 	public void loadPlayer(Player player) {
-		achievement.put(player.getPlayerId(), questDAO.getByPlayer(player));
+		Map<Integer, TaskDayInfo> byPlayer = questDAO.getByPlayer(player);
+		for(TaskDayInfo tk :byPlayer.values()){
+			QuestTemplate qt = questData.getTemplate(tk.getQuestId());
+			if(qt!= null){
+//    			if(qt.getQuestType() == 1){
+//    				player.getDayTask().put(tk.getQuestId(), tk);
+//    			}else if(qt.getQuestType() == 2){
+//    			}
+			}
+		}
+		achievement.put(player.getPlayerId(), byPlayer);
 	}
 
 	public Map<Integer, TaskDayInfo> getAchievement(long playerId) {
@@ -357,7 +374,7 @@ public class QuestService implements ISFSModule {
 	public List<TaskDayInfo> reset(Player player) {
 		List<TaskDayInfo> qList = Lists.newArrayList();
 		for(TaskDayInfo td : achievement.get(player.getPlayerId()).values()){
-			if(QuestDataManager.QuestData.getTemplate(td.getQuestId()) != null && QuestDataManager.QuestData.getTemplate(td.getQuestId()).getQuestType() == 1){
+			if(questData.getTemplate(td.getQuestId()) != null && questData.getTemplate(td.getQuestId()).getQuestType() == 1){
 				if(td.getVars() > 0){
 					td.setVars(0);
 					td.setStatus(1);

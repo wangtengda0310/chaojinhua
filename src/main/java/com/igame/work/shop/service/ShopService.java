@@ -3,6 +3,7 @@ package com.igame.work.shop.service;
 import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.handler.RetVO;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.DateUtil;
@@ -10,12 +11,8 @@ import com.igame.util.GameMath;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.shop.ShopConstants;
-import com.igame.work.shop.ShopDataManager;
 import com.igame.work.shop.dao.ShopDAO;
-import com.igame.work.shop.data.ShopData;
-import com.igame.work.shop.data.ShopOutPutTemplate;
-import com.igame.work.shop.data.ShopRandomTemplate;
-import com.igame.work.shop.data.ShopTemplate;
+import com.igame.work.shop.data.*;
 import com.igame.work.shop.dto.GeneralShop;
 import com.igame.work.shop.dto.MysticalShop;
 import com.igame.work.shop.dto.ShopInfo;
@@ -28,6 +25,23 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author xym
  */
 public class ShopService implements ISFSModule, TimeListener {
+    /**
+     * 商店基础信息
+     */
+    @LoadXml("shopdata.xml") public ShopData shopData;
+    /**
+     * shoptype = 2 时商品数据
+     */
+    @LoadXml("shopoutput.xml") public ShopOutPutData shopOutPutData;
+    /**
+     * shoptype = 1 时商品数据
+     */
+    @LoadXml("shoprandom.xml") public ShopRandomData shopRandomData;
+    /**
+     * 神秘商店等级数据
+     */
+    @LoadXml("shoprandom_lv.xml") public ShopRandomLvData shopRandomLvData;
+
     @Inject private SessionManager sessionManager;
     @Inject private ShopService shopService;
     @Inject private ShopDAO shopDAO;
@@ -85,7 +99,6 @@ public class ShopService implements ISFSModule, TimeListener {
      */
     public ShopInfo initShop(Player player){
 
-        ShopData shopData = ShopDataManager.shopData;
         ShopInfo shopInfo = new ShopInfo();
         shopInfo.setPlayerId(player.getPlayerId());
         shopInfo.setDtate(1);   //新增
@@ -206,12 +219,12 @@ public class ShopService implements ISFSModule, TimeListener {
      * @param shopId 商店ID
      * @return true = 需要刷新
      */
-    public boolean needRealod(Date lastReload,int shopId){
+    private boolean needRealod(Date lastReload, int shopId){
 
         if (lastReload == null)
             return true;
 
-        ShopTemplate template = ShopDataManager.shopData.getTemplate(shopId);
+        ShopTemplate template = shopData.getTemplate(shopId);
 
         String[] resestTimes = template.getResestTime().split(ShopConstants.SPLIT_ONE);
 
@@ -235,7 +248,7 @@ public class ShopService implements ISFSModule, TimeListener {
      */
     public ShopInfo reloadShop(int shopId, ShopInfo shopInfo, boolean isManual){
 
-        ShopTemplate shopTemplate = ShopDataManager.shopData.getTemplate(shopId);
+        ShopTemplate shopTemplate = shopData.getTemplate(shopId);
 
         int shopType = shopTemplate.getShopType();
 
@@ -253,7 +266,7 @@ public class ShopService implements ISFSModule, TimeListener {
     /**
      * 定时任务 刷新所有在线玩家的神秘商店 并推送
      */
-    public void reloadMysticalOnline() {
+    private void reloadMysticalOnline() {
         for(Player player : sessionManager.getSessions().values()){
             ShopInfo shopInfo = shopInfos.get(player.getPlayerId());
             shopService.reloadShop(ShopConstants.ID_MysticalShop, shopInfo, false);
@@ -268,7 +281,7 @@ public class ShopService implements ISFSModule, TimeListener {
     /**
      * 定时任务 刷新所有在线玩家的一般商店 并推送
      */
-    public void reloadGeneralOnline() {
+    private void reloadGeneralOnline() {
         for(Player player : sessionManager.getSessions().values()){
             ShopInfo shopInfo = shopInfos.get(player.getPlayerId());
             shopService.reloadShop(ShopConstants.ID_WUJINShop, shopInfo, false);
@@ -297,13 +310,13 @@ public class ShopService implements ISFSModule, TimeListener {
 
         int curLv = mysticalShop.getShopLv();
         int curExp = mysticalShop.getExp() + exp;
-        int nextLevelNeedExp = ShopDataManager.shopRandomLvData.getTemplate(curLv).getExp();
+        int nextLevelNeedExp = shopRandomLvData.getTemplate(curLv).getExp();
 
         while (curExp > nextLevelNeedExp && curLv < 4){	//升级
 
             curLv++;
             curExp -= nextLevelNeedExp;
-            nextLevelNeedExp = ShopDataManager.shopRandomLvData.getTemplate(curLv).getExp();
+            nextLevelNeedExp = shopRandomLvData.getTemplate(curLv).getExp();
         }
 
         mysticalShop.setShopLv(curLv);
@@ -320,7 +333,7 @@ public class ShopService implements ISFSModule, TimeListener {
     private void reloadMysticalShop(int shopId, ShopInfo shopInfo, boolean isManual) {
 
         int shopLv = shopInfo.getMysticalShop().getShopLv();
-        ShopRandomTemplate randomTemplate = ShopDataManager.shopRandomData.getTemplate(shopLv);
+        ShopRandomTemplate randomTemplate = shopRandomData.getTemplate(shopLv);
         if (shopLv == 0 || randomTemplate == null)
             return;
 
@@ -375,7 +388,7 @@ public class ShopService implements ISFSModule, TimeListener {
     //刷新一般商店
     private void reloadGeneralShop(int shopId, ShopInfo shopInfo, boolean isManual) {
 
-        ShopOutPutTemplate outPutTemplate = ShopDataManager.shopOutPutData.getTemplate(shopId);
+        ShopOutPutTemplate outPutTemplate = shopOutPutData.getTemplate(shopId);
         String s = outPutTemplate.getItem();
         String r = outPutTemplate.getRate();
         String c = outPutTemplate.getBuy();

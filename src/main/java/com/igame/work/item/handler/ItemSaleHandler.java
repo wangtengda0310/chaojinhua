@@ -1,11 +1,12 @@
 package com.igame.work.item.handler;
 
 
-import com.igame.work.MProtrol;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.work.MProtrol;
 import com.igame.work.item.dto.Item;
-import com.igame.work.user.PlayerDataManager;
+import com.igame.work.item.service.ItemService;
 import com.igame.work.user.data.ItemTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
@@ -24,7 +25,8 @@ import java.util.List;
  */
 public class ItemSaleHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
+	@Inject private ResourceService resourceService;
+	@Inject private ItemService itemService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -65,7 +67,7 @@ public class ItemSaleHandler extends ReconnectedHandler {
 			resourceService.addItem(player,itemId,-count,true);
 
 			//增加金币
-			ItemTemplate template = PlayerDataManager.ItemData.getTemplate(itemId);
+			ItemTemplate template = itemService.itemData.getTemplate(itemId);
 			gold += template.getSale() * count;
 		}
 

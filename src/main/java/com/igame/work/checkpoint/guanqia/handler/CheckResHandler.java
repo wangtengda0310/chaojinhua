@@ -7,7 +7,6 @@ import com.igame.core.handler.RetVO;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
-import com.igame.work.checkpoint.guanqia.GuanQiaDataManager;
 import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.user.dto.Player;
@@ -38,7 +37,7 @@ public class CheckResHandler extends ReconnectedHandler {
 		StringBuilder reward = new StringBuilder();
 		for(String temp: chapterIdstr.split(",")){
 			int chapterId = Integer.parseInt(temp);
-			CheckPointTemplate ct = GuanQiaDataManager.CheckPointData.getTemplate(chapterId);
+			CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
 			synchronized (checkPointService.getTimeLock(player)) {
 				if(!player.getTimeResCheck().containsKey(chapterId) || ct == null || ct.getChapterType() != 2){
 //					ret = ErrorCode.CHECKPOINT_RESNOT_EXIT;

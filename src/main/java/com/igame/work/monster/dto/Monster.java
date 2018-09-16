@@ -1,26 +1,17 @@
 package com.igame.work.monster.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.igame.work.monster.MonsterDataManager;
-import com.igame.work.monster.data.MonsterTemplate;
-import com.igame.work.monster.data.TongDiaoTemplate;
 import com.igame.core.db.BasicDto;
-import com.igame.core.log.ExceptionLog;
 import com.igame.util.MyUtil;
-import com.igame.work.fight.service.ComputeFightService;
-import com.igame.work.monster.service.EffectService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;
-import com.igame.work.user.dto.TongAddDto;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Transient;
 import org.mongodb.morphia.utils.IndexDirection;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -80,10 +71,10 @@ public class Monster extends BasicDto implements Cloneable {
 	public int bulletSpeed;//子弹速度
 	
 	@JsonIgnore
-	private Map<Integer,Integer> skillMap = Maps.newHashMap();//技能列表-技能ID 等级
+	public Map<Integer,Integer> skillMap = Maps.newHashMap();//技能列表-技能ID 等级
 	
 	@JsonIgnore
-	private Map<Integer,Integer> skillExp = Maps.newHashMap();//技能列表-技能ID 经验值
+	public Map<Integer,Integer> skillExp = Maps.newHashMap();//技能列表-技能ID 经验值
 	
 	@Transient
 	public String skill = "";
@@ -92,14 +83,14 @@ public class Monster extends BasicDto implements Cloneable {
 	public long fightValue;
 
 	@JsonIgnore
-	private String equip = "-1,-1,-1,-1";//装备字符串
+	public String equip = "-1,-1,-1,-1";//装备字符串
 
 	@Transient
 	private String[] teamEquip = new String[]{"-1,-1,-1,-1","-1,-1,-1,-1","-1,-1,-1,-1","-1,-1,-1,-1","-1,-1,-1,-1","-1,-1,-1,-1"};//阵容装备
 
 	@JsonIgnore
 	@Transient
-	private int expAadd;
+	public int expAadd;
 	
 	
 	@JsonIgnore
@@ -115,7 +106,7 @@ public class Monster extends BasicDto implements Cloneable {
 	public long fightValueTemp;//当前HP
 	
 	@Transient
-	private int suitLv;
+	public int suitLv;
 	
 	@JsonIgnore
 	@Transient
@@ -168,26 +159,7 @@ public class Monster extends BasicDto implements Cloneable {
 			this.equip = MyUtil.toString(ee, ",");
 			
 		}
-		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
-		if(mt != null && mt.getSkill() != null){
-			String[] skills = mt.getSkill().split(",");
-			if(skills != null){
-				for(String skill : skills){
-					if(skillLv<=0){
-						skillMap.put(Integer.parseInt(skill), 1);
-					}else{
-						skillMap.put(Integer.parseInt(skill), skillLv);
-					}
-					
-					skillExp.put(Integer.parseInt(skill), 0);
-				}
-			}
-			this.atkType = mt.getAtk_type();
-		}
-		initSkillString();
-		reCalLevelValue(true);
-		reCalEquip();
-//		reCalculate(null,true);
+//		monsterService.reCalculate(null,true);
 		resetFightProp(site);
 	}
 	
@@ -200,19 +172,7 @@ public class Monster extends BasicDto implements Cloneable {
 		this.hp = hp;
 		this.dtate = dtate;
 		this.monsterId = monsterId;
-		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
-		if(mt != null && mt.getSkill() != null){
-			String[] skills = mt.getSkill().split(",");
-			if(skills.length != 0){
-				for(String skill : skills){
-					skillMap.put(Integer.parseInt(skill), 1);
-					skillExp.put(Integer.parseInt(skill), 0);
-				}
-			}
-			this.atkType = mt.getAtk_type();
-		}
-		initSkillString();
-//		reCalculate(player,true);
+//		monsterService.reCalculate(player,true);
 	}
 
 
@@ -434,244 +394,9 @@ public class Monster extends BasicDto implements Cloneable {
 	public void setSkill(String skill) {
 		this.skill = skill;
 	}
-	
-	/**
-	 * 初始化技能字符串
-	 */
-	public void initSkillString(){
-		StringBuffer ss = new StringBuffer();
-		for(Map.Entry<Integer, Integer> m : this.skillMap.entrySet()){
-			Integer exp = this.skillExp.computeIfAbsent(m.getKey(), value -> 0);
-			ss.append(m.getKey()).append(",").append(m.getValue()).append(",").append(exp).append(";");
-		}
-		String rr = ss.toString();
-		if(rr.lastIndexOf(";") != -1){
-			rr = rr.substring(0,rr.lastIndexOf(";"));
-		}
-		this.skill = rr;
-	}
 
 
 
-	//重新计算怪物各项属性  包含模板、等级、突破、同化、符文系统加成、图鉴增加
-	public void reCalculate(Player player,boolean dbHp){
-		
-		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
-		if(mt != null){
-			
-			reCalLevelValue(dbHp);
-			
-			String[] vrl = this.breaklv.split(",");
-			if(vrl.length != 0){
-				for(String vl : vrl){
-					switch (vl){
-						case JiyinType.TYPE_001: //攻击+30
-							this.attack += 30;
-							break;
-						case JiyinType.TYPE_002: //体力+90
-							this.hp += 90;
-							this.hpInit += 90;
-							break;
-						case JiyinType.TYPE_003: //霸气+20
-							this.repel += 20;
-							break;
-						case JiyinType.TYPE_004: //移速+20
-							this.speed += 20;
-							break;
-						case JiyinType.TYPE_005: //攻击+40 体力-30
-							this.attack += 40;
-							this.hp -= 30;
-							this.hpInit -= 30;
-							break;
-						case JiyinType.TYPE_006: //体力+120 攻击-10
-							this.hp += 120;
-							this.hpInit += 120;
-							this.attack -= 10;
-							break;
-						case JiyinType.TYPE_007: //霸气+10 移速+10
-							this.repel += 10;
-							this.speed += 10;
-							break;
-						case JiyinType.TYPE_008: //攻击+15 霸气+10
-							this.attack += 15;
-							this.repel += 10;
-							break;
-						case JiyinType.TYPE_009: //攻击+15 移速+10
-							this.attack += 15;
-							this.speed += 10;
-							break;
-						case JiyinType.TYPE_010: //体力+45 霸气+10
-							this.hp += 45;
-							this.hpInit += 45;
-							this.repel += 10;
-							break;
-						case JiyinType.TYPE_011: //体力+45 移速+10
-							this.hp += 45;
-							this.hpInit += 45;
-							this.speed += 10;
-							break;
-						case JiyinType.TYPE_017: //射程+15%
-							this.rng += mt.getMonster_rng() * 0.15;
-							break;
-						default:
-							break;
-					}
-				}
-			}
-			if(player != null){
-				TongAddDto tad = player.getTongAdd();
-				if(tad != null){
-					if(dbHp){
-						this.hp += tad.getHpAdd();
-						this.hp += mt.getMonster_hp() * tad.getHpAddPer()/100.0;
-					}
-					this.hpInit += tad.getHpAdd();
-					this.hpInit += mt.getMonster_hp() * tad.getHpAddPer()/100.0;
-					this.attack += tad.getAttackAdd();
-					this.attack += mt.getMonster_atk() * tad.getAttackAddPer()/100.0;				
-					this.damgeRed += tad.getDamgeRed();
-					this.repel += mt.getMonster_repel() * tad.getRepelAddPer()/100.0;
-					this.repeled += tad.getRepeledAddPer();
-				}
-			}
-
-		}else{
-			ExceptionLog.error("get MonsterTemplate null,monsterId:" + monsterId);
-		}
-		reCalEquip();
-		reCalExtValue();
-		//reCalFightValue();
-		ComputeFightService.ins().computeMonsterFight(this);
-	}
-	
-	/**
-	 * 计算怪物的基础和等级属性总值
-	 * @param dbHp
-	 */
-	public void reCalLevelValue(boolean dbHp){
-		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
-		if(mt != null){
-			if(dbHp){
-				this.hp = mt.getMonster_hp() +(int)( mt.getHp_up() * (this.level - 1));
-			}		
-			this.hpInit = mt.getMonster_hp()  +(int)( mt.getHp_up() * (this.level - 1));		
-			this.attack = mt.getMonster_atk() +(int)( mt.getAtk_up() * (this.level - 1));
-			
-			this.speed = mt.getMonster_speed();
-			this.ias = mt.getMonster_ias();
-			this.repel = mt.getMonster_repel();
-			this.rng =  mt.getMonster_rng();
-			this.bulletSpeed =  mt.getBulletSpeed();
-		}
-	}
-	
-	
-	//重新计算怪物身上的符文增加属性，包含装备同调加成
-	public void reCalEquip(){
-		
-		List<Effect> effes = Lists.newArrayList();
-		List<Effect> effeAdd = Lists.newArrayList();
-		String[] is = this.equip.split(",");
-		int total = 0;
-		if(is.length != 0){
-			for(String s : is){
-				Effect ef = EffectService.getEffectByItem(Integer.parseInt(s), true);
-				if(ef != null){
-					effes.add(ef);
-				}
-				if(!"0".equals(s) && !"-1".equals(s)){
-					total++;
-				}
-			}
-		}
-		
-		this.suitLv = 0;
-		if(total >= 4){//触发同调
-			List<TongDiaoTemplate> lts = Lists.newArrayList();
-			for(String s : is){
-				TongDiaoTemplate tt = MonsterDataManager.TongDiaoData.getByItemId(s);
-				if(tt != null){
-					lts.add(tt);
-				}
-			}
-			if(!lts.isEmpty()){
-				lts.sort((h1, h2) -> h1.getSuitLv() - h2.getSuitLv());
-				TongDiaoTemplate index = lts.get(0);
-				this.suitLv = index.getSuitLv();
-				String[] effect_id = index.getEffectId().split(",");
-				String[] ability_up = index.getAbilityUp().split(",");
-				for(int i = 0;i < effect_id.length;i++){
-					effeAdd.add(new Effect(i,Integer.parseInt(effect_id[i]),Float.parseFloat(ability_up[i])));
-				}			
-			}
-			
-		}		
-		
-		
-		MonsterTemplate mt = MonsterDataManager.MONSTER_DATA.getMonsterTemplate(monsterId);
-		if(mt != null){
-			for(Effect vl : effes){
-				switch (vl.getEffectId()){
-					case 103: //体力+-
-						this.hp += vl.getValue();
-						this.hpInit += vl.getValue();
-						break;
-					case 104: //体力%+-
-						this.hp += mt.getMonster_hp() * vl.getValue()/100.0;
-						this.hpInit += mt.getMonster_hp() * vl.getValue()/100.0;
-						break;
-					case 105: //攻击力%
-						this.attack += mt.getMonster_atk() * vl.getValue()/100.0;
-						break;
-					case 106: //攻击力+-
-						this.attack += vl.getValue();
-						break;
-					case 109: //攻击速度%
-						this.ias += mt.getMonster_ias() * vl.getValue()/100.0;
-						break;
-					case 110: //攻击速度+-
-						this.ias += vl.getValue();
-						break;
-					case 126: //生效范围%
-						break;
-					case 127: //移动速度%+-
-						this.speed += mt.getMonster_speed() * vl.getValue()/100.0;
-						break;
-					case 128: //移动速度+-
-						this.speed += vl.getValue();
-						break;
-					case 133: //被击退%
-						break;
-					case 140: //攻击力%+-（仅普通攻击有效）
-						this.attack += mt.getMonster_atk() * vl.getValue()/100.0;
-						break;
-					case 143: //143.怪物经验增加X点
-						this.expAadd += vl.getValue();
-						break;
-					default:
-						break;
-				}
-			}
-			
-			//同调
-			for(Effect vl : effeAdd){
-				switch (vl.getEffectId()){
-					case 104: //体力%+-
-						this.hp += mt.getMonster_hp() * vl.getValue()/100.0;
-						this.hpInit += mt.getMonster_hp() * vl.getValue()/100.0;
-						break;
-					case 105: //攻击力%
-						this.attack += mt.getMonster_atk() * vl.getValue()/100.0;
-						break;
-					default:
-						break;
-				}
-			}
-		}
-
-
-	}
-	
 	/**
 	 * 计算图鉴增加值
 	 */

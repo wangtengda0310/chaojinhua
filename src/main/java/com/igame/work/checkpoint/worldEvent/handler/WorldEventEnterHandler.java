@@ -8,15 +8,14 @@ import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
-import com.igame.work.checkpoint.worldEvent.WorldEventDataManager;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventService;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.fight.service.FightUtil;
 import com.igame.work.monster.dto.Monster;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -36,6 +35,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 	@Inject private ResourceService resourceService;
 	@Inject private CheckPointService checkPointService;
 	@Inject private WorldEventService worldEventService;
+	@Inject private MonsterService monsterService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -52,7 +52,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 
 		//入参校验
 		WorldEventDto wd = player.getWordEvent().get(eventType);
-		WorldEventTemplate wt = WorldEventDataManager.WorldEventData.getTemplate(eventType+"_"+level);
+		WorldEventTemplate wt = checkPointService.worldEventData.getTemplate(eventType+"_"+level);
 		if (wd == null || wt ==null){
 			return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 		}
@@ -85,7 +85,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 		worldEventService.setEnterWordEventId(player,eventType+"_"+level);
 
 		//生成怪兽
-		FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,FightUtil.createMonster(wt.getMonsterId(), wt.getMlevel(), wt.getSite(),"","")));
+		FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(wt.getMonsterId(), wt.getMlevel(), wt.getSite(),"","")));
 		player.setFightBase(fb);
 		List<MatchMonsterDto> lb = Lists.newArrayList();
 		for(Monster m : fb.getFightB().getMonsters().values()){
