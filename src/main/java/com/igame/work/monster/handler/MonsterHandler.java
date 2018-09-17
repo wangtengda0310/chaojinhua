@@ -63,7 +63,7 @@ public class MonsterHandler extends ReconnectedHandler {
         String[] monsArry = monsters.split(",");
         long[] team = player.getTeams().get(teamId).getTeamMonster();
         boolean modified = false;
-        for (int j = 0; j < monsArry.length; j++) {
+        for (int j = 0; j < 5; j++) {
             if (team[j] == -1) {//位置未解锁
                 continue;
             }
@@ -81,6 +81,16 @@ public class MonsterHandler extends ReconnectedHandler {
                 } catch (Exception ignore) {
                 }
             }
+        }
+        try {
+            String god = monsArry[6];
+            int teamGod = player.getTeams().get(teamId).getTeamGod();
+            if (!String.valueOf(teamGod).equals(god)) {
+                player.getTeams().get(teamId).setTeamGod(Integer.parseInt(god));
+                modified = true;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
         return modified;
     }
