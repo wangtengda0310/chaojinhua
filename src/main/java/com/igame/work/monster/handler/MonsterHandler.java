@@ -83,7 +83,7 @@ public class MonsterHandler extends ReconnectedHandler {
             }
         }
         try {
-            String god = monsArry[6];
+            String god = monsArry[5];
             int teamGod = player.getTeams().get(teamId).getTeamGod();
             if (!String.valueOf(teamGod).equals(god)) {
                 player.getTeams().get(teamId).setTeamGod(Integer.parseInt(god));
