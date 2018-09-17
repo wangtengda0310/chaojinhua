@@ -187,21 +187,21 @@ public class MProtrol {
 	public static final int CD_DOWN= 2071;//倒计时开始
 
 	
-	public static final int F_P_S= 3000;//战斗匹配
+	public static final int F_P_S= 3000;//战斗匹配	客户端没用这条指令
 	
-	public static final int F_P_E= 3001;//匹配成功
+	public static final int F_P_E= 3001;//匹配成功	客户端没用这条指令
 	
-	public static final int F_P_D= 3002;//倒计时完毕
+	public static final int F_P_D= 3002;//倒计时完毕	客户端没用这条指令
 	
-	public static final int F_P_ENTER= 3003;//开始加载游戏
+	public static final int F_P_ENTER= 3003;//开始加载游戏	客户端没用这条指令
+
+	public static final int F_LOAD_E= 3004;//加载完毕	客户端没用这条指令
 	
-	public static final int F_LOAD_E= 3004;//加载完毕
+	public static final int F_START= 3005;//游戏开始	客户端没用这条指令
 	
-	public static final int F_START= 3005;//游戏开始
+	public static final int F_P_C= 3006;//取消匹配	客户端没用这条指令
 	
-	public static final int F_P_C= 3006;//取消匹配
-	
-	public static final int F_CMD= 3100;//战斗指令
+	public static final int F_CMD= 3100;//战斗指令	客户端没用这条指令
 	
 	public static final int QUEST_UPDATE= 3200;//任务更新新
 	
