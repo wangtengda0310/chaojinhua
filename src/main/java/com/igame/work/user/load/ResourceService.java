@@ -878,4 +878,52 @@ public class ResourceService extends EventService implements ISFSModule {
 		}
 
 	}
+
+	public void calRes(Player player){
+		if(player.getLoginoutTime() != null){
+			long now = System.currentTimeMillis();
+			int timeAdd = (int)((now - player.getLoginoutTime().getTime())/60000);
+			Map<Integer, Integer> resMintues = player.getResMintues();
+			for(Map.Entry<Integer, Integer> m : resMintues.entrySet()){
+				resMintues.put(m.getKey(), m.getValue() + timeAdd);
+			}
+			if(resMintues.get(3) != null){
+				if(resMintues.get(3) >=6){
+					addPhysica(player, resMintues.get(3)/6);
+					resMintues.put(3, resMintues.get(3)%6);
+				}
+			}
+			if(resMintues.get(4) != null){
+				if(resMintues.get(4) >=60){
+					addSao(player, resMintues.get(4)/60);
+					resMintues.put(4, resMintues.get(4)%60);
+				}
+
+			}
+			if(resMintues.get(6) != null){
+				if(resMintues.get(6) >=120 && player.getTongRes() < 15){
+					int add = resMintues.get(6)/120;
+					if(add > 15 - player.getTongRes()){
+						add = 15 - player.getTongRes();
+					}
+					addTongRes(player, add);
+					resMintues.put(6, resMintues.get(6)%120);
+				}
+
+			}
+			if(resMintues.get(7) != null){
+				if(resMintues.get(7) >=120 && player.getXing() < 10){
+					int add = resMintues.get(7)/120;
+					if(add > 10 - player.getXing()){
+						add = 10 - player.getXing();
+					}
+					addXing(player, add);
+					resMintues.put(7, resMintues.get(7)%120);
+				}
+
+			}
+		}
+
+	}
+
 }
