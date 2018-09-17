@@ -131,7 +131,7 @@ public class PlayerHandler extends BaseHandler {
 		Player player = playerDAO.getPlayerByUserId(userId);
 		if(player == null){//不存在就默认创建一个
 			try {
-				player = newPlayer(userId, serverId);
+				player = newPlayer(userId, serverId);	// todo 有跟loadPlayer共用的部分 提到loadPlayer方法中
 				if(player.get_id() == null){
 					sendClient(MProtrol.PLAYER_ENTER,error(ErrorCode.NEWPLAYER_ERROR),user);
 					return;
@@ -143,7 +143,7 @@ public class PlayerHandler extends BaseHandler {
 				return;
 			}
 		}else{
-			loadPlayer(player);//载入玩家数据
+			loadPlayer(player);//载入玩家数据				// todo 跟newPlayer有共用的部分 挪到下面else外面
 		}
 
 		try {
@@ -290,15 +290,6 @@ public class PlayerHandler extends BaseHandler {
 		//初始化好友
 		friendService.newPlayer(player);
 
-		//初始化会员特权
-		vIPService.initPrivileges(player.getVipPrivileges());
-
-		//初始化角色挑战次数上限
-		player.setPlayerTop(playerService.initPlayerTop(new PlayerTop()));
-
-		//初始化角色剩余挑战次数
-		BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
-
 		return playerDAO.savePlayer(player);
 	}
 
@@ -328,22 +319,16 @@ public class PlayerHandler extends BaseHandler {
 	 */
 	private void afterPlayerLogin(Player player) throws Exception {
 		//初始化留言板
-		messageBoardService.initMessageBoard(player);
+		messageBoardService.afterPlayerLogin(player);
 
-		if (privateMessageService.getPrivateMessages(player).size() <= 0)
-			vIPService.initPrivileges(player.getVipPrivileges());
+		// todo 这个是不是应该在newPlayer里
+		vIPService.afterPlayerLogin(player);
 
 		//初始化商店或者刷新
-		if (!shopService.existsShopInfo(player))
-			shopService.initShop(player);
-		else
-			shopService.reloadAll(player);
+		shopService.afterPlayerLogin(player);
 
 		//初始化头像和头像框
-		if (player.getUnlockHead().size() == 0)
-			headService.initHead(player);
-		if (player.getUnlockFrame().size() == 0)
-			headService.initFrame(player);
+		headService.afterPlayerLogin(player);
 
 
 		//初始化角色挑战次数上限与剩余挑战次数

@@ -98,6 +98,11 @@ public class VIPService {
         resetPrivileges(0,player.getVip(),player.getVipPrivileges());
     }
 
+    public void afterPlayerLogin(Player player) {
+        if (player.getVipPrivileges().isEmpty()) {
+            initPrivileges(player.getVipPrivileges());
+        }
+    }
     /**
      * 初始化VIP特权
      */

@@ -23,6 +23,15 @@ import static com.igame.work.user.HeadConstants.*;
 public class HeadService {
     @Inject PlayerService playerService;
 
+    public void afterPlayerLogin(Player player) {
+
+        //初始化头像和头像框
+        if (player.getUnlockHead().size() == 0)
+            initHead(player);
+        if (player.getUnlockFrame().size() == 0)
+            initFrame(player);
+    }
+
     /**
      * 初始化头像
      * @param player 玩家

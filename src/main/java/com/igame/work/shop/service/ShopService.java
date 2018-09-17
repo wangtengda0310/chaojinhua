@@ -93,6 +93,15 @@ public class ShopService implements ISFSModule, TimeListener {
         reloadMysticalOnline();
     }
 
+    public void afterPlayerLogin(Player player) {
+
+        //初始化商店或者刷新
+        if (!shopService.existsShopInfo(player))
+            shopService.initShop(player);
+        else
+            shopService.reloadAll(player);
+
+    }
     /**
      * 初始化商店
      * @param player 玩家信息

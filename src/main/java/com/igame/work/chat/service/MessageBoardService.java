@@ -48,7 +48,7 @@ public class MessageBoardService {
 
     private Map<Long, Map<String,List<String>>> messageBoard = new ConcurrentHashMap<>();    //记录留言板操作 <"like",留言ID列表>&&<"disLike",留言ID列表>
 
-    public void initMessageBoard(Player player) {
+    public void afterPlayerLogin(Player player) {
         Map<String, List<String>> stringListMap = messageBoard.computeIfAbsent(player.getPlayerId(), pid -> new HashMap<>());
         stringListMap.put(MSG_BOARD_OPE_LIKE,new ArrayList<>());
         stringListMap.put(MSG_BOARD_OPE_DISLIKE,new ArrayList<>());
