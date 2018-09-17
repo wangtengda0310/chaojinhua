@@ -3,7 +3,6 @@ package com.igame.work.user.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
 import com.igame.core.handler.BaseHandler;
@@ -23,6 +22,7 @@ import com.igame.work.chat.service.MessageBoardService;
 import com.igame.work.chat.service.PrivateMessageService;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.mingyunZhiMen.FateDto;
+import com.igame.work.checkpoint.mingyunZhiMen.handler.GateHandler;
 import com.igame.work.checkpoint.worldEvent.WordEventDAO;
 import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.fight.FightService;
@@ -45,12 +45,10 @@ import com.igame.work.quest.service.QuestService;
 import com.igame.work.serverList.ServerListHandler;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.sign.SignService;
-import com.igame.work.turntable.dto.Turntable;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.PlayerService;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
-import com.igame.work.user.dto.PlayerTop;
 import com.igame.work.user.dto.Team;
 import com.igame.work.user.load.ResourceService;
 import com.igame.work.user.service.HeadService;
@@ -60,7 +58,6 @@ import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 import net.sf.json.JSONObject;
-import org.apache.commons.beanutils.BeanUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -101,6 +98,8 @@ public class PlayerHandler extends BaseHandler {
 	@Inject private CheckPointService checkPointService;
 	@Inject private EndlessService endlessService;
 	@Inject private PlayerCacheService playerCacheService;
+	@Inject private ArenaService arenaService;
+	@Inject private GateHandler gateService;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -314,7 +313,6 @@ public class PlayerHandler extends BaseHandler {
 	 * 玩家登录成功后的操作
 	 */
 	private void afterPlayerLogin(Player player) throws Exception {
-		player.setLoginTime(new Date());
 		fireEvent(player, PlayerEvents.RESET_ONCE, null);	// todo 这里走到SystemService的resetOnce方法只是初始化了其他数据，不需要发送事件吧 直接调 或者有隐藏的其他逻辑
 
 
@@ -330,78 +328,33 @@ public class PlayerHandler extends BaseHandler {
 		//初始化头像和头像框
 		headService.afterPlayerLogin(player);
 
+		playerService.afterPlayerLogin(player);
 
-		//初始化角色挑战次数上限与剩余挑战次数
-		if (player.getPlayerTop() == null){
-			player.setPlayerTop(playerService.initPlayerTop(new PlayerTop()));
-			BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
-		}
-
-		if(player.getTimeResCheck() == null){
-			player.setTimeResCheck(Maps.newHashMap());
-		}
-		if(player.getPlayerLevel() >= 30 && player.getTonghua() == null){
-			player.setTonghua(playerService.getRandomTongHuaDto());
-			player.getTonghua().setStartRefTime(System.currentTimeMillis());
-		}
-		for(int i = 3;i<=7;i++){
-			if( i == 5){
-				continue;
-			}
-			player.getResMintues().putIfAbsent(i, 0);
-		}
-		for(Integer type : FightService.godsData.getSets()){
-			GodsdataTemplate gt = FightService.godsData.getTemplate(type+"_0");
-			if(gt != null && player.getPlayerLevel() >= gt.getUnlockLv() && player.getGods().get(type) == null){
-				Gods gods = new Gods(player.getPlayerId(), type, 0, 1);
-				player.getGods().put(gods.getGodsType(), gods);
-			}
-		}
 		checkPointService.afterPlayerLogin(player);
-
-
 		checkPointService.calPlayerTimeRes(player);//计算金币关卡的获得数量 和心魔 以及各货币资源的定时更新
-		monsterService.reCalMonsterExtPre(player,true);//计算图鉴增加属性
-		computeFightService.computePlayerFight(player);
+
+        monsterService.afterPlayerLogin(player);
+        computeFightService.afterPlayerLogin(player);
 		//player.reCalFightValue();//计算战斗力
-		playerService.checkDrawData(player, false);//检测造物台数据
-		questService.checkPlayerQuest(player);//检测玩家任务
-		if(player.getWuMap().isEmpty()){
-			endlessService.refEndlessRef(player);
-		}
+        playerService.afterPlayerLogin(player);
+		questService.afterPlayerLogin(player);//检测玩家任务
+		endlessService.afterPlayerLogin(player);
 
-		player.getFateData().setTodayFateLevel(1);
-		player.getFateData().setTodayBoxCount(0);
-		player.getFateData().setTempBoxCount(-1);
-		player.getFateData().setTempSpecialCount(0);
-		player.getFateData().setAddRate(0);
+		gateService.afterPlayerLogin(player);
 
-		if(player.getTeams().get(6) == null){
-			long id1 = -1;
-			long id2 = -1;
-			int count = 0;
-			for(Monster mm : player.getMonsters().values()){
-				if(count == 0){
-					id1 = mm.getObjectId();
-				}else{
-					id2 = mm.getObjectId();
-				}
-				count++;
-				if(count >= 2){
-					break;
-				}
-			}
-			player.getTeams().put(6,new Team(6,"竞技场防守阵容",id1,id2));
-		}
+		arenaService.afterPlayerLogin(player);
 
-		Turntable turntable = turntableService.getTurntable(player);
-		if (turntable != null && turntableService.needRealod(turntable.getLastUpdate()))
-			turntableService.reloadTurntable(player, turntable);
+		turntableService.afterPlayerLogin(player);
 
-		if(player.getLastNickname()!=null && !"".equals(player.getLastNickname())) {
-			player.setModifiedName(1);
-		}
 		signService.loadPlayer(player);		// todo event?
+
+        for(Integer type : FightService.godsData.getSets()){
+            GodsdataTemplate gt = FightService.godsData.getTemplate(type+"_0");
+            if(gt != null && player.getPlayerLevel() >= gt.getUnlockLv() && player.getGods().get(type) == null){
+                Gods gods = new Gods(player.getPlayerId(), type, 0, 1);
+                player.getGods().put(gods.getGodsType(), gods);
+            }
+        }
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.igame.work.checkpoint.guanqia;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
@@ -338,6 +339,15 @@ public class CheckPointService implements ISFSModule, TimeListener {
 	}
 
 	public void afterPlayerLogin(Player player) {
+        for(int i = 3;i<=7;i++){    // todo enum
+            if( i == 5){
+                continue;
+            }
+            player.getResMintues().putIfAbsent(i, 0);
+        }
+        if(player.getTimeResCheck() == null){
+            player.setTimeResCheck(Maps.newHashMap());
+        }
 		if(!MyUtil.isNullOrEmpty(player.getCheckPoint())){
 			for(String cc :player.getCheckPoint().split(",")){//已过关卡有，但是资源关卡时间计数器没有添加
 				int cid = Integer.parseInt(cc);

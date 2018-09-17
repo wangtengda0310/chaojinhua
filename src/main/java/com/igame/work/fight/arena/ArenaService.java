@@ -11,8 +11,10 @@ import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.GameMath;
 import com.igame.work.PlayerEvents;
+import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
+import com.igame.work.user.dto.Team;
 import com.igame.work.user.service.RobotService;
 
 import java.util.*;
@@ -322,5 +324,25 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
 
     public void setTempOpponent(Player player, List<ArenaRanker> opponent) {
         tempOpponent.put(player.getPlayerId(), opponent);
+    }
+
+    public void afterPlayerLogin(Player player) {
+        if(player.getTeams().get(6) == null){
+            long id1 = -1;
+            long id2 = -1;
+            int count = 0;
+            for(Monster mm : player.getMonsters().values()){
+                if(count == 0){
+                    id1 = mm.getObjectId();
+                }else{
+                    id2 = mm.getObjectId();
+                }
+                count++;
+                if(count >= 2){
+                    break;
+                }
+            }
+            player.getTeams().put(6,new Team(6,"竞技场防守阵容",id1,id2));
+        }
     }
 }

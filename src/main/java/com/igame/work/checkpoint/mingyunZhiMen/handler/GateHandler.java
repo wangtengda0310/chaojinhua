@@ -79,4 +79,11 @@ public class GateHandler extends ReconnectedHandler {
 		return MProtrol.GATE_INFO;
 	}
 
+	public void afterPlayerLogin(Player player) {
+		player.getFateData().setTodayFateLevel(1);
+		player.getFateData().setTodayBoxCount(0);
+		player.getFateData().setTempBoxCount(-1);
+		player.getFateData().setTempSpecialCount(0);
+		player.getFateData().setAddRate(0);
+	}
 }

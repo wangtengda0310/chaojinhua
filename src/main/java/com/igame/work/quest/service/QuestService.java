@@ -44,7 +44,7 @@ public class QuestService implements ISFSModule {
 	/**
 	 * 检测玩家任务
 	 */
-	public void checkPlayerQuest(Player player){
+	public void afterPlayerLogin(Player player){
 			
 		for(TaskDayInfo td :getAchievement(player.getPlayerId()).values()){
 			if(questData.getTemplate(td.getQuestId()) == null){

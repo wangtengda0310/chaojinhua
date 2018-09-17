@@ -206,4 +206,12 @@ public class TurntableService implements TimeListener {
         }
 
     }
+
+    public void afterPlayerLogin(Player player) {
+
+        Turntable turntable = getTurntable(player);
+        if (turntable != null && needRealod(turntable.getLastUpdate()))
+            reloadTurntable(player, turntable);
+
+    }
 }

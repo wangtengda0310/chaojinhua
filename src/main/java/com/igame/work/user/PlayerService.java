@@ -44,8 +44,10 @@ import com.igame.work.user.dto.PlayerTop;
 import com.igame.work.user.dto.TongHuaDto;
 import com.igame.work.user.load.ResourceService;
 import com.igame.work.user.service.PlayerCacheService;
+import org.apache.commons.beanutils.BeanUtils;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -377,4 +379,22 @@ public class PlayerService extends EventService implements ISFSModule {
 		return playerTop;
 	}
 
+	public void afterPlayerLogin(Player player) throws Exception {
+
+		player.setLoginTime(new Date());
+		if(player.getLastNickname()!=null && !"".equals(player.getLastNickname())) {
+			player.setModifiedName(1);
+		}
+		//初始化角色挑战次数上限与剩余挑战次数
+		if (player.getPlayerTop() == null){
+			player.setPlayerTop(initPlayerTop(new PlayerTop()));
+			BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
+		}
+
+		if(player.getPlayerLevel() >= 30 && player.getTonghua() == null){
+			player.setTonghua(getRandomTongHuaDto());
+			player.getTonghua().setStartRefTime(System.currentTimeMillis());
+		}
+		checkDrawData(player, false);//检测造物台数据
+	}
 }

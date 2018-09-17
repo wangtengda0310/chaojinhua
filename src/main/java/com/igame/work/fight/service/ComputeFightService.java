@@ -112,4 +112,7 @@ public class ComputeFightService {
         return monster.fightValue;
     }
 
+    public void afterPlayerLogin(Player player) {
+        computePlayerFight(player);
+    }
 }

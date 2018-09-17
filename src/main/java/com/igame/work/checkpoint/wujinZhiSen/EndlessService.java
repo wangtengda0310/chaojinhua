@@ -63,4 +63,9 @@ public class EndlessService {
     }
 
 
+    public void afterPlayerLogin(Player player) {
+        if(player.getWuMap().isEmpty()){
+            refEndlessRef(player);
+        }
+    }
 }

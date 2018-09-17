@@ -679,4 +679,7 @@ public class MonsterService implements ISFSModule {
 		return ll;
 	}
 
+    public void afterPlayerLogin(Player player) {
+        reCalMonsterExtPre(player,true);//计算图鉴增加属性
+    }
 }
