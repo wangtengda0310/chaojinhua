@@ -68,7 +68,7 @@ public class GateEndHandler extends ReconnectedHandler {
                 }
                 player.getFateData().addTempBoxCount(gto.getBoxCount());//加宝箱
                 player.getFateData().addTodayFateLevel();//到下一层
-                List<GateDto> gls = GateService.createGate(player);//创建新的门
+                List<GateDto> gls = gateService.createGate(player);//创建新的门
                 player.getFateData().setGate(gls);
                 MessageUtil.notifyDeInfoChange(player);
                 MessageUtil.notifyGateChange(player);

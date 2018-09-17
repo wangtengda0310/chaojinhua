@@ -1,6 +1,7 @@
 package com.igame.server;
 
 import com.igame.core.ISFSModule;
+import com.igame.core.data.ClassXmlDataLoader;
 import com.igame.core.db.DBManager;
 import com.igame.core.di.JarApplicationContext;
 import com.igame.core.event.EventManager;
@@ -9,6 +10,8 @@ import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.core.quartz.TimeListener;
 import com.igame.sfsAdaptor.EventDispatcherHandler;
+import com.igame.work.fight.FightService;
+import com.igame.work.fight.data.*;
 import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.extensions.IClientRequestHandler;
 import com.smartfoxserver.v2.extensions.SFSExtension;
@@ -37,6 +40,14 @@ public class GameServerExtension extends SFSExtension {
 	@Override
 	public void init() {
 		try {
+
+			ClassXmlDataLoader loader = new ClassXmlDataLoader("resource/");
+			// 这几个都是static的还没重构成依赖注入
+			FightService.effectData = loader.loadData(EffectData.class, "effectdata.xml");
+			FightService.godsData = loader.loadData(GodsData.class, "godsdata.xml");
+			FightService.godsEffectData = loader.loadData(GodsEffectData.class, "godseffect.xml");
+			FightService.skillData = loader.loadData(SkillData.class, "skilldata.xml");
+			FightService.skillLvData = loader.loadData(SkillLvData.class, "skillexp.xml");
 
 			dbManager = (DBManager) context.cachedObjects.get(DBManager.class);
 			dbManager.init(this);	// 数据库被其他模块init的时候依赖

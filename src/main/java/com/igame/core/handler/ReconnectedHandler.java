@@ -90,7 +90,7 @@ public abstract class ReconnectedHandler extends BaseHandler {
             return false;
         }
         int index = params.getInt("index");
-        MessageCache res = proMap.get(player.getPlayerId()).get(index);
+        MessageCache res = proMap.computeIfAbsent(player.getPlayerId(), pik -> new HashMap<>()).get(index);
         if(res != null){
             send(res.getCmdName(), res.getiSFSObject(), user);
             return true;

@@ -88,7 +88,7 @@ public class MonsterService implements ISFSModule {
 	/**
 	 * 同化等级配置
 	 */
-	@LoadXml("strengthenlevel.xml") public static TongHuaData tongHuaData;
+	@LoadXml("strengthenlevel.xml") public TongHuaData tongHuaData;
 
 	@Inject private ItemService itemService;
 	@Inject private MonsterDAO monsterDAO;
@@ -380,7 +380,7 @@ public class MonsterService implements ISFSModule {
 						String[] skills1 = mt.getSkill().split(",");
 						if(skills1 != null){
 							for(String skill : skills1){
-								if(Integer.valueOf(skills[i])<=0){
+								if(i>=skills.length||skills[i]==null||"".equals(skills[i])||Integer.valueOf(skills[i])<=0){
 									value.skillMap.put(Integer.parseInt(skill), 1);
 								}else{
 									value.skillMap.put(Integer.parseInt(skill), Integer.valueOf(skills[i]));

@@ -25,11 +25,11 @@ public class GateService implements ISFSModule, TimeListener {
     /**
      * 命运之门概率
      */
-    @LoadXml("destinyrate.xml")public static DestinyData destinyData;
+    @LoadXml("destinyrate.xml")public DestinyData destinyData;
     /**
      * 命运之门
      */
-    @LoadXml("destinydata.xml")public static FateData fateData;
+    @LoadXml("destinydata.xml")public FateData fateData;
 
     @Inject
     private MonsterService monsterService;
@@ -49,7 +49,7 @@ public class GateService implements ISFSModule, TimeListener {
      *
      * @return 命运之门
      */
-    public static List<GateDto> createGate(Player player){
+    public List<GateDto> createGate(Player player){
         List<GateDto> ls = Lists.newArrayList();
         int type = player.getFateData().getFirst();
         if(type == 0){
@@ -183,6 +183,29 @@ public class GateService implements ISFSModule, TimeListener {
         }
         return monsterService.createMonster(monsterId.toString(), monsterLevel.toString(), "", skillLv.toString(),"");
 
+    }
+
+    public List<GateDto> getGateDtos(Player player, List<GateDto> ls) {
+        for(int level = player.getFateData().getTodayFateLevel();level <= player.getFateData().getFateLevel();level++){
+            List<GateDto> temp = createGate(player);
+            boolean special = false;
+            for(GateDto gt : temp){
+                if(gt.getType() != 0){//怪物关卡直接获得宝箱
+                    special = true;//随机到特殊关卡就展示门
+                    break;
+                }
+            }
+            if(special){
+                ls = temp;
+            }else{
+                player.getFateData().addTempBoxCount(2);
+            }
+            player.getFateData().setTodayFateLevel(level);
+            if(!ls.isEmpty()){//随机到特殊关卡就展示门
+                break;
+            }
+        }
+        return ls;
     }
 
 }

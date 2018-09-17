@@ -43,7 +43,7 @@ public class GateResetHandler extends ReconnectedHandler {
 				player.getFateData().setTempBoxCount(-1);
 				player.getFateData().setTempSpecialCount(0);
 				player.getFateData().setAddRate(0);
-				ls = GateService.createGate(player);
+				ls = gateService.createGate(player);
 				player.getFateData().setGate(ls);
 //				MessageUtil.notifyDeInfoChange(player);
 				MessageUtil.notifyGateChange(player);

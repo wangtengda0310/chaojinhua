@@ -65,12 +65,12 @@ public class GateEnterHandler extends ReconnectedHandler {
 		List<MatchMonsterDto> lb = Lists.newArrayList();
 		int act = 0;
 		if(player.getFateData().getTodayFateLevel() < player.getFateData().getFateLevel()){//还在快速选门之中，未达到最高门
-			ls = getGateDtos(player, ls);
+			ls = gateService.getGateDtos(player, ls);
 			if(player.getFateData().getTempBoxCount() > 0){
 				MessageUtil.notifyDeInfoChange(player);
 			}
 			if(ls.isEmpty()){//说明已经达到昨天最高门,但都没有随机到特殊门
-				ls = GateService.createGate(player);
+				ls = gateService.createGate(player);
 			}
 			player.getFateData().setGate(ls);
 		}else{
@@ -79,7 +79,7 @@ public class GateEnterHandler extends ReconnectedHandler {
 				act = 1;
 				player.getFateData().addTempBoxCount(gto.getBoxCount());//加宝箱
 				player.getFateData().addTodayFateLevel();//到下一层
-				List<GateDto> gls = GateService.createGate(player);//创建新的门
+				List<GateDto> gls = gateService.createGate(player);//创建新的门
 				player.getFateData().setGate(gls);
 				MessageUtil.notifyDeInfoChange(player);
 				MessageUtil.notifyGateChange(player);
@@ -110,29 +110,6 @@ public class GateEnterHandler extends ReconnectedHandler {
 		}
 
 		return vo;
-	}
-
-	static List<GateDto> getGateDtos(Player player, List<GateDto> ls) {
-		for(int level = player.getFateData().getTodayFateLevel();level <= player.getFateData().getFateLevel();level++){
-			List<GateDto> temp = GateService.createGate(player);
-			boolean special = false;
-			for(GateDto gt : temp){
-				if(gt.getType() != 0){//怪物关卡直接获得宝箱
-					special = true;//随机到特殊关卡就展示门
-					break;
-				}
-			}
-			if(special){
-				ls = temp;
-			}else{
-				player.getFateData().addTempBoxCount(2);
-			}
-			player.getFateData().setTodayFateLevel(level);
-			if(!ls.isEmpty()){//随机到特殊关卡就展示门
-				break;
-			}
-		}
-		return ls;
 	}
 
 	@Override

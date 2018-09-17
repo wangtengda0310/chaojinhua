@@ -52,12 +52,12 @@ public class GateHandler extends ReconnectedHandler {
 
 
 		List<GateDto> ls = Lists.newArrayList();
-        ls = GateEnterHandler.getGateDtos(player, ls);
+        ls = gateService.getGateDtos(player, ls);
         if(player.getFateData().getTempBoxCount() > 0){
 			MessageUtil.notifyDeInfoChange(player);
 		}
 		if(ls.isEmpty()){//说明已经达到昨天最高门,但都没有随机到特殊门
-			ls = GateService.createGate(player);
+			ls = gateService.createGate(player);
 		}
 		player.getFateData().setGate(ls);
 
