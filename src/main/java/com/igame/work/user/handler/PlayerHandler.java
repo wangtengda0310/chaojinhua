@@ -278,10 +278,6 @@ public class PlayerHandler extends BaseHandler {
 		//初始化商店
 		shopService.initShop(player);
 
-		//初始化头像和头像框
-		headService.initHead(player);
-		headService.initFrame(player);
-
 		//初始化好友
 		friendService.newPlayer(player);
 
