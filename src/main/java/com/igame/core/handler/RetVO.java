@@ -1,6 +1,6 @@
 package com.igame.core.handler;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -46,9 +46,10 @@ public class RetVO {
 		this.data = data;
 	}
 
+	/**LinkedHashMap插入循序*/
 	public void addData(String key,Object value) {
 		if(this.data == null){
-			this.data = new HashMap<String,Object>();
+			this.data = new LinkedHashMap<>();
 		}
 		data.put(key, value);
 	}

@@ -99,9 +99,9 @@ public class MessageUtil {
 
 	public static void notifyTimeResToPlayer(Player player, int chapterId, RewardDto reward){
 		
-		RetVO vo = new RetVO();	
+		RetVO vo = new RetVO();
+		vo.addData("reward", ResourceService.getRewardString(reward));
     	vo.addData("chapterId", chapterId);
-    	vo.addData("checkReward", ResourceService.getRewardString(reward));
     	MessageUtil.sendMessageToPlayer(player, MProtrol.CHECKPOINT_RES_UPDATE, vo);
 		
 	}

@@ -60,8 +60,9 @@ public class CheckResHandler extends ReconnectedHandler {
 		if(reward.length() > 0){
 			reward = new StringBuilder(reward.substring(1));
 		}
+
+		vo.addData("reward", reward.toString());
 		vo.addData("chapterId", chapterIdstr);
-		vo.addData("checkReward", reward.toString());
 
 		return vo;
 	}
