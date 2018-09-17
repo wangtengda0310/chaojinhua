@@ -43,14 +43,9 @@ public class ShopService implements ISFSModule, TimeListener {
     @LoadXml("shoprandom_lv.xml") public ShopRandomLvData shopRandomLvData;
 
     @Inject private SessionManager sessionManager;
-    @Inject private ShopService shopService;
     @Inject private ShopDAO shopDAO;
 
     private Map<Long, ShopInfo> shopInfos = new ConcurrentHashMap<>();    //商店信息
-
-    public boolean existsShopInfo(Player player) {
-        return shopInfos.containsKey(player.getPlayerId());
-    }
 
     public ShopInfo getShopInfo(Player player) {
         return shopInfos.get(player.getPlayerId());
@@ -93,15 +88,6 @@ public class ShopService implements ISFSModule, TimeListener {
         reloadMysticalOnline();
     }
 
-    public void afterPlayerLogin(Player player) {
-
-        //初始化商店或者刷新
-        if (!shopService.existsShopInfo(player))
-            shopService.initShop(player);
-        else
-            shopService.reloadAll(player);
-
-    }
     /**
      * 初始化商店
      * @param player 玩家信息
@@ -189,37 +175,6 @@ public class ShopService implements ISFSModule, TimeListener {
     }
 
     /**
-     * 刷新全部商店 玩家登录触发
-     */
-    public ShopInfo reloadAll(Player player){
-        ShopInfo shopInfo = shopInfos.get(player.getPlayerId());
-
-        if (shopInfo.getMysticalShop().getShopId() != 0
-                && needRealod(shopInfo.getMysticalShop().getLastReload(),ShopConstants.ID_MysticalShop))
-            reloadShop(ShopConstants.ID_MysticalShop,shopInfo, false);
-
-        //无尽商店
-        if (needRealod(shopInfo.getWujinShop().getLastReload(),ShopConstants.ID_MysticalShop))
-            reloadShop(ShopConstants.ID_WUJINShop,shopInfo, false);
-
-        //斗技商店
-        if (needRealod(shopInfo.getDoujiShop().getLastReload(),ShopConstants.ID_MysticalShop))
-            reloadShop(ShopConstants.ID_DOUJIShop,shopInfo, false);
-
-        //起源商店
-        if (needRealod(shopInfo.getQiyuanShop().getLastReload(),ShopConstants.ID_MysticalShop))
-            reloadShop(ShopConstants.ID_QIYUANShop,shopInfo, false);
-
-        //部落商店
-        if (needRealod(shopInfo.getBuluoShop().getLastReload(),ShopConstants.ID_MysticalShop))
-            reloadShop(ShopConstants.ID_BULUOShop,shopInfo, false);
-
-        shopInfo.setDtate(2);   //更新
-
-        return shopInfo;
-    }
-
-    /**
      * 判断是否需要刷新
      * @param lastReload 上次刷新时间
      * @param shopId 商店ID
@@ -275,7 +230,7 @@ public class ShopService implements ISFSModule, TimeListener {
     private void reloadMysticalOnline() {
         for(Player player : sessionManager.getSessions().values()){
             ShopInfo shopInfo = shopInfos.get(player.getPlayerId());
-            shopService.reloadShop(ShopConstants.ID_MysticalShop, shopInfo, false);
+            reloadShop(ShopConstants.ID_MysticalShop, shopInfo, false);
 
             //推送
             RetVO vo = new RetVO();
@@ -290,10 +245,10 @@ public class ShopService implements ISFSModule, TimeListener {
     private void reloadGeneralOnline() {
         for(Player player : sessionManager.getSessions().values()){
             ShopInfo shopInfo = shopInfos.get(player.getPlayerId());
-            shopService.reloadShop(ShopConstants.ID_WUJINShop, shopInfo, false);
-            shopService.reloadShop(ShopConstants.ID_DOUJIShop, shopInfo, false);
-            shopService.reloadShop(ShopConstants.ID_QIYUANShop, shopInfo, false);
-            shopService.reloadShop(ShopConstants.ID_BULUOShop, shopInfo, false);
+            reloadShop(ShopConstants.ID_WUJINShop, shopInfo, false);
+            reloadShop(ShopConstants.ID_DOUJIShop, shopInfo, false);
+            reloadShop(ShopConstants.ID_QIYUANShop, shopInfo, false);
+            reloadShop(ShopConstants.ID_BULUOShop, shopInfo, false);
 
             //推送
             RetVO vo = new RetVO();
@@ -455,6 +410,36 @@ public class ShopService implements ISFSModule, TimeListener {
         } else {
             shopInfos.put(player.getPlayerId(), shopInfo);
         }
+    }
+
+    public void afterPlayerLogin(Player player) {
+        /*
+         * 刷新全部商店 玩家登录触发
+         */
+        ShopInfo shopInfo = shopInfos.computeIfAbsent(player.getPlayerId(),pid->initShop(player));
+
+        if (shopInfo.getMysticalShop().getShopId() != 0
+                && needRealod(shopInfo.getMysticalShop().getLastReload(),ShopConstants.ID_MysticalShop))
+            reloadShop(ShopConstants.ID_MysticalShop,shopInfo, false);
+
+        //无尽商店
+        if (needRealod(shopInfo.getWujinShop().getLastReload(),ShopConstants.ID_MysticalShop))
+            reloadShop(ShopConstants.ID_WUJINShop,shopInfo, false);
+
+        //斗技商店
+        if (needRealod(shopInfo.getDoujiShop().getLastReload(),ShopConstants.ID_MysticalShop))
+            reloadShop(ShopConstants.ID_DOUJIShop,shopInfo, false);
+
+        //起源商店
+        if (needRealod(shopInfo.getQiyuanShop().getLastReload(),ShopConstants.ID_MysticalShop))
+            reloadShop(ShopConstants.ID_QIYUANShop,shopInfo, false);
+
+        //部落商店
+        if (needRealod(shopInfo.getBuluoShop().getLastReload(),ShopConstants.ID_MysticalShop))
+            reloadShop(ShopConstants.ID_BULUOShop,shopInfo, false);
+
+        shopInfo.setDtate(2);   //更新
+
     }
 
     public void updatePlayer(Player player) {

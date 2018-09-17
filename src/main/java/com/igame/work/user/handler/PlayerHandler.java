@@ -276,7 +276,7 @@ public class PlayerHandler extends BaseHandler {
 		//player.getTeams()[0] = m1.getObjectId()+","  + m2.getObjectId() +",-1,-1,-1";
 
 		//初始化商店
-		shopService.initShop(player);
+		shopService.initShop(player);   // newPlayer
 
 		//初始化好友
 		friendService.newPlayer(player);
