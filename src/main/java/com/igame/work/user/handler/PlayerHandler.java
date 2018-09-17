@@ -151,12 +151,6 @@ public class PlayerHandler extends BaseHandler {
 			sendClient(MProtrol.PLAYER_ENTER,error(ErrorCode.NEWPLAYER_ERROR),user);
 		}
 
-		List<TaskDayInfo> qs = Lists.newArrayList();
-		for(TaskDayInfo td :questService.getAchievement(player.getPlayerId()).values()){
-			if(td.getDtate() != 3){
-				qs.add(td);
-			}
-		}
 //		for(TaskDayInfo td :player.getDayTask().values()){
 //			if(td.getDtate() != 3){
 //				qs.add(td);
@@ -176,6 +170,12 @@ public class PlayerHandler extends BaseHandler {
 		vo.addData("meetM", MyUtil.toString(player.getMeetM(), ","));
 		vo.addData("resC", checkPointService.getRec(player));
 		vo.addData("draw", player.getDraw());
+        List<TaskDayInfo> qs = Lists.newArrayList();
+        for(TaskDayInfo td :questService.getAchievement(player.getPlayerId()).values()){
+            if(td.getDtate() != 3){
+                qs.add(td);
+            }
+        }
 		vo.addData("quest", qs);
 		vo.addData("wuMap", player.getWuMap().values());
 		vo.addData("wuZheng", CheckPointService.parsePlayer(player));
