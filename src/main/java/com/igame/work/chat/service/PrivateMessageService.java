@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.igame.work.chat.dto.Message;
 import com.igame.work.user.dto.Player;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,7 +70,7 @@ public class PrivateMessageService {
     }
 
     public Map<Long, List<Message>> getPrivateMessages(Player player) {
-        return privateMessages.get(player.getPlayerId());
+        return privateMessages.computeIfAbsent(player.getPlayerId(),pid->new HashMap<>());
     }
 
     public void setPrivateMessages(Player player, Map<Long, List<Message>> messages) {

@@ -17,6 +17,7 @@ import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +46,7 @@ public class QuestService implements ISFSModule {
 	 */
 	public void checkPlayerQuest(Player player){
 			
-		for(TaskDayInfo td :achievement.get(player.getPlayerId()).values()){
+		for(TaskDayInfo td :getAchievement(player.getPlayerId()).values()){
 			if(questData.getTemplate(td.getQuestId()) == null){
 				td.setDtate(3);
 			}
@@ -368,7 +369,7 @@ public class QuestService implements ISFSModule {
 	}
 
 	public Map<Integer, TaskDayInfo> getAchievement(long playerId) {
-		return achievement.get(playerId);
+		return achievement.computeIfAbsent(playerId, pid->new HashMap<>());
 	}
 
 	public List<TaskDayInfo> reset(Player player) {

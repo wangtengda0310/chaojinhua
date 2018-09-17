@@ -8,6 +8,7 @@ import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -141,7 +142,7 @@ public class MailService {
     }
 
 	public Map<Integer, Mail> getMails(Player player) {
-		return playerMails.get(player.getPlayerId());
+		return playerMails.computeIfAbsent(player.getPlayerId(),pid->new HashMap<>());
 	}
 
 	public void updatePlayer(Player player) {

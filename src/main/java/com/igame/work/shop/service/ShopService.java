@@ -145,9 +145,6 @@ public class ShopService implements ISFSModule, TimeListener {
 
         shopInfo.setBuluoShop(buluoShop);
 
-        //刷新商店
-        reloadAll(player);
-
         shopInfos.put(player.getPlayerId(), shopInfo);
 
         return shopInfo;
@@ -443,7 +440,12 @@ public class ShopService implements ISFSModule, TimeListener {
     }
 
     public void loadPlayer(Player player) {
-        shopInfos.put(player.getPlayerId(), shopDAO.getShopInfoByPlayerId(player.getPlayerId()));
+        ShopInfo shopInfo = shopDAO.getShopInfoByPlayerId(player.getPlayerId());
+        if (shopInfo == null) {
+            initShop(player);
+        } else {
+            shopInfos.put(player.getPlayerId(), shopInfo);
+        }
     }
 
     public void updatePlayer(Player player) {
