@@ -1,17 +1,18 @@
 package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
+import com.igame.core.handler.ReconnectedHandler;
+import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
-import com.igame.core.handler.ReconnectedHandler;
-import com.igame.core.handler.RetVO;
-import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
+
+import java.util.Arrays;
 
 /**
  * 
@@ -31,16 +32,20 @@ public class EndlessZhenHandler extends ReconnectedHandler {
 		if(!player.getWuZheng().isEmpty()){
 			return error(ErrorCode.WUZHENG_ERROR);
 		}else{
-			FightData fd = new FightData(player);
-			if(fd.getMonsters().size() < 4){
+			long count = Arrays.stream(player.getTeams().get(player.getCurTeam()).getTeamMonster()).filter(mid -> mid > 0).count();
+			if (count < 4) {
 				return error(ErrorCode.WUZHENG_COUNT_ERROR);
-			}else{
-		    	for(Monster m : fd.getMonsters().values()){
-		    		MatchMonsterDto mto = new MatchMonsterDto(m);
-					mto.reCalGods(player.callFightGods(), null);
-		    		player.getWuZheng().put(mto.getObjectId(),mto);
-		    	}
 			}
+
+			// todo extract method
+			long[] teamMonster = player.getTeams().get(player.getCurTeam()).getTeamMonster();
+			for (int i = 0; i < teamMonster.length; i++) {
+				Monster m = player.getMonsters().get(teamMonster[i]);
+				MatchMonsterDto mto = new MatchMonsterDto(m, i);
+				mto.reCalGods(player.callFightGods(), null);
+				player.getWuZheng().put(mto.getObjectId(),mto);
+			}
+
 		}
 
 		MessageUtil.notifyWuZhengChange(player);

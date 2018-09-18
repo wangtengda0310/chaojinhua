@@ -180,23 +180,21 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
             MonsterTemplate mt = monsterService.MONSTER_DATA.getMonsterTemplate(Integer.parseInt(monsterId));
             if(mt != null && mt.getSkill() != null){
                 String[] skills = mt.getSkill().split(",");
-                if(skills != null){
-                    for(String skill : skills){
-                        if(skillLv<=0){
-                            monster.skillMap.put(Integer.parseInt(skill), 1);
-                        }else{
-                            monster.skillMap.put(Integer.parseInt(skill), skillLv);
-                        }
-
-                        monster.skillExp.put(Integer.parseInt(skill), 0);
+                for(String skill : skills){
+                    if(skillLv<=0){
+                        monster.skillMap.put(Integer.parseInt(skill), 1);
+                    }else{
+                        monster.skillMap.put(Integer.parseInt(skill), skillLv);
                     }
+
+                    monster.skillExp.put(Integer.parseInt(skill), 0);
                 }
                 monster.atkType = mt.getAtk_type();
             }
             monsterService.initSkillString(monster);
             monsterService.reCalLevelValue(Integer.parseInt(monsterId),monster,true);
             monsterService.reCalEquip(Integer.parseInt(monsterId),monster);
-            matchMonsterDtos.add(new MatchMonsterDto(monster));
+            matchMonsterDtos.add(new MatchMonsterDto(monster,-1));
         }
 
         return matchMonsterDtos;

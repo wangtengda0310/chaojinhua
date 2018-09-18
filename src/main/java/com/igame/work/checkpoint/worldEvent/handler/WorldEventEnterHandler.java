@@ -11,8 +11,6 @@ import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
 import com.igame.work.checkpoint.worldEvent.WorldEventService;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
-import com.igame.work.fight.dto.FightBase;
-import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
@@ -84,15 +82,15 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 		checkPointService.setEnterWordEventTime(player);
 		worldEventService.setEnterWordEventId(player,eventType+"_"+level);
 
-		//生成怪兽
-		FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(wt.getMonsterId(), wt.getMlevel(), wt.getSite(),"","")));
-		player.setFightBase(fb);
 		List<MatchMonsterDto> lb = Lists.newArrayList();
-		for(Monster m : fb.getFightB().getMonsters().values()){
-			MatchMonsterDto mto = new MatchMonsterDto(m);
+		// todo extract method
+		Map<Long, Monster> monster = monsterService.createMonster(wt.getMonsterId(), wt.getMlevel(), wt.getSite(),"","");
+		monster.forEach((mid, m) -> {
+			int i = mid.intValue();
+			MatchMonsterDto mto = new MatchMonsterDto(m, i);
 			mto.reCalGods(player.callFightGods(), null);
 			lb.add(mto);
-		}
+		});
 
 		vo.addData("m", lb);
 

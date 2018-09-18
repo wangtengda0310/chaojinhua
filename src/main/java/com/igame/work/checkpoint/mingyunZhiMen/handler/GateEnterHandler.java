@@ -10,17 +10,13 @@ import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.mingyunZhiMen.GateDto;
 import com.igame.work.checkpoint.mingyunZhiMen.GateService;
-import com.igame.work.fight.dto.FightBase;
-import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 
@@ -86,15 +82,15 @@ public class GateEnterHandler extends ReconnectedHandler {
 				questService.processTask(player, 10, 1);
 			}else {//普通怪物
 				act = 0;
-				Map<Long,Monster> mms = gto.getMons();
-				FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,mms));
-//				player.setFightBase(fb);
 
-				for(Monster m : fb.getFightB().getMonsters().values()){
-					MatchMonsterDto mto = new MatchMonsterDto(m);
+				// todo extract method
+				gto.getMons().forEach((mid, m) -> {
+					int i = mid.intValue();
+					MatchMonsterDto mto = new MatchMonsterDto(m, i);
 					mto.reCalGods(player.callFightGods(), null);
 					lb.add(mto);
-				}
+				});
+
 			}
 		}
 

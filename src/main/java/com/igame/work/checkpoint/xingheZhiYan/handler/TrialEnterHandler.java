@@ -11,8 +11,6 @@ import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.xingheZhiYan.TrialdataTemplate;
 import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanService;
-import com.igame.work.fight.dto.FightBase;
-import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
@@ -22,6 +20,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -84,16 +83,17 @@ public class TrialEnterHandler extends ReconnectedHandler {
 				if(equips.length() > 0){
 					equips = equips.substring(1);
 				}
-				
-				FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(ct.getMonsterData(), ct.getMonsterLv(), "",ct.getMonsterSkilllv(),equips)));
-//				player.setFightBase(fb);
-		    	for(Monster m : fb.getFightB().getMonsters().values()){
-		    		MatchMonsterDto mto = new MatchMonsterDto(m);
+
+				// todo extract method
+				Map<Long, Monster> monster = monsterService.createMonster(ct.getMonsterData(), ct.getMonsterLv()
+						, "", ct.getMonsterSkilllv(), equips);
+				monster.forEach((mid, m) -> {
+					int i = mid.intValue();
+					MatchMonsterDto mto = new MatchMonsterDto(m, i);
 					mto.reCalGods(player.callFightGods(), null);
-		    		lb.add(mto);
-		    	}
-//				   pvpFightService,fights.put(fb.getObjectId(), fb);
-				
+					lb.add(mto);
+				});
+
 			}
 			
 		}

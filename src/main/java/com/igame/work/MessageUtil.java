@@ -2,7 +2,6 @@ package com.igame.work;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.ExceptionLog;
 import com.igame.util.MyUtil;
@@ -11,13 +10,12 @@ import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.mingyunZhiMen.FateDto;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.dto.FightBase;
-import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.item.dto.Item;
+import com.igame.work.mail.Mail;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.quest.dto.TaskDayInfo;
-import com.igame.work.mail.Mail;
 import com.igame.work.user.dto.MessageCache;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;
@@ -234,31 +232,31 @@ public class MessageUtil {
 	 * 匹配结束
 	 */
 	public static void notifyMatchEnd(FightBase fb){
-		
-		RetVO vo = new RetVO();			
-    	vo.addData("i", fb.getFightB().getPlayer().getPlayerId());
-    	vo.addData("n", fb.getFightB().getPlayer().getUsername());
-    	vo.addData("l", fb.getFightB().getPlayer().getPlayerLevel());    	
-    	List<MatchMonsterDto> la = Lists.newArrayList();
-    	for(Monster m : fb.getFightB().getMonsters().values()){
-    		MatchMonsterDto mto = new MatchMonsterDto(m);
-    		la.add(mto);
-    	}
-    	vo.addData("m", la);
-		MessageUtil.sendMessageToPlayer(fb.getFightA().getPlayer(), MProtrol.F_P_E, vo);
-		
-		
-		RetVO vo2 = new RetVO();			
-    	vo2.addData("i", fb.getFightA().getPlayer().getPlayerId());
-    	vo2.addData("n", fb.getFightA().getPlayer().getUsername());
-    	vo2.addData("l", fb.getFightA().getPlayer().getPlayerLevel());    	
-    	List<MatchMonsterDto> lb = Lists.newArrayList();
-    	for(Monster m : fb.getFightA().getMonsters().values()){
-    		MatchMonsterDto mto = new MatchMonsterDto(m);
-    		lb.add(mto);
-    	}
-    	vo2.addData("m", lb);
-		MessageUtil.sendMessageToPlayer(fb.getFightB().getPlayer(), MProtrol.F_P_E, vo2);
+
+//		RetVO vo = new RetVO();
+//    	vo.addData("i", fb.getFightB().getPlayer().getPlayerId());
+//    	vo.addData("n", fb.getFightB().getPlayer().getUsername());
+//    	vo.addData("l", fb.getFightB().getPlayer().getPlayerLevel());
+//    	List<MatchMonsterDto> la = Lists.newArrayList();
+//    	for(Monster m : fb.getFightB().getMonsters().values()){
+//    		MatchMonsterDto mto = new MatchMonsterDto(m);
+//    		la.add(mto);
+//    	}
+//    	vo.addData("m", la);
+//		MessageUtil.sendMessageToPlayer(fb.getFightA().getPlayer(), MProtrol.F_P_E, vo);
+//
+//
+//		RetVO vo2 = new RetVO();
+//    	vo2.addData("i", fb.getFightA().getPlayer().getPlayerId());
+//    	vo2.addData("n", fb.getFightA().getPlayer().getUsername());
+//    	vo2.addData("l", fb.getFightA().getPlayer().getPlayerLevel());
+//    	List<MatchMonsterDto> lb = Lists.newArrayList();
+//    	for(Monster m : fb.getFightA().getMonsters().values()){
+//    		MatchMonsterDto mto = new MatchMonsterDto(m);
+//    		lb.add(mto);
+//    	}
+//    	vo2.addData("m", lb);
+//		MessageUtil.sendMessageToPlayer(fb.getFightB().getPlayer(), MProtrol.F_P_E, vo2);
 		
 
 

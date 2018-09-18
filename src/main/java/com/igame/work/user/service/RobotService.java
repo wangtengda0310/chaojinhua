@@ -1,7 +1,6 @@
 package com.igame.work.user.service;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
@@ -10,8 +9,6 @@ import com.igame.core.quartz.TimeListener;
 import com.igame.util.GameMath;
 import com.igame.work.fight.arena.ArenaService;
 import com.igame.work.fight.arena.ArenadataTemplate;
-import com.igame.work.fight.dto.FightBase;
-import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.fight.service.ComputeFightService;
@@ -61,7 +58,6 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     			rb.setPlayerFrameId(player.getPlayerFrameId());
     			rb.setPlayerHeadId(player.getPlayerHeadId());
     			rb.setFightValue(player.getFightValue());
-    			FightData fd = new FightData(player);
     			Team team = player.getTeams().get(player.getCurTeam());
     			if(team != null){
     				Gods gods = player.getGods().get(team.getTeamGod());
@@ -69,12 +65,19 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     					rb.setGods(new GodsDto(gods));
     				}
     			}
-    			List<MatchMonsterDto> mon = Lists.newArrayList();
-    	    	for(Monster m : fd.getMonsters().values()){
-    	    		MatchMonsterDto mto = new MatchMonsterDto(m);
-    	    		mon.add(mto);
-    	    	}
-    			rb.setMon(mon);
+
+				List<MatchMonsterDto> mon = Lists.newArrayList();
+
+				// todo extract method
+				long[] teamMonster = player.getTeams().get(player.getCurTeam()).getTeamMonster();
+				for (int i = 0; i < teamMonster.length; i++) {
+					Monster m = player.getMonsters().get(teamMonster[i]);
+					MatchMonsterDto mto = new MatchMonsterDto(m, i);
+					mto.reCalGods(player.callFightGods(), null);	// todo 这跟其他的不一样
+					mon.add(mto);	// todo 这跟其他的不一样
+				}
+
+				rb.setMon(mon);
 
 				robot.put(player.getUsername(), rb);
     		}
@@ -141,22 +144,28 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     		if(monsterLevel.length() > 0){
     			monsterLevel = new StringBuilder(monsterLevel.substring(1));
     		}
-			FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(monsterId.toString(), monsterLevel.toString(), "", "","")));
-			
-	    	for(Monster m : fb.getFightB().getMonsters().values()){
-	    		MatchMonsterDto mto = new MatchMonsterDto(m);
-	    		rto.getMon().add(mto);
+
+			// todo extract method 跟别的方法不一样
+			Map<Long, Monster> monster = monsterService.createMonster(monsterId.toString(), monsterLevel.toString(), "", "","");
+			for( Map.Entry<Long, Monster> entry:monster.entrySet()) {
+				int i = entry.getKey().intValue();
+				Monster m = entry.getValue();
+				MatchMonsterDto mto = new MatchMonsterDto(m, i);
 				computeFightService.computeMonsterFight(m);
-				//m.reCalFightValue();
+				mto.reCalGods(player.callFightGods(), null);
+				rto.getMon().add(mto);
 				fightValue += m.getFightValue();
-	    	}
-	    	rto.setFightValue(fightValue);
+			}
+
+			rto.setFightValue(fightValue);
     	}
     	return rto;
     }
     
 
 	public static RobotDto createRobotLike(Player player) {
+		Team team = player.getTeams().get(6);
+
 		RobotDto rb;
 		rb = new RobotDto();
 		rb.setDtate(1);
@@ -166,37 +175,25 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 		rb.setName(player.getNickname());
 		rb.setPlayerFrameId(player.getPlayerFrameId());
 		rb.setPlayerHeadId(player.getPlayerHeadId());
-		rb.setFightValue(player.getTeams().get(6).getFightValue());
-		Map<Long,Monster> monsters = Maps.newHashMap();
-		long[] mms = player.getTeams().get(6).getTeamMonster();
-		int i = 1;
-		for(long mid : mms){
-			if(-1 != mid && 0 != mid){
-				Monster mm = player.getMonsters().get(mid);
-				if(mm != null){	
-					mm.resetFightProp(i);
-					monsters.put(mm.getObjectId(), mm);
-					i++;
-					if(i > 5){
-						i = 1;
-					}
-				}
-			}
-		}
-		
+		rb.setFightValue(team.getFightValue());
+
 		//防守阵容神灵
-		Team team = player.getTeams().get(6);
-		if(team != null){
-			Gods gods = player.getGods().get(team.getTeamGod());
-			if(gods != null){
-				rb.setGods(new GodsDto(gods));
-			}
+		Gods gods = player.getGods().get(team.getTeamGod());
+		if(gods != null){
+			rb.setGods(new GodsDto(gods));
 		}
+
 		List<MatchMonsterDto> mon = Lists.newArrayList();
-		for(Monster m : monsters.values()){
-			MatchMonsterDto mto = new MatchMonsterDto(m);
+
+		// todo extract method
+		long[] teamMonster = team.getTeamMonster();
+		for (int i = 0; i < teamMonster.length; i++) {
+			Monster m = player.getMonsters().get(teamMonster[i]);
+			MatchMonsterDto mto = new MatchMonsterDto(m, i);
+			mto.reCalGods(player.callFightGods(), null);
 			mon.add(mto);
 		}
+
 		rb.setMon(mon);
 		rb.setType(1);
 		return rb;

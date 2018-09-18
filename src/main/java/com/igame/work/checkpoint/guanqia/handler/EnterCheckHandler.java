@@ -11,11 +11,8 @@ import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
-import com.igame.work.fight.dto.FightBase;
-import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.fight.service.FightUtil;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
@@ -190,11 +187,11 @@ public class EnterCheckHandler extends ReconnectedHandler {
 		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
 		if(ct != null){
 			if(ct.getRound() == 1){//一周目
-				FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(ct.getMonsterId(), ct.getLevel(), ct.getSite(),"",ct.getMonsterProp())));
-
-		    	for(Monster m : fb.getFightB().getMonsters().values()){
+				Map<Long, Monster> monster = monsterService.createMonster(ct.getMonsterId(), ct.getLevel(), ct.getSite(), "", ct.getMonsterProp());
+				for(Map.Entry<Long, Monster> e : monster.entrySet()){
+					Monster m = e.getValue();
 		    		m.setObjectId(idx.incrementAndGet());
-		    		MatchMonsterDto mto = new MatchMonsterDto(m);
+		    		MatchMonsterDto mto = new MatchMonsterDto(m,e.getKey().intValue());
 		    		mto.reCalGods(player.callFightGods(), null);//神灵被动属性
 		    		mto.setRound("1-1");
 		    		lb.add(mto);
@@ -207,15 +204,16 @@ public class EnterCheckHandler extends ReconnectedHandler {
 				if(mid.length > 0){
 					int index = 1;
 					for(int i =0;i<mid.length;i++){
-						FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(mid[i], lv[i], site[i],"",ct.getMonsterProp())));
+						Map<Long, Monster> monster = monsterService.createMonster(mid[i], lv[i], site[i], "", ct.getMonsterProp());
 
-				    	for(Monster m : fb.getFightB().getMonsters().values()){
-				    		m.setObjectId(idx.incrementAndGet());
-				    		MatchMonsterDto mto = new MatchMonsterDto(m);
-				    		mto.reCalGods(player.callFightGods(), null);//神灵被动属性
-				    		mto.setRound(ct.getRound()+"-"+index);
-				    		lb.add(mto);
-				    	}
+						for (Map.Entry<Long, Monster> e : monster.entrySet()) {
+							Monster m = e.getValue();
+							m.setObjectId(idx.incrementAndGet());
+							MatchMonsterDto mto = new MatchMonsterDto(m, e.getKey().intValue());
+							mto.reCalGods(player.callFightGods(), null);//神灵被动属性
+							mto.setRound(ct.getRound() + "-" + index);
+							lb.add(mto);
+						}
 				    	index++;
 					}
 				}

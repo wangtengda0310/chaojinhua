@@ -12,8 +12,6 @@ import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.checkpoint.wujinZhiSen.EndlessdataTemplate;
-import com.igame.work.fight.dto.FightBase;
-import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
@@ -24,6 +22,7 @@ import net.sf.json.JSONObject;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -98,16 +97,17 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 			if(equips.length() > 0){
 				equips = equips.substring(1);
 			}
-			
-			FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null,monsterService.createMonster(ct[3], ct[4], "","",equips)));
-//			player.setFightBase(fb);
-			
-	    	for(Monster m : fb.getFightB().getMonsters().values()){
-	    		MatchMonsterDto mto = new MatchMonsterDto(m);
+
+			// todo extract method
+			Map<Long, Monster> monster = monsterService.createMonster(ct[3], ct[4], "","",equips);
+			monster.forEach((mid, m) -> {
+				int i = mid.intValue();
+				MatchMonsterDto mto = new MatchMonsterDto(m, i);
 				mto.reCalGods(player.callFightGods(), null);
-	    		lb.add(mto);
-	    	}
-	    	List<WuEffect> ls = Lists.newArrayList();
+				lb.add(mto);
+			});
+
+			List<WuEffect> ls = Lists.newArrayList();
 	    	if(buffer > 0 && currIndex != Integer.parseInt(ll.get(0).split(";")[0]) && player.getWuEffect().size() < total){
 				endlessService.tempBufferId.put(player.getPlayerId(), buffer);
 	    		ls.addAll(player.getWuEffect());

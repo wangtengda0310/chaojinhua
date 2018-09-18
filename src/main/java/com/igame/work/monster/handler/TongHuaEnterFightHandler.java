@@ -7,8 +7,6 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
-import com.igame.work.fight.dto.FightBase;
-import com.igame.work.fight.dto.FightData;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.data.StrengthenmonsterTemplate;
 import com.igame.work.monster.dto.Monster;
@@ -19,6 +17,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -74,13 +73,15 @@ public class TongHuaEnterFightHandler extends ReconnectedHandler {
 					}
 
 					StrengthenmonsterTemplate mt = monsterService.strengthenmonsterData.getTemplate(Integer.parseInt(t[3]));
-					FightBase fb  = new FightBase(player.getPlayerId(),new FightData(player),new FightData(null, monsterService.createMonster(String.valueOf(mt.getMonster_id()), String.valueOf(mt.getMonster_lv()), "1","","")));
-					player.setFightBase(fb);
-					for(Monster m : fb.getFightB().getMonsters().values()){
-						MatchMonsterDto mto = new MatchMonsterDto(m);
+
+					// todo extract method
+					Map<Long, Monster> monster = monsterService.createMonster(String.valueOf(mt.getMonster_id()), String.valueOf(mt.getMonster_lv()), "1","","");
+					monster.forEach((mid, m) -> {
+						int i = mid.intValue();
+						MatchMonsterDto mto = new MatchMonsterDto(m, i);
 						mto.reCalGods(player.callFightGods(), null);
 						lb.add(mto);
-					}
+					});
 
 
 				}

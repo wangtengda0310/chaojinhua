@@ -83,8 +83,9 @@ public class MatchMonsterDto   implements Cloneable  {
 		
 	}
 	
-	public MatchMonsterDto(Monster monster){
-		
+	public MatchMonsterDto(Monster monster, int site){
+		monster.resetFightProp(site);
+
 		this.objectId = monster.getObjectId();
 		this.level = monster.getLevel();
 		this.monsterId = monster.getMonsterId();
