@@ -29,8 +29,8 @@ public class ServerListHandler extends ClientDispatcherHandler {
 	private static String notice = "公告信息公告信息";
 	
 	static {
-		servers.put(1,new ServerInfo(1, "一服", 1,1));
-		servers.put(2,new ServerInfo(2, "二服", 2,2));
+		servers.put(1,new ServerInfo(1, "王腾达", "game1", 1, 1));
+		servers.put(2,new ServerInfo(2, "内网外网测试服","game2", 2,2));
 	}
 
 	@Inject private PlayerDAO playerDAO;
@@ -44,14 +44,14 @@ public class ServerListHandler extends ClientDispatcherHandler {
 		vo.setIndex(index);
 		//获取所有服务器此用户ID下的角色
 		Map<Integer,Player> all = playerDAO.getAllUser(Long.parseLong(user.getName()));
-		ServerInfo curr = new ServerInfo(servers.get(1).getServerId(),servers.get(1).getServerName(),servers.get(1).getStatus(),servers.get(1).getWorldRoomId());
+		ServerInfo curr = new ServerInfo(servers.get(1).getServerId(),servers.get(1).getServerName(),servers.get(1).getZoneName(),servers.get(1).getStatus(),servers.get(1).getWorldRoomId());
 		if(all.get(servers.get(1).getServerId()) != null){
 			curr.setHas(true);
 		}
 		vo.addData("currentInfo", curr); 
 		List<ServerInfo> ss = Lists.newArrayList();
 		for(ServerInfo si : servers.values()){
-			ServerInfo temp = new ServerInfo(si.getServerId(),si.getServerName(),si.getStatus(),si.getWorldRoomId());
+			ServerInfo temp = new ServerInfo(si.getServerId(),si.getServerName(),si.getZoneName(), si.getStatus(),si.getWorldRoomId());
 			if(all.get(si.getServerId()) != null){
 				temp.setHas(true);
 			}
