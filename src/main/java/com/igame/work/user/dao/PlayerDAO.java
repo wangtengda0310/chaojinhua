@@ -2,9 +2,11 @@ package com.igame.work.user.dao;
 
 import com.google.common.collect.Maps;
 import com.igame.core.db.AbsDao;
+import com.igame.core.di.Inject;
 import com.igame.core.log.ExceptionLog;
+import com.igame.work.serverList.ServerInfo;
+import com.igame.work.serverList.ServerManager;
 import com.igame.work.user.dto.Player;
-import com.igame.work.serverList.ServerListHandler;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.UpdateOperations;
 
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerDAO extends AbsDao {
+	@Inject private ServerManager serverManager;
 
     /**
      * 获取角色对象
@@ -32,7 +35,8 @@ public class PlayerDAO extends AbsDao {
     public Map<Integer,Player> getAllUser(long userId){
     	Map<Integer,Player> all = Maps.newHashMap();
     	
-    	for(Integer serverId :ServerListHandler.servers.keySet()){
+    	for(ServerInfo serverInfo :serverManager.servers){
+			String serverId = serverInfo.getServerId();
     		Player p = null;
     		try{
     			p = getDatastore().find(Player.class, "userId", userId).get();
@@ -40,7 +44,7 @@ public class PlayerDAO extends AbsDao {
     			ExceptionLog.error("PlayerDAO.getAllUser ERROR,serverId:" + serverId+",userId:" + userId);
     		}
     		if(p != null){
-    			all.put(serverId, p);
+    			all.put(Integer.parseInt(serverId), p);
     		}
     	}
     	

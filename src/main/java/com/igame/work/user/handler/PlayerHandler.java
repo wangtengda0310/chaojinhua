@@ -42,7 +42,7 @@ import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.quest.dto.TaskDayInfo;
 import com.igame.work.quest.service.QuestService;
-import com.igame.work.serverList.ServerListHandler;
+import com.igame.work.serverList.ServerManager;
 import com.igame.work.shop.service.ShopService;
 import com.igame.work.sign.SignService;
 import com.igame.work.turntable.service.TurntableService;
@@ -100,6 +100,7 @@ public class PlayerHandler extends ClientDispatcherHandler {
 	@Inject private PlayerCacheService playerCacheService;
 	@Inject private ArenaService arenaService;
 	@Inject private GateHandler gateService;
+	@Inject private ServerManager serverManager;
 
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
@@ -118,7 +119,7 @@ public class PlayerHandler extends ClientDispatcherHandler {
 		ObjectMapper mapper = new ObjectMapper();
 		String json = null;
 		ISFSObject res = new SFSObject();
-		if(!ServerListHandler.servers.containsKey(serverId)){//不存在的服务器ID
+		if(!serverManager.exists(serverId)){//不存在的服务器ID
 			sendClient(MProtrol.PLAYER_ENTER,error(ErrorCode.SERVER_NOT),user);
 			return;
 		}

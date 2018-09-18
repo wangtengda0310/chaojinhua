@@ -1,5 +1,7 @@
 package com.igame.work.serverList;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 
  * @author Marcus.Z
@@ -7,10 +9,11 @@ package com.igame.work.serverList;
  */
 public class ServerInfo {
 	
-	public int serverId;//服务器ID
+	public String serverId;//服务器ID
 	
 	public String serverName;//服务器列表
 
+	@JsonProperty("Zone")   // 客户端有个字段保存在只读文件里 需要指定一下名字
 	public String zoneName;//SmartFoxServer配置的zone name
 
 	public String ip;
@@ -25,7 +28,7 @@ public class ServerInfo {
 	public ServerInfo(){}
 
 
-	public ServerInfo(int serverId, String serverName, String zoneName, int status, int worldRoomId, String ip, int port) {
+	public ServerInfo(String serverId, String serverName, String zoneName, int status, int worldRoomId, String ip, int port) {
 		this.serverId = serverId;
 		this.serverName = serverName;
 		this.zoneName = zoneName;
@@ -35,7 +38,7 @@ public class ServerInfo {
 		this.port = port;
 	}
 
-	public ServerInfo(int serverId, String serverName, String zoneName, int status, int worldRoomId) {
+	public ServerInfo(String serverId, String serverName, String zoneName, int status, int worldRoomId) {
 		this.serverId = serverId;
 		this.serverName = serverName;
 		this.zoneName = zoneName;
@@ -45,11 +48,11 @@ public class ServerInfo {
 
 
 
-	public int getServerId() {
+	public String getServerId() {
 		return serverId;
 	}
 
-	public void setServerId(int serverId) {
+	public void setServerId(String serverId) {
 		this.serverId = serverId;
 	}
 
