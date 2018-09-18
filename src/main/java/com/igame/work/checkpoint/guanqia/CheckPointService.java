@@ -100,13 +100,13 @@ public class CheckPointService implements ISFSModule, TimeListener {
 		calPlayerTimeRes();
 	}
 
-	private Map<Long,Object> timeLock = new ConcurrentHashMap();//定时同步锁
+	private Map<Long,Object> timeLock = new ConcurrentHashMap<>();//定时同步锁
 
 	public Object getTimeLock(Player player) {
 		return timeLock.computeIfAbsent(player.getPlayerId(), pid->new Object());
 	}
 	//定时执行玩家金币关卡计算
-	private void calPlayerTimeRes(){
+	private void calPlayerTimeRes(){	// todo 这逻辑停复杂 全服计算还有锁 会阻塞了定时器线程
 		for(Player player : sessionManager.getSessions().values()){
 			synchronized (getTimeLock(player)) {
 				if(!player.getTimeResCheck().isEmpty()){

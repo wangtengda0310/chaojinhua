@@ -102,7 +102,7 @@ public class TongHuaGetHandler extends ReconnectedHandler {
 		vo.addData("info", info);
 		vo.addData("timeIndex", timeIndex);
 		vo.addData("leftTime", leftTime);
-		vo.addData("checkReward", reward);
+		vo.addData("reward", reward);
 
 		return vo;
 	}

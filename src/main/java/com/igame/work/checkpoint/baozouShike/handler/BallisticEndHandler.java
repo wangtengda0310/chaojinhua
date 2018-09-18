@@ -89,7 +89,7 @@ public class BallisticEndHandler extends ReconnectedHandler {
         //返回
         vo.addData("playerExp", BALL_REWARD_EXP);
         vo.addData("monsterExp", monsterExpStr);
-        vo.addData("checkReward",reward);
+        vo.addData("reward",reward);
 
         return vo;
     }

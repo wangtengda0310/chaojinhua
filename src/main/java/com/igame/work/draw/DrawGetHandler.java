@@ -164,7 +164,7 @@ public class DrawGetHandler extends ReconnectedHandler {
 		vo.addData("drawType", drawType);
 		vo.addData("type", type);
 		vo.addData("number", number);
-		vo.addData("checkReward", reward.toString());
+		vo.addData("reward", reward.toString());
 
 		return vo;
 	}

@@ -56,7 +56,7 @@ public class OneLotteryHandler extends ReconnectedHandler {
 
         fireEvent(player, PlayerEvents.TURN_TABLE,1);
         vo.addData("site",site);
-        vo.addData("checkReward",reward);
+        vo.addData("reward",reward);
 
         return vo;
     }

@@ -51,7 +51,7 @@ public class VipRecDayPackHandler extends ReconnectedHandler {
 
         RetVO vo = new RetVO();
 
-        vo.addData("checkReward",dayPack);
+        vo.addData("reward",dayPack);
         return vo;
     }
 

@@ -68,7 +68,7 @@ public class GateRewardHandler extends ReconnectedHandler {
 
 //		}
 
-		vo.addData("checkReward", reward);
+		vo.addData("reward", reward);
 
 		return vo;
 	}

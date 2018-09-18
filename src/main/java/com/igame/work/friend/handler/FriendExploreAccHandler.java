@@ -105,7 +105,7 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
 
         vo.addData("leftTime", tansuoDto.getLeftTime());
         vo.addData("exploreCount",helpedFriendsOf(player).count());
-        vo.addData("checkReward",reward);
+        vo.addData("reward",reward);
         return vo;
     }
 

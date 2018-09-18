@@ -66,7 +66,7 @@ public class TenLotteryHandler extends ReconnectedHandler {
 
         fireEvent(player, PlayerEvents.TURN_TABLE,10);
 
-        vo.addData("checkReward",sb);
+        vo.addData("reward",sb);
         return vo;
     }
 

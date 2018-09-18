@@ -98,7 +98,7 @@ public class EndlessEndHandler extends ReconnectedHandler {
 		}
 
 		vo.addData("win", win);
-		vo.addData("checkReward", reward);
+		vo.addData("reward", reward);
 
 		return vo;
 	}

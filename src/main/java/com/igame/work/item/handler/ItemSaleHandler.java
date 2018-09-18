@@ -74,7 +74,7 @@ public class ItemSaleHandler extends ReconnectedHandler {
 		if (gold != 0)
 			resourceService.addGold(player,gold);
 
-		vo.addData("checkReward","1,1,"+gold);
+		vo.addData("reward","1,1,"+gold);
 		vo.addData("failed",failed);
 		return vo;
 	}
