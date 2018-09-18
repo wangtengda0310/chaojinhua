@@ -3,7 +3,7 @@ package com.igame.work.user.handler;
 
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ClientDispatcherHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.DateUtil;
 import com.igame.work.MProtrol;
@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Marcus.Z
  *
  */
-public class HeartHandler extends BaseHandler{
+public class HeartHandler extends ClientDispatcherHandler {
     private Map<Long, Integer> timer = new ConcurrentHashMap<>();
     @Inject private SessionManager sessionManager;
     @Inject private PlayerCacheService playerCacheService;

@@ -7,22 +7,18 @@ import com.igame.core.event.ServiceEventListener;
 import com.igame.work.PlayerEvents;
 import com.igame.work.ServiceEvents;
 import com.igame.work.user.dto.Player;
+import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 import com.smartfoxserver.v2.entities.variables.SFSRoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
-import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
+import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
 
 import java.util.Collection;
 import java.util.Collections;
 
-/**
- * @author xym
- */
-public abstract class BaseHandler extends BaseClientRequestHandler implements ISFSModule, GameHandler {
-    public abstract int protocolId();
-
+public abstract class EventDispatcherHandler extends BaseServerEventHandler implements ISFSModule, GameHandler {
     @Override
     public void init() {
         EventManager eventManager = (EventManager) extensionHolder.SFSExtension.getApplicationContext().cachedObjects.get(EventManager.class);
@@ -96,4 +92,6 @@ public abstract class BaseHandler extends BaseClientRequestHandler implements IS
     public void sendClient(User user, String cmdName, ISFSObject params) {
         send(cmdName, params, user);
     }
+
+    public abstract SFSEventType eventType();
 }

@@ -2,7 +2,7 @@ package com.igame.work.user.handler;
 
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ClientDispatcherHandler;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.log.GoldLog;
 import com.igame.util.KickIDisconnectionReason;
@@ -18,7 +18,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
  * @author Marcus.Z
  *
  */
-public class LoginOutHandler extends BaseHandler {
+public class LoginOutHandler extends ClientDispatcherHandler {
 
 
 	@Inject private PVPFightService pvpFightService;

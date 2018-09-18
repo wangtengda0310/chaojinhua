@@ -2,9 +2,10 @@ package com.igame.work.user.handler;
 
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
+import com.igame.core.handler.CachedMessages;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.log.GoldLog;
-import com.igame.sfsAdaptor.EventDispatcherHandler;
+import com.igame.core.handler.EventDispatcherHandler;
 import com.igame.util.LoginOutReason;
 import com.igame.work.PlayerEvents;
 import com.igame.work.fight.service.PVPFightService;
@@ -25,6 +26,7 @@ public class LOGINOUTEventHandler extends EventDispatcherHandler {
 
 	@Inject private PVPFightService pvpFightService;
 	@Inject private SessionManager sessionManager;
+	@Inject private CachedMessages cachedMessages;
 
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
@@ -53,11 +55,11 @@ public class LOGINOUTEventHandler extends EventDispatcherHandler {
 			player.getUser().getZone().removeUser(player.getUser());
 			player.getUser().disconnect(new LoginOutReason());
 			GoldLog.info(player.getSeverId(), player.getUserId(), player.getPlayerId(), GoldLog.LOGINOUT,"");
+			cachedMessages.removeProMsg(player);
 		}
 		
 		//移除SESSION
 		sessionManager.removeSession(Long.parseLong(user.getName()));
-		
 		
 	}
 

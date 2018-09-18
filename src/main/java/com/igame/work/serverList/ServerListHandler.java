@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.di.Inject;
+import com.igame.core.handler.ClientDispatcherHandler;
 import com.igame.work.MProtrol;
-import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-public class ServerListHandler extends BaseHandler {
+public class ServerListHandler extends ClientDispatcherHandler {
 	
 	public static Map<Integer,ServerInfo> servers = Maps.newHashMap();
 	

@@ -10,15 +10,15 @@ import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public abstract class ReconnectedHandler extends BaseHandler {
+public abstract class ReconnectedHandler extends ClientDispatcherHandler {
 
     @Inject private SessionManager sessionManager;
+    @Inject private CachedMessages cachedMessages;
 
     /** 不使用这个方法则需要实现断线重连的消息重发 */
     protected abstract RetVO handleClientRequest(Player player, ISFSObject params) throws Exception;
@@ -54,13 +54,11 @@ public abstract class ReconnectedHandler extends BaseHandler {
 
     private Map<Long, Object> proLock = new ConcurrentHashMap<>();//消息同步锁
 
-    private Map<Long, Map<Integer,MessageCache>> proMap = new ConcurrentHashMap<>();//消息缓存
-
     private void cacheResponse(String cmdName, RetVO vo, User user, ISFSObject res) {
         Player player = sessionManager.getSession(Long.parseLong(user.getName()));
         if(player != null){
             synchronized (proLock.computeIfAbsent(player.getPlayerId(), pid->new Object())) {
-                Map<Integer, MessageCache> proMsg = proMap.computeIfAbsent(player.getPlayerId(), pik -> new HashMap<>());
+                Map<Integer, MessageCache> proMsg = cachedMessages.getProMsg(player);
                 proMsg.put(vo.getIndex(), new MessageCache(cmdName, res));
                 int size = proMsg.size();
                 if(size > 10){
@@ -90,7 +88,7 @@ public abstract class ReconnectedHandler extends BaseHandler {
             return false;
         }
         int index = params.getInt("index");
-        MessageCache res = proMap.computeIfAbsent(player.getPlayerId(), pik -> new HashMap<>()).get(index);
+        MessageCache res = cachedMessages.getProMsg(player).get(index);
         if(res != null){
             send(res.getCmdName(), res.getiSFSObject(), user);
             return true;

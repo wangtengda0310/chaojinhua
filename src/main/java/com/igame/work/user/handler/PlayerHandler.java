@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ClientDispatcherHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.dto.IDFactory;
@@ -67,7 +67,7 @@ import java.util.List;
  * @author Marcus.Z
  *
  */
-public class PlayerHandler extends BaseHandler {
+public class PlayerHandler extends ClientDispatcherHandler {
 
 	@Inject private ActivityService activityService;
 	@Inject private ArenaService robotService;

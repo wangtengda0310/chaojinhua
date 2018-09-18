@@ -2,9 +2,9 @@ package com.igame.work.user.handler;
 
 
 import com.igame.core.di.Inject;
+import com.igame.core.handler.ClientDispatcherHandler;
 import com.igame.work.MProtrol;
 import com.igame.core.SessionManager;
-import com.igame.core.handler.BaseHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
@@ -16,7 +16,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
  * @author Marcus.Z
  *
  */
-public class ReLoginHandler extends BaseHandler{
+public class ReLoginHandler extends ClientDispatcherHandler {
 
 
 	@Inject private SessionManager sessionManager;

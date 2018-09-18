@@ -50,7 +50,7 @@ public abstract class EventService implements ISFSModule {
     /**
      * 发送用户相关的事件，建议使用在玩家状态更新时通知相关观察者
      * 使用的是setUserVariables 所以会受到用户变量限制 SmartFoxServer默认允许每个玩家使用5个变量
-     * // TODO duplicated code of BaseHandler
+     * // TODO duplicated code of ClientDispatcherHandler
      */
     protected void fireEvent(Player player, PlayerEvents eventType, Object event) {
         ISFSObject value = new SFSObject();
@@ -67,7 +67,7 @@ public abstract class EventService implements ISFSModule {
 
     /**
      * 建议使用在异步调用上
-     * // TODO duplicated code of BaseHandler
+     * // TODO duplicated code of ClientDispatcherHandler
      */
     protected void fireEvent(ServiceEvents eventType, Object event) {
         ISFSObject value = new SFSObject();

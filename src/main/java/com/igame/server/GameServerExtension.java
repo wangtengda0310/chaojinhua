@@ -5,11 +5,11 @@ import com.igame.core.data.ClassXmlDataLoader;
 import com.igame.core.db.DBManager;
 import com.igame.core.di.JarApplicationContext;
 import com.igame.core.event.EventManager;
-import com.igame.core.handler.BaseHandler;
+import com.igame.core.handler.ClientDispatcherHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;
 import com.igame.core.quartz.TimeListener;
-import com.igame.sfsAdaptor.EventDispatcherHandler;
+import com.igame.core.handler.EventDispatcherHandler;
 import com.igame.work.fight.FightService;
 import com.igame.work.fight.data.*;
 import com.smartfoxserver.v2.core.SFSEventType;
@@ -30,8 +30,8 @@ public class GameServerExtension extends SFSExtension {
 	}
 
 	/**注册SmartFoxServer的handler并注入ISFSModule属性*/
-	private void register(Class<? extends BaseHandler> clazz) {
-		BaseHandler handler = (BaseHandler) context.cachedObjects.get(clazz);
+	private void register(Class<? extends ClientDispatcherHandler> clazz) {
+		ClientDispatcherHandler handler = (ClientDispatcherHandler) context.cachedObjects.get(clazz);
 		addRequestHandler(String.valueOf(handler.protocolId()), handler);
 	}
 
@@ -69,7 +69,7 @@ public class GameServerExtension extends SFSExtension {
 			addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, ((EventManager)context.cachedObjects.get(EventManager.class)).playerEventObserver());	// 利用USER_VARIABLES_UPDATE实现的服务器事件机制
 			addEventHandler(SFSEventType.ROOM_VARIABLES_UPDATE, ((EventManager)context.cachedObjects.get(EventManager.class)).serviceEventListener());	// 利用ROOM_VARIABLES_UPDATE实现的服务器事件机制
 
-			context.classOfInterface.get(BaseHandler.class).forEach(this::register);
+			context.classOfInterface.get(ClientDispatcherHandler.class).forEach(this::register);
 
 			context.classOfInterface.get(EventDispatcherHandler.class).forEach(this::addEventDispatcherHandler);
 		} catch (Throwable e) {

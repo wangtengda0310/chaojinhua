@@ -3,7 +3,7 @@ package com.igame.work.chat.handler;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
 import com.igame.core.handler.RetVO;
-import com.igame.sfsAdaptor.EventDispatcherHandler;
+import com.igame.core.handler.EventDispatcherHandler;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.chat.dto.Message;

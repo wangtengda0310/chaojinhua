@@ -5,8 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
+import com.igame.core.handler.CachedMessages;
+import com.igame.core.handler.EventDispatcherHandler;
 import com.igame.core.handler.RetVO;
-import com.igame.sfsAdaptor.EventDispatcherHandler;
 import com.igame.util.KickIDisconnectionReason;
 import com.igame.work.MProtrol;
 import com.igame.work.PlayerEvents;
@@ -31,6 +32,7 @@ import com.smartfoxserver.v2.exceptions.SFSLoginException;
 public class LoginEventHandler extends EventDispatcherHandler {
 	@Inject private SessionManager sessionManager;
 	@Inject private PlayerCacheService playerCacheService;
+	@Inject private CachedMessages cachedMessages;
 
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {

@@ -2,7 +2,7 @@ package com.igame.work.user.handler;
 
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
-import com.igame.sfsAdaptor.EventDispatcherHandler;
+import com.igame.core.handler.EventDispatcherHandler;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;

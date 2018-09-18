@@ -1,6 +1,6 @@
 package com.igame.work.friend.handler;
 
-import com.igame.sfsAdaptor.EventDispatcherHandler;
+import com.igame.core.handler.EventDispatcherHandler;
 import com.igame.work.friend.dto.FriendBuddyVariable;
 import com.smartfoxserver.v2.SmartFoxServer;
 import com.smartfoxserver.v2.api.ISFSBuddyApi;
