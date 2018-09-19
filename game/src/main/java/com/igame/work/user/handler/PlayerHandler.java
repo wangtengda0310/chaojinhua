@@ -195,7 +195,7 @@ public class PlayerHandler extends ClientDispatcherHandler {
 		}
 		vo.addData("friends", friends);
 		vo.addData("teams",player.getTeams().values());
-		vo.addData("vipPrivileges",player.getVipPrivileges());
+		vo.addData("vip",vIPService.toClientData(player));
 		vo.addData("showActivities", activityService.clientData(player));
 		vo.addData("sign", signService.clientData(player));
 		vo.addData("dateTime", DateUtil.formatClientDateTime(new Date()));

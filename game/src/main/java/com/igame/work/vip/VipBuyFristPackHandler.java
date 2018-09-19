@@ -12,6 +12,8 @@ import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
+import java.util.HashSet;
+
 import static com.igame.work.vip.VIPConstants.KEY_FIRST_PACK;
 
 /**
@@ -33,7 +35,6 @@ public class VipBuyFristPackHandler extends ReconnectedHandler {
         JSONObject jsonObject = JSONObject.fromObject(infor);
 
         int vipLv = jsonObject.getInt("vipLv");
-        vo.addData("vipLv",vipLv);
 
         //校验vip等级
         int vip = player.getVip();
@@ -42,8 +43,8 @@ public class VipBuyFristPackHandler extends ReconnectedHandler {
         }
 
         //校验是否已购买
-        String s = (String) player.getVipPrivileges().get(KEY_FIRST_PACK);
-        if (!s.contains(String.valueOf(vipLv))){
+        VipDto dto = vipService.getVipData(player);
+        if (dto.firstPack!=null && dto.firstPack[vipLv]==2){
             return error(ErrorCode.PACK_PURCHASED);
         }
 
@@ -66,14 +67,10 @@ public class VipBuyFristPackHandler extends ReconnectedHandler {
         gmService.processGM(player,firstPack);
 
         //标记已购买
-        if (MyUtil.isNullOrEmpty(s)){
-            s = String.valueOf(vipLv);
-        }else {
-            s = s+","+String.valueOf(vipLv);
-        }
-        player.getVipPrivileges().put(KEY_FIRST_PACK,s);
+        dto.firstPack[vipLv]=2;
 
         vo.addData("reward",firstPack);
+        vo.addData("d", vipService.receivedTodayPack(dto));
         return vo;
     }
 

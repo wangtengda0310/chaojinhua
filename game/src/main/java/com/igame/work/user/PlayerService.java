@@ -44,6 +44,7 @@ import com.igame.work.user.dto.PlayerTop;
 import com.igame.work.user.dto.TongHuaDto;
 import com.igame.work.user.load.ResourceService;
 import com.igame.work.user.service.PlayerCacheService;
+import com.igame.work.vip.VIPService;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.util.Collections;
@@ -90,6 +91,7 @@ public class PlayerService extends EventService implements ISFSModule {
 	@Inject private QuestService questService;
 	@Inject private DrawService drawService;
 	@Inject private MonsterService monsterService;
+	@Inject private VIPService vipService;
 
 	public TongHuaDto getRandomTongHuaDto(){
 		
@@ -336,6 +338,7 @@ public class PlayerService extends EventService implements ISFSModule {
 			PlayerCacheService.cachePlayer(player);
 
 			turntableService.updatePlayer(player);
+			vipService.updatePlayer(player);
 		}
 	}
 

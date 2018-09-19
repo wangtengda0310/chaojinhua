@@ -18,7 +18,6 @@ import org.apache.commons.beanutils.BeanUtils;
 
 public class SystemService extends EventService implements ISFSModule, TimeListener {
     @Inject private FriendService friendService;
-    @Inject private VIPService vipService;
     @Inject private SessionManager sessionManager;
     @Inject private SystemServiceDAO systemServiceDAO;
     @Inject private ShopService shopService;
@@ -95,9 +94,6 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
         //重置好友 体力领取次数与探索加速次数
         friendService.zero(player);
 
-        //重置玩家会员特权
-        vipService.zero(player);
-
         //重置玩家当日剩余挑战次数
         try {
             BeanUtils.copyProperties(player.getPlayerCount(),player.getPlayerTop());
@@ -110,7 +106,6 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
             MessageUtil.notifyQuestChange(player, questService.reset(player));
             MessageUtil.notifyWuResetChange(player);
             MessageUtil.notifyDeInfoChange(player);
-            MessageUtil.notifyVipPrivilegesChange(player);
             friendService.notifyFriendInfo(player);
         }
     }

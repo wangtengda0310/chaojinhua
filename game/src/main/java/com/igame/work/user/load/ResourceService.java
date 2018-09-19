@@ -449,9 +449,6 @@ public class ResourceService extends EventService implements ISFSModule {
 		if (value < 0) {
 			fireEvent(player, PlayerEvents.CONSUME_DIAMOND, new Object[]{System.currentTimeMillis(),value});
 		}
-		if (value > 0) {
-			fireEvent(player, PlayerEvents.RECHARGE, new Object[]{System.currentTimeMillis(),value});
-		}
     }
     
     
@@ -872,9 +869,8 @@ public class ResourceService extends EventService implements ISFSModule {
 		GoldLog.info("#serverId:"+player.getSeverId()+"#userId:"+player.getUserId()+"#playerId:"+player.getPlayerId()
 				+"#act:addRes"+"#stype:" + MONEY + "#count:"+value);
 
-		boolean flag = vipService.addVipLv(player);
-		if (flag){
-			MessageUtil.notifyVipPrivilegesChange(player);
+		if (value > 0) {
+			fireEvent(player, PlayerEvents.RECHARGE, new Object[]{System.currentTimeMillis(),value});
 		}
 
 	}

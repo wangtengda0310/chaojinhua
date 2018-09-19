@@ -129,9 +129,6 @@ public class Player extends PlayerDto {
     private Map<Integer,Team> teams = Maps.newHashMap();    //阵容 <阵容ID,阵容>
 
     @JsonIgnore
-    private Map<String,Object> vipPrivileges = Maps.newLinkedHashMap();    //vip权限 <key,对应的值>
-
-    @JsonIgnore
     private PlayerCount playerCount = new PlayerCount();    //角色剩余挑战次数
 
     @JsonIgnore
@@ -474,14 +471,6 @@ public class Player extends PlayerDto {
 
     public void setProPushLock(Object proPushLock) {
         this.proPushLock = proPushLock;
-    }
-
-    public Map<String, Object> getVipPrivileges() {
-        return vipPrivileges;
-    }
-
-    public void setVipPrivileges(Map<String, Object> vipPrivileges) {
-        this.vipPrivileges = vipPrivileges;
     }
 
     public PlayerCount getPlayerCount() {

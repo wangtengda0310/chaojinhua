@@ -21,10 +21,10 @@ public class VipPackTemplate {
     private String dayPack;//每日领取礼包
 
     @XmlAttribute(name = "first_pack")
-    private String firstPack;//
+    private String firstPack;//特权礼包
 
     @XmlAttribute(name = "gem")
-    private int gem;//头像图片
+    private int gem;//特权礼包消耗钻石
 
     public int getVipLv() {
         return vipLv;

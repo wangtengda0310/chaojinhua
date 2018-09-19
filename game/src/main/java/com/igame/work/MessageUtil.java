@@ -440,18 +440,4 @@ public class MessageUtil {
 	}
 
 
-	/**
-	 * 推送玩家vip更新
-	 */
-	public static void notifyVipPrivilegesChange(Player player) {
-
-		//推送
-		RetVO vo = new RetVO();
-		vo.addData("vipLv", player.getVip());
-		vo.addData("vipPrivileges", player.getVipPrivileges());
-
-		MessageUtil.sendMessageToPlayer(player, MProtrol.VIP_UPDATE, vo);
-	}
-
-
 }

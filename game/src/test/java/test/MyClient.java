@@ -31,7 +31,7 @@ public class MyClient extends JFrame implements IEventListener {
     private static final int serverId = 1;
     private static final String zoneName = "server";
 //    private static final String ip = "localhost";
-    private static final String ip = "123.206.201.113";
+    private static final String ip = "192.168.2.234";
     private static int index = 1;
 
     public static void main(String[] args) {
@@ -221,7 +221,7 @@ public class MyClient extends JFrame implements IEventListener {
 
             Object cmd = event.getArguments().get("cmd");
             if(cmd.equals("1003")){//第三步（自定义的进入游戏协议）
-                sfsClient.send(new JoinRoomRequest(1));
+                sfsClient.send(new JoinRoomRequest(6));
             }
 
         } else if (event.getType().equals(SFSEvent.PUBLIC_MESSAGE)){// 监听公聊

@@ -121,7 +121,6 @@ public class PlayerDAO extends AbsDao {
 			.set("lastMessageBoard", player.getLastMessageBoard())
 			.set("curTeam", player.getCurTeam())
 			.set("totalMoney", player.getTotalMoney())
-			.set("vipPrivileges", player.getVipPrivileges())
 			.set("round", player.getRound())
 			.set("areaCount", player.getAreaCount())
 			.set("playerCount", player.getPlayerCount())
