@@ -313,7 +313,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
     }
 
     public void setBallisticMonsters(Player player, int ballMonsterInit) {
-        ballisticMonsters.get(player.getPlayerId()).set(ballMonsterInit);
+        ballisticMonsters.computeIfAbsent(player.getPlayerId(), pid -> new AtomicInteger(0)).set(ballMonsterInit);
     }
 
     public void setBallisticEnter(Player player, Date date) {
