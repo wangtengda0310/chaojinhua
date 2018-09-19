@@ -8,6 +8,7 @@ import com.igame.core.handler.RetVO;
 import com.igame.work.MProtrol;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
+import com.smartfoxserver.v2.entities.Room;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
@@ -41,10 +42,12 @@ public class ServerListHandler extends ClientDispatcherHandler {
 
 		serverManager.servers = getParentExtension().getParentZone().getZoneManager().getZoneList().stream()
                 .filter(zone -> zone.getExtension()!=null && zone.getExtension().getConfigProperties()!=null)
+				.filter(zone -> !zone.getRoomList().isEmpty())
 				.map(zone -> {
 					String serverId = zone.getExtension().getConfigProperties().getProperty("serverId");
 					String serverName = getParentExtension().getConfigProperties().getProperty("serverName",zone.getName());
-					return new ServerInfo(serverId, serverName, zone.getName(), (int) (Math.random() * 3), 1);
+					int roomId = zone.getRoomList().stream().map(Room::getId).findAny().orElse(1);
+					return new ServerInfo(serverId, serverName, zone.getName(), (int) (Math.random() * 3), roomId);
 				})
 				.peek(serverInfo -> serverInfo.setHas(all.containsKey(Integer.parseInt(serverInfo.getServerId()))))
 				.peek(serverInfo -> {
