@@ -11,6 +11,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ExtensionTest</servlet-name>
-        <url-pattern>/ExtensionTest</url-pattern>
+        <url-pattern>/login.do</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -31,7 +31,7 @@ public class MyClient extends JFrame implements IEventListener {
     private static final int serverId = 1;
     private static final String zoneName = "server";
 //    private static final String ip = "localhost";
-    private static final String ip = "192.168.2.234";
+    private static final String ip = "123.206.201.113";
     private static int index = 1;
 
     public static void main(String[] args) {
