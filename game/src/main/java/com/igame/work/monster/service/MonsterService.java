@@ -12,6 +12,7 @@ import com.igame.util.MyUtil;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
+import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.fight.service.ComputeFightService;
 import com.igame.work.item.dto.Item;
 import com.igame.work.item.service.ItemService;
@@ -402,6 +403,17 @@ public class MonsterService implements ISFSModule {
 		return ms;
 	}
 
+	public List<MatchMonsterDto> createMatchMonsterDto(Player player, String monsterIds, String monsterLevel, String site, String skillLv, String equips){
+		List<MatchMonsterDto> lb = new LinkedList<>();
+		Map<Long, Monster> monster = createMonster(monsterIds, monsterLevel, site,skillLv,equips);
+		monster.forEach((mid, m) -> {
+			int i = mid.intValue();
+			MatchMonsterDto mto = new MatchMonsterDto(m, i);
+			mto.reCalGods(player.callFightGods(), null);
+			lb.add(mto);
+		});
+		return lb;
+	}
 	/**
 	 * 初始化技能字符串
 	 */

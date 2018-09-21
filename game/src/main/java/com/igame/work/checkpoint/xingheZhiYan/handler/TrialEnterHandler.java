@@ -43,7 +43,7 @@ public class TrialEnterHandler extends ReconnectedHandler {
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
-    	List<MatchMonsterDto> lb = Lists.newArrayList();
+    	List<MatchMonsterDto> lb;
 		TrialdataTemplate ct = xingheZhiYanService.trialData.getTemplate(player.getTowerId() + 1);
 		if(ct == null){
 			return error(ErrorCode.ERROR);
@@ -85,14 +85,8 @@ public class TrialEnterHandler extends ReconnectedHandler {
 				}
 
 				// todo extract method
-				Map<Long, Monster> monster = monsterService.createMonster(ct.getMonsterData(), ct.getMonsterLv()
+				lb = monsterService.createMatchMonsterDto(player, ct.getMonsterData(), ct.getMonsterLv()
 						, "", ct.getMonsterSkilllv(), equips);
-				monster.forEach((mid, m) -> {
-					int i = mid.intValue();
-					MatchMonsterDto mto = new MatchMonsterDto(m, i);
-					mto.reCalGods(player.callFightGods(), null);
-					lb.add(mto);
-				});
 
 			}
 			

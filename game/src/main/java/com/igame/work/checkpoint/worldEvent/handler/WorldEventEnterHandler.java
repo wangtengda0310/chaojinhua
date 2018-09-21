@@ -82,15 +82,8 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 		checkPointService.setEnterWordEventTime(player);
 		worldEventService.setEnterWordEventId(player,eventType+"_"+level);
 
-		List<MatchMonsterDto> lb = Lists.newArrayList();
 		// todo extract method
-		Map<Long, Monster> monster = monsterService.createMonster(wt.getMonsterId(), wt.getMlevel(), wt.getSite(),"","");
-		monster.forEach((mid, m) -> {
-			int i = mid.intValue();
-			MatchMonsterDto mto = new MatchMonsterDto(m, i);
-			mto.reCalGods(player.callFightGods(), null);
-			lb.add(mto);
-		});
+		List<MatchMonsterDto> lb = monsterService.createMatchMonsterDto(player, wt.getMonsterId(), wt.getMlevel(), wt.getSite(),"","");
 
 		vo.addData("m", lb);
 

@@ -54,7 +54,6 @@ public class BallisticEnterHandler extends ReconnectedHandler {
 
         //生成怪兽
         RunTemplate template = ballisticService.runData.getTemplate(BallisticConstant.BALL_MONSTER_INIT);
-        List<MatchMonsterDto> matchMonsterDtos = ballisticService.buildMonster(template, BallisticConstant.BALL_MONSTER_INIT);
 
         //记录开始时间
         ballisticService.setBallisticEnter(player, new Date());
@@ -62,6 +61,7 @@ public class BallisticEnterHandler extends ReconnectedHandler {
         ballisticService.setBallisticMonsters(player, BallisticConstant.BALL_MONSTER_INIT);
         //记录援助怪兽
         ballisticService.setBallisticAid(player, aidMonsters);
+        List<MatchMonsterDto> matchMonsterDtos = ballisticService.buildMonster(template, BallisticConstant.BALL_MONSTER_INIT);
         for(MatchMonsterDto mto : matchMonsterDtos){
 			mto.reCalGods(player.callFightGods(), null);
         }

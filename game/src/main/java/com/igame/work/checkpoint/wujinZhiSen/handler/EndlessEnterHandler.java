@@ -98,14 +98,7 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 				equips = equips.substring(1);
 			}
 
-			// todo extract method
-			Map<Long, Monster> monster = monsterService.createMonster(ct[3], ct[4], "","",equips);
-			monster.forEach((mid, m) -> {
-				int i = mid.intValue();
-				MatchMonsterDto mto = new MatchMonsterDto(m, i);
-				mto.reCalGods(player.callFightGods(), null);
-				lb.add(mto);
-			});
+			lb = monsterService.createMatchMonsterDto(player, ct[3], ct[4], "","",equips);
 
 			List<WuEffect> ls = Lists.newArrayList();
 	    	if(buffer > 0 && currIndex != Integer.parseInt(ll.get(0).split(";")[0]) && player.getWuEffect().size() < total){

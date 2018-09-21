@@ -74,15 +74,7 @@ public class TongHuaEnterFightHandler extends ReconnectedHandler {
 
 					StrengthenmonsterTemplate mt = monsterService.strengthenmonsterData.getTemplate(Integer.parseInt(t[3]));
 
-					// todo extract method
-					Map<Long, Monster> monster = monsterService.createMonster(String.valueOf(mt.getMonster_id()), String.valueOf(mt.getMonster_lv()), "1","","");
-					monster.forEach((mid, m) -> {
-						int i = mid.intValue();
-						MatchMonsterDto mto = new MatchMonsterDto(m, i);
-						mto.reCalGods(player.callFightGods(), null);
-						lb.add(mto);
-					});
-
+					lb = monsterService.createMatchMonsterDto(player, String.valueOf(mt.getMonster_id()), String.valueOf(mt.getMonster_lv()), "1","","");
 
 				}
 			}

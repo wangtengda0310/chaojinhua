@@ -50,7 +50,6 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 		int playerFrameId = 0;
 		int playerHeadId = 0;
 //		long fightValue = 0;
-		List<MatchMonsterDto> lb = Lists.newArrayList();
 		RobotDto rto;
 
 		Player opponent = playerDAO.getPlayerByPlayerId(playerId);
@@ -80,6 +79,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 			rto = new RobotDto();
 		}
 		GodsDto gods = rto.getGods();
+		List<MatchMonsterDto> lb = Lists.newArrayList();
 		for (MatchMonsterDto mo : rto.getMon()) {//处理神灵加成属性
 			MatchMonsterDto mto = mo.clonew(player.callFightGods(), gods);
 			lb.add(mto);
