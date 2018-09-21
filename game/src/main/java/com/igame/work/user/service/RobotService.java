@@ -150,7 +150,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 		}
 
 		// todo extract method 跟别的方法不一样
-		Map<Long, Monster> monster = monsterService.createMonster(monsterId.toString(), monsterLevel.toString(), "", "","");
+		Map<Long, Monster> monster = monsterService.batchCreateMonster(monsterId.toString(), monsterLevel.toString(), "", "","");
 		for( Map.Entry<Long, Monster> entry:monster.entrySet()) {
 			int i = entry.getKey().intValue();
 			Monster m = entry.getValue();

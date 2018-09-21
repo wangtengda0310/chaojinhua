@@ -349,7 +349,7 @@ public class MonsterService implements ISFSModule {
 	/**
 	 * 根据配置生成怪物对象
 	 */
-	public Map<Long,Monster> createMonster(String monsterIds, String monsterLevel, String site, String skillLv, String equips){
+	public Map<Long,Monster> batchCreateMonster(String monsterIds, String monsterLevel, String site, String skillLv, String equips){
 
 		Map<Long,Monster> ms = new LinkedHashMap<>();
 		if(!MyUtil.isNullOrEmpty(monsterIds) && !MyUtil.isNullOrEmpty(monsterLevel)){
@@ -405,7 +405,7 @@ public class MonsterService implements ISFSModule {
 
 	public List<MatchMonsterDto> createMatchMonsterDto(Player player, String monsterIds, String monsterLevel, String site, String skillLv, String equips){
 		List<MatchMonsterDto> lb = new LinkedList<>();
-		Map<Long, Monster> monster = createMonster(monsterIds, monsterLevel, site,skillLv,equips);
+		Map<Long, Monster> monster = batchCreateMonster(monsterIds, monsterLevel, site,skillLv,equips);
 		monster.forEach((mid, m) -> {
 			int i = mid.intValue();
 			MatchMonsterDto mto = new MatchMonsterDto(m, i);

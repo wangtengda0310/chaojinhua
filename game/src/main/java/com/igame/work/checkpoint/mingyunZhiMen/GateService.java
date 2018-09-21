@@ -181,7 +181,7 @@ public class GateService implements ISFSModule, TimeListener {
         if(skillLv.length() > 0){
             skillLv = new StringBuilder(skillLv.substring(1));
         }
-        return monsterService.createMonster(monsterId.toString(), monsterLevel.toString(), "", skillLv.toString(),"");
+        return monsterService.batchCreateMonster(monsterId.toString(), monsterLevel.toString(), "", skillLv.toString(),"");
 
     }
 

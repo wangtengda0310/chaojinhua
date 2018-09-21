@@ -186,7 +186,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
 		if(ct != null){
 			if(ct.getRound() == 1){//一周目
-				Map<Long, Monster> monster = monsterService.createMonster(ct.getMonsterId(), ct.getLevel(), ct.getSite(), "", ct.getMonsterProp());
+				Map<Long, Monster> monster = monsterService.batchCreateMonster(ct.getMonsterId(), ct.getLevel(), ct.getSite(), "", ct.getMonsterProp());
 				for(Map.Entry<Long, Monster> e : monster.entrySet()){
 					Monster m = e.getValue();
 		    		m.setObjectId(idx.incrementAndGet());
@@ -203,7 +203,7 @@ public class EnterCheckHandler extends ReconnectedHandler {
 				if(mid.length > 0){
 					int index = 1;
 					for(int i =0;i<mid.length;i++){
-						Map<Long, Monster> monster = monsterService.createMonster(mid[i], lv[i], site[i], "", ct.getMonsterProp());
+						Map<Long, Monster> monster = monsterService.batchCreateMonster(mid[i], lv[i], site[i], "", ct.getMonsterProp());
 
 						for (Map.Entry<Long, Monster> e : monster.entrySet()) {
 							Monster m = e.getValue();
