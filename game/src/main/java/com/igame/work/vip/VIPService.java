@@ -173,4 +173,8 @@ public class VIPService extends EventService {
     public boolean canTenLottery() {
         return false;
     }
+
+    public int getResCheckpointHourLimit(Player player) {
+        return 60;
+    }
 }
