@@ -53,7 +53,7 @@ public class ArenaEnterHandler extends ReconnectedHandler {
 			return error(ErrorCode.AREA_NOT_SELF);
 		}
 
-		if(oter.getRank()>=arenaService.getPlayerRank(player.getPlayerId())){
+		if(oter.getRank()>=arenaService.getMRank(arenaService.getArenaType(player), player.getPlayerId())){
 			return error(ErrorCode.AREA_NOT_LOW);
 		}
 

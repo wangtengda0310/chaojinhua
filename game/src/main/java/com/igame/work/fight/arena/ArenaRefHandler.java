@@ -29,12 +29,12 @@ public class ArenaRefHandler extends ReconnectedHandler {
 		
 		List<ArenaRanker> opponent = Lists.newArrayList();
 		int arenaType = arenaService.getArenaType(player);
-		List<ArenaRanker> rank = arenaService.getRank(arenaType);
+		List<ArenaRanker> rank = arenaService.rankOfType(arenaType);
 		if(arenaType < 1 || arenaType > 9 || rank == null){
 			return error(ErrorCode.ERROR);
 		}else{
 			if(!rank.isEmpty()){
-				int playerRank = arenaService.getPlayerRank(player.getPlayerId());	// !rank.isEmpty()
+				int playerRank = arenaService.getMRank(arenaType,player.getPlayerId());	// !rank.isEmpty()
 				opponent = arenaService.getOpponent(rank, playerRank);
 				arenaService.setChallenge(player,opponent);
 			}

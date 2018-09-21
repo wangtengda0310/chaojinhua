@@ -96,7 +96,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
             public void observe(Player player, EventType eventType, Object event) {
                 if (player != null) {
                     int type = arenaType.get(player.getPlayerId());
-                    List<ArenaRanker> rank = getRank(type);
+                    List<ArenaRanker> rank = rankOfType(type);
                     Collections.sort(rank);
                 }
             }
@@ -221,15 +221,15 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     }
 
 
-    public ArenaRanker getRankInfo(Player player) {
+    ArenaRanker getRankInfo(Player player) {
         int type = arenaType.get(player.getPlayerId());
-        List<ArenaRanker> rank = getRank(type);
+        List<ArenaRanker> rank = rankOfType(type);
         ArenaRanker self = rank.stream()
                 .filter(r -> r.getPlayerId() == player.getPlayerId())
                 .findAny()
                 .orElse(null);
         if(self == null){
-            self = new ArenaRanker(player, getPlayerRank(player.getPlayerId()));
+            self = new ArenaRanker(player, getMRank(type, player.getPlayerId()));
             rank.add(self);
         }
 
@@ -237,28 +237,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
 
     }
 
-    public List<ArenaRanker> getRank(int arenaType) {
-        return getIntegerListMap(arenaType);
-    }
-
-    /**
-     * 获取排名
-     */
-    public int getMRank(int type, long playerId) {
-        List<ArenaRanker> ls = getIntegerListMap(type);
-        if (ls == null) {
-            return 5001;
-        }
-
-        for (ArenaRanker rank : ls) {
-            if (rank.getPlayerId() == playerId) {
-                return rank.getRank();
-            }
-        }
-        return ls.size() + 1;
-    }
-
-    private List<ArenaRanker> getIntegerListMap(int type) {
+    List<ArenaRanker> rankOfType(int type) {
         if (type == 1) {
             return as.getRank1();
         } else if (type == 2) {
@@ -279,33 +258,40 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
         return new ArrayList<>();
     }
 
+    /**
+     * 获取排名
+     */
+    int getMRank(int type, long playerId) {
+        List<ArenaRanker> ls = rankOfType(type);
+        if (ls == null) {
+            return 5001;
+        }
 
-    private Map<Long, Integer> playerRank = new HashMap<>();
-    public int getPlayerRank(long playerId) {
-        return playerRank.computeIfAbsent(playerId, k -> 5001);
-    }
-
-    public void setPlayerRank(long playerId, int rank) {
-        playerRank.put(playerId, rank);
+        for (ArenaRanker rank : ls) {
+            if (rank.getPlayerId() == playerId) {
+                return rank.getRank();
+            }
+        }
+        return ls.size() + 1;
     }
 
     /**
      * get and remove
      */
-    public long getOpponent(Player player) {
+    long getOpponent(Player player) {
         return opponent.remove(player.getPlayerId());
     }
 
-    public void setOpponent(Player player, long playerId) {
+    void setOpponent(Player player, long playerId) {
         opponent.put(player.getPlayerId(), playerId);
     }
     private Map<Long, List<ArenaRanker>> challenge = new ConcurrentHashMap<>();
 
-    public List<ArenaRanker> getChallenge(Player player) {
+    List<ArenaRanker> getChallenge(Player player) {
         return challenge.get(player.getPlayerId());
     }
 
-    public void setChallenge(Player player, List<ArenaRanker> opponent) {
+    void setChallenge(Player player, List<ArenaRanker> opponent) {
         challenge.put(player.getPlayerId(), opponent);
     }
 

@@ -47,7 +47,7 @@ public class ArenaEndHandler extends ReconnectedHandler {
 		}
 
 		//处理排行信息
-		int myRank = arenaService.getPlayerRank(player.getPlayerId());
+		int myRank = arenaService.getMRank(arenaService.getArenaType(player), player.getPlayerId());
 		if(win == 1){	// 挑战失败吧玩家的当前排位返回给客户端
             ArenaRanker self = arenaService.getRankInfo(player);
 
@@ -62,7 +62,6 @@ public class ArenaEndHandler extends ReconnectedHandler {
 					self.setRank(opponentRank);
 					opponent.setRank(myRank);
 
-					arenaService.setPlayerRank(player.getPlayerId(), self.getRank());
 					myRank = self.getRank();
 
 					fireEvent(player, PlayerEvents.ARENA_RANK, null);

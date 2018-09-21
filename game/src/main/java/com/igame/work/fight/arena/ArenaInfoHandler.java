@@ -33,8 +33,7 @@ public class ArenaInfoHandler extends ReconnectedHandler {
 		int atype = jsonObject.getInt("atype");
 
 		int myRank = arenaService.getMRank(atype, player.getPlayerId());
-		arenaService.setPlayerRank(player.getPlayerId(), myRank);
-		List<ArenaRanker> rank  = arenaService.getRank(atype);
+		List<ArenaRanker> rank  = arenaService.rankOfType(atype);
 		if(rank == null){
 			rank = Lists.newArrayList();
 		}
