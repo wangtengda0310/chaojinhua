@@ -427,17 +427,6 @@ public class MessageUtil {
 
 	}
 	
-	
-	/**
-	 * 推送玩家倒计时开始
-	 */
-	public static void notifyCDDown(Player player, int type){
-
-		RetVO vo = new RetVO();
-    	vo.addData("type", type);
-		MessageUtil.sendMessageToPlayer(player, MProtrol.CD_DOWN, vo);
-
-	}
 
 
 }

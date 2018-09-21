@@ -46,8 +46,8 @@ public class CheckResHandler extends ReconnectedHandler {
 					if(timeCount < 60){
 //						ret = ErrorCode.CHECKPOINT_RESNOT_EXIT;
 					}else{
-						RewardDto dto = resourceService.getResRewardDto(ct.getDropPoint(), timeCount, ct.getMaxTime() * 60);
-						reward.append(";").append(resourceService.getRewardString(dto));//返回字符串
+						RewardDto dto = checkPointService.getResRewardDto(ct.getDropPoint(), timeCount, ct.getMaxTime() * 60);
+						reward.append(";").append(ResourceService.getRewardString(dto));//返回字符串
 						resourceService.addRewarToPlayer(player, dto);//真实给玩家加东西
 						player.getTimeResCheck().put(chapterId, timeCount % 60);
 						MessageUtil.notifyTimeResToPlayer(player, chapterId, new RewardDto());

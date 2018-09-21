@@ -11,6 +11,7 @@ import com.igame.work.item.dto.Item;
 import com.igame.work.turntable.service.TurntableService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
+import com.igame.work.vip.VIPService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -20,10 +21,14 @@ import net.sf.json.JSONObject;
  * 幸运大转盘十连抽
  */
 public class TenLotteryHandler extends ReconnectedHandler {
+    @Inject
     private ResourceService resourceService;
+    @Inject
     private GMService gmService;
     @Inject
     private TurntableService turntableService;
+    @Inject
+    private VIPService vipService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -36,6 +41,10 @@ public class TenLotteryHandler extends ReconnectedHandler {
         //校验等级
         if (player.getPlayerLevel() < 15 || turntableService.getTurntable(player) == null){
             return error(ErrorCode.LEVEL_NOT);
+        }
+
+        if (!vipService.canTenLottery()) {
+            return error(ErrorCode.VIP_NOT_MATCH);
         }
 
         //校验道具

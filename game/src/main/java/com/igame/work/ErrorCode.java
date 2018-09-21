@@ -180,4 +180,5 @@ public class ErrorCode {
 	public static final int CAN_NOT_RECEIVE = 3063;//不能领取活动奖励
 	public static final int ACTIVITY_CLOSED = 3064;//活动已关闭
 
+	public static final int VIP_NOT_MATCH = 3065;
 }

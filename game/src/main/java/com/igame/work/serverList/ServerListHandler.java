@@ -49,11 +49,6 @@ public class ServerListHandler extends ClientDispatcherHandler {
 					int roomId = zone.getRoomList().stream().map(Room::getId).findAny().orElse(1);
 					return new ServerInfo(serverId, serverName, zone.getName(), (int) (Math.random() * 3), roomId);
 				})
-				.peek(serverInfo-> {
-					System.out.println(serverInfo.getServerId());
-					System.out.println(serverInfo.serverId);
-					System.out.println(serverInfo.serverName);
-				})
 				.peek(serverInfo -> serverInfo.setHas(all.containsKey(Integer.parseInt(serverInfo.getServerId()))))
 				.peek(serverInfo -> {
 					if (1 == Integer.parseInt(serverInfo.getServerId())) {

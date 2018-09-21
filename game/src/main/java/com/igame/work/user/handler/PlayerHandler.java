@@ -328,7 +328,6 @@ public class PlayerHandler extends ClientDispatcherHandler {
 		playerService.afterPlayerLogin(player);
 
 		checkPointService.afterPlayerLogin(player);
-		checkPointService.calPlayerTimeRes(player);//计算金币关卡的获得数量 和心魔 以及各货币资源的定时更新
 
         monsterService.afterPlayerLogin(player);
         computeFightService.afterPlayerLogin(player);

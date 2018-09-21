@@ -12,6 +12,7 @@ import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dao.PlayerDAO;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
+import com.igame.work.vip.VIPService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -28,6 +29,7 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
     @Inject private PlayerDAO playerDAO;
     @Inject private SessionManager sessionManager;
     @Inject private FriendService friendService;
+    @Inject private VIPService vipService;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -43,7 +45,7 @@ public class FriendExploreAccHandler extends ReconnectedHandler {
         vo.addData("exploreMapId",exploreMapId);
 
         //校验探索可加速次数
-        if (helpedFriendsOf(player).count() > 20){
+        if (helpedFriendsOf(player).count() > vipService.getFriendExploreAccLimit(player)){
             return error(ErrorCode.EXPLORE_NOT_ENOUGH);
         }
 

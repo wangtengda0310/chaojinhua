@@ -191,7 +191,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 							checkPoint.append(",").append(ct.getChapterId());
 							player.setCheckPoint(player.getCheckPoint()+"," +String.valueOf(ct.getChapterId()));
 							player.getTimeResCheck().put(ct.getChapterId(), ct.getMaxTime() * 60);
-							RewardDto dto = resourceService.getResRewardDto(ct.getDropPoint(), ct.getMaxTime() * 60, ct.getMaxTime() * 60);
+							RewardDto dto = checkPointService.getResRewardDto(ct.getDropPoint(), ct.getMaxTime() * 60, ct.getMaxTime() * 60);
 							MessageUtil.notifyTimeResToPlayer(player,ct.getChapterId(), dto);    //推送金币关卡 第一次满
 						}
 					}

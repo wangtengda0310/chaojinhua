@@ -12,6 +12,7 @@ import com.igame.work.monster.service.MonsterService;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
+import com.igame.work.vip.VIPService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -24,6 +25,7 @@ public class ResBuyHandler extends ReconnectedHandler {
 	@Inject private QuestService questService;
 	@Inject private ResourceService resourceService;
 	@Inject private MonsterService monsterService;
+	@Inject private VIPService vipService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -52,7 +54,10 @@ public class ResBuyHandler extends ReconnectedHandler {
 				return error(ErrorCode.DIAMOND_NOT_ENOUGH);
 				
 			}else{
-				if(extype == 1 && player.getPhBuyCount() >= 5 || extype == 2 && player.getTongAdd().getTongBuyCount()>=3 || extype == 3 && player.getXinBuyCount() >= 5 || extype == 4 && player.getGoldBuyCount() >= 5 ){
+				if(extype == 1 && player.getPhBuyCount() >= vipService.getPhBuyCount(player)
+						|| extype == 2 && player.getTongAdd().getTongBuyCount()>=3
+						|| extype == 3 && player.getXinBuyCount() >= 5
+						|| extype == 4 && player.getGoldBuyCount() >= vipService.getGoldBuyCountLimit(player) ){
 					return error(ErrorCode.BUY_COUNT_NOT_ENOUGH);
 				}else{
 					if(extype == 1){

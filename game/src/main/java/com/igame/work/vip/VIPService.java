@@ -153,4 +153,24 @@ public class VIPService extends EventService {
     String getFirstPackStatus(VipDto vipDto) {
         return Arrays.stream(vipDto.firstPack).boxed().map(String::valueOf).collect(Collectors.joining(","));
     }
+
+    public int getPhBuyCount(Player player) {
+        return 0;
+    }
+
+    public int getGoldBuyCountLimit(Player player) {
+        return 0;
+    }
+
+    public long getFriendReceivePhyLimit(Player player) {
+        return 0;
+    }
+
+    public long getFriendExploreAccLimit(Player player) {
+        return 0;
+    }
+
+    public boolean canTenLottery() {
+        return false;
+    }
 }

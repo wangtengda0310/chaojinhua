@@ -9,6 +9,7 @@ import com.igame.work.friend.dto.Friend;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
+import com.igame.work.vip.VIPService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.map.HashedMap;
@@ -26,12 +27,12 @@ public class FriendReceivePhyHandler extends ReconnectedHandler {
     private ResourceService resourceService;
     @Inject
     private FriendService friendService;
+    @Inject
+    private VIPService vipService;
 
     private int state_ungive = 0;   //对方未赠送
     private int state_gave = 1;   //已赠送未领取
     private int state_rec = 2;   //已领取
-
-    private static final int max = 20;
 
     @Override
     protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -46,7 +47,10 @@ public class FriendReceivePhyHandler extends ReconnectedHandler {
 
         //校验体力领取次数
 
-        long receivedCount = friendService.getFriends(player).getCurFriends().stream().filter(friend -> friend.getReceivePhy() == state_rec).count();
+        long receivedCount = friendService.getFriends(player).getCurFriends()
+                .stream()
+                .filter(friend -> friend.getReceivePhy() == state_rec).count();
+        long max = vipService.getFriendReceivePhyLimit(player);
         if(receivedCount > max){
             return error(ErrorCode.RECEIVEPHY_NOT_ENOUGH);
         }

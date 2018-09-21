@@ -140,78 +140,6 @@ public class ResourceService extends EventService implements ISFSModule {
 	}
     
 
-    public RewardDto getResRewardDto(String val,int minuts,int maxMinuts){
-    	
-    	int timeCount = minuts;
-    	if(timeCount > maxMinuts){
-    		timeCount = maxMinuts;
-    	}
-    	int count = timeCount/60;//总数
-    	RewardDto dto = new RewardDto();
-		if(!MyUtil.isNullOrEmpty(val)){
-			String[] tels = val.split(";");
-			for(String tel : tels){
-				String[] temp  = tel.split(",");
-				switch (temp[0]){
-					case "1":
-						if(Integer.parseInt(temp[1]) == 1){//gold
-							dto.setGold(dto.getGold() + (long)(Double.parseDouble(temp[2]) * count));
-							break;
-						} else if(Integer.parseInt(temp[1]) == 2){//Diamond
-							dto.setDiamond(dto.getDiamond() + (int)(Double.parseDouble(temp[2]) * count));
-							break;
-						}else if(Integer.parseInt(temp[1]) == 3){//Physical
-							dto.setPhysical(dto.getPhysical() + (int)(Double.parseDouble(temp[2]) * count));
-							break;
-						}else if(Integer.parseInt(temp[1]) == 5){//TONGHUAEXP
-							dto.setTongExp(dto.getTongExp() + (int)(Double.parseDouble(temp[2]) * count));
-							break;
-						}
-						else{
-							break;
-						}
-					case "2"://mon
-						dto.addMonster(Integer.parseInt(temp[1]), (int)(Double.parseDouble(temp[2]) * count));
-						break;
-					case "3"://item
-						dto.addItem(Integer.parseInt(temp[1]), (int)(Double.parseDouble(temp[2]) * count));
-						break;
-					case "4"://monster exp item
-						int totalExp = (int)(Double.parseDouble(temp[2]) * count);
-						ItemTemplate max1 = itemService.itemData.getTemplate(200003);
-						ItemTemplate max2 = itemService.itemData.getTemplate(200002);
-						ItemTemplate max3 = itemService.itemData.getTemplate(200001);
-						if(max1 != null){
-							if(totalExp > (int)max1.getValue()){//大
-								int cl = totalExp/(int)max1.getValue();
-								dto.addItem(200003, cl);
-								totalExp -= cl * (int)max1.getValue();
-							}
-						}
-						if(max2 != null){
-							if(totalExp > (int)max2.getValue()){//中
-								int cl = totalExp/(int)max2.getValue();
-								dto.addItem(200002, cl);
-								totalExp -= cl * (int)max2.getValue();
-							}
-						}
-						if(max3 != null){
-							if(totalExp > (int)max3.getValue()){//小
-								int cl = totalExp/(int)max3.getValue();
-								dto.addItem(200001, cl);
-								totalExp -= cl * (int)max3.getValue();
-							}
-						}
-						break;
-					default:
-						break;
-
-				}
-			}
-		}
-		return dto;
-    }
-    
     
 	/**
 	 * 
@@ -871,53 +799,6 @@ public class ResourceService extends EventService implements ISFSModule {
 
 		if (value > 0) {
 			fireEvent(player, PlayerEvents.RECHARGE, new Object[]{System.currentTimeMillis(),value});
-		}
-
-	}
-
-	public void calRes(Player player){
-		if(player.getLoginoutTime() != null){
-			long now = System.currentTimeMillis();
-			int timeAdd = (int)((now - player.getLoginoutTime().getTime())/60000);
-			Map<Integer, Integer> resMintues = player.getResMintues();
-			for(Map.Entry<Integer, Integer> m : resMintues.entrySet()){
-				resMintues.put(m.getKey(), m.getValue() + timeAdd);
-			}
-			if(resMintues.get(3) != null){
-				if(resMintues.get(3) >=6){
-					addPhysica(player, resMintues.get(3)/6);
-					resMintues.put(3, resMintues.get(3)%6);
-				}
-			}
-			if(resMintues.get(4) != null){
-				if(resMintues.get(4) >=60){
-					addSao(player, resMintues.get(4)/60);
-					resMintues.put(4, resMintues.get(4)%60);
-				}
-
-			}
-			if(resMintues.get(6) != null){
-				if(resMintues.get(6) >=120 && player.getTongRes() < 15){
-					int add = resMintues.get(6)/120;
-					if(add > 15 - player.getTongRes()){
-						add = 15 - player.getTongRes();
-					}
-					addTongRes(player, add);
-					resMintues.put(6, resMintues.get(6)%120);
-				}
-
-			}
-			if(resMintues.get(7) != null){
-				if(resMintues.get(7) >=120 && player.getXing() < 10){
-					int add = resMintues.get(7)/120;
-					if(add > 10 - player.getXing()){
-						add = 10 - player.getXing();
-					}
-					addXing(player, add);
-					resMintues.put(7, resMintues.get(7)%120);
-				}
-
-			}
 		}
 
 	}
