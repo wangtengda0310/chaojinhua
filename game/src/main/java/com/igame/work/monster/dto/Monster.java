@@ -144,7 +144,7 @@ public class Monster extends BasicDto implements Cloneable {
 	
 	public Monster(){}
 	
-	public Monster(long objectId,int monsterId,int level,int site,int skillLv,String equip){
+	public Monster(long objectId,int monsterId,int level,int site,String equip){
 		super();
 		this.objectId = objectId;
 		this.monsterId = monsterId;

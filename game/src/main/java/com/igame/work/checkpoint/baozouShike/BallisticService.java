@@ -176,7 +176,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
 
             String monsterId = monsterIds[(new Random().nextInt(monsterIds.length))];
 
-            Monster monster = new Monster(i, Integer.parseInt(monsterId), monsterLv, -1, skillLv, equip);
+            Monster monster = new Monster(i, Integer.parseInt(monsterId), monsterLv, -1, equip);
             MonsterTemplate mt = monsterService.MONSTER_DATA.getMonsterTemplate(Integer.parseInt(monsterId));
             if(mt != null && mt.getSkill() != null){
                 String[] skills = mt.getSkill().split(",");

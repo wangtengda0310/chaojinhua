@@ -20,9 +20,7 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.dto.Team;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 
@@ -129,28 +127,22 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 		int count = GameMath.getRandomCount(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
 		String[] front = config.getFront().split(",");
 		String[] back = config.getBack().split(",");
-		StringBuilder monsterId = new StringBuilder();
-		StringBuilder monsterLevel = new StringBuilder();
+		List<String> monsterId = new LinkedList<>();
+		List<Integer> monsterLevel = new LinkedList<>();
 		for(int i = 1;i<=count;i++){
 			String str = front[GameMath.getRandInt(front.length)];
-			monsterId.append(",").append(str);
-			monsterLevel.append(",").append(GameMath.getRandomCount(aiLv1, aiLv2));
+			monsterId.add(str);
+			monsterLevel.add(GameMath.getRandomCount(aiLv1, aiLv2));
 		}
 		count = 5- count;
 		for(int i = 1;i<=count;i++){
 			String str = back[GameMath.getRandInt(back.length)];
-			monsterId.append(",").append(str);
-			monsterLevel.append(",").append(GameMath.getRandomCount(aiLv1, aiLv2));
-		}
-		if(monsterId.length() > 0){
-			monsterId = new StringBuilder(monsterId.substring(1));
-		}
-		if(monsterLevel.length() > 0){
-			monsterLevel = new StringBuilder(monsterLevel.substring(1));
+			monsterId.add(str);
+			monsterLevel.add(GameMath.getRandomCount(aiLv1, aiLv2));
 		}
 
 		// todo extract method 跟别的方法不一样
-		Map<Long, Monster> monster = monsterService.batchCreateMonster(monsterId.toString(), monsterLevel.toString(), "", "","");
+		Map<Long, Monster> monster = monsterService.batchCreateMonster(monsterId, monsterLevel, "", Collections.emptyList(),Collections.emptyList());
 		for( Map.Entry<Long, Monster> entry:monster.entrySet()) {
 			int i = entry.getKey().intValue();
 			Monster m = entry.getValue();

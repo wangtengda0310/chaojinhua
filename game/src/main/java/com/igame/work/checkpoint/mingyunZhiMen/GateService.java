@@ -16,9 +16,7 @@ import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GateService implements ISFSModule, TimeListener {
@@ -154,34 +152,22 @@ public class GateService implements ISFSModule, TimeListener {
         if(ft == null){
             return Maps.newHashMap();
         }
-        StringBuilder monsterId = new StringBuilder();
-        StringBuilder monsterLevel = new StringBuilder();
-        StringBuilder skillLv = new StringBuilder();
+        List<String> monsterId = new LinkedList<>();
+        List<Integer> monsterLevel = new LinkedList<>();
+        List<Integer> skillLv = new LinkedList<>();
         String[] m1 = ft.getMonste1rLibrary().split(",");
-//		if(ft.getMonste2rLibrary() == null){
-//			System.err.println(ft.getFloorNum());
-//		}
         String[] m2 = ft.getMonste2rLibrary().split(",");
         for(int i = 1;i<=2;i++){
-            monsterId.append(",").append(m1[GameMath.getRandInt(m1.length)]);
-            monsterLevel.append(",").append(ft.getMonster1Lv());
-            skillLv.append(",").append(ft.getSkill1Lv());
+            monsterId.add(m1[GameMath.getRandInt(m1.length)]);
+            monsterLevel.add(ft.getMonster1Lv());
+            skillLv.add(ft.getSkill1Lv());
         }
         for(int i = 1;i<=8;i++){
-            monsterId.append(",").append(m2[GameMath.getRandInt(m2.length)]);
-            monsterLevel.append(",").append(ft.getMonster2Lv());
-            skillLv.append(",").append(ft.getSkill2Lv());
+            monsterId.add(m2[GameMath.getRandInt(m2.length)]);
+            monsterLevel.add(ft.getMonster2Lv());
+            skillLv.add(ft.getSkill2Lv());
         }
-        if(monsterId.length() > 0){
-            monsterId = new StringBuilder(monsterId.substring(1));
-        }
-        if(monsterLevel.length() > 0){
-            monsterLevel = new StringBuilder(monsterLevel.substring(1));
-        }
-        if(skillLv.length() > 0){
-            skillLv = new StringBuilder(skillLv.substring(1));
-        }
-        return monsterService.batchCreateMonster(monsterId.toString(), monsterLevel.toString(), "", skillLv.toString(),"");
+        return monsterService.batchCreateMonster(monsterId, monsterLevel, "", skillLv, Collections.emptyList());
 
     }
 

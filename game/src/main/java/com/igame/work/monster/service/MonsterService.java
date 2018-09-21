@@ -346,47 +346,95 @@ public class MonsterService implements ISFSModule {
 		return change;
 	}
 
+	// todo return Monster or MatchMonsterDto
+	public Map<Long,Monster> batchCreateMonster(List<String> monsterIds, List<Integer> monsterLevel, String position, List<Integer> skillLv, List<String> equips){
+
+		Map<Long,Monster> ms = new LinkedHashMap<>();
+		if(monsterIds.isEmpty() || monsterLevel.isEmpty()) {
+			return ms;
+		}
+			if(position == null){
+				position = "";
+			}
+			if(equips.isEmpty()){
+				equips = Arrays.asList("-1,-1,-1,-1".split(","));
+			}
+			long id = 1;
+			int pos = 1;
+			for(int i = 0;i < monsterIds.size();i++){
+				int mid = Integer.parseInt(monsterIds.get(i));	// todo make list int
+				if(MONSTER_DATA.getMonsterTemplate(mid) != null){
+					continue;
+				}
+				Monster value = new Monster(id, mid, monsterLevel.get(i),
+						MyUtil.isNullOrEmpty(position) ? pos : Integer.parseInt(position.split(",")[i])
+						, equips.isEmpty() ? "-1,-1,-1,-1" : (equips.size() >= monsterIds.size() ? equips.get(i) : equips.get(0)));
+
+				MonsterTemplate mt = MONSTER_DATA.getMonsterTemplate(mid);
+				if(mt != null && mt.getSkill() != null){
+					String[] skillConfigStrSplit = mt.getSkill().split(",");
+					int lv;
+					if(i>=skillLv.size()||skillLv.get(i)==null||skillLv.get(i)<=0){
+						lv = 1;
+					}else{
+						lv = skillLv.get(i);
+					}
+					for(String skill : skillConfigStrSplit){
+						value.skillMap.put(Integer.parseInt(skill), lv);
+						value.skillExp.put(Integer.parseInt(skill), 0);
+					}
+					value.atkType = mt.getAtk_type();
+				}
+
+				initSkillString(value);
+				reCalLevelValue(mid,value,true);
+				reCalEquip(mid, value);
+				ms.put(id, value);
+
+				id++;
+				pos = pos%5+1;
+		}
+		return ms;
+	}
 	/**
 	 * 根据配置生成怪物对象
 	 */
-	public Map<Long,Monster> batchCreateMonster(String monsterIds, String monsterLevel, String site, String skillLv, String equips){
+	public Map<Long,Monster> batchCreateMonster(String monsterIds, String monsterLevel, String position, String skillLv, String equips){
 
 		Map<Long,Monster> ms = new LinkedHashMap<>();
 		if(!MyUtil.isNullOrEmpty(monsterIds) && !MyUtil.isNullOrEmpty(monsterLevel)){
-			if(site == null){
-				site = "";
+			if(position == null){
+				position = "";
 			}
 			if(equips == null){
 				equips = "-1,-1,-1,-1";
 			}
 			long id = 1;
+			int pos = 1;
 			String[] mms = monsterIds.split(",");
 			String[] lvs = monsterLevel.split(",");
-			String[] ss = site.split(",");
+			String[] ss = position.split(",");
 			String[] skills = skillLv.split(",");
 			String[] equs = equips.split(";");
 			for(int i = 0;i < mms.length;i++){
 				int mid = Integer.parseInt(mms[i]);
 				if(MONSTER_DATA.getMonsterTemplate(mid) != null){
-					int j = i+1;
-					if(j > 5){
-						j=j%5 + 1;
-					}
+
 					Monster value = new Monster(id, mid, Integer.parseInt(lvs[i]),
-							MyUtil.isNullOrEmpty(site) ? j : Integer.parseInt(ss[i]),
-							MyUtil.isNullOrEmpty(skillLv) ? 0 : Integer.parseInt(skills[i])
+							MyUtil.isNullOrEmpty(position) ? pos : Integer.parseInt(ss[i])
 							, MyUtil.isNullOrEmpty(equips) ? "" : (equs.length >= mms.length ? equs[i] : equs[0]));
 					MonsterTemplate mt = MONSTER_DATA.getMonsterTemplate(mid);
 					if(mt != null && mt.getSkill() != null){
 						String[] skills1 = mt.getSkill().split(",");
 						if(skills1 != null){
+							int lv;
+							if(i>=skills.length||skills[i]==null||"".equals(skills[i])||Integer.valueOf(skills[i])<=0){
+								lv = 1;
+							}else{
+								lv = Integer.valueOf(skills[i]);
+							}
 							for(String skill : skills1){
-								if(i>=skills.length||skills[i]==null||"".equals(skills[i])||Integer.valueOf(skills[i])<=0){
-									value.skillMap.put(Integer.parseInt(skill), 1);
-								}else{
-									value.skillMap.put(Integer.parseInt(skill), Integer.valueOf(skills[i]));
-								}
-
+								value.skillMap.put(Integer.parseInt(skill), lv);
 								value.skillExp.put(Integer.parseInt(skill), 0);
 							}
 						}
@@ -396,7 +444,9 @@ public class MonsterService implements ISFSModule {
 					reCalLevelValue(mid,value,true);
 					reCalEquip(mid, value);
 					ms.put(id, value);
+
 					id++;
+					pos = pos%5+1;
 				}
 			}
 		}
