@@ -11,6 +11,7 @@ import com.igame.work.checkpoint.guanqia.RewardDto;
 import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
+import com.igame.work.vip.VIPService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -25,6 +26,8 @@ public class CheckResHandler extends ReconnectedHandler {
 	private ResourceService resourceService;
 	@Inject
 	private CheckPointService checkPointService;
+	@Inject
+	private VIPService vipService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -46,7 +49,7 @@ public class CheckResHandler extends ReconnectedHandler {
 					if(timeCount < 60){
 //						ret = ErrorCode.CHECKPOINT_RESNOT_EXIT;
 					}else{
-						RewardDto dto = checkPointService.getResRewardDto(ct.getDropPoint(), timeCount, ct.getMaxTime() * 60);
+						RewardDto dto = checkPointService.getResRewardDto(ct.getDropPoint(), timeCount, vipService.getResCheckpointHourLimit(player) * 60);
 						reward.append(";").append(ResourceService.getRewardString(dto));//返回字符串
 						resourceService.addRewarToPlayer(player, dto);//真实给玩家加东西
 						player.getTimeResCheck().put(chapterId, timeCount % 60);

@@ -43,7 +43,7 @@ public class TenLotteryHandler extends ReconnectedHandler {
             return error(ErrorCode.LEVEL_NOT);
         }
 
-        if (!vipService.canTenLottery()) {
+        if (!vipService.canTenLottery(player)) {
             return error(ErrorCode.VIP_NOT_MATCH);
         }
 

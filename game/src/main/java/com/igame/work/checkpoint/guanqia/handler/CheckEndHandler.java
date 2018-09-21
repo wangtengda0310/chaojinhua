@@ -23,6 +23,7 @@ import com.igame.work.quest.service.QuestService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.PlayerService;
 import com.igame.work.user.load.ResourceService;
+import com.igame.work.vip.VIPService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -40,6 +41,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 	@Inject private ResourceService resourceService;
 	@Inject private QuestService questService;
 	@Inject private PlayerService playerService;
+	@Inject private VIPService vipService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -190,8 +192,8 @@ public class CheckEndHandler extends ReconnectedHandler {
 						if(player.getTimeResCheck().get(ct.getChapterId()) == null){//资源关卡
 							checkPoint.append(",").append(ct.getChapterId());
 							player.setCheckPoint(player.getCheckPoint()+"," +String.valueOf(ct.getChapterId()));
-							player.getTimeResCheck().put(ct.getChapterId(), ct.getMaxTime() * 60);
-							RewardDto dto = checkPointService.getResRewardDto(ct.getDropPoint(), ct.getMaxTime() * 60, ct.getMaxTime() * 60);
+							player.getTimeResCheck().put(ct.getChapterId(), vipService.getResCheckpointHourLimit(player) * 60);
+							RewardDto dto = checkPointService.getResRewardDto(ct.getDropPoint(), vipService.getResCheckpointHourLimit(player) * 60, vipService.getResCheckpointHourLimit(player) * 60);
 							MessageUtil.notifyTimeResToPlayer(player,ct.getChapterId(), dto);    //推送金币关卡 第一次满
 						}
 					}

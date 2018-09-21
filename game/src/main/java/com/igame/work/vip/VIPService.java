@@ -155,26 +155,50 @@ public class VIPService extends EventService {
     }
 
     public int getPhBuyCount(Player player) {
-        return 0;
+        return vipData.getAll().stream().filter(c -> c.getSystemType().equals("exchange_physical"))
+                .filter(c -> c.getVipLv().equals("v"+player.getVip()))
+                .findAny()
+                .map(VipDataTemplate::getValue)
+                .orElse(0);
     }
 
     public int getGoldBuyCountLimit(Player player) {
-        return 0;
+        return vipData.getAll().stream().filter(c -> c.getSystemType().equals("exchange_gold"))
+                .filter(c -> c.getVipLv().equals("v"+player.getVip()))
+                .findAny()
+                .map(VipDataTemplate::getValue)
+                .orElse(0);
     }
 
     public long getFriendReceivePhyLimit(Player player) {
-        return 0;
+        return vipData.getAll().stream().filter(c -> c.getSystemType().equals("friend"))
+                .filter(c -> c.getVipLv().equals("v"+player.getVip()))
+                .findAny()
+                .map(VipDataTemplate::getValue)
+                .orElse(0);
     }
 
     public long getFriendExploreAccLimit(Player player) {
-        return 0;
+        return vipData.getAll().stream().filter(c -> c.getSystemType().equals("friend_help"))
+                .filter(c -> c.getVipLv().equals("v"+player.getVip()))
+                .findAny()
+                .map(VipDataTemplate::getValue)
+                .orElse(0);
     }
 
-    public boolean canTenLottery() {
-        return false;
+    public boolean canTenLottery(Player player) {
+        return vipData.getAll().stream().filter(c -> c.getSystemType().equals("luck_roulette"))
+                .filter(c -> c.getVipLv().equals("v"+player.getVip()))
+                .findAny()
+                .map(c->c.getOpenSystem()==1)
+                .orElse(false);
     }
 
     public int getResCheckpointHourLimit(Player player) {
-        return 60;
+        return vipData.getAll().stream().filter(c -> c.getSystemType().equals("output_chapter"))
+                .filter(c -> c.getVipLv().equals("v"+player.getVip()))
+                .findAny()
+                .map(VipDataTemplate::getValue)
+                .orElse(0);
     }
 }

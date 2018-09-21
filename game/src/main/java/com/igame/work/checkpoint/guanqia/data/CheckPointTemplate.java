@@ -51,10 +51,7 @@ public class CheckPointTemplate {
 	
 	@XmlAttribute(name = "drop_point")
 	private String dropPoint;
-	
-	@XmlAttribute(name = "max_time")
-	private int maxTime;
-	
+
 	@XmlAttribute(name = "physical")
 	private int physical;//消耗体力
 	
@@ -140,14 +137,6 @@ public class CheckPointTemplate {
 
 	public void setDropPoint(String dropPoint) {
 		this.dropPoint = dropPoint;
-	}
-
-	public int getMaxTime() {
-		return maxTime;
-	}
-
-	public void setMaxTime(int maxTime) {
-		this.maxTime = maxTime;
 	}
 
 	public int getPhysical() {

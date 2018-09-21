@@ -442,7 +442,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 				CheckPointTemplate ct = checkPointData.getTemplate(cid);
 				if(ct != null && ct.getChapterType() == 2 && !MyUtil.isNullOrEmpty(ct.getDropPoint())
 						&& !player.getTimeResCheck().containsKey(cid)){
-					player.getTimeResCheck().put(cid, ct.getMaxTime() * 60);
+					player.getTimeResCheck().put(cid, vipService.getResCheckpointHourLimit(player) * 60);
 				}
 			}
 			for(int id : player.getTimeResCheck().keySet()){//已过关卡里没有的，资源关卡时间计数器有的删除
@@ -469,49 +469,51 @@ public class CheckPointService implements ISFSModule, TimeListener {
 	}
 
     private void checkResPerMinute(Player player) {
-        if(!player.getTimeResCheck().isEmpty()){
-            for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){
-                CheckPointTemplate ct = checkPointData.getTemplate(m.getKey());
-                if(ct != null && !MyUtil.isNullOrEmpty(ct.getDropPoint())){
-                    int hourLimit = vipService.getResCheckpointHourLimit(player);
-                    if(m.getValue() < ct.getMaxTime() * hourLimit){//没到上限
-                        player.getTimeResCheck().put(m.getKey(), m.getValue()+ 1);
-                        if(m.getValue() >= hourLimit && m.getValue() % hourLimit == 0){//到了一小时更新，推送金币数
-                            RewardDto dto = getResRewardDto(ct.getDropPoint(), m.getValue(), ct.getMaxTime() * 60);
-                            MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
-                        }
+        if(player.getTimeResCheck().isEmpty()){
+            return;
+        }
+        int hourLimit = vipService.getResCheckpointHourLimit(player);
+        for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){
+            CheckPointTemplate ct = checkPointData.getTemplate(m.getKey());
+            if(ct != null && !MyUtil.isNullOrEmpty(ct.getDropPoint())){
+                if(m.getValue() < hourLimit){//没到上限
+                    player.getTimeResCheck().put(m.getKey(), m.getValue()+ 1);
+                    if(m.getValue() >= hourLimit && m.getValue() % hourLimit == 0){//到了一小时更新，推送金币数
+                        RewardDto dto = getResRewardDto(ct.getDropPoint(), m.getValue(), hourLimit);
+                        MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
+                    }
 
-                        //零时测试
+                    //零时测试
 //        						RewardDto dto = resourceService.getResRewardDto(ct.getDropPoint(), m.getValue(), ct.getMaxTime() * 60);
 //        						MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
-                    }
                 }
             }
         }
     }
 
     private void initCheckRes(Player player) {
-        if(!player.getTimeResCheck().isEmpty()){
-            long now = System.currentTimeMillis();
-            for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){
-                CheckPointTemplate ct = checkPointData.getTemplate(m.getKey());
-                if(ct != null && !MyUtil.isNullOrEmpty(ct.getDropPoint())){
-                    int existsMinute = m.getValue();//原有分钟数
-                    int hourLimit = vipService.getResCheckpointHourLimit(player);
-                    if(player.getLoginoutTime() != null){//计算新的
-                        int minuteAdd = (int)((now - player.getLoginoutTime().getTime())/(hourLimit *1000));
-                        existsMinute += minuteAdd;
-                        if(existsMinute > ct.getMaxTime() * hourLimit){
-                            existsMinute = ct.getMaxTime()  * hourLimit;
-                        }
-                        player.getTimeResCheck().put(m.getKey(), existsMinute);
+        if (player.getTimeResCheck().isEmpty()) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        int hourLimit = vipService.getResCheckpointHourLimit(player);
+        for(Map.Entry<Integer, Integer> m : player.getTimeResCheck().entrySet()){
+            CheckPointTemplate ct = checkPointData.getTemplate(m.getKey());
+            if(ct != null && !MyUtil.isNullOrEmpty(ct.getDropPoint())){
+                int existsMinute = m.getValue();//原有分钟数
+                if(player.getLoginoutTime() != null){//计算新的
+                    int minuteAdd = (int)((now - player.getLoginoutTime().getTime())/(hourLimit *60 * 60* 1000));
+                    existsMinute += minuteAdd;
+                    if(existsMinute > hourLimit*60){
+                        existsMinute = hourLimit*60;
                     }
-                    RewardDto dto = getResRewardDto(ct.getDropPoint(), existsMinute, ct.getMaxTime() * hourLimit);
-//    					MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
-                    resC.computeIfAbsent(player.getPlayerId(),pid->new HashMap<>())
-                            .put(ct.getChapterId(),new ResCdto(ct.getChapterId(), ResourceService.getRewardString(dto)));
-
+                    player.getTimeResCheck().put(m.getKey(), existsMinute);
                 }
+                RewardDto dto = getResRewardDto(ct.getDropPoint(), existsMinute, hourLimit*60);
+//    					MessageUtil.notifyTimeResToPlayer(player, m.getKey(), dto);
+                resC.computeIfAbsent(player.getPlayerId(),pid->new HashMap<>())
+                        .put(ct.getChapterId(),new ResCdto(ct.getChapterId(), ResourceService.getRewardString(dto)));
+
             }
         }
     }
