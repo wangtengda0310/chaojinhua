@@ -160,7 +160,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
      * @param total 全部数据
      * @param rank  当前角色排名
      */
-    List<ArenaRanker> getOpponent(List<ArenaRanker> total, int rank) {
+    List<ArenaRanker> randomOpponent(List<ArenaRanker> total, int rank) {
         List<ArenaRanker> opponent = Lists.newArrayList();
         if (rank <= 6) {
             for (int i = 0; i <= 4; i++) {

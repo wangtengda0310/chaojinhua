@@ -35,7 +35,7 @@ public class ArenaRefHandler extends ReconnectedHandler {
 		}else{
 			if(!rank.isEmpty()){
 				int playerRank = arenaService.getMRank(arenaType,player.getPlayerId());	// !rank.isEmpty()
-				opponent = arenaService.getOpponent(rank, playerRank);
+				opponent = arenaService.randomOpponent(rank, playerRank);
 			}
 		}
 

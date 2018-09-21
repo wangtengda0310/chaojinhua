@@ -39,7 +39,7 @@ public class ArenaInfoHandler extends ReconnectedHandler {
 		}
 		List<ArenaRanker> opponent = Lists.newArrayList();	// 界面上现实的5个可挑战的对手
 		if(!rank.isEmpty()){
-			opponent = arenaService.getOpponent(rank, myRank);
+			opponent = arenaService.randomOpponent(rank, myRank);
 		}
 		if(rank.size()>10){
 			rank = rank.subList(0, 10);
