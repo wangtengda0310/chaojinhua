@@ -39,7 +39,7 @@ public class EndlessNaiHandler extends ReconnectedHandler {
 			if(player.getDiamond() < 50){
 				return error(ErrorCode.DIAMOND_NOT_ENOUGH);
 			}else{
-				if(CheckPointService.isFullWuHp(player)){
+				if(endlessService.isFullWuHp(player)){
 					return error(ErrorCode.WUZHENG_HPFULL);
 				}else{
 					player.setWuNai(1);

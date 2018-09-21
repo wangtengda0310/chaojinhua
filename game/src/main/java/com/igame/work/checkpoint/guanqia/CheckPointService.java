@@ -381,34 +381,6 @@ public class CheckPointService implements ISFSModule, TimeListener {
 	}
 	
 
-	public static WuZhengDto parsePlayer(Player player){
-		WuZhengDto wd = new WuZhengDto();
-		wd.setWuGods(player.getWuGods().getGodsType() + ","+player.getWuGods().getGodsLevel());
-		for(MatchMonsterDto wt : player.getWuZheng().values()){
-			String str = String.valueOf(wt.getMonsterId());
-			str += ";" + wt.getLevel();
-			str += ";" + wt.getHp();
-			str += ";" + wt.getHpInit();
-			str += ";" + wt.getBreaklv();
-			wd.getWuMons().add(str);
-		}
-		return wd;
-	}
-	
-	public static boolean isFullWuHp(Player player){
-		boolean is = true;
-		if(player.getWuZheng().isEmpty()){
-			return true;
-		}
-		for(MatchMonsterDto mto : player.getWuZheng().values()){
-			if(mto.getHp() < mto.getHpInit()){
-				is = false;
-				return is;
-			}
-		}
-		return is;
-	}
-
 
 	public void setEnterCheckPointTime(Player player) {
 		enterCheckPointTime.put(player.getPlayerId(), System.currentTimeMillis());

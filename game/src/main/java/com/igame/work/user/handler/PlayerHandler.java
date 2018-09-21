@@ -179,7 +179,7 @@ public class PlayerHandler extends ClientDispatcherHandler {
         }
 		vo.addData("quest", qs);
 		vo.addData("wuMap", player.getWuMap().values());
-		vo.addData("wuZheng", CheckPointService.parsePlayer(player));
+		vo.addData("wuZheng", endlessService.parsePlayer(player));
 		vo.addData("wuEffect", player.getWuEffect());
 		vo.addData("desInfo", FateDto.creatFateDto(player.getFateData()));
 		FriendInfo friends = friendService.getFriends(player);

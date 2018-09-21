@@ -10,6 +10,7 @@ import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.fight.dto.GodsDto;
+import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.user.dto.Player;
 
@@ -74,6 +75,34 @@ public class EndlessService {
         }
     }
 
+    public static WuZhengDto parsePlayer(Player player){
+        WuZhengDto wd = new WuZhengDto();
+        wd.setWuGods(player.getWuGods().getGodsType() + ","+player.getWuGods().getGodsLevel());
+        for(MatchMonsterDto wt : player.getWuZheng().values()){
+            String str = String.valueOf(wt.getMonsterId());
+            str += ";" + wt.getLevel();
+            str += ";" + wt.getHp();
+            str += ";" + wt.getHpInit();
+            str += ";" + wt.getBreaklv();
+            wd.getWuMons().add(str);
+        }
+        return wd;
+    }
+
+    public boolean isFullWuHp(Player player){
+        boolean is = true;
+        if(player.getWuZheng().isEmpty()){
+            return true;
+        }
+        for(MatchMonsterDto mto : player.getWuZheng().values()){
+            if(mto.getHp() < mto.getHpInit()){
+                is = false;
+                return is;
+            }
+        }
+        return is;
+    }
+
     /**
      * 推送无尽之森奶更新
      */
@@ -91,7 +120,7 @@ public class EndlessService {
     public void notifyWuZhengChange(Player player){
 
         RetVO vo = new RetVO();
-        vo.addData("wuZheng", CheckPointService.parsePlayer(player));
+        vo.addData("wuZheng", parsePlayer(player));
         MessageUtil.sendMessageToPlayer(player, MProtrol.WUZHENG_UPDATE, vo);
 
     }
