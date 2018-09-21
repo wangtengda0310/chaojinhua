@@ -70,7 +70,7 @@ public class VipBuyFristPackHandler extends ReconnectedHandler {
         dto.firstPack[vipLv]=2;
 
         vo.addData("reward",firstPack);
-        vo.addData("d", vipService.receivedTodayPack(dto));
+        vo.addData("f", vipService.getFirstPackStatus(dto));
         return vo;
     }
 
