@@ -38,7 +38,7 @@ public class ArenaEnterHandler extends ReconnectedHandler {
 
 		//校验对手
 		ArenaRanker oter = null;
-		for(ArenaRanker ar : arenaService.getTempOpponent(player)){
+		for(ArenaRanker ar : arenaService.getChallenge(player)){
 			if(ar.getPlayerId() == playerId){
 				oter = ar;
 				break;
@@ -57,7 +57,7 @@ public class ArenaEnterHandler extends ReconnectedHandler {
 			return error(ErrorCode.AREA_NOT_LOW);
 		}
 
-		arenaService.setTempAreaPlayerId(player,playerId);
+		arenaService.setOpponent(player,playerId);
 		resourceService.addAreaCount(player, 1);
 
 		return vo;

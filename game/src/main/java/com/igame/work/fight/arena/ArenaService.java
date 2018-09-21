@@ -15,7 +15,6 @@ import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 import com.igame.work.user.dto.Team;
-import com.igame.work.user.service.RobotService;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,9 +28,9 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
 
     @Inject private ArenaRobotDAO dao;
 
-    private Map<Long, Long> tempAreaPlayerId = new ConcurrentHashMap<>();//临时竞技场对手ID
+    private Map<Long, Long> opponent = new ConcurrentHashMap<>();//临时竞技场对手ID
 
-    private Map<Long, Integer> arenaType = new ConcurrentHashMap<>();//临时竞技场ID
+    private Map<Long, Integer> arenaType = new ConcurrentHashMap<>();//临时竞技场ID  刷新对手用
 
 
     public void setArenaType(Player player, int atype) {
@@ -45,11 +44,21 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     @Override
     public void minute5() {
 
-        saveRobot();
-        if(isUp()){
-            saveRank();
-            setUp(false);
+        if(isPrepareToSave()){
+            dao.updateRank(as);
+            setPrepareToSave(false);
         }
+    }
+
+    public static boolean prepareToSave;
+
+    public static boolean isPrepareToSave() {
+        return prepareToSave;
+    }
+
+
+    public static void setPrepareToSave(boolean prepareToSave) {
+        ArenaService.prepareToSave = prepareToSave;
     }
 
     @Override
@@ -62,15 +71,11 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
         giveReward();
     }
 
-    public static boolean up;
+    /**
+     * 排行榜奖励结算
+     */
+    private void giveReward() {
 
-    public static boolean isUp() {
-        return up;
-    }
-
-
-    public static void setUp(boolean up) {
-        ArenaService.up = up;
     }
 
     private Map<Long, RobotDto> robot = Maps.newHashMap();//玩家阵容数据
@@ -84,43 +89,18 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
         return new PlayerEventObserver() {
             @Override
             public EventType interestedType() {
-                return PlayerEvents.UPDATE_M_RANK;
+                return PlayerEvents.ARENA_RANK;
             }
 
             @Override
             public void observe(Player player, EventType eventType, Object event) {
-                addPlayerRobotDto(player,false);
+                if (player != null) {
+                    int type = arenaType.get(player.getPlayerId());
+                    List<ArenaRanker> rank = getRank(type);
+                    Collections.sort(rank);
+                }
             }
         };
-    }
-
-    /**
-     * 玩家阵容数据添加到竞技场数据中
-     */
-    private void addPlayerRobotDto(Player player, boolean update) {//同步处理
-
-        RobotDto rb = robot.get(player.getPlayerId());
-        if (rb == null || update) {
-            rb = RobotService.createRobotLike(player);
-
-            robot.put(player.getPlayerId(), rb);
-        }
-
-    }
-
-    private void saveRank() {
-        dao.updateRank(as);
-    }
-
-    private void saveRobot() {
-        for (RobotDto m : robot.values()) {
-            try {
-                dao.update(m);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
     }
 
     private void loadRank(boolean loadDB) {
@@ -158,11 +138,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     @Override
     public void init() {
 
-        robot = dao.loadData();
-        if (robot == null) {
-            robot = new HashMap<>();
-        }
-        loadRank(true);
+        loadRank(true); // module init
     }
 
     private void clearRank() {
@@ -174,8 +150,8 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
         as.getRank6().clear();
         as.getRank7().clear();
         as.getRank8().clear();
-        loadRank(false);
-        setUp(true);
+        loadRank(false);    // after clear rank
+        setPrepareToSave(true);
     }
 
     /**
@@ -184,7 +160,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
      * @param total 全部数据
      * @param rank  当前角色排名
      */
-    public static List<ArenaRanker> getOpponent(List<ArenaRanker> total, int rank) {
+    List<ArenaRanker> getOpponent(List<ArenaRanker> total, int rank) {
         List<ArenaRanker> opponent = Lists.newArrayList();
         if (rank <= 6) {
             for (int i = 0; i <= 4; i++) {
@@ -245,9 +221,20 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     }
 
 
-    public List<ArenaRanker> getRank(Player player) {
+    public ArenaRanker getRankInfo(Player player) {
         int type = arenaType.get(player.getPlayerId());
-        return getRank(type);
+        List<ArenaRanker> rank = getRank(type);
+        ArenaRanker self = rank.stream()
+                .filter(r -> r.getPlayerId() == player.getPlayerId())
+                .findAny()
+                .orElse(null);
+        if(self == null){
+            self = new ArenaRanker(player, getPlayerRank(player.getPlayerId()));
+            rank.add(self);
+        }
+
+        return self;
+
     }
 
     public List<ArenaRanker> getRank(int arenaType) {
@@ -293,13 +280,6 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
     }
 
 
-    /**
-     * 排行榜奖励结算
-     */
-    private void giveReward() {
-
-    }
-
     private Map<Long, Integer> playerRank = new HashMap<>();
     public int getPlayerRank(long playerId) {
         return playerRank.computeIfAbsent(playerId, k -> 5001);
@@ -309,21 +289,24 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
         playerRank.put(playerId, rank);
     }
 
-    public long getTempAreaPlayerId(Player player) {
-        return tempAreaPlayerId.get(player.getPlayerId());
+    /**
+     * get and remove
+     */
+    public long getOpponent(Player player) {
+        return opponent.remove(player.getPlayerId());
     }
 
-    public void setTempAreaPlayerId(Player player, long playerId) {
-        tempAreaPlayerId.put(player.getPlayerId(), playerId);
+    public void setOpponent(Player player, long playerId) {
+        opponent.put(player.getPlayerId(), playerId);
     }
-    private Map<Long, List<ArenaRanker>> tempOpponent = new ConcurrentHashMap<>();
+    private Map<Long, List<ArenaRanker>> challenge = new ConcurrentHashMap<>();
 
-    public List<ArenaRanker> getTempOpponent(Player player) {
-        return tempOpponent.get(player.getPlayerId());
+    public List<ArenaRanker> getChallenge(Player player) {
+        return challenge.get(player.getPlayerId());
     }
 
-    public void setTempOpponent(Player player, List<ArenaRanker> opponent) {
-        tempOpponent.put(player.getPlayerId(), opponent);
+    public void setChallenge(Player player, List<ArenaRanker> opponent) {
+        challenge.put(player.getPlayerId(), opponent);
     }
 
     public void afterPlayerLogin(Player player) {

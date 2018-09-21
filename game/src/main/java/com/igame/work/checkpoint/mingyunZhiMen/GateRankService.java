@@ -1,4 +1,4 @@
-package com.igame.work.system;
+package com.igame.work.checkpoint.mingyunZhiMen;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -9,15 +9,18 @@ import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.quartz.TimeListener;
 import com.igame.work.PlayerEvents;
+import com.igame.work.system.RankServiceDAO;
+import com.igame.work.system.RankServiceDto;
+import com.igame.work.system.Ranker;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.dto.RobotDto;
+import com.igame.work.user.service.RobotService;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class RankService extends EventService implements ISFSModule, TimeListener {
+public class GateRankService extends EventService implements ISFSModule, TimeListener {
     @Inject private RankServiceDAO rankServiceDAO;
+    @Inject private RobotService robotService;
 
     public void minute5() {
 
@@ -55,11 +58,12 @@ public class RankService extends EventService implements ISFSModule, TimeListene
     }
 
     @Override
-    protected PlayerEventObserver playerObserver() {
-        return new PlayerEventObserver() {
+    protected Collection<PlayerEventObserver> playerObservers() {
+        Collection<PlayerEventObserver> observers = new HashSet<>();
+        observers.add(new PlayerEventObserver() {
             @Override
             public EventType interestedType() {
-                return PlayerEvents.ARENA_RANK;
+                return PlayerEvents.GATE_RANK;
             }
 
             @Override
@@ -71,7 +75,26 @@ public class RankService extends EventService implements ISFSModule, TimeListene
                     sort();
                 }
             }
-        };
+        });
+        observers.add(new PlayerEventObserver() {
+            @Override
+            public EventType interestedType() {
+                return PlayerEvents.UPDATE_GATE_RANK;
+            }
+
+            @Override
+            public void observe(Player player, EventType eventType, Object event) {
+
+                RobotDto rb = robotService.getRobot().get(player.getNickname());
+                if (rb == null) {
+                    rb = RobotService.createRobotLike(player);
+
+                    robotService.getRobot().put(player.getNickname(), rb);
+                }
+
+            }
+        });
+        return observers;
     }
 
     private void setMRank(Player player){

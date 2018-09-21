@@ -74,12 +74,13 @@ public class GateEndHandler extends ReconnectedHandler {
                 MessageUtil.notifyGateChange(player);
                 RewardDto rt = new RewardDto();
                 resourceService.addRewarToPlayer(player, rt);
-                reward = resourceService.getRewardString(rt);
+                reward = ResourceService.getRewardString(rt);
                 questService.processTask(player, 10, 1);
 
+                fireEvent(player,PlayerEvents.GATE_RANK,null);
             } else {    //失败，即挑战结束
 
-                fireEvent(player, PlayerEvents.UPDATE_M_RANK, null);
+                fireEvent(player, PlayerEvents.UPDATE_GATE_RANK, null);
 
                 MessageUtil.notifyDeInfoChange(player);
             }

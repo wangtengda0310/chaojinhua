@@ -32,26 +32,26 @@ public class ArenaInfoHandler extends ReconnectedHandler {
 
 		int atype = jsonObject.getInt("atype");
 
-		List<ArenaRanker> opponent = Lists.newArrayList();
 		int myRank = arenaService.getMRank(atype, player.getPlayerId());
 		arenaService.setPlayerRank(player.getPlayerId(), myRank);
 		List<ArenaRanker> rank  = arenaService.getRank(atype);
 		if(rank == null){
 			rank = Lists.newArrayList();
 		}
+		List<ArenaRanker> opponent = Lists.newArrayList();	// 界面上现实的5个可挑战的对手
 		if(!rank.isEmpty()){
-			opponent = ArenaService.getOpponent(rank, myRank);
-			arenaService.setTempOpponent(player,opponent);
+			opponent = arenaService.getOpponent(rank, myRank);
+			arenaService.setChallenge(player,opponent);
 		}
 		if(rank.size()>10){
 			rank = rank.subList(0, 10);
 		}
-		for(ArenaRanker ar : rank) {	// TODO 可以重构成监听上下阵事件
-			if(ar.getPlayerId() == player.getPlayerId()) {
-				ar.setFightValue(player.getTeams().get(6).getFightValue());
-				break;
-			}
-		}
+
+		rank.stream()	// TODO 可以重构成监听上下阵事件?战力变化?
+				.filter(r->r.getPlayerId() == player.getPlayerId())
+				.forEach(r->r.setFightValue(player.getTeams().get(6).getFightValue()
+				));
+
 		arenaService.setArenaType(player,atype);
 
 		vo.addData("myRank", myRank);

@@ -3,6 +3,7 @@ package com.igame.work.fight.arena;
 
 
 import com.igame.core.db.BasicDto;
+import com.igame.work.user.dto.Player;
 import org.mongodb.morphia.annotations.Entity;
 
 
@@ -27,7 +28,11 @@ public class ArenaRanker extends BasicDto implements Comparable<ArenaRanker>{
 		this.fightValue = fightValue;
 	}
 
-    public long getPlayerId() {
+	public ArenaRanker(Player player, int playerRank) {
+		this(player.getPlayerId(), playerRank, player.getNickname(), player.getTeams().get(6).getFightValue());
+	}
+
+	public long getPlayerId() {
 		return playerId;
 	}
 

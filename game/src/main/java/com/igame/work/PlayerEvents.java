@@ -9,7 +9,7 @@ public enum PlayerEvents implements EventType {
     , DELETE_FRIEND
     , MODIFY_NAME
     , ARENA_RANK
-    , UPDATE_M_RANK
+    , UPDATE_GATE_RANK
     , UPDATE_BALLISTIC_RANK
     , RESET_ONCE// TODO move to ServiceEvents
     , CONSUME_DIAMOND
@@ -21,4 +21,5 @@ public enum PlayerEvents implements EventType {
     , DRAW_BY_DIAMOND
     , GOD_LEVEL_UP
     , TURN_TABLE
+    , GATE_RANK
 }

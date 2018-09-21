@@ -28,13 +28,15 @@ public class ArenaRefHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 		
 		List<ArenaRanker> opponent = Lists.newArrayList();
-		List<ArenaRanker> rank = arenaService.getRank(arenaService.getArenaType(player));
-		if(arenaService.getArenaType(player) < 1 || arenaService.getArenaType(player) > 9 || rank == null){
+		int arenaType = arenaService.getArenaType(player);
+		List<ArenaRanker> rank = arenaService.getRank(arenaType);
+		if(arenaType < 1 || arenaType > 9 || rank == null){
 			return error(ErrorCode.ERROR);
 		}else{
 			if(!rank.isEmpty()){
-				opponent = ArenaService.getOpponent(rank, arenaService.getPlayerRank(player.getPlayerId()));
-				arenaService.setTempOpponent(player,opponent);
+				int playerRank = arenaService.getPlayerRank(player.getPlayerId());	// !rank.isEmpty()
+				opponent = arenaService.getOpponent(rank, playerRank);
+				arenaService.setChallenge(player,opponent);
 			}
 		}
 
