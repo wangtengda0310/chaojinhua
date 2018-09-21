@@ -50,77 +50,48 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 		int playerFrameId = 0;
 		int playerHeadId = 0;
 //		long fightValue = 0;
-		GodsDto gods = new GodsDto();
 		List<MatchMonsterDto> lb = Lists.newArrayList();
-		new RobotDto();
-		Map<Long,RobotDto> map = arenaService.getRobot();
-//		List<ArenaRanker> rank = arenaServiceDto.getRankDto(player.getAreaType(), player.getSeverId());
-		ArenaRanker oter = null;
-		for(ArenaRanker ar : arenaService.getTempOpponent(player)){
-			if(ar.getPlayerId() == playerId){
-				oter = ar;
-				break;
-			}
-		}
-		if(map == null){
-			return error(ErrorCode.ERROR);
-		}
-		RobotDto rto = map.get(playerId);
+		RobotDto rto;
 
 		Player opponent = playerDAO.getPlayerByPlayerId(playerId);
-		if(opponent != null){	// TODO 监听上下阵事件
+		if(opponent != null){	// TODO 监听上下阵事件?
 			Map<Long, Monster> mons = monsterService.getMonsterByPlayer(opponent);
 			opponent.setMonsters(mons);
 			rto = RobotService.createRobotLike(opponent);
-			
-			gods = rto.getGods();
-			for(MatchMonsterDto mo : rto.getMon()){//处理神灵加成属性
-				MatchMonsterDto mto = mo.clonew();
-				mto.reCalGods(player.callFightGods(), gods);
-				lb.add(mto);
-			}
-			level = rto.getLevel();
-			playerFrameId = rto.getPlayerFrameId();
-			playerHeadId = rto.getPlayerHeadId();
-		}else if(rto == null){
-			if(playerId >= 100011){
-				return error(ErrorCode.ERROR);
-			}
-
-			if(oter != null){
-				rto = robotService.createRobotDto(player, playerId, oter.getName(), 2);
-				gods = rto.getGods();
-				for(MatchMonsterDto mo : rto.getMon()){//处理神灵加成属性
-					MatchMonsterDto mto = mo.clonew();
-					mto.reCalGods(player.callFightGods(), gods);
-					lb.add(mto);
-				}
-				level = rto.getLevel();
-				playerFrameId = rto.getPlayerFrameId();
-				playerHeadId = rto.getPlayerHeadId();
-			}
-
 
 		}else{
-			gods = rto.getGods();
-			for(MatchMonsterDto mo : rto.getMon()){//处理神灵加成属性
-				MatchMonsterDto mto = mo.clonew();
-				mto.reCalGods(player.callFightGods(), gods);
-				lb.add(mto);
+			rto = arenaService.getRobot().get(playerId);
+
+			if (rto == null && playerId >= 100011) {    // todo 这个100011啥意思
+				return error(ErrorCode.ERROR);
+			} else {
+				ArenaRanker opponentRanker = arenaService.getTempOpponent(player).stream()
+						.filter(o -> o.getPlayerId() == playerId)
+						.findAny()
+						.orElse(null);
+
+				if (opponentRanker != null) {
+					rto = robotService.createRobotDto(player, playerId, opponentRanker.getName(), 2);
+
+
+					name = opponentRanker.getName();
+
+				}
 			}
-			level = rto.getLevel();
-			playerFrameId = rto.getPlayerFrameId();
-			playerHeadId = rto.getPlayerHeadId();
-		}
-
-
-		if(oter != null){
-			name = oter.getName();
-			
 		}
 		if(rto == null){
 			rto = new RobotDto();
 		}
+		GodsDto gods = rto.getGods();
+		for (MatchMonsterDto mo : rto.getMon()) {//处理神灵加成属性
+			MatchMonsterDto mto = mo.clonew(player.callFightGods(), gods);
+			lb.add(mto);
+		}
+
+		level = rto.getLevel();
+		playerFrameId = rto.getPlayerFrameId();
+		playerHeadId = rto.getPlayerHeadId();
+
 
 		vo.addData("playerId", playerId);
 		vo.addData("name", name);

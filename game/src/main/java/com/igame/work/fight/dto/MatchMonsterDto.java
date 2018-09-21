@@ -283,9 +283,11 @@ public class MatchMonsterDto   implements Cloneable  {
 		this.round = round;
 	}
 
-	public MatchMonsterDto clonew(){
+	public MatchMonsterDto clonew(Gods selfGods,Gods enemyGods){
 		try {
-			return (MatchMonsterDto)super.clone();
+			MatchMonsterDto mto = (MatchMonsterDto) super.clone();
+			mto.reCalGods(selfGods, enemyGods);
+			return mto;
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 			return null;

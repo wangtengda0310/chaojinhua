@@ -2,6 +2,7 @@ package com.igame.work.checkpoint.xinmo;
 
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
@@ -27,8 +28,8 @@ import java.util.Map;
  */
 public class XinmoEndHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
-	private RobotService robotService;
+	@Inject private ResourceService resourceService;
+	@Inject private RobotService robotService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -49,7 +50,7 @@ public class XinmoEndHandler extends ReconnectedHandler {
 				String removeId = "";
 				List<XingMoDto> ls = Lists.newArrayList();
 				resourceService.addRewarToPlayer(player, rt);
-				reward = resourceService.getRewardString(rt);
+				reward = ResourceService.getRewardString(rt);
 				player.getXinMo().remove(chapterId);
 				int qiang = 0;
 				for(XingMoDto xm : player.getXinMo().values()){
@@ -57,13 +58,13 @@ public class XinmoEndHandler extends ReconnectedHandler {
 						qiang++;
 					}
 				}
-				if(player.getXinMo().size() <25 && qiang < 2 && GameMath.hitRate100(5)){ //生成强化心魔
-					XingMoDto xx = new XingMoDto();
-					xx.setCheckPiontId(chapterId);
+				if(player.getXinMo().size() <25 && qiang < 2 && GameMath.hitRate100(5)){ //生成强化心魔	todo 文档上写着战力需要额外增加10%
 					Map<String, RobotDto> robs = robotService.getRobot();
 
 					if(!robs.isEmpty()){
 						RobotDto rb = new ArrayList<>(robs.values()).get(GameMath.getRandInt(robs.size()));
+						XingMoDto xx = new XingMoDto();
+						xx.setCheckPiontId(chapterId);
 						xx.setPlayerId(rb.getPlayerId());
 						xx.setMid(rb.getName());
 						xx.setPlayerFrameId(rb.getPlayerFrameId());
@@ -72,8 +73,6 @@ public class XinmoEndHandler extends ReconnectedHandler {
 						xx.setStatTime(System.currentTimeMillis());
 						player.getXinMo().put(chapterId, xx);
 						ls.add(xx);
-					}else{
-						xx.setMid("");
 					}
 				
 				}else{

@@ -85,9 +85,8 @@ public class EnterCheckHandler extends ReconnectedHandler {
 			gods = robotDto.getGods();
 			long id =100;
 			for(MatchMonsterDto mo : robotDto.getMon()){//处理神灵加成属性
-				MatchMonsterDto mto = mo.clonew();
+				MatchMonsterDto mto = mo.clonew(player.callFightGods(), robotDto.getGods());
 				mto.setObjectId(id);
-				mto.reCalGods(player.callFightGods(), robotDto.getGods());
 				lb.add(mto);
 				id++;
 			}

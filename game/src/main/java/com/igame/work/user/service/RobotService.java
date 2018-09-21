@@ -112,53 +112,56 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
      * 生成机器人数据
      */
     public RobotDto createRobotDto(Player player,long playerId,String name,int level){
-    	RobotDto rto = null;
-    	ArenadataTemplate at = arenaService.arenaData.getTemplateByPlayerLevel(player.getPlayerLevel());
-    	if(at != null){
-    		rto = new RobotDto();
-    		rto.setSeverId(player.getSeverId());
-    		rto.setPlayerId(playerId);
-    		rto.setName(name);
-    		rto.setLevel(level);
-    		rto.setType(1);
-    		long fightValue = 0;
-    		int aiLv1 = Integer.parseInt(at.getAiLv().split(",")[0]);
-    		int aiLv2 = Integer.parseInt(at.getAiLv().split(",")[1]);
-    		int count = GameMath.getRandomCount(Integer.parseInt(at.getNum().split(",")[0]), Integer.parseInt(at.getNum().split(",")[1]));
-    		String[] fornt = at.getFront().split(",");
-    		String[] back = at.getBack().split(",");
-    		StringBuilder monsterId = new StringBuilder();
-    		StringBuilder monsterLevel = new StringBuilder();
-    		for(int i = 1;i<=count;i++){
-    			monsterId.append(",").append(fornt[GameMath.getRandInt(fornt.length)]);
-    			monsterLevel.append(",").append(GameMath.getRandomCount(aiLv1, aiLv2));
-    		}
-    		count = 5- count;
-    		for(int i = 1;i<=count;i++){
-    			monsterId.append(",").append(back[GameMath.getRandInt(fornt.length)]);
-    			monsterLevel.append(",").append(GameMath.getRandomCount(aiLv1, aiLv2));
-    		}
-    		if(monsterId.length() > 0){
-    			monsterId = new StringBuilder(monsterId.substring(1));
-    		}
-    		if(monsterLevel.length() > 0){
-    			monsterLevel = new StringBuilder(monsterLevel.substring(1));
-    		}
+    	ArenadataTemplate config = arenaService.arenaData.getTemplateByPlayerLevel(player.getPlayerLevel());
+    	if(config == null){
+    		return null;
+		}
+		RobotDto rto = new RobotDto();
+		rto.setSeverId(player.getSeverId());
+		rto.setPlayerId(playerId);
+		rto.setName(name);
+		rto.setLevel(level);
+		rto.setType(1);
+		long fightValue = 0;
+		int aiLv1 = Integer.parseInt(config.getAiLv().split(",")[0]);
+		int aiLv2 = Integer.parseInt(config.getAiLv().split(",")[1]);
+		String[] split = config.getNum().split(",");
+		int count = GameMath.getRandomCount(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+		String[] front = config.getFront().split(",");
+		String[] back = config.getBack().split(",");
+		StringBuilder monsterId = new StringBuilder();
+		StringBuilder monsterLevel = new StringBuilder();
+		for(int i = 1;i<=count;i++){
+			String str = front[GameMath.getRandInt(front.length)];
+			monsterId.append(",").append(str);
+			monsterLevel.append(",").append(GameMath.getRandomCount(aiLv1, aiLv2));
+		}
+		count = 5- count;
+		for(int i = 1;i<=count;i++){
+			String str = back[GameMath.getRandInt(back.length)];
+			monsterId.append(",").append(str);
+			monsterLevel.append(",").append(GameMath.getRandomCount(aiLv1, aiLv2));
+		}
+		if(monsterId.length() > 0){
+			monsterId = new StringBuilder(monsterId.substring(1));
+		}
+		if(monsterLevel.length() > 0){
+			monsterLevel = new StringBuilder(monsterLevel.substring(1));
+		}
 
-			// todo extract method 跟别的方法不一样
-			Map<Long, Monster> monster = monsterService.createMonster(monsterId.toString(), monsterLevel.toString(), "", "","");
-			for( Map.Entry<Long, Monster> entry:monster.entrySet()) {
-				int i = entry.getKey().intValue();
-				Monster m = entry.getValue();
-				MatchMonsterDto mto = new MatchMonsterDto(m, i);
-				computeFightService.computeMonsterFight(m);
-				mto.reCalGods(player.callFightGods(), null);
-				rto.getMon().add(mto);
-				fightValue += m.getFightValue();
-			}
+		// todo extract method 跟别的方法不一样
+		Map<Long, Monster> monster = monsterService.createMonster(monsterId.toString(), monsterLevel.toString(), "", "","");
+		for( Map.Entry<Long, Monster> entry:monster.entrySet()) {
+			int i = entry.getKey().intValue();
+			Monster m = entry.getValue();
+			MatchMonsterDto mto = new MatchMonsterDto(m, i);
+			computeFightService.computeMonsterFight(m);
+			mto.reCalGods(player.callFightGods(), null);
+			rto.getMon().add(mto);
+			fightValue += m.getFightValue();
+		}
 
-			rto.setFightValue(fightValue);
-    	}
+		rto.setFightValue(fightValue);
     	return rto;
     }
     

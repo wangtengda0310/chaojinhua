@@ -31,13 +31,14 @@ public class XinmoEnterHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		int chapterId = jsonObject.getInt("chapterId");
-		if(player.getXinMo().get(chapterId) == null){
+		XingMoDto xingMoDto = player.getXinMo().get(chapterId);
+		if(xingMoDto == null){
 			return error(ErrorCode.ERROR);
-		}else if(player.getXinMo().get(chapterId) != null && player.getXinMo().get(chapterId).calLeftTime(System.currentTimeMillis()) <= 0){
+		}else if(xingMoDto.calLeftTime(System.currentTimeMillis()) <= 0){
 			return error(ErrorCode.XINGMO_LEAVEL);
 		}else{
 			Map<String,RobotDto> ro = robotService.getRobot();
-			if(ro == null || ro.get(player.getXinMo().get(chapterId).getMid()) == null){
+			if(ro == null || ro.get(xingMoDto.getMid()) == null){
 				return error(ErrorCode.ERROR);
 			}			
 		}
