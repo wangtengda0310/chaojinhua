@@ -37,13 +37,7 @@ public class ArenaEnterHandler extends ReconnectedHandler {
 		}
 
 		//校验对手
-		ArenaRanker oter = null;
-		for(ArenaRanker ar : arenaService.getChallenge(player)){
-			if(ar.getPlayerId() == playerId){
-				oter = ar;
-				break;
-			}
-		}
+		ArenaRanker oter = arenaService.getRankInfo(player);
 		if(oter == null){
 			return error(ErrorCode.ERROR);
 		}

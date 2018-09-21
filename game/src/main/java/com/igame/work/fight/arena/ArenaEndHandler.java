@@ -51,9 +51,7 @@ public class ArenaEndHandler extends ReconnectedHandler {
 		if(win == 1){	// 挑战失败吧玩家的当前排位返回给客户端
             ArenaRanker self = arenaService.getRankInfo(player);
 
-			ArenaRanker opponent = arenaService.getChallenge(player).stream()
-					.filter(r->r.getPlayerId()== opponentPlayerId)
-					.findAny().orElse(null);
+			ArenaRanker opponent = arenaService.getRankInfo(player);
 
 			synchronized (getLockByPlayer(player.getSeverId())) {
 

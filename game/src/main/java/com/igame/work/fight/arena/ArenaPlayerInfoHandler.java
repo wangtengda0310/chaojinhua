@@ -65,10 +65,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 			if (rto == null && playerId >= 100011) {    // todo 这个100011啥意思
 				return error(ErrorCode.ERROR);
 			} else {
-				ArenaRanker opponentRanker = arenaService.getChallenge(player).stream()
-						.filter(o -> o.getPlayerId() == playerId)
-						.findAny()
-						.orElse(null);
+				ArenaRanker opponentRanker = arenaService.getRankInfo(player);
 
 				if (opponentRanker != null) {
 					rto = robotService.createRobotDto(player, playerId, opponentRanker.getName(), 2);
