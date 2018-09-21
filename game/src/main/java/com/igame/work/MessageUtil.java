@@ -322,63 +322,7 @@ public class MessageUtil {
 		
 	}
 	
-	
-	/**
-	 * 无尽之森关卡更新
-	 */
-	public static void notifyWuChange(Player player){
-	
-		RetVO vo = new RetVO();		
-    	vo.addData("wuMap", player.getWuMap().values());
-		MessageUtil.sendMessageToPlayer(player, MProtrol.WU_UPDATE, vo);
-		
-	}
-	
-	/**
-	 * 无尽无尽之森自己怪物阵容更新
-	 */
-	public static void notifyWuZhengChange(Player player){
-	
-		RetVO vo = new RetVO();		
-    	vo.addData("wuZheng", CheckPointService.parsePlayer(player));
-		MessageUtil.sendMessageToPlayer(player, MProtrol.WUZHENG_UPDATE, vo);
-		
-	}
-	
-	/**
-	 * 推送无尽之森奶更新
-	 */
-	public static void notifyWuNaiChange(Player player){
-	
-		RetVO vo = new RetVO();		
-    	vo.addData("wuNai", player.getWuNai());
-		MessageUtil.sendMessageToPlayer(player, MProtrol.WUNAI_UPDATE, vo);
-		
-	}
-	
-	/**
-	 * 无尽无尽之森自己怪物阵容更新
-	 */
-	public static void notifyWuBufferChange(Player player, List<WuEffect> ls){
-	
-		RetVO vo = new RetVO();		
-    	vo.addData("wuEffect", ls);
-		MessageUtil.sendMessageToPlayer(player, MProtrol.WUBUFFER_UPDATE, vo);
-		
-	}
-	
-	
-	/**
-	 * 无尽之森已用免费重置次数更新
-	 */
-	public static void notifyWuResetChange(Player player){
-	
-		RetVO vo = new RetVO();		
-    	vo.addData("wuReset", player.getWuReset());
-		MessageUtil.sendMessageToPlayer(player, MProtrol.WU_RESET, vo);
-		
-	}
-	
+
 	
 	/**
 	 * 推送命运之门信息更新

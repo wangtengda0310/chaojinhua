@@ -112,7 +112,7 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 				endlessService.tempBufferId.put(player.getPlayerId(), buffer);
 	    		ls.addAll(player.getWuEffect());
 	    		ls.add(new WuEffect(buffer));
-	    		MessageUtil.notifyWuBufferChange(player,ls);
+				endlessService.notifyWuBufferChange(player,ls);
 	    	}
 	    	for(MatchMonsterDto mdt : player.getWuZheng().values()){
 	    		mdt.reCalValue(ls);

@@ -1,12 +1,14 @@
 package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.util.MyUtil;
+import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
@@ -20,7 +22,8 @@ import net.sf.json.JSONObject;
  */
 public class EndlessBufferHandler extends ReconnectedHandler {
 
-	private ResourceService resourceService;
+	@Inject private ResourceService resourceService;
+	@Inject private EndlessService endlessService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -50,7 +53,7 @@ public class EndlessBufferHandler extends ReconnectedHandler {
 			}
 		}
 
-		MessageUtil.notifyWuBufferChange(player,player.getWuEffect());
+		endlessService.notifyWuBufferChange(player,player.getWuEffect());
 
 		return vo;
 	}

@@ -40,18 +40,18 @@ public class EndlessRefHandler extends ReconnectedHandler {
 		}else{
 			ret = endlessService.refEndlessRef(player);
 			player.setWuReset(1);
-			MessageUtil.notifyWuResetChange(player);
+			endlessService.notifyWuResetChange(player);
 		}
 
 		if(ret != 0){
 			vo.setState(1);
 			vo.setErrCode(ret);
 		}else{
-			MessageUtil.notifyWuChange(player);
-			MessageUtil.notifyWuZhengChange(player);
-			MessageUtil.notifyWuNaiChange(player);
-			MessageUtil.notifyWuBufferChange(player,player.getWuEffect());
-			MessageUtil.notifyWuResetChange(player);
+			endlessService.notifyWuChange(player);
+			endlessService.notifyWuZhengChange(player);
+			endlessService.notifyWuNaiChange(player);
+			endlessService.notifyWuBufferChange(player,player.getWuEffect());
+			endlessService.notifyWuResetChange(player);
 		}
 
 		return vo;

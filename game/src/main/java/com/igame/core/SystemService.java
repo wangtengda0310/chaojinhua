@@ -9,6 +9,7 @@ import com.igame.core.quartz.TimeListener;
 import com.igame.work.MessageUtil;
 import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
+import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.friend.service.FriendService;
 import com.igame.work.quest.service.QuestService;
 import com.igame.work.shop.service.ShopService;
@@ -22,6 +23,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
     @Inject private SystemServiceDAO systemServiceDAO;
     @Inject private ShopService shopService;
     @Inject private QuestService questService;
+    @Inject private EndlessService endlessService;
 
     @Override
     public void zero() {
@@ -104,7 +106,7 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
 
         if(notify){
             MessageUtil.notifyQuestChange(player, questService.reset(player));
-            MessageUtil.notifyWuResetChange(player);
+            endlessService.notifyWuResetChange(player);
             MessageUtil.notifyDeInfoChange(player);
             friendService.notifyFriendInfo(player);
         }

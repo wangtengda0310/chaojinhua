@@ -1,11 +1,13 @@
 package com.igame.work.checkpoint.wujinZhiSen.handler;
 
 
+import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
+import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
@@ -20,7 +22,9 @@ import java.util.Arrays;
  *
  */
 public class EndlessZhenHandler extends ReconnectedHandler {
-	
+
+
+	@Inject private EndlessService endlessService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -48,7 +52,7 @@ public class EndlessZhenHandler extends ReconnectedHandler {
 
 		}
 
-		MessageUtil.notifyWuZhengChange(player);
+		endlessService.notifyWuZhengChange(player);
 
 		return vo;
 	}

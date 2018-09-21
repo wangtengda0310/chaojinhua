@@ -84,14 +84,14 @@ public class EndlessEndHandler extends ReconnectedHandler {
 				reward = resourceService.getRewardString(rt);
 				ct[2] = "1";
 				player.getWuMap().put(currIndex, MyUtil.toString(ct, ";"));
-				MessageUtil.notifyWuZhengChange(player);
-				MessageUtil.notifyWuChange(player);
+				endlessService.notifyWuZhengChange(player);
+				endlessService.notifyWuChange(player);
 				if(endlessService.tempBufferId.containsKey(player.getPlayerId())){
 		    		player.getWuEffect().add(new WuEffect(endlessService.tempBufferId.get(player.getPlayerId())));
 					endlessService.tempBufferId.remove(player.getPlayerId());
 				}
 			}else{
-				MessageUtil.notifyWuBufferChange(player,player.getWuEffect());
+				endlessService.notifyWuBufferChange(player,player.getWuEffect());
 			}
 			questService.processTask(player, 11, 1);
 

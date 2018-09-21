@@ -2,10 +2,15 @@ package com.igame.work.checkpoint.wujinZhiSen;
 
 import com.google.common.collect.Lists;
 import com.igame.core.di.LoadXml;
+import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
 import com.igame.work.ErrorCode;
+import com.igame.work.MProtrol;
+import com.igame.work.MessageUtil;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.fight.dto.GodsDto;
+import com.igame.work.monster.dto.WuEffect;
 import com.igame.work.user.dto.Player;
 
 import java.util.List;
@@ -68,4 +73,61 @@ public class EndlessService {
             refEndlessRef(player);
         }
     }
+
+    /**
+     * 推送无尽之森奶更新
+     */
+    public void notifyWuNaiChange(Player player){
+
+        RetVO vo = new RetVO();
+        vo.addData("wuNai", player.getWuNai());
+        MessageUtil.sendMessageToPlayer(player, MProtrol.WUNAI_UPDATE, vo);
+
+    }
+
+    /**
+     * 无尽无尽之森自己怪物阵容更新
+     */
+    public void notifyWuZhengChange(Player player){
+
+        RetVO vo = new RetVO();
+        vo.addData("wuZheng", CheckPointService.parsePlayer(player));
+        MessageUtil.sendMessageToPlayer(player, MProtrol.WUZHENG_UPDATE, vo);
+
+    }
+
+    /**
+     * 无尽之森关卡更新
+     */
+    public void notifyWuChange(Player player){
+
+        RetVO vo = new RetVO();
+        vo.addData("wuMap", player.getWuMap().values());
+        MessageUtil.sendMessageToPlayer(player, MProtrol.WU_UPDATE, vo);
+
+    }
+
+    /**
+     * 无尽无尽之森自己怪物阵容更新
+     */
+    public void notifyWuBufferChange(Player player, List<WuEffect> ls){
+
+        RetVO vo = new RetVO();
+        vo.addData("wuEffect", ls);
+        MessageUtil.sendMessageToPlayer(player, MProtrol.WUBUFFER_UPDATE, vo);
+
+    }
+
+
+    /**
+     * 无尽之森已用免费重置次数更新
+     */
+    public void notifyWuResetChange(Player player){
+
+        RetVO vo = new RetVO();
+        vo.addData("wuReset", player.getWuReset());
+        MessageUtil.sendMessageToPlayer(player, MProtrol.WU_RESET, vo);
+
+    }
+
 }
