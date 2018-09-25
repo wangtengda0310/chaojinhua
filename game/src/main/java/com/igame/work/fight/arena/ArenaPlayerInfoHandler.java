@@ -42,7 +42,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
-		long playerId = jsonObject.getLong("playerId");
+		long opponentPlayerId = jsonObject.getLong("playerId");
 
 
 		String name = "";
@@ -52,22 +52,22 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 //		long fightValue = 0;
 		RobotDto rto;
 
-		Player opponent = playerDAO.getPlayerByPlayerId(playerId);
+		Player opponent = playerDAO.getPlayerByPlayerId(opponentPlayerId);
 		if(opponent != null){	// TODO 监听上下阵事件?
 			Map<Long, Monster> mons = monsterService.getMonsterByPlayer(opponent);
 			opponent.setMonsters(mons);
-			rto = RobotService.createRobotLike(opponent);
+			rto = opponent.robotOfDefence();
 
 		}else{
-			rto = arenaService.getRobot().get(playerId);
+			rto = arenaService.getRobot().get(opponentPlayerId);
 
-			if (rto == null && playerId >= 100011) {    // todo 这个100011啥意思
+			if (rto == null && opponentPlayerId >= 100011) {    // todo 这个100011啥意思
 				return error(ErrorCode.ERROR);
 			} else {
 				ArenaRanker opponentRanker = arenaService.getRankInfo(player);
 
 				if (opponentRanker != null) {
-					rto = robotService.createRobotDto(player, playerId, opponentRanker.getName(), 2);
+					rto = robotService.createRobotDto(player, opponentPlayerId, opponentRanker.getName(), 2);
 
 
 					name = opponentRanker.getName();
@@ -90,7 +90,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 		playerHeadId = rto.getPlayerHeadId();
 
 
-		vo.addData("playerId", playerId);
+		vo.addData("playerId", opponentPlayerId);
 		vo.addData("name", name);
 		vo.addData("level", level);
 		vo.addData("playerFrameId", playerFrameId);

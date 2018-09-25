@@ -640,4 +640,44 @@ public class Player extends PlayerDto {
 
     }
 
+    public RobotDto robotOfTeam(int teamNum) {
+
+        Team team = getTeams().get(teamNum);
+
+        RobotDto rb;
+        rb = new RobotDto();
+        rb.setDtate(1);
+        rb.setSeverId(getSeverId());
+        rb.setPlayerId(getPlayerId());
+        rb.setLevel(getPlayerLevel());
+        rb.setName(getNickname());
+        rb.setPlayerFrameId(getPlayerFrameId());
+        rb.setPlayerHeadId(getPlayerHeadId());
+        rb.setFightValue(team.getFightValue());
+
+        //防守阵容神灵
+        Gods gods = getGods().get(team.getTeamGod());
+        if(gods != null){
+            rb.setGods(new GodsDto(gods));
+        }
+
+        List<MatchMonsterDto> mon = Lists.newArrayList();
+
+        // todo extract method
+        long[] teamMonster = team.getTeamMonster();
+        for (int i = 0; i < teamMonster.length; i++) {
+            Monster m = getMonsters().get(teamMonster[i]);
+            MatchMonsterDto mto = new MatchMonsterDto(m, i);
+            mto.reCalGods(callFightGods(), null);
+            mon.add(mto);
+        }
+
+        rb.setMon(mon);
+        rb.setType(1);
+        return rb;
+    }
+    public RobotDto robotOfDefence() {
+        return robotOfTeam(6);
+    }
+
 }

@@ -47,37 +47,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     	for(Player player : sessionManager.getSessions().values()){
 			RobotDto rb = robot.get(player.getNickname());
     		if(rb == null){
-    			rb = new RobotDto();
-    			rb.setDtate(1);
-    			rb.setSeverId(player.getSeverId());
-    			rb.setPlayerId(player.getPlayerId());
-    			rb.setLevel(player.getPlayerLevel());
-    			rb.setName(player.getNickname());
-    			rb.setPlayerFrameId(player.getPlayerFrameId());
-    			rb.setPlayerHeadId(player.getPlayerHeadId());
-    			rb.setFightValue(player.getFightValue());
-    			Team team = player.getTeams().get(player.getCurTeam());
-    			if(team != null){
-    				Gods gods = player.getGods().get(team.getTeamGod());
-    				if(gods != null){
-    					rb.setGods(new GodsDto(gods));
-    				}
-    			}
-
-				List<MatchMonsterDto> mon = Lists.newArrayList();
-
-				// todo extract method
-				long[] teamMonster = player.getTeams().get(player.getCurTeam()).getTeamMonster();
-				for (int i = 0; i < teamMonster.length; i++) {
-					Monster m = player.getMonsters().get(teamMonster[i]);
-					MatchMonsterDto mto = new MatchMonsterDto(m, i);
-					mto.reCalGods(player.callFightGods(), null);	// todo 这跟其他的不一样
-					mon.add(mto);	// todo 这跟其他的不一样
-				}
-
-				rb.setMon(mon);
-
-				robot.put(player.getUsername(), rb);
+				robot.put(player.getUsername(), player.robotOfTeam(player.getCurTeam()));
     		}
     	}
     	
@@ -158,41 +128,5 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     }
     
 
-	public static RobotDto createRobotLike(Player player) {
-		Team team = player.getTeams().get(6);
-
-		RobotDto rb;
-		rb = new RobotDto();
-		rb.setDtate(1);
-		rb.setSeverId(player.getSeverId());
-		rb.setPlayerId(player.getPlayerId());
-		rb.setLevel(player.getPlayerLevel());
-		rb.setName(player.getNickname());
-		rb.setPlayerFrameId(player.getPlayerFrameId());
-		rb.setPlayerHeadId(player.getPlayerHeadId());
-		rb.setFightValue(team.getFightValue());
-
-		//防守阵容神灵
-		Gods gods = player.getGods().get(team.getTeamGod());
-		if(gods != null){
-			rb.setGods(new GodsDto(gods));
-		}
-
-		List<MatchMonsterDto> mon = Lists.newArrayList();
-
-		// todo extract method
-		long[] teamMonster = team.getTeamMonster();
-		for (int i = 0; i < teamMonster.length; i++) {
-			Monster m = player.getMonsters().get(teamMonster[i]);
-			MatchMonsterDto mto = new MatchMonsterDto(m, i);
-			mto.reCalGods(player.callFightGods(), null);
-			mon.add(mto);
-		}
-
-		rb.setMon(mon);
-		rb.setType(1);
-		return rb;
-	}
-    
 
 }

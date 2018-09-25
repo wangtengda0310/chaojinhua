@@ -87,7 +87,7 @@ public class GateRankService extends EventService implements ISFSModule, TimeLis
 
                 RobotDto rb = robotService.getRobot().get(player.getNickname());
                 if (rb == null) {
-                    rb = RobotService.createRobotLike(player);
+                    rb = player.robotOfDefence();
 
                     robotService.getRobot().put(player.getNickname(), rb);
                 }
