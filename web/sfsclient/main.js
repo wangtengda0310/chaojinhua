@@ -17,7 +17,7 @@ function onConnectBtClick()
 	enableInterface(false);
 
 	// Log message
-	console.log("Connecting...");
+    history("Connecting...");
 
 	// Create configuration object
 	var config = {};
@@ -53,7 +53,7 @@ function onConnectBtClick()
 function onDisconnectBtClick()
 {
 	// Log message
-	console.log("Disconnecting...");
+	history("Disconnecting...");
 
 	// Disconnect
 	sfs.disconnect();
@@ -65,22 +65,22 @@ function onDisconnectBtClick()
 
 function onDebugLogged(event)
 {
-	console.log(event.message, "DEBUG", true);
+	history(event.message, "DEBUG", true);
 }
 
 function onInfoLogged(event)
 {
-	console.log(event.message, "INFO", true);
+	history(event.message, "INFO", true);
 }
 
 function onWarningLogged(event)
 {
-	console.log(event.message, "WARN", true);
+	history(event.message, "WARN", true);
 }
 
 function onErrorLogged(event)
 {
-	console.log(event.message, "ERROR", true);
+	history(event.message, "ERROR", true);
 }
 
 //------------------------------------
@@ -89,9 +89,6 @@ function onErrorLogged(event)
 
 function onLogin(event)
 {
-	console.log(event);
-	console.log(event.cmd);
-	console.log(event.cmd);
 		var send = new SFS2X.SFSObject();
 		send.putUtfString("userId",uid);
 		send.putInt("serverId", serverId);
@@ -104,11 +101,11 @@ function onLogin(event)
 }
 function onLoginError(evtParams)
 {
-	console.log("Login failure: " + evtParams.errorMessage);
+	history("Login failure: " + evtParams.errorMessage);
 }
 function onExtensionResponse(event)
 {
-	console.log(event.params.getUtfString("infor"));
+	history(event.params.getUtfString("infor"));
 	trace(event.params.getUtfString("infor"));
 }
 function onSendBtClick() {
@@ -120,15 +117,14 @@ function onSendBtClick() {
 	param.putUtfString("infor",txt);
 	
 	var req = new SFS2X.ExtensionRequest(cmd,param);
-	console.log(req);
+	history(cmd+":  "+txt);
 	sfs.send(req);
 }
 function onConnection(event)
 {
-	console.log(event);
 	if (event.success)
 	{
-		console.log("Connected to SmartFoxServer 2X!<br>SFS2X API version: " + sfs.version);
+		history("Connected to SmartFoxServer 2X!<br>SFS2X API version: " + sfs.version);
 
 		// Show disconnect button
 		switchButtons();
@@ -140,11 +136,11 @@ function onConnection(event)
 		}
 		catch(err)
 		  {
-			console.log(err);
+			history(err);
 		}
 	} else
 	{
-		console.log("Connection failed: " + (event.errorMessage ? event.errorMessage + " (" + event.errorCode + ")" : "Is the server running at all?"));
+		history("Connection failed: " + (event.errorMessage ? event.errorMessage + " (" + event.errorCode + ")" : "Is the server running at all?"));
 
 		// Reset
 		reset();
@@ -153,7 +149,7 @@ function onConnection(event)
 
 function onConnectionLost(event)
 {
-	console.log("Disconnection occurred; reason is: " + event.reason);
+	history("Disconnection occurred; reason is: " + event.reason);
 
 	// Hide disconnect button
 	switchButtons();
@@ -177,6 +173,7 @@ function enableInterface(enabled)
 function trace(message)
 {
 		document.getElementById("json-target").innerHTML = new JSONFormat(message,4).toString();
+		history(message);
 }
 
 function switchButtons()
@@ -213,6 +210,8 @@ function reset()
 	sfs = null;
 }
 
-
+function history(msg) {
+	$("#json-src").val($("#json-src").val()+"\r\n\r\n"+msg);
+}
 
 
