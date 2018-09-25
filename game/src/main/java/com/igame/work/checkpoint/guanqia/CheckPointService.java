@@ -279,7 +279,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 
     private List<Integer> findTimeoutXinmo(Player player, long now) {
         List<Integer> remove = new LinkedList<>();
-        for (XingMoDto xin : player.getXinMo().values()) {
+        for (XingMoDto xin : new ArrayList<>(player.getXinMo().values())) {
             if (xin.getStatTime() == 0 || now - xin.getStatTime() >= 24 * 3600 * 1000) {
                 remove.add(xin.getCheckPiontId());
                 player.getXinMo().remove(xin.getCheckPiontId());
