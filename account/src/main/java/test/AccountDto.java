@@ -54,7 +54,7 @@ public class AccountDto  extends CBasicVO  {
 	private String serverIp = "192.168.2.234";
 
 	@Transient
-	private int serverPort = 8787;
+	private int serverPort = 9933;
 
 	public AccountDto(){}
 	

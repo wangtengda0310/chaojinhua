@@ -82,7 +82,7 @@ public class MyClient extends JFrame implements IEventListener {
         hisTextArea.setLineWrap(true);        //激活自动换行功能
         hisTextArea.setWrapStyleWord(true);            // 激活断行不断字功能
 
-        sfsClient.connect(ip, 8787);
+        sfsClient.connect(ip, 9933);
 
         myGui();
     }
