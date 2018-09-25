@@ -67,7 +67,7 @@ public class GateHandler extends ReconnectedHandler {
 		for (int i = 0; i < teamMonster.length; i++) {
 			Monster m = player.getMonsters().get(teamMonster[i]);
 			MatchMonsterDto mto = new MatchMonsterDto(m, i);
-			mto.reCalGods(player.callFightGods(), null);
+			mto.reCalGods(player.currentFightGods(), null);
 			gateService.getMingZheng(player).put(mto.getObjectId(),mto);
 		}
 

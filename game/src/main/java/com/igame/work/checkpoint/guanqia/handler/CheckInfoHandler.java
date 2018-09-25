@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Marcus.Z
  *
  */
-public class EnterCheckHandler extends ReconnectedHandler {
+public class CheckInfoHandler extends ReconnectedHandler {
 
 	@Inject private RobotService robotService;
 	@Inject private CheckPointService checkPointService;
@@ -73,19 +73,20 @@ public class EnterCheckHandler extends ReconnectedHandler {
 		if (isExistXinmo(player,chapterId)){	//如果关卡有心魔,返回心魔数据
 
 			Map<String,RobotDto> ro = robotService.getRobot();
-			if(ro == null || ro.get(player.getXinMo().get(chapterId).getMid()) == null){
+			XingMoDto xingMoDto = player.getXinMo().get(chapterId);
+			if(ro == null || xingMoDto == null){
 				return error(ErrorCode.XINGMO_LEAVEL);
 			}
 
 			ctype = 2;
-			RobotDto robotDto = ro.get(player.getXinMo().get(chapterId).getMid());
+			RobotDto robotDto = ro.get(xingMoDto.getMid());
 			playerId = robotDto.getPlayerId();
 			name = robotDto.getName();
 			level = robotDto.getLevel();
 			gods = robotDto.getGods();
 			long id =100;
 			for(MatchMonsterDto mo : robotDto.getMon()){//处理神灵加成属性
-				MatchMonsterDto mto = mo.clonew(player.callFightGods(), robotDto.getGods());
+				MatchMonsterDto mto = mo.clonew(player.currentFightGods(), robotDto.getGods());
 				mto.setObjectId(id);
 				lb.add(mto);
 				id++;
@@ -186,15 +187,13 @@ public class EnterCheckHandler extends ReconnectedHandler {
 		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
 		if(ct != null){
 			if(ct.getRound() == 1){//一周目
-				Map<Long, Monster> monster = monsterService.batchCreateMonster(ct.getMonsterId(), ct.getLevel(), ct.getSite(), "", ct.getMonsterProp());
-				for(Map.Entry<Long, Monster> e : monster.entrySet()){
-					Monster m = e.getValue();
-		    		m.setObjectId(idx.incrementAndGet());
-		    		MatchMonsterDto mto = new MatchMonsterDto(m,e.getKey().intValue());
-		    		mto.reCalGods(player.callFightGods(), null);//神灵被动属性
-		    		mto.setRound("1-1");
-		    		lb.add(mto);
-		    	}
+				String monsterId = ct.getMonsterId();
+				String monsterLevel = ct.getLevel();
+				String position = ct.getSite();
+				String skillLv = "";
+				String round = "1-1";
+
+				createMatchMonsterDto(player, lb, idx, monsterId, monsterLevel, position, skillLv, ct.getMonsterProp(), round);
 			}else if(ct.getRound() > 1){//二 三周目
 				
 				String[] mid = ct.getMonsterId().split(":");
@@ -203,17 +202,14 @@ public class EnterCheckHandler extends ReconnectedHandler {
 				if(mid.length > 0){
 					int index = 1;
 					for(int i =0;i<mid.length;i++){
-						Map<Long, Monster> monster = monsterService.batchCreateMonster(mid[i], lv[i], site[i], "", ct.getMonsterProp());
+						String round = ct.getRound() + "-" + index++;
 
-						for (Map.Entry<Long, Monster> e : monster.entrySet()) {
-							Monster m = e.getValue();
-							m.setObjectId(idx.incrementAndGet());
-							MatchMonsterDto mto = new MatchMonsterDto(m, e.getKey().intValue());
-							mto.reCalGods(player.callFightGods(), null);//神灵被动属性
-							mto.setRound(ct.getRound() + "-" + index);
-							lb.add(mto);
-						}
-				    	index++;
+						String monsterIds = mid[i];
+						String monsterLevel = lv[i];
+						String position = site[i];
+						String skillLv = "";
+
+						createMatchMonsterDto(player, lb, idx, monsterIds, monsterLevel, position, skillLv, ct.getMonsterProp(), round);
 					}
 				}
 				
@@ -221,5 +217,18 @@ public class EnterCheckHandler extends ReconnectedHandler {
 		}
 	}
 
-	
+	private void createMatchMonsterDto(Player player, List<MatchMonsterDto> lb, AtomicInteger idx
+            , String monsterId, String monsterLevel, String position, String skillLv, String equips, String round) {
+		Map<Long, Monster> monster = monsterService.batchCreateMonster(monsterId, monsterLevel, position, skillLv, equips);
+		for (Map.Entry<Long, Monster> e : monster.entrySet()) {
+			Monster m = e.getValue();
+			m.setObjectId(idx.incrementAndGet());
+			MatchMonsterDto mto = new MatchMonsterDto(m, e.getKey().intValue());
+			mto.reCalGods(player.currentFightGods(), null);//神灵被动属性
+			mto.setRound(round);
+			lb.add(mto);
+		}
+	}
+
+
 }

@@ -600,7 +600,7 @@ public class Player extends PlayerDto {
     /**
      * 出战神灵
      */
-    public Gods callFightGods(){
+    public Gods currentFightGods(){
 		Team team = this.getTeams().get(this.getCurTeam());
 		if(team != null){
             return this.getGods().get(team.getTeamGod());
@@ -668,7 +668,7 @@ public class Player extends PlayerDto {
         for (int i = 0; i < teamMonster.length; i++) {
             Monster m = getMonsters().get(teamMonster[i]);
             MatchMonsterDto mto = new MatchMonsterDto(m, i);
-            mto.reCalGods(callFightGods(), null);
+            mto.reCalGods(currentFightGods(), null);
             mon.add(mto);
         }
 

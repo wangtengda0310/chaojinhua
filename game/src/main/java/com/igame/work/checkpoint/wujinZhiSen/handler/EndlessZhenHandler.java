@@ -6,7 +6,6 @@ import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
-import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.wujinZhiSen.EndlessService;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
@@ -46,7 +45,7 @@ public class EndlessZhenHandler extends ReconnectedHandler {
 			for (int i = 0; i < teamMonster.length; i++) {
 				Monster m = player.getMonsters().get(teamMonster[i]);
 				MatchMonsterDto mto = new MatchMonsterDto(m, i);
-				mto.reCalGods(player.callFightGods(), null);
+				mto.reCalGods(player.currentFightGods(), null);
 				player.getWuZheng().put(mto.getObjectId(),mto);
 			}
 

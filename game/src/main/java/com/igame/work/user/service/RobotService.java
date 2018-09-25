@@ -1,6 +1,5 @@
 package com.igame.work.user.service;
 
-import com.google.common.collect.Lists;
 import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
@@ -9,16 +8,13 @@ import com.igame.core.quartz.TimeListener;
 import com.igame.util.GameMath;
 import com.igame.work.fight.arena.ArenaService;
 import com.igame.work.fight.arena.ArenadataTemplate;
-import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.fight.service.ComputeFightService;
-import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dao.RobotDAO;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
-import com.igame.work.user.dto.Team;
 
 import java.util.*;
 
@@ -79,7 +75,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     /**
      * 生成机器人数据
      */
-    public RobotDto createRobotDto(Player player,long playerId,String name,int level){
+    public RobotDto createArenaRobotDto(Player player, long playerId, String name, int level){
     	ArenadataTemplate config = arenaService.arenaData.getTemplateByPlayerLevel(player.getPlayerLevel());
     	if(config == null){
     		return null;
@@ -118,7 +114,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 			Monster m = entry.getValue();
 			MatchMonsterDto mto = new MatchMonsterDto(m, i);
 			computeFightService.computeMonsterFight(m);
-			mto.reCalGods(player.callFightGods(), null);
+			mto.reCalGods(player.currentFightGods(), null);
 			rto.getMon().add(mto);
 			fightValue += m.getFightValue();
 		}

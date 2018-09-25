@@ -87,7 +87,7 @@ public class GateEnterHandler extends ReconnectedHandler {
 				gto.getMons().forEach((mid, m) -> {
 					int i = mid.intValue();
 					MatchMonsterDto mto = new MatchMonsterDto(m, i);
-					mto.reCalGods(player.callFightGods(), null);
+					mto.reCalGods(player.currentFightGods(), null);
 					lb.add(mto);
 				});
 

@@ -67,7 +67,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 				ArenaRanker opponentRanker = arenaService.getRankInfo(player);
 
 				if (opponentRanker != null) {
-					rto = robotService.createRobotDto(player, opponentPlayerId, opponentRanker.getName(), 2);
+					rto = robotService.createArenaRobotDto(player, opponentPlayerId, opponentRanker.getName(), 2);
 
 
 					name = opponentRanker.getName();
@@ -81,7 +81,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 		GodsDto gods = rto.getGods();
 		List<MatchMonsterDto> lb = Lists.newArrayList();
 		for (MatchMonsterDto mo : rto.getMon()) {//处理神灵加成属性
-			MatchMonsterDto mto = mo.clonew(player.callFightGods(), gods);
+			MatchMonsterDto mto = mo.clonew(player.currentFightGods(), gods);
 			lb.add(mto);
 		}
 

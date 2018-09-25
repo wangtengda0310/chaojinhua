@@ -63,7 +63,7 @@ public class BallisticEnterHandler extends ReconnectedHandler {
         ballisticService.setBallisticAid(player, aidMonsters);
         List<MatchMonsterDto> matchMonsterDtos = ballisticService.buildMonster(template, BallisticConstant.BALL_MONSTER_INIT);
         for(MatchMonsterDto mto : matchMonsterDtos){
-			mto.reCalGods(player.callFightGods(), null);
+			mto.reCalGods(player.currentFightGods(), null);
         }
         vo.addData("monsters", matchMonsterDtos);
         return vo;

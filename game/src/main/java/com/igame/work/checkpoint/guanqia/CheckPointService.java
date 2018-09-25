@@ -116,7 +116,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 		for(Player player : sessionManager.getSessions().values()){
 			synchronized (getTimeLock(player)) {
                 checkResPerMinute(player);  // minute timer
-                processXinMoPerMinute(player);
+                processXinMoPerMinute(player);  // todo move to RobotService or XinmoService?
 				calResPerMinute(player);
 			}
 		}
