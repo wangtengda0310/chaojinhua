@@ -133,6 +133,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 				player.getUser().getZone().removeUser(player.getUser());
 				player.getUser().disconnect(new LoginOutReason());
 				sessionManager.removeSession(Long.parseLong(player.getUser().getName()));
+				this.heartTime.remove(player.getPlayerId());
 			}
 		}
 	}
