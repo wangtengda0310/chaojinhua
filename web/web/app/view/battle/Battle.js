@@ -7,8 +7,7 @@ Ext.define('web.view.battle.Battle', {
 
     requires: [
         'web.view.battle.BattleModel',
-		'web.view.battle.BattleController',
-        'web.view.d3.custom.canvas.Particles'
+		'web.view.battle.BattleController'
     ],
 
     /*
@@ -22,13 +21,8 @@ Ext.define('web.view.battle.Battle', {
 
     controller: 'battle',
 
-    items: [
-        /* include child components here */
-        {
-            xtype:'battle.EaselWindow'
-        },
-        {
-            xtype:'d3-view-particles'
-        }
-    ]
+    html: '<canvas id="demoCanvas" width="500" height="300">'
++ 'alternate content'
++ '</canvas>'
+
 });
