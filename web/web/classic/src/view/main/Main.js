@@ -16,7 +16,8 @@ Ext.define('web.view.main.Main', {
         'web.view.main.MainController',
         'web.view.main.MainModel',
         'web.view.main.List',
-        'web.view.game.GameProtocolList'
+        'web.view.game.GameProtocolList',
+        'web.view.battle.Battle'
     ],
 
     controller: 'main',
@@ -77,6 +78,10 @@ Ext.define('web.view.main.Main', {
     },
 
     items: [{
+        title:'battle',
+        iconCls:'fa-fighter-jet',
+        xtype:  'web.view.battle.Battle'
+    },{
         title: 'Protocal Test',
         iconCls: 'fa-steam',
         items: [{
