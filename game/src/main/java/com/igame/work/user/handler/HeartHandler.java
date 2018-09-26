@@ -29,13 +29,14 @@ public class HeartHandler extends ClientDispatcherHandler {
     @Override
     public void handleClientRequest(User user, ISFSObject params) {
 
-        RetVO vo = new RetVO();
-
         Player player = sessionManager.getSession(Long.parseLong(user.getName()));
         if(player == null){
             this.getLogger().error(this.getClass().getSimpleName()," get player failed Name:" +user.getName());
             return;
         }
+
+        RetVO vo = new RetVO();
+
         playerCacheService.setHeartTime(player.getPlayerId(), System.currentTimeMillis());
         int times = timer.computeIfAbsent(player.getPlayerId(), k->0);
         if (times++ > 10) {

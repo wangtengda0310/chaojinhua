@@ -103,7 +103,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 
 	private Map<Long, Long> heartTime = new ConcurrentHashMap<>();//心跳刷新时间
 
-	public long getHeartTime(long playerId) {
+	private long getHeartTime(long playerId) {
 		return heartTime.containsKey(playerId)?heartTime.get(playerId):0;
 	}
 
@@ -111,7 +111,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 		this.heartTime.put(playerId, heartTime);
 	}
 
-	public void checkPlayer(){
+	private void checkPlayer(){
     	for(Player player : sessionManager.getSessions().values()){
 			long heartTime = getHeartTime(player.getPlayerId());
 			if(heartTime >0 && System.currentTimeMillis() - heartTime > 5 * 60 * 1000){
