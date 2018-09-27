@@ -41,7 +41,7 @@ public class LoginEventHandler extends EventDispatcherHandler {
 		User user = (User) event.getParameter(SFSEventParam.USER);
 		ISFSObject isRepeat  = (ISFSObject)event.getParameter(SFSEventParam.LOGIN_IN_DATA);
 
-		trace("LoginEventHandler-----userId :"+name + ",isRepeat :" + isRepeat.getBool("isRepeat"));
+		trace("\nLoginEventHandler-----userId :"+name + ",isRepeat :" + isRepeat.getBool("isRepeat")+"\n");
 
 		Player player = sessionManager.getSession(Long.parseLong(name));
 		if(player != null && !isRepeat.getBool("isRepeat")){

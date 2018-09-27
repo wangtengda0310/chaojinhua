@@ -12,6 +12,7 @@ import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  * 
@@ -27,13 +28,13 @@ public class LoginOutHandler extends ClientDispatcherHandler {
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
 
-		trace("LoginOutHandlerLoginOutHandler-----name :"+user.getName());
+		trace("\nLoginOutHandlerLoginOutHandler-----name :"+user.getName()+"\n");
 		Player player =  sessionManager.getSession(Long.parseLong(user.getName()));
 		if(player != null){//保存角色数据
 			try{
 				fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
 			}catch(Exception e){
-				trace("palyer leave save error----- :",e);
+				trace("\npalyer leave save error----- :", ExceptionUtils.getStackTrace(e));
 				ExceptionLog.error("palyer leave save error----- :",e);
 			}
 			

@@ -111,7 +111,7 @@ public class PlayerHandler extends ClientDispatcherHandler {
 		long userId = jsonObject.getLong("userId");
 		int serverId = jsonObject.getInt("serverId");
 		
-		trace("进入游戏---- serverId:" + serverId + "," +"userId:" + userId);
+		trace("\n进入游戏---- serverId:" + serverId + "," +"userId:" + userId +"\n");
 
 		RetVO vo = new RetVO();
 		int index = params.getInt("index");

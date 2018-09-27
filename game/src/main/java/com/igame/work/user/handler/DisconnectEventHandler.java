@@ -11,8 +11,7 @@ import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.exceptions.SFSException;
 
 /**
- * 
- * @author Marcus.Z
+ * 掉网的时候会触发，禁用网络连接可以进来
  *
  */
 public class DisconnectEventHandler extends EventDispatcherHandler {
@@ -23,7 +22,7 @@ public class DisconnectEventHandler extends EventDispatcherHandler {
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
 		User user = (User) event.getParameter(SFSEventParam.USER);
-		trace("DisconnectEventHandler-----userId :"+user.getName());
+		trace("\nDisconnectEventHandler-----userId :"+user.getName()+"\n");
 		Player player =  sessionManager.getSession(Long.parseLong(user.getName()));
 		if(player != null){//保存角色数据
 //			if(player.getHeartTime()>0 && System.currentTimeMillis() - player.getHeartTime() > 5 * 60 * 1000){

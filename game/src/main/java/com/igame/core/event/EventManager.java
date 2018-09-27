@@ -13,6 +13,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.variables.SFSRoomVariable;
 import com.smartfoxserver.v2.entities.variables.SFSUserVariable;
 import com.smartfoxserver.v2.extensions.BaseServerEventHandler;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -63,7 +64,7 @@ public class EventManager implements ISFSModule {
                                             try {
                                                 listener.observe(player, eventType, param);
                                             } catch (Exception e) {
-                                                trace(e);
+                                                trace(ExceptionUtils.getStackTrace(e));
                                             }
                                         });
                             }
@@ -98,7 +99,7 @@ public class EventManager implements ISFSModule {
                                             try {
                                                 listener.handleEvent(param);
                                             } catch (Exception e) {
-                                                trace(e);
+                                                trace(ExceptionUtils.getStackTrace(e));
                                             }
                                         });
                             }

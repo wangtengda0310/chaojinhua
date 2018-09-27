@@ -15,6 +15,7 @@ import com.smartfoxserver.v2.core.SFSEventParam;
 import com.smartfoxserver.v2.core.SFSEventType;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.exceptions.SFSException;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  * 
@@ -31,13 +32,13 @@ public class LOGINOUTEventHandler extends EventDispatcherHandler {
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
 		User user = (User) event.getParameter(SFSEventParam.USER);
-		trace("sfs登出事件-----name :"+user.getName());
+		trace("\nsfs登出事件-----name :"+user.getName()+"\n");
 		Player player =  sessionManager.getSession(Long.parseLong(user.getName()));
 		if(player != null){//保存角色数据
 			try{
 				fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
 			}catch(Exception e){
-				trace("palyer leave save error----- :",e);
+				trace("\npalyer leave save error----- :", ExceptionUtils.getStackTrace(e));
 				ExceptionLog.error("palyer leave save error----- :",e);
 			}
 			
