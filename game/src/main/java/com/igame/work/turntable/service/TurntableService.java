@@ -3,6 +3,7 @@ package com.igame.work.turntable.service;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
 import com.igame.core.di.LoadXml;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.handler.RetVO;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.DateUtil;
@@ -28,7 +29,7 @@ public class TurntableService implements TimeListener {
     TurntableDAO dao;
     @Inject private SessionManager sessionManager;
 
-    public Map<Long, Turntable> turntables = new HashMap<>();//幸运大转盘
+    @RemoveOnLogout() public Map<Long, Turntable> turntables = new HashMap<>();//幸运大转盘
     public Turntable getTurntable(Player player) {
         if (turntables.containsKey(player.getPlayerId())) {
             return turntables.get(player.getPlayerId());

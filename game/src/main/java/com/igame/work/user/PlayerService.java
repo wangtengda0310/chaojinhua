@@ -8,6 +8,7 @@ import com.igame.core.di.LoadXml;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.log.DebugLog;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
@@ -319,7 +320,7 @@ public class PlayerService extends EventService implements ISFSModule {
 	}
 
 
-	private Map<Long, Object> dbLock = new ConcurrentHashMap<>();//防止定时保存和玩家离线保存并发的数据库同步锁
+	@RemoveOnLogout() private Map<Long, Object> dbLock = new ConcurrentHashMap<>();//防止定时保存和玩家离线保存并发的数据库同步锁
 
 	private void savePlayer(Player player,boolean loginOutTime){
 		synchronized(dbLock.computeIfAbsent(player.getPlayerId(), pid->new Object())){

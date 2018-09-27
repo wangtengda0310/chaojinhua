@@ -27,8 +27,8 @@ public class PVPFightService implements TimeListener {
     }
     
     public Map<Long,Player> palyers = new ConcurrentHashMap<Long, Player>();//匹配池玩家
-    
-    public Map<Long,FightBase> fights = new ConcurrentHashMap<Long, FightBase>();//进行中的战斗对象
+
+    public Map<Long,FightBase> fights = new ConcurrentHashMap<>();//进行中的战斗对象
     
     public Object lock = new Object();
     

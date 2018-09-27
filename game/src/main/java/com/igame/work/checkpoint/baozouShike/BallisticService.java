@@ -6,6 +6,7 @@ import com.igame.core.di.LoadXml;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.quartz.TimeListener;
 import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.baozouShike.data.*;
@@ -300,9 +301,9 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
         dao.update(rankDto);
     }
 
-    private Map<Long, Date> ballisticEnter = new ConcurrentHashMap<>();    //记录暴走时刻开始挑战时间
-    private Map<Long, AtomicInteger> ballisticMonsters = new ConcurrentHashMap<>();    //记录暴走时刻刷新怪兽数量
-    private Map<Long, String> ballisticAid = new ConcurrentHashMap<>();    //记录暴走时刻援助怪兽
+    @RemoveOnLogout() private Map<Long, Date> ballisticEnter = new ConcurrentHashMap<>();    //记录暴走时刻开始挑战时间
+    @RemoveOnLogout() private Map<Long, AtomicInteger> ballisticMonsters = new ConcurrentHashMap<>();    //记录暴走时刻刷新怪兽数量
+    @RemoveOnLogout() private Map<Long, String> ballisticAid = new ConcurrentHashMap<>();    //记录暴走时刻援助怪兽
 
     public void addBallisticMonsters(Player player, int value) {
         ballisticMonsters.computeIfAbsent(player.getPlayerId(), pid -> new AtomicInteger(0)).addAndGet(value);

@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
 import com.igame.core.di.LoadXml;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.GameMath;
 import com.igame.work.checkpoint.mingyunZhiMen.data.DestinyData;
@@ -37,7 +38,7 @@ public class GateService implements ISFSModule, TimeListener {
         refFateMap();
     }
 
-    private Map<Long, Map<Long, MatchMonsterDto>> mingZheng = new ConcurrentHashMap<>();//命运之门当前阵容
+    @RemoveOnLogout() private Map<Long, Map<Long, MatchMonsterDto>> mingZheng = new ConcurrentHashMap<>();//命运之门当前阵容
 
     public Map<Long, MatchMonsterDto> getMingZheng(Player player) {
         return mingZheng.get(player.getPlayerId());

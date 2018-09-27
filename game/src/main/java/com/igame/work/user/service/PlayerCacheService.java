@@ -6,6 +6,7 @@ import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.log.ExceptionLog;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.LoginOutReason;
@@ -50,7 +51,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 
 		pcd.put(player.getPlayerId(), player);
     	pcn.put(player.getNickname(), player);
-    	
+
     }
     
     /**
@@ -101,7 +102,7 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 		return pcd.values().stream().filter(player -> player.getSeverId() == serverId).collect(Collectors.toList());
 	}
 
-	private Map<Long, Long> heartTime = new ConcurrentHashMap<>();//心跳刷新时间
+	@RemoveOnLogout() private Map<Long, Long> heartTime = new ConcurrentHashMap<>();//心跳刷新时间
 
 	private long getHeartTime(long playerId) {
 		return heartTime.containsKey(playerId)?heartTime.get(playerId):0;

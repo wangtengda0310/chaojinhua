@@ -2,6 +2,7 @@ package com.igame.work.checkpoint.worldEvent;
 
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.user.dto.Player;
@@ -15,7 +16,7 @@ public class WorldEventService implements ISFSModule {
     @Inject
     private ResourceService resourceService;
 
-    private Map<Long, String> enterWordEventId = new ConcurrentHashMap<>();//进入世界事件关卡ID
+    @RemoveOnLogout() private Map<Long, String> enterWordEventId = new ConcurrentHashMap<>();//进入世界事件关卡ID
 
     public String getString(Player player, String monsterExpStr, WorldEventTemplate wt, List<Monster> ll, long mid) {
         if(-1 != mid){

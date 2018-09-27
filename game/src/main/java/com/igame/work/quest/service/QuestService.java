@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
 import com.igame.core.di.LoadXml;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.log.GoldLog;
 import com.igame.util.MyUtil;
 import com.igame.work.MessageUtil;
@@ -39,7 +40,7 @@ public class QuestService implements ISFSModule {
 	@Inject private QuestService questService;
 	@Inject private CheckPointService checkPointService;
 
-	private Map<Long, Map<Integer, TaskDayInfo>> achievement = new ConcurrentHashMap<>();//成就任务
+	@RemoveOnLogout() private Map<Long, Map<Integer, TaskDayInfo>> achievement = new ConcurrentHashMap<>();//成就任务
 
 	/**
 	 * 检测玩家任务

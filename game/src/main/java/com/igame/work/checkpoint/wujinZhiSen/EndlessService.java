@@ -2,6 +2,7 @@ package com.igame.work.checkpoint.wujinZhiSen;
 
 import com.google.common.collect.Lists;
 import com.igame.core.di.LoadXml;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.handler.RetVO;
 import com.igame.util.GameMath;
 import com.igame.util.MyUtil;
@@ -23,7 +24,7 @@ public class EndlessService {
      * 无尽之森
      */
     @LoadXml("endlessdata.xml")public EndlessData endlessData;
-    public Map<Long, Integer> tempBufferId = new ConcurrentHashMap<>();//临时ID
+    @RemoveOnLogout() public Map<Long, Integer> tempBufferId = new ConcurrentHashMap<>();//临时ID
     /**
      * 无尽之森刷新
      */

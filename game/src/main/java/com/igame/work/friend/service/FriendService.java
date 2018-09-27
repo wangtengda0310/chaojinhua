@@ -2,6 +2,7 @@ package com.igame.work.friend.service;
 
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.handler.RetVO;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
@@ -34,7 +35,7 @@ public class FriendService {
     @Inject private PlayerCacheService playerCacheService;
     @Inject public CheckPointService checkPointService;
 
-    private Map<Long, FriendInfo> playerFriends= new ConcurrentHashMap<>();    //好友 在Friends表中存储 不在Player表中存储
+    @RemoveOnLogout() private Map<Long, FriendInfo> playerFriends= new ConcurrentHashMap<>();    //好友 在Friends表中存储 不在Player表中存储
 
     /**
      * 获取好友探索列表

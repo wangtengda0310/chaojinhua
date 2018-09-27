@@ -2,6 +2,7 @@ package com.igame.core.handler;
 
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.user.dto.MessageCache;
@@ -52,7 +53,7 @@ public abstract class ReconnectedHandler extends ClientDispatcherHandler {
 
     }
 
-    private Map<Long, Object> proLock = new ConcurrentHashMap<>();//消息同步锁
+    @RemoveOnLogout() private Map<Long, Object> proLock = new ConcurrentHashMap<>();//消息同步锁
 
     private void cacheResponse(String cmdName, RetVO vo, User user, ISFSObject res) {
         Player player = sessionManager.getSession(Long.parseLong(user.getName()));

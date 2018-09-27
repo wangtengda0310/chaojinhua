@@ -5,6 +5,7 @@ import com.igame.core.data.ClassXmlDataLoader;
 import com.igame.core.db.DBManager;
 import com.igame.core.di.JarApplicationContext;
 import com.igame.core.event.EventManager;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.handler.ClientDispatcherHandler;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.JobManager;

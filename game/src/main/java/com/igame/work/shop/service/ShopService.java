@@ -4,6 +4,7 @@ import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
 import com.igame.core.di.LoadXml;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.handler.RetVO;
 import com.igame.core.quartz.TimeListener;
 import com.igame.util.DateUtil;
@@ -45,7 +46,7 @@ public class ShopService implements ISFSModule, TimeListener {
     @Inject private SessionManager sessionManager;
     @Inject private ShopDAO shopDAO;
 
-    private Map<Long, ShopInfo> shopInfos = new ConcurrentHashMap<>();    //商店信息
+    @RemoveOnLogout() private Map<Long, ShopInfo> shopInfos = new ConcurrentHashMap<>();    //商店信息
 
     public ShopInfo getShopInfo(Player player) {
         return shopInfos.get(player.getPlayerId());

@@ -5,6 +5,7 @@ import com.igame.core.data.ClassXmlDataLoader;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -107,9 +108,9 @@ public class JarApplicationContext {
                     .filter(name -> name.endsWith(".class"))
                     .filter(name -> !name.contains("$"))
                     .map(name -> name.substring(0,name.indexOf(".class")).replace("/","."))
-                    .map(n-> {
+                    .map(name-> {
                         try {
-                            return Class.forName(n);
+                            return Class.forName(name);
                         } catch (ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }
@@ -133,4 +134,26 @@ public class JarApplicationContext {
         }
     }
 
+    public void addAnnotationHandler(Class<? extends Annotation> annotationClass, AnnotationReflectionHandler handler) {
+        getLogger().info(annotationClass+","+handler);
+        cachedObjects.entrySet().stream()
+                .flatMap(e->{
+                    return Arrays.stream(e.getKey().getDeclaredFields())
+                            .peek(f->getLogger().debug("field: {}", f))
+                            .filter(f->f.isAnnotationPresent(annotationClass))
+                            .map(f-> {
+                                Annotation annotation = f.getAnnotation(annotationClass);
+                                try {
+                                    return new Object[]{f.get(e.getValue()), annotation};
+                                } catch (IllegalAccessException ignore) {
+                                    return null;
+                                }
+                            })
+                            .filter(Objects::nonNull)
+                            .filter(f->((Object[])f)[0] instanceof Map);
+
+                })
+                .peek(f->getLogger().debug("class: {} {} {}", f[0].getClass(), f[0], f[1]))
+                .forEach(f->handler.handle((Map)f[0], (Annotation)f[1]));
+    }
 }

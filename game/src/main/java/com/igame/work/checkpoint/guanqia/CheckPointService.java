@@ -6,6 +6,7 @@ import com.igame.core.ISFSModule;
 import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
 import com.igame.core.di.LoadXml;
+import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.handler.RetVO;
 import com.igame.core.log.GoldLog;
 import com.igame.core.quartz.TimeListener;
@@ -63,13 +64,13 @@ public class CheckPointService implements ISFSModule, TimeListener {
     @Inject private ItemService itemService;
     @Inject private VIPService vipService;
 
-	private Map<Long, Long> enterCheckPointTime = new ConcurrentHashMap<>();//进入的关卡时间
-	private Map<Long, Long> enterWordEventTime = new ConcurrentHashMap<>();//进入世界事件关卡时间
-	private Map<Long, Integer> enterCheckpointId = new ConcurrentHashMap<>();//进入的关卡ID
+	@RemoveOnLogout() private Map<Long, Long> enterCheckPointTime = new ConcurrentHashMap<>();//进入的关卡时间
+	@RemoveOnLogout() private Map<Long, Long> enterWordEventTime = new ConcurrentHashMap<>();//进入世界事件关卡时间
+	@RemoveOnLogout() private Map<Long, Integer> enterCheckpointId = new ConcurrentHashMap<>();//进入的关卡ID
 
 
 
-	private Map<Long, Map<String,Object>> lastBattleParam = new ConcurrentHashMap<>();//上次战斗的关卡参数
+    @RemoveOnLogout() private Map<Long, Map<String,Object>> lastBattleParam = new ConcurrentHashMap<>();//上次战斗的关卡参数
 
     public Map<String, Object> getLastBattleParam(long playerId) {
 		return lastBattleParam.get(playerId);
@@ -106,7 +107,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 		calPlayerTimeRes();
 	}
 
-	private Map<Long,Object> timeLock = new ConcurrentHashMap<>();//定时同步锁
+    @RemoveOnLogout() private Map<Long,Object> timeLock = new ConcurrentHashMap<>();//定时同步锁
 
 	public Object getTimeLock(Player player) {
 		return timeLock.computeIfAbsent(player.getPlayerId(), pid->new Object());

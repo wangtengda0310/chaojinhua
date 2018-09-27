@@ -62,7 +62,7 @@ public class SessionManager {
     }
 
     public void disconnectAll(){
-        sessions.keySet().forEach(e->removeSession(e));
+        sessions.keySet().forEach(this::removeSession);
     }
 
     public void addSession(Player player){
