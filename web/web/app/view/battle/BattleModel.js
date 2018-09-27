@@ -19,5 +19,6 @@ Ext.define('web.view.battle.BattleModel', {
 
     data: {
         /* This object holds the arbitrary data that populates the ViewModel and is then available for binding. */
+        shapes:[]
     }
 });

@@ -21,8 +21,9 @@ Ext.define('web.view.battle.Battle', {
 
     controller: 'battle',
 
-    html: '<canvas id="demoCanvas" width="500" height="300">'
-+ 'alternate content'
-+ '</canvas>'
-
+    items:[{
+        reference: 'view',
+        html: '<canvas id="demoCanvas" width="800" height="300">'
+            + 'alternate content'
+            + '</canvas>'}],
 });
