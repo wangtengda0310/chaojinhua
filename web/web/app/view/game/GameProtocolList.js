@@ -4,6 +4,7 @@
 Ext.define('web.view.game.GameProtocolList', {
     extend: 'Ext.grid.Panel',
     xtype: 'protocollist',
+    controller: 'gameprotocol',
 
     requires: [
         'web.store.Protocol'
@@ -22,6 +23,6 @@ Ext.define('web.view.game.GameProtocolList', {
     ],
 
     listeners: {
-        select: function(x){alert(x);}
+        doubletap: 'dbClick'
     }
 });

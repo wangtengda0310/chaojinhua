@@ -78,44 +78,15 @@ Ext.define('web.view.main.Main', {
     },
 
     items: [{
+        title: 'protocal debuger',
+        iconCls: 'fa-steam',
+        items: [{
+            xtype:  'sfsclient'
+        }]
+    }, {
         title:'battle',
         iconCls:'fa-fighter-jet',
         xtype:  'web.view.battle.Battle'
-    },{
-        title: 'Protocal Test',
-        iconCls: 'fa-steam',
-        items: [{
-            xtype: 'panel',
-            items:[{
-                xtype: 'component',
-                cls: 'button-group-label button-group-right',
-                padding: '25 10 0 0',
-                width: 75,
-                html: 'Default'
-            }, {
-                xtype: 'container',
-                cls: 'button-group',
-                flex: 1,
-                minHeight: 55,
-                defaultType: 'button',
-                defaults: {
-                    margin: '0 10'
-                },
-                layout: {
-                    type: 'hbox',
-                    align: 'middle',
-                    pack: 'space-around'
-                },
-                items: [
-                    {id:"cmd",label:"cmd",xtype:'textfield'}
-                ,{
-                    text: 'Normal',
-                        handler:function(x){console.log(x);console.log(this);alert(x.up("container").getComponent("cmd").html(123))}
-                }]
-            }]
-        }, {
-            xtype: 'protocollist'
-        }]
     }, {
         title: 'Home',
         iconCls: 'fa-home',

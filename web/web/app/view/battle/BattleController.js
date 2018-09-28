@@ -9,13 +9,13 @@ Ext.define('web.view.battle.BattleController', {
      * Called when the view is created
      */
     init: function() {
+    }
+    ,afterRender: function() {
         self = this;
         self.v = 5;
         self.v2 = -5;
         createjs.Ticker.timingMode = createjs.Ticker.RAF;
         createjs.Ticker.addEventListener("tick", this.tick);
-    }
-    ,afterRender: function() {
         self.stage = new createjs.Stage("demoCanvas");
 
         self.circle = new createjs.Shape();
