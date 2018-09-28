@@ -666,10 +666,13 @@ public class Player extends PlayerDto {
         // todo extract method
         long[] teamMonster = team.getTeamMonster();
         for (int i = 0; i < teamMonster.length; i++) {
-            Monster m = getMonsters().get(teamMonster[i]);
-            MatchMonsterDto mto = new MatchMonsterDto(m, i);
-            mto.reCalGods(currentFightGods(), null);
-            mon.add(mto);
+            long mid = teamMonster[i];
+            if (mid>0) {
+                Monster m = getMonsters().get(mid);
+                MatchMonsterDto mto = new MatchMonsterDto(m, i);
+                mto.reCalGods(currentFightGods(), null);
+                mon.add(mto);
+            }
         }
 
         rb.setMon(mon);
