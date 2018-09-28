@@ -55,14 +55,15 @@ public class QuestService implements ISFSModule {
 		for(QuestTemplate qt : questData.getAll()){
 			
 			//成就
-			TaskDayInfo tf = achievement.get(player.getPlayerId()).get(qt.getQuestId());
+			Map<Integer, TaskDayInfo> qs = achievement.computeIfAbsent(player.getPlayerId(),pid->new HashMap<>());
+			TaskDayInfo tf = qs.get(qt.getQuestId());
 			if(tf == null){
-				if(canOpenQuest(player,achievement.get(player.getPlayerId()),qt)){
+				if(canOpenQuest(player, qs,qt)){
 					TaskDayInfo value = new TaskDayInfo(player, qt.getQuestId());
 					if(qt.getQuestType()==2 && qt.getClaim()>1 && qt.getClaim()<=25){
 						questService.processTaskDetail(player, Lists.newArrayList(), value, qt.getClaim(), 0);
 					}
-					achievement.get(player.getPlayerId()).put(qt.getQuestId(), value);//添加新任务
+					qs.put(qt.getQuestId(), value);//添加新任务
 				}
 			}else{
 //				if((qt.getClaim() == 17 && tf.getVars() == qt.getFinish() 
@@ -390,6 +391,8 @@ public class QuestService implements ISFSModule {
 	}
 
 	public void updatePlayer(Player player) {
-		questDAO.updatePlayer(achievement.get(player.getPlayerId()));
+		if (achievement.containsKey(player.getPlayerId())) {
+			questDAO.updatePlayer(achievement.get(player.getPlayerId()));
+		}
 	}
 }
