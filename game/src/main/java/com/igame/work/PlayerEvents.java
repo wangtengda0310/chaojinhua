@@ -22,4 +22,5 @@ public enum PlayerEvents implements EventType {
     , GOD_LEVEL_UP
     , TURN_TABLE
     , GATE_RANK
+    , AFTER_OFFLINE_AND_SAVE
 }

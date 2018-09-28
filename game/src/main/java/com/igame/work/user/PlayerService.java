@@ -95,7 +95,6 @@ public class PlayerService extends EventService implements ISFSModule {
 	@Inject private DrawService drawService;
 	@Inject private MonsterService monsterService;
 	@Inject private VIPService vipService;
-    @Inject private SessionManager sessionManager;
 
 	public TongHuaDto getRandomTongHuaDto(){
 		
@@ -367,7 +366,7 @@ public class PlayerService extends EventService implements ISFSModule {
 				player.getUser().disconnect(new BanDisconnectionReason());
 
 
-                sessionManager.removeSession(Long.parseLong(player.getUser().getName()));
+                fireEvent(player, PlayerEvents.AFTER_OFFLINE_AND_SAVE,null);
             }
         };
     }

@@ -1,6 +1,7 @@
 package com.igame.core.di;
 
 import com.igame.core.ISFSModule;
+import com.igame.core.SessionManager;
 import com.igame.core.event.EventService;
 import com.igame.core.event.EventType;
 import com.igame.core.event.PlayerEventObserver;
@@ -14,6 +15,8 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class AnnotationReflectionHandler extends EventService implements ISFSModule {
+    @Inject private SessionManager sessionManager;
+
     @Override
     public void init() {
         super.init();
@@ -30,12 +33,16 @@ public class AnnotationReflectionHandler extends EventService implements ISFSMod
         return new PlayerEventObserver() {
             @Override
             public EventType interestedType() {
-                return PlayerEvents.OFF_LINE;
+                return PlayerEvents.AFTER_OFFLINE_AND_SAVE;
             }
 
             @Override
             public void observe(Player player, EventType eventType, Object event) {
                 maps.forEach(m->m.remove(player.getPlayerId()));
+
+                // 放这好像不和谐
+                sessionManager.removeSession(Long.parseLong(player.getUser().getName()));
+
             }
         };
     }
