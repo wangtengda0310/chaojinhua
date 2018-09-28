@@ -310,8 +310,6 @@ public class PlayerHandler extends ClientDispatcherHandler {
 	 * 玩家登录成功后的操作
 	 */
 	private void afterPlayerLogin(Player player) throws Exception {
-		fireEvent(player, PlayerEvents.RESET_ONCE, null);	// todo 这里走到SystemService的resetOnce方法只是初始化了其他数据，不需要发送事件吧 直接调 或者有隐藏的其他逻辑
-
 
 		//初始化留言板
 		messageBoardService.afterPlayerLogin(player);
