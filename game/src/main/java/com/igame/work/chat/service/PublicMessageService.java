@@ -118,7 +118,8 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
      * 初始化
      */
     @Override
-    public void init(){
+    public void init() {
+        super.init();
 
         ArrayBlockingQueue<Message> worldMsg = new ArrayBlockingQueue<>(CACHE_MAX);
         ArrayBlockingQueue<Message> hornMsg = new ArrayBlockingQueue<>(CACHE_MAX);
@@ -133,11 +134,11 @@ public class PublicMessageService extends EventService implements ISFSModule, Ti
                 hornMsg.add(message);
         }
 
-        worldMessage=worldMsg;
-        hornMessage=hornMsg;
+        worldMessage = worldMsg;
+        hornMessage = hornMsg;
 
         //初始化删除数组
-        delMessages=new LinkedList<>();
+        delMessages = new LinkedList<>();
     }
 
     /**

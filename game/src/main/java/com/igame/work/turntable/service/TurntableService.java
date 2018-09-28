@@ -17,6 +17,7 @@ import com.igame.work.turntable.dto.Turntable;
 import com.igame.work.user.dto.Player;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xym
@@ -29,7 +30,7 @@ public class TurntableService implements TimeListener {
     TurntableDAO dao;
     @Inject private SessionManager sessionManager;
 
-    @RemoveOnLogout() public Map<Long, Turntable> turntables = new HashMap<>();//幸运大转盘
+    @RemoveOnLogout() public Map<Long, Turntable> turntables = new ConcurrentHashMap<>();//幸运大转盘
     public Turntable getTurntable(Player player) {
         if (turntables.containsKey(player.getPlayerId())) {
             return turntables.get(player.getPlayerId());

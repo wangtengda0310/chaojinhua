@@ -137,7 +137,7 @@ public class ArenaService extends EventService implements ISFSModule, TimeListen
 
     @Override
     public void init() {
-
+        super.init();
         loadRank(true); // module init
     }
 

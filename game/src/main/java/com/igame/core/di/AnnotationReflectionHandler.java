@@ -16,6 +16,7 @@ import java.util.Map;
 public class AnnotationReflectionHandler extends EventService implements ISFSModule {
     @Override
     public void init() {
+        super.init();
         extensionHolder.SFSExtension.getApplicationContext().addAnnotationHandler(RemoveOnLogout.class, this);
     }
 

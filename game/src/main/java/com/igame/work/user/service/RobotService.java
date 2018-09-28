@@ -50,12 +50,14 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
     }
 
 	@Override
-	public void init(){
+	public void init() {
+    	super.init();
+
 		robot = dao.loadData();
 		if (robot == null) {
 			robot = new HashMap<>();
 		}
-    }
+	}
     
     private void save(){
 		for(RobotDto m : robot.values()){

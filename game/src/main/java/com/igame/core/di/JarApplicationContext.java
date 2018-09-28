@@ -139,11 +139,11 @@ public class JarApplicationContext {
         cachedObjects.entrySet().stream()
                 .flatMap(e->{
                     return Arrays.stream(e.getKey().getDeclaredFields())
-                            .peek(f->getLogger().debug("field: {}", f))
                             .filter(f->f.isAnnotationPresent(annotationClass))
                             .map(f-> {
                                 Annotation annotation = f.getAnnotation(annotationClass);
                                 try {
+                                    f.setAccessible(true);
                                     return new Object[]{f.get(e.getValue()), annotation};
                                 } catch (IllegalAccessException ignore) {
                                     return null;
@@ -153,7 +153,7 @@ public class JarApplicationContext {
                             .filter(f->((Object[])f)[0] instanceof Map);
 
                 })
-                .peek(f->getLogger().debug("class: {} {} {}", f[0].getClass(), f[0], f[1]))
+                .peek(f->getLogger().debug("auto remove key on player offline: {} {} {}", f[0].getClass(), f[0], f[1]))
                 .forEach(f->handler.handle((Map)f[0], (Annotation)f[1]));
     }
 }

@@ -1,8 +1,12 @@
 package com.igame.work.fight.service;
 
 import com.google.common.collect.Lists;
+import com.igame.core.event.EventService;
+import com.igame.core.event.EventType;
+import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.quartz.TimeListener;
 import com.igame.work.MessageUtil;
+import com.igame.work.PlayerEvents;
 import com.igame.work.fight.dto.FightBase;
 import com.igame.work.fight.dto.FightData;
 import com.igame.work.user.dto.Player;
@@ -18,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Marcus.Z
  *
  */
-public class PVPFightService implements TimeListener {
+public class PVPFightService extends EventService implements TimeListener {
 	
 	private static final PVPFightService domain = new PVPFightService();
 
@@ -31,8 +35,28 @@ public class PVPFightService implements TimeListener {
     public Map<Long,FightBase> fights = new ConcurrentHashMap<>();//进行中的战斗对象
     
     public Object lock = new Object();
-    
-    /**
+
+	@Override
+	protected PlayerEventObserver playerObserver() {
+		return new PlayerEventObserver() {
+			@Override
+			public EventType interestedType() {
+				return PlayerEvents.OFF_LINE;
+			}
+
+			@Override
+			public void observe(Player player, EventType eventType, Object event) {
+
+				if(palyers.containsKey(player.getPlayerId())){
+					chancelFight(player);
+				}
+				fights.remove(player.getPlayerId());
+
+			}
+		};
+	}
+
+	/**
      * 开始匹配
      */
     public void readFight(Player player){

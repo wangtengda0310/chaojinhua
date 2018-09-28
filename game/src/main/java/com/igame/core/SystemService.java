@@ -113,7 +113,9 @@ public class SystemService extends EventService implements ISFSModule, TimeListe
     }
 
     @Override
-    public void init(){
+    public void init() {
+        super.init();
+
         dto = systemServiceDAO.loadData();
         if (dto == null) {
             dto = new SystemServiceDto();

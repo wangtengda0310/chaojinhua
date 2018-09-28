@@ -7,7 +7,7 @@ import com.smartfoxserver.v2.util.IDisconnectionReason;
  * @author Marcus.Z
  *
  */
-public class LoginOutReason implements IDisconnectionReason {
+public class BanDisconnectionReason implements IDisconnectionReason {
 
 	@Override
 	public byte getByteValue() {

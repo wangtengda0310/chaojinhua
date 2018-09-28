@@ -134,7 +134,9 @@ public class GateRankService extends EventService implements ISFSModule, TimeLis
 
 
     @Override
-    public void init(){
+    public void init() {
+        super.init();
+
         dto = rankServiceDAO.loadData();
         if (dto == null) {
             dto = new RankServiceDto();

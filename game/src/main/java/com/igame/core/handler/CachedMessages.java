@@ -15,7 +15,4 @@ public class CachedMessages {
         return proMap.computeIfAbsent(player.getPlayerId(), pik -> new HashMap<>());
     }
 
-    public void removeProMsg(Player player) {
-        proMap.remove(player.getPlayerId());
-    }
 }

@@ -7,9 +7,8 @@ import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
 import com.igame.core.event.EventService;
 import com.igame.core.event.RemoveOnLogout;
-import com.igame.core.log.ExceptionLog;
 import com.igame.core.quartz.TimeListener;
-import com.igame.util.LoginOutReason;
+import com.igame.util.BanDisconnectionReason;
 import com.igame.work.PlayerEvents;
 import com.igame.work.fight.service.PVPFightService;
 import com.igame.work.friend.dao.FriendDAO;
@@ -88,13 +87,14 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
 	 */
 	@Override
 	public void init() {
+		super.init();
 
 		List<Player> allPlayer = playerDAO.getALLPlayer();
 		allPlayer.forEach(PlayerCacheService::cachePlayer);
 
 		allPlayer.forEach(player ->
 				//加载好友
-				friendService.setFriends(player,dao.getFriendInfoByPlayerId(player.getPlayerId()))
+				friendService.setFriends(player, dao.getFriendInfoByPlayerId(player.getPlayerId()))
 		);
 	}
 
@@ -116,24 +116,9 @@ public class PlayerCacheService extends EventService implements ISFSModule, Time
     	for(Player player : sessionManager.getSessions().values()){
 			long heartTime = getHeartTime(player.getPlayerId());
 			if(heartTime >0 && System.currentTimeMillis() - heartTime > 5 * 60 * 1000){
-				try{
-					fireEvent(player, PlayerEvents.OFF_LINE,System.currentTimeMillis());
-				}catch(Exception e){
-					ExceptionLog.error("palyer leave save error----- :",e);
-				}
-				
-				if(pvpFightService.palyers.containsKey(player.getPlayerId())){
-					pvpFightService.chancelFight(player);
-				}
-				pvpFightService.fights.remove(player.getPlayerId());
-				player.getFateData().setTodayFateLevel(1);
-				player.getFateData().setTodayBoxCount(0);
-				player.getFateData().setTempBoxCount(-1);
-				player.getFateData().setTempSpecialCount(0);
-				player.getFateData().setAddRate(0);
-				player.getUser().getZone().removeUser(player.getUser());
-				player.getUser().disconnect(new LoginOutReason());
-				sessionManager.removeSession(Long.parseLong(player.getUser().getName()));
+				fireEvent(player, PlayerEvents.OFF_LINE,System.currentTimeMillis());
+
+				player.getUser().disconnect(new BanDisconnectionReason());
 				this.heartTime.remove(player.getPlayerId());
 			}
 		}

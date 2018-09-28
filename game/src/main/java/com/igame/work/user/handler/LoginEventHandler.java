@@ -32,7 +32,6 @@ import com.smartfoxserver.v2.exceptions.SFSLoginException;
 public class LoginEventHandler extends EventDispatcherHandler {
 	@Inject private SessionManager sessionManager;
 	@Inject private PlayerCacheService playerCacheService;
-	@Inject private CachedMessages cachedMessages;
 
 	@Override
 	public void handleServerEvent(ISFSEvent event) throws SFSException {
@@ -45,7 +44,7 @@ public class LoginEventHandler extends EventDispatcherHandler {
 
 		Player player = sessionManager.getSession(Long.parseLong(name));
 		if(player != null && !isRepeat.getBool("isRepeat")){
-			fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());
+			fireEvent(player, PlayerEvents.OFF_LINE, System.currentTimeMillis());	// 断线重连这不用异步消息出去保存数据吧 直接切换个session?
 			RetVO vo = new RetVO();
 			ObjectMapper mapper = new ObjectMapper();
 			String json = null;

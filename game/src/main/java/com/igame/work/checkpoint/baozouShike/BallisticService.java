@@ -270,6 +270,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
      */
     @Override
     public void init() {
+        super.init();
 
         rankDto = dao.get();
         if (rankDto == null) { //创建排行榜

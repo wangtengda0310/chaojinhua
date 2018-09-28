@@ -3,6 +3,7 @@ package com.igame.work.user;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.igame.core.ISFSModule;
+import com.igame.core.SessionManager;
 import com.igame.core.di.Inject;
 import com.igame.core.di.LoadXml;
 import com.igame.core.event.EventService;
@@ -11,6 +12,7 @@ import com.igame.core.event.PlayerEventObserver;
 import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.log.DebugLog;
 import com.igame.util.GameMath;
+import com.igame.util.BanDisconnectionReason;
 import com.igame.util.MyUtil;
 import com.igame.work.MessageUtil;
 import com.igame.work.PlayerEvents;
@@ -93,6 +95,7 @@ public class PlayerService extends EventService implements ISFSModule {
 	@Inject private DrawService drawService;
 	@Inject private MonsterService monsterService;
 	@Inject private VIPService vipService;
+    @Inject private SessionManager sessionManager;
 
 	public TongHuaDto getRandomTongHuaDto(){
 		
@@ -354,6 +357,17 @@ public class PlayerService extends EventService implements ISFSModule {
             @Override
             public void observe(Player player, EventType eventType, Object event) {
                 savePlayer(player, true);
+
+				player.getFateData().setTodayFateLevel(1);
+				player.getFateData().setTodayBoxCount(0);
+				player.getFateData().setTempBoxCount(-1);
+				player.getFateData().setTempSpecialCount(0);
+				player.getFateData().setAddRate(0);
+				player.getUser().getZone().removeUser(player.getUser());
+				player.getUser().disconnect(new BanDisconnectionReason());
+
+
+                sessionManager.removeSession(Long.parseLong(player.getUser().getName()));
             }
         };
     }
