@@ -10,7 +10,7 @@ import com.igame.work.user.dto.Player;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class AnnotationReflectionHandler extends EventService implements ISFSModule {
@@ -20,7 +20,7 @@ public class AnnotationReflectionHandler extends EventService implements ISFSMod
         extensionHolder.SFSExtension.getApplicationContext().addAnnotationHandler(RemoveOnLogout.class, this);
     }
 
-    Collection<Map<Long, Object>> maps = new HashSet<>();
+    Collection<Map<Long, Object>> maps = new LinkedList<>();    // 空map的equals是true 这不能用HashSet
     void handle(Map<Long,Object> f, Annotation o){
         maps.add(f);
     }
