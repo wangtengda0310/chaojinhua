@@ -39,7 +39,9 @@ public class TurntableService implements TimeListener {
         if (turntable == null) {
             turntable = initTurntable(player);
         }
-        turntables.put(player.getPlayerId(), turntable);
+        if (turntable != null) {
+            turntables.put(player.getPlayerId(), turntable);
+        }
         return turntable;
     }
 
@@ -185,6 +187,9 @@ public class TurntableService implements TimeListener {
     }
 
     public void updatePlayer(Player player) {
+        if (getTurntable(player) == null) {
+            return;
+        }
 
         if(getTurntable(player).getDtate() == 1){
             dao.saveTurntable(getTurntable(player));
