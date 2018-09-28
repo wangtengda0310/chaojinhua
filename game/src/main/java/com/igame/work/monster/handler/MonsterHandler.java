@@ -82,15 +82,17 @@ public class MonsterHandler extends ReconnectedHandler {
                 }
             }
         }
-        try {
-            String god = monsArry[5];
-            int teamGod = player.getTeams().get(teamId).getTeamGod();
-            if (!String.valueOf(teamGod).equals(god)) {
-                player.getTeams().get(teamId).setTeamGod(Integer.parseInt(god));
-                modified = true;
+        if (monsArry.length>5) {
+            try {
+                String god = monsArry[5];
+                int teamGod = player.getTeams().get(teamId).getTeamGod();
+                if (!String.valueOf(teamGod).equals(god)) {
+                    player.getTeams().get(teamId).setTeamGod(Integer.parseInt(god));
+                    modified = true;
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
         }
         return modified;
     }
