@@ -315,12 +315,13 @@ public class CheckPointService implements ISFSModule, TimeListener {
             if(robs.isEmpty()){
                 return;
             }
+            int limit = player.getXinMo().size()<25?25-player.getXinMo().size():0;
             Arrays.stream(player.getCheckPoint().split(","))
                     .map(Integer::parseInt)
                     .filter(cc->!player.getXinMo().containsKey(cc))
                     .filter(cc->checkPointData.getTemplate(cc).getChapterType() != 2)
                     .filter(cc->cc <=140)
-                    .limit(25-player.getXinMo().size())
+                    .limit(limit)
                     .peek(cid-> GoldLog.info("add xinMo:" + cid))
                     .forEach(cid->{
                         XingMoDto xx = new XingMoDto();
