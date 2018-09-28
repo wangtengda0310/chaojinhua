@@ -54,8 +54,8 @@ public enum Conditions {
         @Override
         public void onEvent(Player player, ActivityConfigTemplate template, ActivityOrderDto orderData, Object event) {
 
-            int[] levelInfo = (int[]) event;
-            if (levelInfo[1]>=Integer.parseInt(template.getGet_value()))
+            Object[] levelInfo = (Object[]) event;
+            if (Integer.parseInt(String.valueOf(levelInfo[1]))>=Integer.parseInt(template.getGet_value()))
                 orderData.state[template.getOrder()-1] = 1;
         }
 
