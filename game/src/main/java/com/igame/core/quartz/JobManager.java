@@ -4,10 +4,12 @@ package com.igame.core.quartz;
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
 import com.igame.core.log.ExceptionLog;
+import com.igame.util.DateUtil;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -47,13 +49,17 @@ public class JobManager implements ISFSModule {
                 String cron = method.getAnnotation(Cron.class).value();
 
                 String methodName = method.getName();
-                CronTrigger conTrigger = new CronTrigger("QuartzTrigger_"+ methodName, "DEFAULT");
+                String id = DateUtil.formatClientDateTime(new Date());
+
+                CronTrigger conTrigger = new CronTrigger("QuartzTrigger_"+ methodName+id, "DEFAULT");   // smart fox server热加载时重名trigger会冲突
                 JobDataMap dataMap = new JobDataMap();
                 dataMap.put("JOB_INSTANCE", listener);
                 dataMap.put("JOB_METHOD", methodName);
                 conTrigger.setJobDataMap(dataMap);
                 conTrigger.setCronExpression(cron);
-                scheduler.scheduleJob(new JobDetail("QuartzJOB_"+ methodName, "DEFAULT", JobExecutor.class)
+                scheduler.scheduleJob(
+                        new JobDetail("QuartzJOB_"+ methodName + "_init_at_" + id   // smart fox server热加载时重名任务会冲突
+                                , "DEFAULT", JobExecutor.class)
                         , conTrigger);
             }
 
