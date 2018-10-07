@@ -15,9 +15,7 @@ Ext.define('web.view.main.Main', {
 
         'web.view.main.MainController',
         'web.view.main.MainModel',
-        'web.view.main.List',
-        'web.view.game.GameProtocolList',
-        'web.view.battle.Battle'
+        'web.view.main.List'
     ],
 
     controller: 'main',
@@ -78,15 +76,12 @@ Ext.define('web.view.main.Main', {
     },
 
     items: [{
-        title: 'protocal debuger',
-        iconCls: 'fa-steam',
+        title: 'BattleEmulator',
+        iconCls: 'fa-fighter-jet',
+        // The following grid shares a store with the classic version's grid as well!
         items: [{
-            xtype:  'sfsclient'
+            xtype: 'battleView'
         }]
-    }, {
-        title:'battle',
-        iconCls:'fa-fighter-jet',
-        xtype:  'web.view.battle.Battle'
     }, {
         title: 'Home',
         iconCls: 'fa-home',

@@ -529,7 +529,7 @@
 
         "modern": {
             "toolkit": "modern",
-            "theme": "theme-material",
+            "theme": "theme-triton",
             "sass": {
                 "generated": {
                     "var": "modern/sass/save.scss",
@@ -551,5 +551,5 @@
      * Uniquely generated id for this application, used as prefix for localStorage keys.
      * Normally you should never change this value.
      */
-    "id": "d1043e71-2dc8-42e3-87c3-64850c7b2894"
+    "id": "4dccf168-d083-417a-b5e8-43a9fefab754"
 }
