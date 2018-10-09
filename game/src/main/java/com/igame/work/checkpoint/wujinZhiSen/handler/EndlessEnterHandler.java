@@ -67,58 +67,59 @@ public class EndlessEnterHandler extends ReconnectedHandler {
 		if(currIndex == 0 || player.getWuZheng().isEmpty() || (currIndex != Integer.parseInt(ll.get(0).split(";")[0]) && !"101,105,127,107".contains(String.valueOf(buffer)))){
 			return error(ErrorCode.ERROR);
 		}else{
-			String[] ct = player.getWuMap().get(currIndex).split(";");
-			String meetM = ct[3];
-			
-			//怪物装备
-			String equips = "";
-			EndlessdataTemplate edt = endlessService.endlessData.getTemplate(currIndex);
-			String[] props = null;
-			if(edt != null && !MyUtil.isNullOrEmpty(edt.getMonsterProp())){
-				props = edt.getMonsterProp().split(";");
-			}
-			//怪物装备
-			
-			
-			if(!MyUtil.isNullOrEmpty(meetM)){
-				boolean change = false;
-
-				change = monsterService.isChange(player, meetM, change);
-				if(change){
-					MessageUtil.notifyMeetM(player);
-				}
-				
-				//怪物装备
-				if(props != null){
-					equips += ";" + props[GameMath.getRandInt(props.length)];
-				}
-				//怪物装备
-			}
-			if(equips.length() > 0){
-				equips = equips.substring(1);
-			}
-
-			lb = monsterService.createMatchMonsterDto(player, ct[3], ct[4], "","",equips);
-
-			List<WuEffect> ls = Lists.newArrayList();
-	    	if(buffer > 0 && currIndex != Integer.parseInt(ll.get(0).split(";")[0]) && player.getWuEffect().size() < total){
-				endlessService.tempBufferId.put(player.getPlayerId(), buffer);
-	    		ls.addAll(player.getWuEffect());
-	    		ls.add(new WuEffect(buffer));
-				endlessService.notifyWuBufferChange(player,ls);
-	    	}
-	    	for(MatchMonsterDto mdt : player.getWuZheng().values()){
-	    		mdt.reCalValue(ls);
-	    	}
+			throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
+//			String[] ct = player.getWuMap().get(currIndex).split(";");
+//			String meetM = ct[3];
+//
+//			//怪物装备
+//			String equips = "";
+//			EndlessdataTemplate edt = endlessService.endlessData.getTemplate(currIndex);
+//			String[] props = null;
+//			if(edt != null && !MyUtil.isNullOrEmpty(edt.getMonsterProp())){
+//				props = edt.getMonsterProp().split(";");
+//			}
+//			//怪物装备
+//
+//
+//			if(!MyUtil.isNullOrEmpty(meetM)){
+//				boolean change = false;
+//
+//				change = monsterService.isChange(player, meetM, change);
+//				if(change){
+//					MessageUtil.notifyMeetM(player);
+//				}
+//
+//				//怪物装备
+//				if(props != null){
+//					equips += ";" + props[GameMath.getRandInt(props.length)];
+//				}
+//				//怪物装备
+//			}
+//			if(equips.length() > 0){
+//				equips = equips.substring(1);
+//			}
+//
+//			lb = monsterService.createMatchMonsterDto(player, ct[3], ct[4], "","",equips);
+//
+//			List<WuEffect> ls = Lists.newArrayList();
+//	    	if(buffer > 0 && currIndex != Integer.parseInt(ll.get(0).split(";")[0]) && player.getWuEffect().size() < total){
+//				endlessService.tempBufferId.put(player.getPlayerId(), buffer);
+//	    		ls.addAll(player.getWuEffect());
+//	    		ls.add(new WuEffect(buffer));
+//				endlessService.notifyWuBufferChange(player,ls);
+//	    	}
+//	    	for(MatchMonsterDto mdt : player.getWuZheng().values()){
+//	    		mdt.reCalValue(ls);
+//	    	}
 //				   pvpFightService.fights.put(fb.getObjectId(), fb);
-
-			
+//
+//
 		}
-
-		vo.addData("a", player.getWuZheng().values());
-		vo.addData("m", lb);
-
-		return vo;
+//
+//		vo.addData("a", player.getWuZheng().values());
+//		vo.addData("m", lb);
+//
+//		return vo;
 	}
 
 	@Override

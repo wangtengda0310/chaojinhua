@@ -49,21 +49,22 @@ public class EndlessService {
             player.setWuGods(new GodsDto());
             player.setWuNai(0);
             player.getWuEffect().clear();
-            for(EndlessdataTemplate et : ls){
-                String str = String.valueOf(et.getNum());
-                str+=";"+String.valueOf(et.getDifficulty())+";0";
-                String[] mons = et.getMonsterId().split(",");
-                List<String> temp = Lists.newArrayList();
-                List<Integer> lvs = Lists.newArrayList();
-                for(int i = 1;i <=5;i++){
-                    temp.add(mons[GameMath.getRandInt(mons.length)]);
-                    lvs.add(GameMath.getRandomInt(lv+Integer.parseInt(et.getMonsterLv().split(",")[0]), lv+Integer.parseInt(et.getMonsterLv().split(",")[1])));
-                }
-                str += ";"+ MyUtil.toString(temp, ",");
-                str += ";"+MyUtil.toStringInt(lvs, ",");
-                str += ";0;0";
-                player.getWuMap().put(et.getNum(), str);
-            }
+            throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
+//            for(EndlessdataTemplate et : ls){
+//                String str = String.valueOf(et.getNum());
+//                str+=";"+String.valueOf(et.getDifficulty())+";0";
+//                String[] mons = et.getMonsterset().split("|");
+//                List<String> temp = Lists.newArrayList();
+//                List<Integer> lvs = Lists.newArrayList();
+//                for(int i = 1;i <=5;i++){
+//                    temp.add(mons[GameMath.getRandInt(mons.length)]);
+//                    lvs.add(GameMath.getRandomInt(lv+Integer.parseInt(et.getMonsterLv().split(",")[0]), lv+Integer.parseInt(et.getMonsterLv().split(",")[1])));
+//                }
+//                str += ";"+ MyUtil.toString(temp, ",");
+//                str += ";"+MyUtil.toStringInt(lvs, ",");
+//                str += ";0;0";
+//                player.getWuMap().put(et.getNum(), str);
+//            }
 
         }
         return ret;

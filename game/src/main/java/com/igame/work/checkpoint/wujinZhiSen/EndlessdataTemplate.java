@@ -28,24 +28,8 @@ public class EndlessdataTemplate {
 	@XmlAttribute(name = "difficulty")
 	private  int difficulty;
 	
-	@XmlAttribute(name = "monster_lv")
-	private  String monsterLv;
-	
-	@XmlAttribute(name = "monster_id")
-	private  String monsterId;
-	
-	@XmlAttribute(name = "monster_prop")
-	private  String monsterProp;
-	
-	@XmlAttribute(name = "skill_lv")
-	private String skillLv;
-	
-	@XmlAttribute(name = "gods_lv")
-	private String godsLv;
-	
-	@XmlAttribute(name = "strengthenlevel")
-	private int strengthenlevel;
-	
+	@XmlAttribute(name = "monsterset")
+	private  String monsterset;
 
 	public int getNum() {
 		return num;
@@ -71,61 +55,11 @@ public class EndlessdataTemplate {
 		this.difficulty = difficulty;
 	}
 
-	public String getMonsterLv() {
-		return monsterLv;
+	public String getMonsterset() {
+		return monsterset;
 	}
 
-	public void setMonsterLv(String monsterLv) {
-		this.monsterLv = monsterLv;
+	public void setMonsterset(String monsterset) {
+		this.monsterset = monsterset;
 	}
-
-	public String getMonsterId() {
-		return monsterId;
-	}
-
-	public void setMonsterId(String monsterId) {
-		this.monsterId = monsterId;
-	}
-
-	public String getMonsterProp() {
-		return monsterProp;
-	}
-
-	public void setMonsterProp(String monsterProp) {
-		this.monsterProp = monsterProp;
-	}
-
-	public String getSkillLv() {
-		return skillLv;
-	}
-
-	public void setSkillLv(String skillLv) {
-		this.skillLv = skillLv;
-	}
-
-	public String getGodsLv() {
-		return godsLv;
-	}
-
-	public void setGodsLv(String godsLv) {
-		this.godsLv = godsLv;
-	}
-
-	public int getStrengthenlevel() {
-		return strengthenlevel;
-	}
-
-	public void setStrengthenlevel(int strengthenlevel) {
-		this.strengthenlevel = strengthenlevel;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 }
