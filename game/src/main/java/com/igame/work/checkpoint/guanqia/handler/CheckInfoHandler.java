@@ -185,34 +185,12 @@ public class CheckInfoHandler extends ReconnectedHandler {
 
 	private void process(Player player,List<MatchMonsterDto> lb,int chapterId,AtomicInteger idx){
 		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
+		// todo monster组的逻辑
 		if(ct != null){
 			if(ct.getRound() == 1){//一周目
-				String monsterId = ct.getMonsterId();
-				String monsterLevel = ct.getLevel();
-				String position = ct.getSite();
-				String skillLv = "";
-				String round = "1-1";
-
-				createMatchMonsterDto(player, lb, idx, monsterId, monsterLevel, position, skillLv, ct.getMonsterProp(), round);
+				throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
 			}else if(ct.getRound() > 1){//二 三周目
-				
-				String[] mid = ct.getMonsterId().split(":");
-				String[] lv = ct.getLevel().split(":");
-				String[] site = ct.getSite().split(":");
-				if(mid.length > 0){
-					int index = 1;
-					for(int i =0;i<mid.length;i++){
-						String round = ct.getRound() + "-" + index++;
-
-						String monsterIds = mid[i];
-						String monsterLevel = lv[i];
-						String position = site[i];
-						String skillLv = "";
-
-						createMatchMonsterDto(player, lb, idx, monsterIds, monsterLevel, position, skillLv, ct.getMonsterProp(), round);
-					}
-				}
-				
+				throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
 			}
 		}
 	}
