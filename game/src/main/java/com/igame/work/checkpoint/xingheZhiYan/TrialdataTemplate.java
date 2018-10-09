@@ -27,16 +27,7 @@ public class TrialdataTemplate {
 	@XmlAttribute(name = "monster_data")
 	private String monsterData;
 	
-	@XmlAttribute(name = "monster_lv")
-	private  String monsterLv;
-	
-	@XmlAttribute(name = "monster_skilllv")
-	private  String monsterSkilllv;
-	
-	@XmlAttribute(name = "monster_prop")
-	private  String monsterProp;
-	
-	@XmlAttribute(name = "checkReward")
+	@XmlAttribute(name = "reward")
 	private  String reward;
 
 	public int getNum() {
@@ -63,30 +54,6 @@ public class TrialdataTemplate {
 		this.monsterData = monsterData;
 	}
 
-	public String getMonsterLv() {
-		return monsterLv;
-	}
-
-	public void setMonsterLv(String monsterLv) {
-		this.monsterLv = monsterLv;
-	}
-
-	public String getMonsterSkilllv() {
-		return monsterSkilllv;
-	}
-
-	public void setMonsterSkilllv(String monsterSkilllv) {
-		this.monsterSkilllv = monsterSkilllv;
-	}
-
-	public String getMonsterProp() {
-		return monsterProp;
-	}
-
-	public void setMonsterProp(String monsterProp) {
-		this.monsterProp = monsterProp;
-	}
-
 	public String getReward() {
 		return reward;
 	}
@@ -94,14 +61,4 @@ public class TrialdataTemplate {
 	public void setReward(String reward) {
 		this.reward = reward;
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-
 }
