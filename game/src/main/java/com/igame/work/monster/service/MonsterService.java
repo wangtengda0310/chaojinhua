@@ -301,34 +301,36 @@ public class MonsterService implements ISFSModule {
 	}
 
 	public Map<Long, Monster> getMonsterByPlayer(Player player) {
-		Map<Long, Monster> monsters = monsterDAO.getMonsterByPlayer(player, player.getPlayerId());
-		monsters.forEach((mid,mm)->{
-			MonsterTemplate mt = MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
-			if (mt != null && mt.getSkill() != null) {
-				String[] skills = mt.getSkill().split(",");
-				if (mm.getSkillMap().isEmpty()) {
-					mm.setDtate(2);
-				}
-				for (String skill : skills) {
-					if (!mm.getSkillMap().containsKey(Integer.parseInt(skill))) {
-						mm.getSkillMap().put(Integer.parseInt(skill), 1);
-					}
-				}
-				List<Integer> temp = Lists.newArrayList();
-				for (Integer skill : mm.getSkillMap().keySet()) {
-					if (!mt.getSkill().contains(String.valueOf(skill))) {
-						temp.add(skill);
-					}
-				}
-				for (Integer rem : temp) {
-					mm.getSkillMap().remove(rem);
-				}
-			}
-			initSkillString(mm);//初始化技能列表字符串
-			reCalculate(player,mm.getMonsterId(), mm, true);//计算值
-		});
-
-		return monsters;
+		// todo 怪物组的逻辑
+        throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
+//		Map<Long, Monster> monsters = monsterDAO.getMonsterByPlayer(player, player.getPlayerId());
+//		monsters.forEach((mid,mm)->{
+//			MonsterTemplate mt = MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
+//			if (mt != null && mt.getSkill() != null) {
+//				String[] skills = mt.getSkill().split(",");
+//				if (mm.getSkillMap().isEmpty()) {
+//					mm.setDtate(2);
+//				}
+//				for (String skill : skills) {
+//					if (!mm.getSkillMap().containsKey(Integer.parseInt(skill))) {
+//						mm.getSkillMap().put(Integer.parseInt(skill), 1);
+//					}
+//				}
+//				List<Integer> temp = Lists.newArrayList();
+//				for (Integer skill : mm.getSkillMap().keySet()) {
+//					if (!mt.getSkill().contains(String.valueOf(skill))) {
+//						temp.add(skill);
+//					}
+//				}
+//				for (Integer rem : temp) {
+//					mm.getSkillMap().remove(rem);
+//				}
+//			}
+//			initSkillString(mm);//初始化技能列表字符串
+//			reCalculate(player,mm.getMonsterId(), mm, true);//计算值
+//		});
+//
+//		return monsters;
 	}
 
 	public void loadPlayer(Player player) {
