@@ -19,46 +19,35 @@ public class WorldEventTemplate {
 	
 
 
-	@XmlAttribute(name = "event_type")
-	private int event_type;
-	
 	@XmlAttribute(name = "difficulty")
 	private int level;
-	
-	@XmlAttribute(name = "unlock")
-	private int unlock;
-	
-	@XmlAttribute(name = "gold")
-	private String gold;
-	
+
 	@XmlAttribute(name = "drop")
 	private String drop;
-	
-	@XmlAttribute(name = "rate")
-	private String rate;
-	
+
+	@XmlAttribute(name = "event_type")
+	private int event_type;
+
+	@XmlAttribute(name = "event_name")
+	private int event_name;
+
+	@XmlAttribute(name = "gold")
+	private String gold;
+
+	@XmlAttribute(name = "monsterset")
+	private String monsterId;//
+
 	@XmlAttribute(name = "physical")
 	private int physical;
-	
+
+	@XmlAttribute(name = "rate")
+	private String rate;
+
 	@XmlAttribute(name = "times")
 	private int times;
-	
-	@XmlAttribute(name = "monster_id")
-	private String monsterId;//
-	
-	@XmlAttribute(name = "level")
-	private String mlevel;//
-	
-	@XmlAttribute(name = "site")
-	private String site;//站位
 
-	public int getEvent_type() {
-		return event_type;
-	}
-
-	public void setEvent_type(int event_type) {
-		this.event_type = event_type;
-	}
+	@XmlAttribute(name = "unlock")
+	private int unlock;
 
 	public int getLevel() {
 		return level;
@@ -66,22 +55,6 @@ public class WorldEventTemplate {
 
 	public void setLevel(int level) {
 		this.level = level;
-	}
-
-	public int getUnlock() {
-		return unlock;
-	}
-
-	public void setUnlock(int unlock) {
-		this.unlock = unlock;
-	}
-
-	public String getGold() {
-		return gold;
-	}
-
-	public void setGold(String gold) {
-		this.gold = gold;
 	}
 
 	public String getDrop() {
@@ -92,28 +65,28 @@ public class WorldEventTemplate {
 		this.drop = drop;
 	}
 
-	public String getRate() {
-		return rate;
+	public int getEvent_type() {
+		return event_type;
 	}
 
-	public void setRate(String rate) {
-		this.rate = rate;
+	public void setEvent_type(int event_type) {
+		this.event_type = event_type;
 	}
 
-	public int getPhysical() {
-		return physical;
+	public int getEvent_name() {
+		return event_name;
 	}
 
-	public void setPhysical(int physical) {
-		this.physical = physical;
+	public void setEvent_name(int event_name) {
+		this.event_name = event_name;
 	}
 
-	public int getTimes() {
-		return times;
+	public String getGold() {
+		return gold;
 	}
 
-	public void setTimes(int times) {
-		this.times = times;
+	public void setGold(String gold) {
+		this.gold = gold;
 	}
 
 	public String getMonsterId() {
@@ -124,28 +97,35 @@ public class WorldEventTemplate {
 		this.monsterId = monsterId;
 	}
 
-	public String getMlevel() {
-		return mlevel;
+	public int getPhysical() {
+		return physical;
 	}
 
-	public void setMlevel(String mlevel) {
-		this.mlevel = mlevel;
+	public void setPhysical(int physical) {
+		this.physical = physical;
 	}
 
-	public String getSite() {
-		return site;
+	public String getRate() {
+		return rate;
 	}
 
-	public void setSite(String site) {
-		this.site = site;
+	public void setRate(String rate) {
+		this.rate = rate;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 
+	public int getTimes() {
+		return times;
+	}
+
+	public void setTimes(int times) {
+		this.times = times;
+	}
+
+	public int getUnlock() {
+		return unlock;
+	}
+
+	public void setUnlock(int unlock) {
+		this.unlock = unlock;
+	}
 }

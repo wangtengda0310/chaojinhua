@@ -46,7 +46,7 @@ public class WorldEventSaoHandler extends ReconnectedHandler {
 		String monsterExpStr = "";
 		
 		WorldEventDto wd = player.getWordEvent().get(eventType);
-		WorldEventTemplate wt = checkPointService.worldEventData.getTemplate(eventType+"_"+level);
+		WorldEventTemplate wt = worldEventService.worldEventData.getTemplate(eventType+"_"+level);
 		if(wd == null ||wt ==null|| !wd.getLevel().contains(String.valueOf(level))){
 			return error(ErrorCode.CHECKPOINT_END_ERROR);
 		}else{

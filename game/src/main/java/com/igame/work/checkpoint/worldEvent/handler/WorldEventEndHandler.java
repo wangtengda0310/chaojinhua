@@ -57,7 +57,7 @@ public class WorldEventEndHandler extends ReconnectedHandler {
 		}
 
 		WorldEventDto wd = player.getWordEvent().get(eventType);
-		WorldEventTemplate wt = checkPointService.worldEventData.getTemplate(eventType+"_"+level);
+		WorldEventTemplate wt = worldEventService.worldEventData.getTemplate(eventType+"_"+level);
 		if(wd == null ||wt ==null){
 			return error(ErrorCode.CHECKPOINT_END_ERROR);
 		}

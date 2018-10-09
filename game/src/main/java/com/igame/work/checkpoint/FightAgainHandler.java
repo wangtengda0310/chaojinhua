@@ -86,7 +86,7 @@ public class FightAgainHandler extends ReconnectedHandler {
 
             //入参校验
             WorldEventDto wd = player.getWordEvent().get(eventType);
-            WorldEventTemplate wt = checkPointService.worldEventData.getTemplate(eventType+"_"+level);
+            WorldEventTemplate wt = worldEventService.worldEventData.getTemplate(eventType+"_"+level);
             if (wd == null || wt ==null){
                 return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
             }
