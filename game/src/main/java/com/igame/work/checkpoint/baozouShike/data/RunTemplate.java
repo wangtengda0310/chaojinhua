@@ -24,15 +24,6 @@ public class RunTemplate {
     @XmlAttribute(name = "monster")
     private String monster;//怪物库
 
-    @XmlAttribute(name = "monsterLv")
-    private int monsterLv;//怪物等级
-
-    @XmlAttribute(name = "prop")
-    private int prop;//怪物装备
-
-    @XmlAttribute(name = "skillLv")
-    private int skillLv;//怪物技能
-
     public int getKillNum() {
         return killNum;
     }
@@ -55,29 +46,5 @@ public class RunTemplate {
 
     public void setMonster(String monster) {
         this.monster = monster;
-    }
-
-    public int getMonsterLv() {
-        return monsterLv;
-    }
-
-    public void setMonsterLv(int monsterLv) {
-        this.monsterLv = monsterLv;
-    }
-
-    public int getProp() {
-        return prop;
-    }
-
-    public void setProp(int prop) {
-        this.prop = prop;
-    }
-
-    public int getSkillLv() {
-        return skillLv;
-    }
-
-    public void setSkillLv(int skillLv) {
-        this.skillLv = skillLv;
     }
 }
