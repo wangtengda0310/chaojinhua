@@ -18,27 +18,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class FatedataTemplate {
 	
 
-	@XmlAttribute(name = "floor_num")
-	private int floorNum;
+	@XmlAttribute(name = "boss_monsterset")
+	private String bossMonsterset;
 		
 
-	@XmlAttribute(name = "monste1r_library")
-	private String monste1rLibrary;
+	@XmlAttribute(name = "floor_num")
+	private int floorNum;
 	
-	@XmlAttribute(name = "monster1_lv")
-	private  int monster1Lv;
-	
-	@XmlAttribute(name = "skill1_lv")
-	private  int skill1Lv;
-	
-	@XmlAttribute(name = "monster2_library")
-	private String monste2rLibrary;
-	
-	@XmlAttribute(name = "monster2_lv")
-	private  int monster2Lv;
-	
-	@XmlAttribute(name = "skill2_lv")
-	private  int skill2Lv;
+	@XmlAttribute(name = "normal_monsterset")
+	private  String normalMonsterset;
+
+	public String getBossMonsterset() {
+		return bossMonsterset;
+	}
+
+	public void setBossMonsterset(String bossMonsterset) {
+		this.bossMonsterset = bossMonsterset;
+	}
 
 	public int getFloorNum() {
 		return floorNum;
@@ -48,63 +44,11 @@ public class FatedataTemplate {
 		this.floorNum = floorNum;
 	}
 
-	public String getMonste1rLibrary() {
-		return monste1rLibrary;
+	public String getNormalMonsterset() {
+		return normalMonsterset;
 	}
 
-	public void setMonste1rLibrary(String monste1rLibrary) {
-		this.monste1rLibrary = monste1rLibrary;
+	public void setNormalMonsterset(String normalMonsterset) {
+		this.normalMonsterset = normalMonsterset;
 	}
-
-	public int getMonster1Lv() {
-		return monster1Lv;
-	}
-
-	public void setMonster1Lv(int monster1Lv) {
-		this.monster1Lv = monster1Lv;
-	}
-
-	public int getSkill1Lv() {
-		return skill1Lv;
-	}
-
-	public void setSkill1Lv(int skill1Lv) {
-		this.skill1Lv = skill1Lv;
-	}
-
-	public String getMonste2rLibrary() {
-		return monste2rLibrary;
-	}
-
-	public void setMonste2rLibrary(String monste2rLibrary) {
-		this.monste2rLibrary = monste2rLibrary;
-	}
-
-	public int getMonster2Lv() {
-		return monster2Lv;
-	}
-
-	public void setMonster2Lv(int monster2Lv) {
-		this.monster2Lv = monster2Lv;
-	}
-
-	public int getSkill2Lv() {
-		return skill2Lv;
-	}
-
-	public void setSkill2Lv(int skill2Lv) {
-		this.skill2Lv = skill2Lv;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 }
