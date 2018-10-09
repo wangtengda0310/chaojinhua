@@ -163,42 +163,43 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
      * @param buildNum 生成数量
      */
     public List<MatchMonsterDto> buildMonster(RunTemplate template, int buildNum) {
-
-        List<MatchMonsterDto> matchMonsterDtos = new ArrayList<>();
-
-        if (template == null)
-            return matchMonsterDtos;
-
-        int monsterLv = template.getMonsterLv();
-        int skillLv = template.getSkillLv();
-        String[] monsterIds = template.getMonster().split(",");
-        String equip = template.getProp() == 0 ? "" : String.valueOf(template.getProp());
-        for (int i = 0; i < buildNum; i++) {
-
-            String monsterId = monsterIds[(new Random().nextInt(monsterIds.length))];
-
-            Monster monster = new Monster(i, Integer.parseInt(monsterId), monsterLv, -1, equip);
-            MonsterTemplate mt = monsterService.MONSTER_DATA.getMonsterTemplate(Integer.parseInt(monsterId));
-            if(mt != null && mt.getSkill() != null){
-                String[] skills = mt.getSkill().split(",");
-                for(String skill : skills){
-                    if(skillLv<=0){
-                        monster.skillMap.put(Integer.parseInt(skill), 1);
-                    }else{
-                        monster.skillMap.put(Integer.parseInt(skill), skillLv);
-                    }
-
-                    monster.skillExp.put(Integer.parseInt(skill), 0);
-                }
-                monster.atkType = mt.getAtk_type();
-            }
-            monsterService.initSkillString(monster);
-            monsterService.reCalLevelValue(Integer.parseInt(monsterId),monster,true);
-            monsterService.reCalEquip(Integer.parseInt(monsterId),monster);
-            matchMonsterDtos.add(new MatchMonsterDto(monster,-1));
-        }
-
-        return matchMonsterDtos;
+        throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
+//
+//        List<MatchMonsterDto> matchMonsterDtos = new ArrayList<>();
+//
+//        if (template == null)
+//            return matchMonsterDtos;
+//
+//        int monsterLv = template.getMonsterLv();
+//        int skillLv = template.getSkillLv();
+//        String[] monsterIds = template.getMonster().split(",");
+//        String equip = template.getProp() == 0 ? "" : String.valueOf(template.getProp());
+//        for (int i = 0; i < buildNum; i++) {
+//
+//            String monsterId = monsterIds[(new Random().nextInt(monsterIds.length))];
+//
+//            Monster monster = new Monster(i, Integer.parseInt(monsterId), monsterLv, -1, equip);
+//            MonsterTemplate mt = monsterService.MONSTER_DATA.getMonsterTemplate(Integer.parseInt(monsterId));
+//            if(mt != null && mt.getSkill() != null){
+//                String[] skills = mt.getSkill().split(",");
+//                for(String skill : skills){
+//                    if(skillLv<=0){
+//                        monster.skillMap.put(Integer.parseInt(skill), 1);
+//                    }else{
+//                        monster.skillMap.put(Integer.parseInt(skill), skillLv);
+//                    }
+//
+//                    monster.skillExp.put(Integer.parseInt(skill), 0);
+//                }
+//                monster.atkType = mt.getAtk_type();
+//            }
+//            monsterService.initSkillString(monster);
+//            monsterService.reCalLevelValue(Integer.parseInt(monsterId),monster,true);
+//            monsterService.reCalEquip(Integer.parseInt(monsterId),monster);
+//            matchMonsterDtos.add(new MatchMonsterDto(monster,-1));
+//        }
+//
+//        return matchMonsterDtos;
     }
 
     /**
