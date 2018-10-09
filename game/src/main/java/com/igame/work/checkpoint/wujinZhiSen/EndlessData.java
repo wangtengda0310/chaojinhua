@@ -18,11 +18,11 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "endless")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class EndlessData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<EndlessdataTemplate> its;
 	
 	private Map<Integer,EndlessdataTemplate> maps	= Maps.newHashMap();
