@@ -54,7 +54,6 @@ public class CheckPointService implements ISFSModule, TimeListener {
 	 */
 	@LoadXml("dropdata.xml") public DropData dropData;
 	@LoadXml("questteam.xml") public TansuoData tansuoData;
-	@LoadXml("worldevent.xml")public WorldEventData worldEventData;
 
 	@Inject private GateService gateService;
 	@Inject private RobotService robotService;

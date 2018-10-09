@@ -7,6 +7,7 @@ import com.igame.core.handler.RetVO;
 import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
+import com.igame.work.checkpoint.worldEvent.WorldEventService;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
 import com.igame.work.user.dto.Player;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -20,6 +21,8 @@ import net.sf.json.JSONObject;
 public class WorldEventListHandler extends ReconnectedHandler {
 	@Inject
 	private CheckPointService checkPointService;
+	@Inject
+	private WorldEventService worldEventService;
 	
 
 	@Override
@@ -28,7 +31,7 @@ public class WorldEventListHandler extends ReconnectedHandler {
 		String infor = params.getUtfString("infor");
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
-		for(WorldEventTemplate ts : checkPointService.worldEventData.getAll()){
+		for(WorldEventTemplate ts : worldEventService.worldEventData.getAll()){
 			if(ts.getLevel() == 1 &&  player.hasCheckPoint(String.valueOf(ts.getUnlock()))){
 				player.getWordEvent().computeIfAbsent(ts.getEvent_type(),wet -> new WorldEventDto(player.getPlayerId(), ts.getEvent_type(), "", 0,1));
 			}

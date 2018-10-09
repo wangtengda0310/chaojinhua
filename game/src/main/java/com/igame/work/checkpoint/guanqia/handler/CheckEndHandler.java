@@ -17,6 +17,7 @@ import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.tansuo.TansuoDto;
 import com.igame.work.checkpoint.tansuo.TansuoTemplate;
 import com.igame.work.checkpoint.worldEvent.WorldEventDto;
+import com.igame.work.checkpoint.worldEvent.WorldEventService;
 import com.igame.work.checkpoint.worldEvent.WorldEventTemplate;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.quest.service.QuestService;
@@ -42,6 +43,7 @@ public class CheckEndHandler extends ReconnectedHandler {
 	@Inject private QuestService questService;
 	@Inject private PlayerService playerService;
 	@Inject private VIPService vipService;
+	@Inject private WorldEventService worldEventService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -113,7 +115,8 @@ public class CheckEndHandler extends ReconnectedHandler {
 				}
 			}
 
-			for(WorldEventTemplate ts : checkPointService.worldEventData.getAll()){//解锁世界事件
+			// todo fire event?
+			for(WorldEventTemplate ts : worldEventService.worldEventData.getAll()){//解锁世界事件
 				if(ts.getLevel() == 1 && chapterId ==  ts.getUnlock()){
 					WorldEventDto wet = new WorldEventDto(player.getPlayerId(), ts.getEvent_type(), "", 0,1);
 					player.getWordEvent().put(ts.getEvent_type(), wet);

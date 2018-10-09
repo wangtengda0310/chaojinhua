@@ -2,6 +2,7 @@ package com.igame.work.checkpoint.worldEvent;
 
 import com.igame.core.ISFSModule;
 import com.igame.core.di.Inject;
+import com.igame.core.di.LoadXml;
 import com.igame.core.event.RemoveOnLogout;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.monster.dto.Monster;
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WorldEventService implements ISFSModule {
     @Inject
     private ResourceService resourceService;
+    @LoadXml("worldevent.xml")public WorldEventData worldEventData;
 
     @RemoveOnLogout() private Map<Long, String> enterWordEventId = new ConcurrentHashMap<>();//进入世界事件关卡ID
 

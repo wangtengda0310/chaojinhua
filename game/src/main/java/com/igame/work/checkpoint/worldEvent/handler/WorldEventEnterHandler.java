@@ -50,7 +50,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 
 		//入参校验
 		WorldEventDto wd = player.getWordEvent().get(eventType);
-		WorldEventTemplate wt = checkPointService.worldEventData.getTemplate(eventType+"_"+level);
+		WorldEventTemplate wt = worldEventService.worldEventData.getTemplate(eventType+"_"+level);
 		if (wd == null || wt ==null){
 			return error(ErrorCode.CHECKPOINT_ENTER_ERROR);
 		}
@@ -82,18 +82,19 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 		checkPointService.setEnterWordEventTime(player);
 		worldEventService.setEnterWordEventId(player,eventType+"_"+level);
 
-		// todo extract method
-		List<MatchMonsterDto> lb = monsterService.createMatchMonsterDto(player, wt.getMonsterId(), wt.getMlevel(), wt.getSite(),"","");
-
-		vo.addData("m", lb);
-
-		Map<String, Object> param = new HashMap<>();
-		param.put("battleType", 2);
-		param.put("eventType", eventType);
-		param.put("level", level);
-		checkPointService.setLastBattleParam(player.getPlayerId(), param);
-
-		return vo;
+		throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
+////		// todo extract method
+////		List<MatchMonsterDto> lb = monsterService.createMatchMonsterDto(player, wt.getMonsterId(), wt.getMlevel(), wt.getSite(),"","");
+//
+//		vo.addData("m", lb);
+//
+//		Map<String, Object> param = new HashMap<>();
+//		param.put("battleType", 2);
+//		param.put("eventType", eventType);
+//		param.put("level", level);
+//		checkPointService.setLastBattleParam(player.getPlayerId(), param);
+//
+//		return vo;
 	}
 
 	@Override
