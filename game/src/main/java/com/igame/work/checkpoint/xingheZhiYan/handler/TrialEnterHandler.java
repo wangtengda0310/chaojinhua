@@ -61,40 +61,41 @@ public class TrialEnterHandler extends ReconnectedHandler {
 				String meetM = ct.getMonsterData();
 				
 				//怪物装备
-				String equips = "";
-				String[] props = null;
-				if(!MyUtil.isNullOrEmpty(ct.getMonsterProp())){
-					props = ct.getMonsterProp().split(";");
-				}
-				//怪物装备
-				
-				if(!MyUtil.isNullOrEmpty(meetM)){
-					boolean change = false;
-					change = monsterService.isChange(player, meetM, change);
-					if(change){
-						MessageUtil.notifyMeetM(player);
-					}
-					//怪物装备
-					if(props != null){
-						equips = MyUtil.toString(props, ";");
-					}
-					//怪物装备
-				}
-				if(equips.length() > 0){
-					equips = equips.substring(1);
-				}
+//				String equips = "";
+//				String[] props = null;
+//				if(!MyUtil.isNullOrEmpty(ct.getMonsterProp())){
+//					props = ct.getMonsterProp().split(";");
+//				}
+//				//怪物装备
+//
+//				if(!MyUtil.isNullOrEmpty(meetM)){
+//					boolean change = false;
+//					change = monsterService.isChange(player, meetM, change);
+//					if(change){
+//						MessageUtil.notifyMeetM(player);
+//					}
+//					//怪物装备
+//					if(props != null){
+//						equips = MyUtil.toString(props, ";");
+//					}
+//					//怪物装备
+//				}
+//				if(equips.length() > 0){
+//					equips = equips.substring(1);
+//				}
+//
+//				// todo extract method
+//				lb = monsterService.createMatchMonsterDto(player, ct.getMonsterData(), ct.getMonsterLv()
+//						, "", ct.getMonsterSkilllv(), equips);
 
-				// todo extract method
-				lb = monsterService.createMatchMonsterDto(player, ct.getMonsterData(), ct.getMonsterLv()
-						, "", ct.getMonsterSkilllv(), equips);
-
+				throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
 			}
 			
 		}
 
-		vo.addData("m", lb);
-
-		return vo;
+//		vo.addData("m", lb);
+//
+//		return vo;
 	}
 
 	@Override
