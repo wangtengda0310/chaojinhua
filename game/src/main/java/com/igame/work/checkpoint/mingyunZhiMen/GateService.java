@@ -156,20 +156,20 @@ public class GateService implements ISFSModule, TimeListener {
         List<String> monsterId = new LinkedList<>();
         List<Integer> monsterLevel = new LinkedList<>();
         List<Integer> skillLv = new LinkedList<>();
-        String[] m1 = ft.getMonste1rLibrary().split(",");
-        String[] m2 = ft.getMonste2rLibrary().split(",");
-        for(int i = 1;i<=2;i++){
-            monsterId.add(m1[GameMath.getRandInt(m1.length)]);
-            monsterLevel.add(ft.getMonster1Lv());
-            skillLv.add(ft.getSkill1Lv());
-        }
-        for(int i = 1;i<=8;i++){
-            monsterId.add(m2[GameMath.getRandInt(m2.length)]);
-            monsterLevel.add(ft.getMonster2Lv());
-            skillLv.add(ft.getSkill2Lv());
-        }
-        return monsterService.batchCreateMonster(monsterId, monsterLevel, "", skillLv, Collections.emptyList());
-
+        String[] m1 = ft.getNormalMonsterset().split(",");
+        String[] m2 = ft.getBossMonsterset().split(",");
+//        for(int i = 1;i<=2;i++){
+//            monsterId.add(m1[GameMath.getRandInt(m1.length)]);
+//            monsterLevel.add(ft.getMonster1Lv());
+//            skillLv.add(ft.getSkill1Lv());
+//        }
+//        for(int i = 1;i<=8;i++){
+//            monsterId.add(m2[GameMath.getRandInt(m2.length)]);
+//            monsterLevel.add(ft.getMonster2Lv());
+//            skillLv.add(ft.getSkill2Lv());
+//        }
+//        return monsterService.batchCreateMonster(monsterId, monsterLevel, "", skillLv, Collections.emptyList());
+        throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
     }
 
     public List<GateDto> getGateDtos(Player player, List<GateDto> ls) {
