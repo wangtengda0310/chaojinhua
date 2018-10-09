@@ -48,7 +48,7 @@ public class CheckPointService implements ISFSModule, TimeListener {
 	/**
 	 * 关卡列表
 	 */
-	@LoadXml("chapterdata.xml") public CheckPointData checkPointData;
+	@LoadXml("duplicate.xml") public CheckPointData checkPointData;
 	/**
 	 * 掉落包
 	 */
@@ -342,7 +342,13 @@ public class CheckPointService implements ISFSModule, TimeListener {
 		RewardDto reward = new RewardDto();
 		int ret = 0;
 		CheckPointTemplate ct = checkPointData.getTemplate(chapterId);
-		DropDataTemplate dt = dropData.getTemplate(ct.getDropId());
+		int drop;
+        if(first){
+            drop = ct.getFisrtDropId();
+        }else{
+            drop = ct.getRandomDropId();
+        }
+		DropDataTemplate dt = dropData.getTemplate(drop);
 
 		if(win == 1){//赢了
 			reward.setExp(ct.getExp());

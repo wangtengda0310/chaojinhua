@@ -173,19 +173,20 @@ public class CheckEnterHandler extends ReconnectedHandler {
      * @param player 角色
      * @param template 关卡模板
      */
+	// todo async?
 	private void meetMonster(Player player, CheckPointTemplate template) {
 
-		String meetM = template.getMonsterId();
+		String meetM = template.getMonsterSet();
 		if(!MyUtil.isNullOrEmpty(meetM)){
-
-            boolean change = false;
-            for(String ids :meetM.split(":")){
-				change = monsterService.isChange(player, ids, change);
-			}
-
-            if(change){
-                MessageUtil.notifyMeetM(player);
-            }
+			throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
+//            boolean change = false;
+//            for(String ids :meetM.split(":")){
+//				change = monsterService.isChange(player, ids, change);
+//			}
+//
+//            if(change){
+//                MessageUtil.notifyMeetM(player);
+//            }
         }
 	}
 

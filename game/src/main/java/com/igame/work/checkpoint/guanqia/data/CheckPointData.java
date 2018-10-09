@@ -45,21 +45,7 @@ public class CheckPointData
 	public List<CheckPointTemplate> getAll(){
 		return its;
 	}
-	
-	public CheckPointTemplate getFirsCheckPointTemplate(){
-		for(CheckPointTemplate it: its)
-		{
-			if(it.getLimit() == null || "".equals(it.getLimit())){
-				return it;
-			}
-			
-		}
-		return null;
-	}
 
-	/**
-	 * @return 
-	 */
 	public int size()
 	{
 		return maps.size();
