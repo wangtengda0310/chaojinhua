@@ -24,7 +24,7 @@ import com.smartfoxserver.v2.extensions.SFSExtension;
  *
  */
 public class GameServerExtension extends SFSExtension {
-	JarApplicationContext context = new JarApplicationContext(getLogger());
+	JarApplicationContext context = new JarApplicationContext(getLogger(),JarApplicationContext.class.getResource("/").getFile());
 
 	private void register(int requestId, Class<? extends IClientRequestHandler> clazz) {
 		addRequestHandler(String.valueOf(String.valueOf(requestId)), (IClientRequestHandler) context.cachedObjects.get(clazz));

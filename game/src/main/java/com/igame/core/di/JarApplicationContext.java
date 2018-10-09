@@ -4,6 +4,7 @@ import com.igame.core.ISFSModule;
 import com.igame.core.data.ClassXmlDataLoader;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -99,15 +100,51 @@ public class JarApplicationContext {
         return logger;
     }
 
-    public JarApplicationContext(Logger logger) {
+    private void listFilesRecursively(List<String> foundFiles, File currentFileOrDir) {
+
+        if (currentFileOrDir == null || !currentFileOrDir.exists()) {
+            return;
+        }
+        File[] files = currentFileOrDir.listFiles();
+        if (files == null) {
+            foundFiles.add(currentFileOrDir.getAbsolutePath());
+            return;
+        }
+        for (File file : files) {
+            if (file.isDirectory()) {
+                listFilesRecursively(foundFiles, file);
+            } else {
+                String substring = getClass().getResource("/").getFile().substring(1);
+                foundFiles.add(file.getAbsolutePath().substring(substring.length()));
+            }
+        }
+    }
+
+    public JarApplicationContext(Logger logger,String rootDir) {
         this.logger = logger;
         try {
-            new JarFile(getClass().getProtectionDomain().getCodeSource().getLocation().getFile())
-                    .stream()
-                    .map(JarEntry::getName)
+            Stream<String> classNames;
+            File rootFile = new File(rootDir);
+            if (!rootFile.exists()) {
+                return;
+            }
+            if(rootFile.isFile()) {
+                String fileLoacation = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
+                classNames = new JarFile(fileLoacation)
+                        .stream()
+                        .map(JarEntry::getName);
+            } else {
+                List<String> foundFiles = new LinkedList<>();
+                listFilesRecursively(foundFiles, rootFile);
+                classNames = foundFiles.stream();
+            }
+            classNames
+                    .peek(System.out::println)
                     .filter(name -> name.endsWith(".class"))
                     .filter(name -> !name.contains("$"))
-                    .map(name -> name.substring(0,name.indexOf(".class")).replace("/","."))
+                    .map(name -> name.substring(0,name.indexOf(".class")))
+                    .map(name -> name.replace("\\","."))
+                    .map(name -> name.replace("/","."))
                     .map(name-> {
                         try {
                             return Class.forName(name);
