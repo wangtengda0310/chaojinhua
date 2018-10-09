@@ -24,17 +24,11 @@ public class ArenadataTemplate {
 	@XmlAttribute(name = "player_lv")
 	private String playerLv;
 	
-	@XmlAttribute(name = "ai_lv")
-	private String aiLv;
+	@XmlAttribute(name = "monsterset")
+	private String monsterset;
 	
-	@XmlAttribute(name = "front")
-	private  String front;
-	
-	@XmlAttribute(name = "num")
-	private  String num;
-	
-	@XmlAttribute(name = "back")
-	private  String back;
+	@XmlAttribute(name = "type_name")
+	private  String type_name;
 
 	public int getArenaType() {
 		return arenaType;
@@ -52,40 +46,19 @@ public class ArenadataTemplate {
 		this.playerLv = playerLv;
 	}
 
-	public String getAiLv() {
-		return aiLv;
+	public String getMonsterset() {
+		return monsterset;
 	}
 
-	public void setAiLv(String aiLv) {
-		this.aiLv = aiLv;
+	public void setMonsterset(String monsterset) {
+		this.monsterset = monsterset;
 	}
 
-	public String getFront() {
-		return front;
+	public String getType_name() {
+		return type_name;
 	}
 
-	public void setFront(String front) {
-		this.front = front;
+	public void setType_name(String type_name) {
+		this.type_name = type_name;
 	}
-
-	public String getNum() {
-		return num;
-	}
-
-	public void setNum(String num) {
-		this.num = num;
-	}
-
-	public String getBack() {
-		return back;
-	}
-
-	public void setBack(String back) {
-		this.back = back;
-	}
-
-
-	
-	
-
 }
