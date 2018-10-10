@@ -15,11 +15,11 @@ import java.util.Map;
  *
  * 暴走时刻怪物生成数据
  */
-@XmlRootElement(name = "runrewarddata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class RunRewardData {
 
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<RunRewardTemplate> its;
 
     private Map<Integer,RunRewardTemplate> maps	= Maps.newHashMap();

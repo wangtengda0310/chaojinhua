@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 暴走时刻奖励模板
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class RunBattlerewardTemplate {
 
 

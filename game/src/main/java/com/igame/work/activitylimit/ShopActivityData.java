@@ -18,11 +18,11 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "activity_data")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ShopActivityData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<ShopActivityDataTemplate> its = new ArrayList<>();
 
 	private Map<Integer, ShopActivityDataTemplate> maps	= Maps.newHashMap();

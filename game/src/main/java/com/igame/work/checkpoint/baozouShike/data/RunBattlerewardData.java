@@ -15,11 +15,11 @@ import java.util.Map;
  *
  * 暴走时刻结束奖励
  */
-@XmlRootElement(name = "runbattle")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class RunBattlerewardData {
 
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<RunBattlerewardTemplate> its;
 
     private Map<Integer,RunBattlerewardTemplate> maps	= Maps.newHashMap();

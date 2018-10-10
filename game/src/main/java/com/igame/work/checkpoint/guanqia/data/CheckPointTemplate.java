@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class CheckPointTemplate {
 
 

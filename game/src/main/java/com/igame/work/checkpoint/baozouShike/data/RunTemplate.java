@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 暴走时刻怪物生成模板
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class RunTemplate {
 
 

@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@XmlRootElement(name = "activity_data")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ActivityConfig
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	public static
 	List<ActivityConfigTemplate> its = new ArrayList<>();
 	

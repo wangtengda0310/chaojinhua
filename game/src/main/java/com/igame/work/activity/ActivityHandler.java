@@ -26,8 +26,8 @@ public class ActivityHandler extends ReconnectedHandler {
         RetVO retVO = new RetVO();
         ActivityOrderDto orderData = activityService.dtos.get(activityId).getOrderData().get(player.getPlayerId());
         retVO.addData("state", activityService.join(orderData.state));
-        retVO.addData("activityId", activityId);
         retVO.addData("order", order);
+        retVO.addData("activityId", activityId);
         return retVO;
     }
 
