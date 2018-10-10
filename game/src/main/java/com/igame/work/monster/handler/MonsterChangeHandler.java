@@ -85,17 +85,17 @@ public class MonsterChangeHandler extends ReconnectedHandler {
 									sm2.put(m.getKey(), m.getValue());
 								}
 								for(int i = 0;i< skill1.length;i++ ){
-									if(mm1.getSkillMap().get(Integer.parseInt(skill1[i])) != null){
-										mm2.getSkillMap().put(Integer.parseInt(skill2[i]), sm1.get(Integer.parseInt(skill1[i])) == null ? 1 : sm1.get(Integer.parseInt(skill1[i])));
+									if(mm1.containSkill(Integer.parseInt(skill1[i]))){
+										mm2.putSkill(Integer.parseInt(skill2[i]), sm1.get(Integer.parseInt(skill1[i])) == null ? 1 : sm1.get(Integer.parseInt(skill1[i])));
 									}
 								}
 								for(int i = 0;i< skill2.length;i++ ){
-									if(mm2.getSkillMap().get(Integer.parseInt(skill2[i])) != null){
-										mm1.getSkillMap().put(Integer.parseInt(skill1[i]), sm2.get(Integer.parseInt(skill2[i])) == null ? 1 : sm2.get(Integer.parseInt(skill2[i])));
+									if(mm2.containSkill(Integer.parseInt(skill2[i]))){
+										mm1.putSkill(Integer.parseInt(skill1[i]), sm2.get(Integer.parseInt(skill2[i])) == null ? 1 : sm2.get(Integer.parseInt(skill2[i])));
 									}
 								}
-								monsterService.initSkillString(mm1);
-								monsterService.initSkillString(mm2);
+//								monsterService.initSkillString(mm1);
+//								monsterService.initSkillString(mm2);
 							}
 						}
 						

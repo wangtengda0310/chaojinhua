@@ -720,4 +720,34 @@ public class Monster extends BasicDto implements Cloneable {
 		dto.setBodySize(getBodySize());
 		return dto;
 	}
+
+    public void removeSkill(int rem) {
+        getSkillMap().remove(rem);
+        initSkillString();
+    }
+	public void putSkill(int parseInt, int i) {
+		getSkillMap().put(parseInt, i);
+		initSkillString();
+	}
+
+	public boolean containSkill(int parseInt) {
+		return getSkillMap().containsKey(parseInt);
+	}
+
+	/**
+	 * 初始化技能字符串
+	 */
+	private void initSkillString(){
+		StringBuilder ss = new StringBuilder();
+		for(Map.Entry<Integer, Integer> m : skillMap.entrySet()){
+			Integer exp = skillExp.computeIfAbsent(m.getKey(), value -> 0);
+			ss.append(m.getKey()).append(",").append(m.getValue()).append(",").append(exp).append(";");
+		}
+		String rr = ss.toString();
+		if(rr.lastIndexOf(";") != -1){
+			rr = rr.substring(0,rr.lastIndexOf(";"));
+		}
+		skill = rr;
+	}
+
 }

@@ -145,13 +145,13 @@ public class MonsterService implements ISFSModule {
 			String[] skills = nt.getSkill().split(",");
 			if(skills != null){
 				for(String skill : skills){
-					if(!mm.getSkillMap().containsKey(Integer.parseInt(skill))){
-						mm.getSkillMap().put(Integer.parseInt(skill), 1);
+					if(!mm.containSkill(Integer.parseInt(skill))){
+						mm.putSkill(Integer.parseInt(skill), 1);
 					}
 				}
 			}
 		}
-		initSkillString(mm);
+//		initSkillString(mm);
 //		mm.setHp(DataManager.MONSTER_DATA.getMonsterTemplate(nextObject).getMonster_hp() * 10);
 		reCalculate(player, mm.getMonsterId(), mm,true);
 		mm.setDtate(2);
@@ -328,11 +328,11 @@ public class MonsterService implements ISFSModule {
 						temp.add(skill);
 					}
 				}
-				for (Integer rem : temp) {
-					mm.getSkillMap().remove(rem);
+				for (int rem : temp) {
+					mm.removeSkill(rem);
 				}
 			}
-			initSkillString(mm);//初始化技能列表字符串
+//			initSkillString(mm);//初始化技能列表字符串
 			reCalculate(player,mm.getMonsterId(), mm, true);//计算值
 		});
 
@@ -360,22 +360,6 @@ public class MonsterService implements ISFSModule {
 			}
 		}
 		return change;
-	}
-
-	/**
-	 * 初始化技能字符串
-	 */
-	public void initSkillString(Monster monster){
-		StringBuilder ss = new StringBuilder();
-		for(Map.Entry<Integer, Integer> m : monster.skillMap.entrySet()){
-			Integer exp = monster.skillExp.computeIfAbsent(m.getKey(), value -> 0);
-			ss.append(m.getKey()).append(",").append(m.getValue()).append(",").append(exp).append(";");
-		}
-		String rr = ss.toString();
-		if(rr.lastIndexOf(";") != -1){
-			rr = rr.substring(0,rr.lastIndexOf(";"));
-		}
-		monster.skill = rr;
 	}
 
 	//重新计算怪物身上的符文增加属性，包含装备同调加成
