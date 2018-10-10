@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class ExchangedataTemplate {
 	
 
@@ -29,7 +29,7 @@ public class ExchangedataTemplate {
 
 	
 	@XmlAttribute(name = "exchange_value")
-	private int exchange_value;
+	private String exchange_value;
 
 
 	public int getExchange_type() {
@@ -63,11 +63,11 @@ public class ExchangedataTemplate {
 
 
 	public int getExchange_value() {
-		return exchange_value;
+		return 100;
 	}
 
 
-	public void setExchange_value(int exchange_value) {
+	public void setExchange_value(String exchange_value) {
 		this.exchange_value = exchange_value;
 	}
 

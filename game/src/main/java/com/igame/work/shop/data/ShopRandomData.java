@@ -15,11 +15,11 @@ import java.util.Map;
  *
  * shoptype = 1 时商品数据
  */
-@XmlRootElement(name = "shoprandom")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ShopRandomData {
 
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<ShopRandomTemplate> its;
 
     private Map<Integer,ShopRandomTemplate> maps	= Maps.newHashMap();

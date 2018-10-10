@@ -18,11 +18,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "godseffect")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GodsEffectData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<GodsEffectTemplate> its;
 	
 	private Map<Integer,GodsEffectTemplate> maps	= Maps.newHashMap();

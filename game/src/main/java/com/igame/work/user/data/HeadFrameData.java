@@ -16,11 +16,11 @@ import java.util.Map;
  *
  * 头像框
  */
-@XmlRootElement(name = "headframe")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class HeadFrameData {
 
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<HeadFrameTemplate> its;
 
     private Map<Integer,HeadFrameTemplate> maps	= Maps.newHashMap();

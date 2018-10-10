@@ -4,6 +4,7 @@ import com.igame.core.di.Inject;
 import com.igame.core.di.LoadXml;
 import com.igame.util.DateUtil;
 import com.igame.work.gm.service.GMService;
+import com.igame.work.shop.data.ShopData;
 import com.igame.work.user.dto.Player;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ public class SignService {
     /**
      * 签到
      */
-    @LoadXml("signreward.xml")public SignConfig signConfig;
+    @LoadXml("sign_reward.xml")public SignConfig signConfig;
     @Inject private GMService gmService;
 
     public void loadPlayer(Player player) {

@@ -15,10 +15,10 @@ import java.util.Map;
  *
  * 道具合成
  */
-@XmlRootElement(name = "itemgroup")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ItemGroupData {
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<ItemGroupTemplate> its;
 
     private Map<Integer,ItemGroupTemplate> maps	= Maps.newHashMap();

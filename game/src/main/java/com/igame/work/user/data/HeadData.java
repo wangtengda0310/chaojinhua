@@ -16,11 +16,11 @@ import java.util.Map;
  *
  * 头像
  */
-@XmlRootElement(name = "head")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class HeadData {
 
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<HeadTemplate> its;
 
     private Map<Integer,HeadTemplate> maps	= Maps.newHashMap();

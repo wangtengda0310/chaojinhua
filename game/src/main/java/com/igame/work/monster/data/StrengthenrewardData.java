@@ -17,11 +17,11 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "strengthenreward")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class StrengthenrewardData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<StrengthenrewardTemplate> its;
 	
 	private Map<Integer,StrengthenrewardTemplate> maps	= Maps.newHashMap();

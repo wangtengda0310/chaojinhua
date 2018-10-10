@@ -29,7 +29,7 @@ import java.util.Set;
 public class MonsterSkillHandler extends ReconnectedHandler {
 
 	@Inject private ResourceService resourceService;
-
+	@Inject private FightService fightService;
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
@@ -67,7 +67,7 @@ public class MonsterSkillHandler extends ReconnectedHandler {
 
 			Set<Integer> set = monster.getSkillMap().keySet();
 			for (Integer tempSkillId : set) {
-				SkillLvTemplate skillLvTemplate = FightService.skillLvData.getTemplate(tempSkillId);
+				SkillLvTemplate skillLvTemplate = fightService.skillLvData.getTemplate(tempSkillId);
 				if (skillLvTemplate.getUseItem().contains(String.valueOf(itemId))){
 					template = skillLvTemplate;
 					skillId = tempSkillId;

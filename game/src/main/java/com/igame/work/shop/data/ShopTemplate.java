@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 商店模板
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class ShopTemplate {
 
 

@@ -18,11 +18,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "strengthenlevel")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class TongHuaData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<StrengthenlevelTemplate> its;
 	
 	private Map<Integer,StrengthenlevelTemplate> maps	= Maps.newHashMap();

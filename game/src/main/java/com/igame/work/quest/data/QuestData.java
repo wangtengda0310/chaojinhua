@@ -20,11 +20,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "questdata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class QuestData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<QuestTemplate> its;
 	
 	private Map<Integer,QuestTemplate> maps	= Maps.newHashMap();

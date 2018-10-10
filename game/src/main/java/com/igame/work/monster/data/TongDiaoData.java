@@ -18,11 +18,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "suitdata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class TongDiaoData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<TongDiaoTemplate> its;
 	
 	private Map<Integer,TongDiaoTemplate> maps	= Maps.newHashMap();

@@ -32,6 +32,7 @@ public class GodsUpHandler extends ReconnectedHandler {
 	@Inject private ResourceService resourceService;
 	@Inject private QuestService questService;
 
+	@Inject private FightService fightService;
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 		RetVO vo = new RetVO();
@@ -45,8 +46,8 @@ public class GodsUpHandler extends ReconnectedHandler {
 		if(gods == null){
 			return error(ErrorCode.ERROR);
 		}else{
-			GodsdataTemplate curr = FightService.godsData.getTemplate(gods.getGodsType()+"_"+ gods.getGodsLevel());
-			GodsdataTemplate gt = FightService.godsData.getNextLevelTemplate(gods.getGodsType(), gods.getGodsLevel());
+			GodsdataTemplate curr = fightService.godsData.getTemplate(gods.getGodsType()+"_"+ gods.getGodsLevel());
+			GodsdataTemplate gt = fightService.godsData.getNextLevelTemplate(gods.getGodsType(), gods.getGodsLevel());
 			if(curr == null || gt == null){
 				return error(ErrorCode.GODS_MAX);
 			}else{

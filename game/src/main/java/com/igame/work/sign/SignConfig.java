@@ -11,11 +11,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 import java.util.Map;
 
-@XmlRootElement(name = "sign_reward")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class SignConfig
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<SignConfigTemplate> its;
 	
 	private Map<Integer,SignConfigTemplate> maps	= Maps.newHashMap();

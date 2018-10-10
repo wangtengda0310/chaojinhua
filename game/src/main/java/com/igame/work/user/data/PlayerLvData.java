@@ -17,13 +17,13 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "monsterlv")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class PlayerLvData
 {	
 	private int maxLevel = 80;
 	
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<PlayerLvTemplate> its;
 	
 	private Map<Integer,PlayerLvTemplate> list	= Maps.newHashMap();

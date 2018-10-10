@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * 神秘商店等级模板
  */
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ShopRandomLvTemplate {
 

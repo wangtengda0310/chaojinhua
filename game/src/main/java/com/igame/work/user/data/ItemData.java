@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "itemdata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ItemData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<ItemTemplate> its;
 	
 	private Map<Integer,ItemTemplate> maps	= Maps.newHashMap();

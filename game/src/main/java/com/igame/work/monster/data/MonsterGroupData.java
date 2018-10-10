@@ -15,11 +15,11 @@ import java.util.Map;
  *
  * 召唤怪物生成数据
  */
-@XmlRootElement(name = "monstergroup")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class MonsterGroupData {
 
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<MonsterGroupTemplate> its;
 
     private Map<Integer,MonsterGroupTemplate> maps = Maps.newHashMap();

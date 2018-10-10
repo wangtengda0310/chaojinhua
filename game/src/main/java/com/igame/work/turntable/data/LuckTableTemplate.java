@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 会员等级
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class LuckTableTemplate {
 
     @XmlAttribute(name = "table", required = true)
@@ -36,7 +36,7 @@ public class LuckTableTemplate {
     private float getRate;//抽取概率
 
     @XmlAttribute(name = "up_rate")
-    private Float upRate;//vip文本值
+    private float upRate;//vip文本值
 
     public int getTable() {
         return table;
@@ -94,11 +94,11 @@ public class LuckTableTemplate {
         this.getRate = getRate;
     }
 
-    public Float getUpRate() {
+    public float getUpRate() {
         return upRate;
     }
 
-    public void setUpRate(Float upRate) {
+    public void setUpRate(float upRate) {
         this.upRate = upRate;
     }
 }

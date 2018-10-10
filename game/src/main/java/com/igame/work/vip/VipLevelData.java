@@ -15,11 +15,11 @@ import java.util.Map;
  *
  * 会员礼包数据
  */
-@XmlRootElement(name = "viplevel")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class VipLevelData {
 
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<VipLevelTemplate> its;
 
     private Map<Integer,VipLevelTemplate> maps = Maps.newHashMap();

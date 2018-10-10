@@ -18,11 +18,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "drawreward")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class DrawrewardData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<DrawrewardTemplate> its;
 	
 	private Map<Integer,DrawrewardTemplate> maps	= Maps.newHashMap();

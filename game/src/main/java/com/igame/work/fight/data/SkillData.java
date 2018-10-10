@@ -17,11 +17,11 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "skilldata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class SkillData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<SkillTemplate> its;
 	
 	private Map<Integer,SkillTemplate> maps	= Maps.newHashMap();
