@@ -589,34 +589,6 @@ public class MonsterService implements ISFSModule {
 		computeFightService.computeMonsterFight(monster);
 	}
 
-	public List<Monster> reCalMonsterValue(Player player) {
-		List<Monster> ll = Lists.newArrayList();
-		player.setFightValue(0);
-        /*String[] mms = player.teams[0].split(",");
-        for (String mid : mms) {
-            if (!"-1".equals(mid)) {
-                Monster mm = player.monsters.get(Long.parseLong(mid));
-                if (mm != null) {
-                    mm.reCalculate(player, true);
-                    player.fightValue += mm.getFightValue();
-                    ll.add(mm);
-                }
-            }
-        }*/
-		long[] teamMonster = player.getTeams().get(player.getCurTeam()).getTeamMonster();
-		for (long mid : teamMonster) {
-			if (-1 != mid) {
-				Monster mm = player.getMonsters().get(mid);
-				if (mm != null) {
-					reCalculate(player, mm.getMonsterId(), mm, true);
-					player.setFightValue(player.getFightValue() + mm.getFightValue());
-					ll.add(mm);
-				}
-			}
-		}
-		return ll;
-	}
-
     public void afterPlayerLogin(Player player) {
         reCalMonsterExtPre(player,true);//计算图鉴增加属性
     }
