@@ -18,11 +18,11 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "destinydata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class FateData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<FatedataTemplate> its;
 	
 	private Map<Integer,FatedataTemplate> maps	= Maps.newHashMap();

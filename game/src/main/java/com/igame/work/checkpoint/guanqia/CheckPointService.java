@@ -532,24 +532,24 @@ public class CheckPointService implements ISFSModule, TimeListener {
                         ItemTemplate max2 = itemService.itemData.getTemplate(200002);
                         ItemTemplate max3 = itemService.itemData.getTemplate(200001);
                         if(max1 != null){
-                            if(totalExp > (int)max1.getValue()){//大
-                                int cl = totalExp/(int)max1.getValue();
+                            if(totalExp > max1.getValue()){//大
+                                int cl = (int) (totalExp/max1.getValue());
                                 dto.addItem(200003, cl);
-                                totalExp -= cl * (int)max1.getValue();
+                                totalExp -= cl * max1.getValue();
                             }
                         }
                         if(max2 != null){
-                            if(totalExp > (int)max2.getValue()){//中
-                                int cl = totalExp/(int)max2.getValue();
+                            if(totalExp > max2.getValue()){//中
+                                int cl = (int) (totalExp/max2.getValue());
                                 dto.addItem(200002, cl);
-                                totalExp -= cl * (int)max2.getValue();
+                                totalExp -= cl * max2.getValue();
                             }
                         }
                         if(max3 != null){
-                            if(totalExp > (int)max3.getValue()){//小
-                                int cl = totalExp/(int)max3.getValue();
+                            if(totalExp > max3.getValue()){//小
+                                int cl = (int) (totalExp/max3.getValue());
                                 dto.addItem(200001, cl);
-                                totalExp -= cl * (int)max3.getValue();
+                                totalExp -= cl * max3.getValue();
                             }
                         }
                         break;

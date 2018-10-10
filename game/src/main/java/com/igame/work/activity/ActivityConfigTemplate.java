@@ -17,7 +17,7 @@ import java.util.Date;
  *
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class ActivityConfigTemplate {
 	
 

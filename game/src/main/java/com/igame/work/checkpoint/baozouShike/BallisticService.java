@@ -34,15 +34,15 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
     /**
      * 暴走时刻排名奖励
      */
-    @LoadXml("runreward.xml")public RunRewardData runRewardData;
+    @LoadXml("runrewarddata.xml")public RunRewardData runRewardData;
     /**
      * 暴走时刻buff数据
      */
-    @LoadXml("runtype.xml")public RunTypeData runTypeData;
+    @LoadXml("runtypedata.xml")public RunTypeData runTypeData;
     /**
      * 暴走时刻结束奖励
      */
-    @LoadXml("runbattlereward.xml")public RunBattlerewardData runBattlerewardData;
+    @LoadXml("runbattle.xml")public RunBattlerewardData runBattlerewardData;
 
     @Inject private BallisticRankDAO dao;
     @Inject private MailService mailService;

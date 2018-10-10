@@ -42,13 +42,13 @@ public class GameServerExtension extends SFSExtension {
 	public void init() {
 		try {
 
-			ClassXmlDataLoader loader = new ClassXmlDataLoader("resource/");
-			// 这几个都是static的还没重构成依赖注入
-			FightService.effectData = loader.loadData(EffectData.class, "effectdata.xml");
-			FightService.godsData = loader.loadData(GodsData.class, "godsdata.xml");
-			FightService.godsEffectData = loader.loadData(GodsEffectData.class, "godseffect.xml");
-			FightService.skillData = loader.loadData(SkillData.class, "skilldata.xml");
-			FightService.skillLvData = loader.loadData(SkillLvData.class, "skillexp.xml");
+//			ClassXmlDataLoader loader = new ClassXmlDataLoader("D:/project/game/game/target/classes/resource/");
+//			// 这几个都是static的还没重构成依赖注入
+//			FightService.effectData = loader.loadData(EffectData.class, "effectdata.xml");
+//			FightService.godsData = loader.loadData(GodsData.class, "godsdata.xml");
+//			FightService.godsEffectData = loader.loadData(GodsEffectData.class, "godseffect.xml");
+//			FightService.skillData = loader.loadData(SkillData.class, "skilldata.xml");
+//			FightService.skillLvData = loader.loadData(SkillLvData.class, "skillexp.xml");
 
 			dbManager = (DBManager) context.cachedObjects.get(DBManager.class);
 			dbManager.init(this);	// 数据库被其他模块init的时候依赖

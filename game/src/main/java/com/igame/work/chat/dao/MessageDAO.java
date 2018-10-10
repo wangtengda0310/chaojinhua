@@ -11,8 +11,8 @@ import java.util.List;
 /**
  * @author xym
  */
-public class MessageDAO extends AbsDao {
-
+public class MessageDAO extends AbsDao{
+	
     /**
      * 根据 服务器ID 获取 消息
      */

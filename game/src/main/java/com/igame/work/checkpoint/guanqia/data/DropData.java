@@ -18,11 +18,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "dropdata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class DropData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<DropDataTemplate> its;
 	
 	private Map<Integer,DropDataTemplate> maps	= Maps.newHashMap();

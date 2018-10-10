@@ -18,11 +18,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "chapterdata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class CheckPointData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<CheckPointTemplate> its;
 	
 	private Map<Integer,CheckPointTemplate> maps	= Maps.newHashMap();
