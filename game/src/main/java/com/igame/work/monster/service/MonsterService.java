@@ -626,31 +626,42 @@ public class MonsterService implements ISFSModule {
         String monsterId = monstersetTemplate.getMonsterId();
         List<Monster> result = new LinkedList<>();
         for (String mid : monsterId.split("|")) {
-            MonsterTemplate monsterTemplate = MONSTER_DATA.getMonsterTemplate(Integer.parseInt(mid));
-            result.add(mapTemplateToMonster(monsterTemplate));
+            PVEMonsterTemplate monsterTemplate = PVE_MONSTER.getMonsterTemplate(Integer.parseInt(mid));
+            result.add(mapTemplateToMonster(monsterTemplate,Integer.parseInt(mid)));
         }
         return result;
     }
 
     public List<MatchMonsterDto> createMonsterDtoOfAll(int monstersetId) {
-        MonstersetTemplate monstersetTemplate = MONSTERSET_DATA.getMonsterTemplate(monstersetId);
-        String monsterId = monstersetTemplate.getMonsterId();
+        List<Monster> monsterOfAll = createMonsterOfAll(monstersetId);
         List<MatchMonsterDto> result = new LinkedList<>();
-        for (String mid : monsterId.split("|")) {
-            MonsterTemplate monsterTemplate = MONSTER_DATA.getMonsterTemplate(Integer.parseInt(mid));
-            result.add(mapTemplateToDto(monsterTemplate));
+        for (int index = 0; index< monsterOfAll.size(); index++) {
+            Monster m = monsterOfAll.get(index);
+            MatchMonsterDto dto = m.toMatchMonsterDto();
+            dto.setLocation(index);
+            result.add(dto);
         }
         return result;
     }
 
-    private Monster mapTemplateToMonster(MonsterTemplate monsterTemplate) {
+    private Monster mapTemplateToMonster(PVEMonsterTemplate t, int id) {
+	    MonsterTemplate card = MONSTER_DATA.getMonsterTemplate(t.getMonsterId());   // 策划说这个表可以理解成卡牌或者武将、英雄
         Monster m = new Monster();
 
+        m.setObjectId(id);
+        m.setLevel(t.getLvShow());
+        m.setMonsterId(id);
+        m.setHp(t.getMonsterHp());
+        m.setAttack(t.getMonsterAtk());
+        m.setSpeed(t.getMonsterSpeed());
+        m.setIas(t.getMonsterIas());
+        m.setRng(t.getMonsterRng());
+        m.setRepel(t.getMonsterRepel());
+        m.setBulletSpeed(card.getBulletSpeed());
+        m.setHpInit(t.getMonsterHp());
+        m.setSkill(card.getSkill());
+        m.setEquip(t.getEquip());
+        m.setBodySize(t.getSize());
         return m;
-    }
-    private MatchMonsterDto mapTemplateToDto(MonsterTemplate monsterTemplate) {
-        MatchMonsterDto dto = new MatchMonsterDto();
-
-        return dto;
     }
 }
