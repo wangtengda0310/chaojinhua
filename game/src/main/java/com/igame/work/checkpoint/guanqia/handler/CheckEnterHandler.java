@@ -178,15 +178,10 @@ public class CheckEnterHandler extends ReconnectedHandler {
 
 		String meetM = template.getMonsterSet();
 		if(!MyUtil.isNullOrEmpty(meetM)){
-			throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
-//            boolean change = false;
-//            for(String ids :meetM.split(":")){
-//				change = monsterService.isChange(player, ids, change);
-//			}
-//
-//            if(change){
-//                MessageUtil.notifyMeetM(player);
-//            }
+            for(String ids :meetM.split(":")){
+				monsterService.meet(player, Integer.parseInt(ids));
+			}
+
         }
 	}
 

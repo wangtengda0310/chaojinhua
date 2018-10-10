@@ -25,7 +25,7 @@ public class TrialdataTemplate {
 	private  int gold;
 
 	@XmlAttribute(name = "monster_data")
-	private String monsterData;
+	private int monsterData;
 	
 	@XmlAttribute(name = "reward")
 	private  String reward;
@@ -46,11 +46,11 @@ public class TrialdataTemplate {
 		this.gold = gold;
 	}
 
-	public String getMonsterData() {
+	public int getMonsterData() {
 		return monsterData;
 	}
 
-	public void setMonsterData(String monsterData) {
+	public void setMonsterData(int monsterData) {
 		this.monsterData = monsterData;
 	}
 

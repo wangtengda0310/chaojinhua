@@ -9,6 +9,7 @@ import com.igame.util.MyUtil;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.MessageUtil;
+import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.checkpoint.xingheZhiYan.TrialdataTemplate;
 import com.igame.work.checkpoint.xingheZhiYan.XingheZhiYanService;
 import com.igame.work.fight.dto.MatchMonsterDto;
@@ -35,6 +36,7 @@ public class TrialEnterHandler extends ReconnectedHandler {
 	private XingheZhiYanService xingheZhiYanService;
 	@Inject
 	private MonsterService monsterService;
+	@Inject private CheckPointService checkPointService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -54,48 +56,19 @@ public class TrialEnterHandler extends ReconnectedHandler {
 				return error(ErrorCode.XING_NOT_ENOUGH);
 			}else{
 				resourceService.addXing(player, -1);
-//				player.setEnterCheckpointId(chapterId);
-//				player.setEnterCheckPointTime(System.currentTimeMillis());
 				
 
-				String meetM = ct.getMonsterData();
-				
-				//怪物装备
-//				String equips = "";
-//				String[] props = null;
-//				if(!MyUtil.isNullOrEmpty(ct.getMonsterProp())){
-//					props = ct.getMonsterProp().split(";");
-//				}
-//				//怪物装备
-//
-//				if(!MyUtil.isNullOrEmpty(meetM)){
-//					boolean change = false;
-//					change = monsterService.isChange(player, meetM, change);
-//					if(change){
-//						MessageUtil.notifyMeetM(player);
-//					}
-//					//怪物装备
-//					if(props != null){
-//						equips = MyUtil.toString(props, ";");
-//					}
-//					//怪物装备
-//				}
-//				if(equips.length() > 0){
-//					equips = equips.substring(1);
-//				}
-//
-//				// todo extract method
-//				lb = monsterService.createMatchMonsterDto(player, ct.getMonsterData(), ct.getMonsterLv()
-//						, "", ct.getMonsterSkilllv(), equips);
+				int meetM = ct.getMonsterData();
+				monsterService.meet(player, meetM);
 
-				throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
+				lb = monsterService.createMonsterDtoOfAll(ct.getMonsterData());
 			}
 			
 		}
 
-//		vo.addData("m", lb);
-//
-//		return vo;
+		vo.addData("m", lb);
+
+		return vo;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.igame.work.checkpoint.worldEvent;
+package com.igame.work.monster.data;
 
 
 import com.google.common.collect.Maps;
@@ -10,10 +10,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-
-
 
 
 /**
@@ -23,35 +19,36 @@ import java.util.stream.Collectors;
  */
 @XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
-public class WorldEventData
+public class PVEMonsterData
 {
 	@XmlElement(name="item")
-	private List<WorldEventTemplate> its;
+	private List<PVEMonsterTemplate> its;
 	
-	private Map<String,WorldEventTemplate> maps	= Maps.newHashMap();
+	private Map<Integer,PVEMonsterTemplate> monsters	= Maps.newHashMap();
 	
 
 	void afterUnmarshal(Unmarshaller u, Object parent)
 	{
-		for(WorldEventTemplate it: its)
+		for(PVEMonsterTemplate it: its)
 		{
-			maps.put(it.getEventType()+"_"+it.getDifficulty(), it);
+			monsters.put(it.getMonsterId(), it);
 			
 		}
 	}
 	
-	public WorldEventTemplate getTemplate(String id)
+	public PVEMonsterTemplate getMonsterTemplate(int id)
 	{
-		return maps.get(id);
+		return monsters.get(id);
 	}
+
 	
-	public List<WorldEventTemplate> getAll(){
+	public List<PVEMonsterTemplate> getAll(){
 		return its;
 	}
 
 	public int size()
 	{
-		return maps.size();
+		return monsters.size();
 	}
 }
 

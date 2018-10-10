@@ -31,8 +31,7 @@ public class TuJianHandler extends ReconnectedHandler {
 
 		String meetM = jsonObject.getString("meetM");
 		if(!MyUtil.isNullOrEmpty(meetM)){
-			boolean change = false;
-			change = monsterService.isChange(player, meetM, change);
+			boolean change = monsterService.isChange(player, meetM);
 			if(change){
 				MessageUtil.notifyMeetM(player);
 			}

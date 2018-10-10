@@ -47,9 +47,6 @@ public class MonsterData
 		return its;
 	}
 
-	/**
-	 * @return 
-	 */
 	public int size()
 	{
 		return monsters.size();

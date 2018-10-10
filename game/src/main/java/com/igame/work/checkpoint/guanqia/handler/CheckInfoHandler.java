@@ -13,7 +13,6 @@ import com.igame.work.checkpoint.guanqia.data.CheckPointTemplate;
 import com.igame.work.checkpoint.xinmo.XingMoDto;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
-import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
@@ -185,28 +184,23 @@ public class CheckInfoHandler extends ReconnectedHandler {
 
 	private void process(Player player,List<MatchMonsterDto> lb,int chapterId,AtomicInteger idx){
 		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
-		// todo monster组的逻辑
+
 		if(ct != null){
-			if(ct.getRound() == 1){//一周目
-				throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
-			}else if(ct.getRound() > 1){//二 三周目
-				throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
-			}
+            String[] split = ct.getMonsterSet().split("|");
+            for (int i = 0; i < split.length; i++) {
+                List<MatchMonsterDto> monsterDtoOfAll = monsterService.createMonsterDtoOfAll(Integer.parseInt(split[i]));
+                for (MatchMonsterDto monsterDto : monsterDtoOfAll) {
+
+                    monsterDto.setObjectId(idx.incrementAndGet());
+                    monsterDto.setRound(ct.getRound()+"-"+i+1); // 每个关卡可能刷多波怪
+
+                    monsterDto.reCalGods(player.currentFightGods(), null);//神灵被动属性
+
+                    lb.add(monsterDto);
+                }
+
+            }
 		}
 	}
-
-	private void createMatchMonsterDto(Player player, List<MatchMonsterDto> lb, AtomicInteger idx
-            , String monsterId, String monsterLevel, String position, String skillLv, String equips, String round) {
-		Map<Long, Monster> monster = monsterService.batchCreateMonster(monsterId, monsterLevel, position, skillLv, equips);
-		for (Map.Entry<Long, Monster> e : monster.entrySet()) {
-			Monster m = e.getValue();
-			m.setObjectId(idx.incrementAndGet());
-			MatchMonsterDto mto = new MatchMonsterDto(m, e.getKey().intValue());
-			mto.reCalGods(player.currentFightGods(), null);//神灵被动属性
-			mto.setRound(round);
-			lb.add(mto);
-		}
-	}
-
 
 }

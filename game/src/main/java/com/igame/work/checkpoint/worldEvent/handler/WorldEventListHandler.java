@@ -32,8 +32,10 @@ public class WorldEventListHandler extends ReconnectedHandler {
 		JSONObject jsonObject = JSONObject.fromObject(infor);
 
 		for(WorldEventTemplate ts : worldEventService.worldEventData.getAll()){
-			if(ts.getLevel() == 1 &&  player.hasCheckPoint(String.valueOf(ts.getUnlock()))){
-				player.getWordEvent().computeIfAbsent(ts.getEvent_type(),wet -> new WorldEventDto(player.getPlayerId(), ts.getEvent_type(), "", 0,1));
+			if(ts.getDifficulty() == 1 &&  player.hasCheckPoint(String.valueOf(ts.getUnlock()))){
+				player.getWordEvent()
+						.computeIfAbsent(ts.getEventType()
+								,wet -> new WorldEventDto(player.getPlayerId(), ts.getEventType(), "", 0,1));
 			}
 		}
 

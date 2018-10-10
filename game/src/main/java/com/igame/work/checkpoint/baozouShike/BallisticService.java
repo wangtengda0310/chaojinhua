@@ -12,10 +12,9 @@ import com.igame.work.PlayerEvents;
 import com.igame.work.checkpoint.baozouShike.data.*;
 import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.mail.MailService;
-import com.igame.work.monster.data.MonsterTemplate;
-import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.service.RobotService;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,7 +45,8 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
 
     @Inject private BallisticRankDAO dao;
     @Inject private MailService mailService;
-    @Inject private static MonsterService monsterService;
+    @Inject private MonsterService monsterService;
+    @Inject private RobotService robotService;
 
     @Override
     public void minute5() {
@@ -163,43 +163,11 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
      * @param buildNum 生成数量
      */
     public List<MatchMonsterDto> buildMonster(RunTemplate template, int buildNum) {
-        throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
-//
-//        List<MatchMonsterDto> matchMonsterDtos = new ArrayList<>();
-//
-//        if (template == null)
-//            return matchMonsterDtos;
-//
-//        int monsterLv = template.getMonsterLv();
-//        int skillLv = template.getSkillLv();
-//        String[] monsterIds = template.getMonster().split(",");
-//        String equip = template.getProp() == 0 ? "" : String.valueOf(template.getProp());
-//        for (int i = 0; i < buildNum; i++) {
-//
-//            String monsterId = monsterIds[(new Random().nextInt(monsterIds.length))];
-//
-//            Monster monster = new Monster(i, Integer.parseInt(monsterId), monsterLv, -1, equip);
-//            MonsterTemplate mt = monsterService.MONSTER_DATA.getMonsterTemplate(Integer.parseInt(monsterId));
-//            if(mt != null && mt.getSkill() != null){
-//                String[] skills = mt.getSkill().split(",");
-//                for(String skill : skills){
-//                    if(skillLv<=0){
-//                        monster.skillMap.put(Integer.parseInt(skill), 1);
-//                    }else{
-//                        monster.skillMap.put(Integer.parseInt(skill), skillLv);
-//                    }
-//
-//                    monster.skillExp.put(Integer.parseInt(skill), 0);
-//                }
-//                monster.atkType = mt.getAtk_type();
-//            }
-//            monsterService.initSkillString(monster);
-//            monsterService.reCalLevelValue(Integer.parseInt(monsterId),monster,true);
-//            monsterService.reCalEquip(Integer.parseInt(monsterId),monster);
-//            matchMonsterDtos.add(new MatchMonsterDto(monster,-1));
-//        }
-//
-//        return matchMonsterDtos;
+        // todo haw to deal with buildNum
+        if (template == null)
+            return Collections.emptyList();
+
+        return monsterService.createMonsterDtoOfAll(robotService.randomOne(template.getMonster(), "|"));
     }
 
     /**

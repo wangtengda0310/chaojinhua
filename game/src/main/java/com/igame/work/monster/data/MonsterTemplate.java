@@ -9,58 +9,58 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
- * 
+ *
  * @author Marcus.Z
  *
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "item")
 public class MonsterTemplate {
-	
+
 
 
 	@XmlAttribute(name = "monster_id", required = true)
 	private int monster_id;
-	
+
 	@XmlAttribute(name = "atk_type")
 	private int atk_type;
-	
+
 	@XmlAttribute(name = "monster_camp")
 	private String monster_camp;
-	
+
 	@XmlAttribute(name = "monster_rarity")
 	private int monster_rarity;
-	
+
 	@XmlAttribute(name = "monster_hp")
 	private int monster_hp;
-	
+
 	@XmlAttribute(name = "monster_atk")
 	private int monster_atk;
-	
+
 	@XmlAttribute(name = "monster_speed")
 	private int monster_speed;
-	
+
 	@XmlAttribute(name = "monster_ias")
 	private float monster_ias;
-	
+
 	@XmlAttribute(name = "monster_rng")
 	private int monster_rng;
-	
+
 	@XmlAttribute(name = "monster_repel")
 	private int monster_repel;
-	
+
 	@XmlAttribute(name = "hp_up")
 	private double hp_up;
-	
+
 	@XmlAttribute(name = "atk_up")
 	private double atk_up;
-	
+
 	@XmlAttribute(name = "skill")
 	private String skill;
-	
+
 	@XmlAttribute(name = "monstertype")
 	private String monstertype;//1近战/2远程/3坦克/4输出/5辅助
-	
+
 	@XmlAttribute(name = "bullet_speed")
 	private int bulletSpeed;
 
@@ -184,9 +184,9 @@ public class MonsterTemplate {
 	public void setBulletSpeed(int bulletSpeed) {
 		this.bulletSpeed = bulletSpeed;
 	}
-	
-	
-	
-	
+
+
+
+
 
 }

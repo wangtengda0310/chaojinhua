@@ -16,6 +16,8 @@ import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.service.RobotService;
+import org.apache.commons.lang.math.RandomUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +34,7 @@ public class GateService implements ISFSModule, TimeListener {
 
     @Inject
     private MonsterService monsterService;
+    @Inject private RobotService robotService;
 
     @Override
     public void zero() {
@@ -153,23 +156,17 @@ public class GateService implements ISFSModule, TimeListener {
         if(ft == null){
             return Maps.newHashMap();
         }
-        List<String> monsterId = new LinkedList<>();
-        List<Integer> monsterLevel = new LinkedList<>();
-        List<Integer> skillLv = new LinkedList<>();
-        String[] m1 = ft.getNormalMonsterset().split(",");
-        String[] m2 = ft.getBossMonsterset().split(",");
-//        for(int i = 1;i<=2;i++){
-//            monsterId.add(m1[GameMath.getRandInt(m1.length)]);
-//            monsterLevel.add(ft.getMonster1Lv());
-//            skillLv.add(ft.getSkill1Lv());
-//        }
-//        for(int i = 1;i<=8;i++){
-//            monsterId.add(m2[GameMath.getRandInt(m2.length)]);
-//            monsterLevel.add(ft.getMonster2Lv());
-//            skillLv.add(ft.getSkill2Lv());
-//        }
-//        return monsterService.batchCreateMonster(monsterId, monsterLevel, "", skillLv, Collections.emptyList());
-        throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
+        Map<Long, Monster> result = new HashMap<>();
+        List<Monster> monsterOfInit = monsterService.createMonsterOfAll(robotService.randomOne(ft.getNormalMonsterset(), "|"));// 头两个上场的怪物有位置
+        for (Monster m : monsterOfInit) {
+            result.put(m.getObjectId(), m);
+        }
+        List<Monster> monsterOfRef = monsterService.createMonsterOfAll(robotService.randomOne(ft.getBossMonsterset(), "|"));// 后面上场的怪物都在同一个位置刷出来
+        for (Monster m : monsterOfRef) {
+            m.setObjectId(0);
+            result.put(m.getObjectId(), m);
+        }
+        return result;
     }
 
     public List<GateDto> getGateDtos(Player player, List<GateDto> ls) {

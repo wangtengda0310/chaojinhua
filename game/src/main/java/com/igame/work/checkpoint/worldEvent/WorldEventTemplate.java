@@ -20,22 +20,22 @@ public class WorldEventTemplate {
 
 
 	@XmlAttribute(name = "difficulty")
-	private int level;
+	private int difficulty;
 
 	@XmlAttribute(name = "drop")
 	private String drop;
 
 	@XmlAttribute(name = "event_type")
-	private int event_type;
+	private int eventType;
 
 	@XmlAttribute(name = "event_name")
-	private int event_name;
+	private int eventName;
 
 	@XmlAttribute(name = "gold")
 	private String gold;
 
 	@XmlAttribute(name = "monsterset")
-	private String monsterId;//
+	private String monsterset;//
 
 	@XmlAttribute(name = "physical")
 	private int physical;
@@ -49,12 +49,12 @@ public class WorldEventTemplate {
 	@XmlAttribute(name = "unlock")
 	private int unlock;
 
-	public int getLevel() {
-		return level;
+	public int getDifficulty() {
+		return difficulty;
 	}
 
-	public void setLevel(int level) {
-		this.level = level;
+	public void setDifficulty(int difficulty) {
+		this.difficulty = difficulty;
 	}
 
 	public String getDrop() {
@@ -65,20 +65,20 @@ public class WorldEventTemplate {
 		this.drop = drop;
 	}
 
-	public int getEvent_type() {
-		return event_type;
+	public int getEventType() {
+		return eventType;
 	}
 
-	public void setEvent_type(int event_type) {
-		this.event_type = event_type;
+	public void setEventType(int eventType) {
+		this.eventType = eventType;
 	}
 
-	public int getEvent_name() {
-		return event_name;
+	public int getEventName() {
+		return eventName;
 	}
 
-	public void setEvent_name(int event_name) {
-		this.event_name = event_name;
+	public void setEventName(int eventName) {
+		this.eventName = eventName;
 	}
 
 	public String getGold() {
@@ -89,12 +89,12 @@ public class WorldEventTemplate {
 		this.gold = gold;
 	}
 
-	public String getMonsterId() {
-		return monsterId;
+	public String getMonsterset() {
+		return monsterset;
 	}
 
-	public void setMonsterId(String monsterId) {
-		this.monsterId = monsterId;
+	public void setMonsterset(String monsterset) {
+		this.monsterset = monsterset;
 	}
 
 	public int getPhysical() {
