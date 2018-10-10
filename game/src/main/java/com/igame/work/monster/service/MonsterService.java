@@ -47,6 +47,14 @@ public class MonsterService implements ISFSModule {
 	 */
 	@LoadXml("monsterdata.xml")public MonsterData MONSTER_DATA;
 	/**
+	 * 怪物模版
+	 */
+	@LoadXml("monster.xml")public PVEMonsterData PVE_MONSTER;
+	/**
+	 * 怪物模版
+	 */
+	@LoadXml("monstersetdata.xml")public MonstersetData MONSTERSET_DATA;
+	/**
 	 * 怪物进化
 	 */
 	@LoadXml("monster_evolution.xml")public MonsterEvolutionData monsterEvolutionData;
@@ -300,45 +308,51 @@ public class MonsterService implements ISFSModule {
 		return mms;
 	}
 
-	public Map<Long, Monster> getMonsterByPlayer(Player player) {
-		// todo 怪物组的逻辑
-        throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
-//		Map<Long, Monster> monsters = monsterDAO.getMonsterByPlayer(player, player.getPlayerId());
-//		monsters.forEach((mid,mm)->{
-//			MonsterTemplate mt = MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
-//			if (mt != null && mt.getSkill() != null) {
-//				String[] skills = mt.getSkill().split(",");
-//				if (mm.getSkillMap().isEmpty()) {
-//					mm.setDtate(2);
-//				}
-//				for (String skill : skills) {
-//					if (!mm.getSkillMap().containsKey(Integer.parseInt(skill))) {
-//						mm.getSkillMap().put(Integer.parseInt(skill), 1);
-//					}
-//				}
-//				List<Integer> temp = Lists.newArrayList();
-//				for (Integer skill : mm.getSkillMap().keySet()) {
-//					if (!mt.getSkill().contains(String.valueOf(skill))) {
-//						temp.add(skill);
-//					}
-//				}
-//				for (Integer rem : temp) {
-//					mm.getSkillMap().remove(rem);
-//				}
-//			}
-//			initSkillString(mm);//初始化技能列表字符串
-//			reCalculate(player,mm.getMonsterId(), mm, true);//计算值
-//		});
-//
-//		return monsters;
+	public Map<Long, Monster> getMonsterByPlayerFromDb(Player player) {
+		Map<Long, Monster> monsters = monsterDAO.getMonsterByPlayer(player, player.getPlayerId());
+		monsters.forEach((mid,mm)->{
+			MonsterTemplate mt = MONSTER_DATA.getMonsterTemplate(mm.getMonsterId());
+			if (mt != null && mt.getSkill() != null) {
+				String[] skills = mt.getSkill().split(",");
+				if (mm.getSkillMap().isEmpty()) {
+					mm.setDtate(2);
+				}
+				for (String skill : skills) {
+					if (!mm.getSkillMap().containsKey(Integer.parseInt(skill))) {
+						mm.getSkillMap().put(Integer.parseInt(skill), 1);
+					}
+				}
+				List<Integer> temp = Lists.newArrayList();
+				for (Integer skill : mm.getSkillMap().keySet()) {
+					if (!mt.getSkill().contains(String.valueOf(skill))) {
+						temp.add(skill);
+					}
+				}
+				for (Integer rem : temp) {
+					mm.getSkillMap().remove(rem);
+				}
+			}
+			initSkillString(mm);//初始化技能列表字符串
+			reCalculate(player,mm.getMonsterId(), mm, true);//计算值
+		});
+
+		return monsters;
 	}
 
 	public void loadPlayer(Player player) {
-		player.setMonsters(getMonsterByPlayer(player));
+		player.setMonsters(getMonsterByPlayerFromDb(player));
 	}
 
-	public boolean isChange(Player player, String meetM, boolean change) {
-		for(String id :meetM.split(",")){
+	// todo merge multi monsters notify
+	public void meet(Player player, int monsterId) {
+        if(player.getMeetM().contains(monsterId)){
+            return;
+        }
+        MessageUtil.notifyMeetM(player);
+    }
+	public boolean isChange(Player player, String monsters) {
+	    boolean change = false;
+		for(String id :monsters.split(",")){
 			int mid = Integer.parseInt(id);
 			if(MONSTER_DATA.getMonsterTemplate(mid) != null && !player.getMeetM().contains(mid)){
 				player.getMeetM().add(mid);
@@ -348,124 +362,6 @@ public class MonsterService implements ISFSModule {
 		return change;
 	}
 
-	// todo return Monster or MatchMonsterDto
-	public Map<Long,Monster> batchCreateMonster(List<String> monsterIds, List<Integer> monsterLevel, String position, List<Integer> skillLv, List<String> equips){
-
-		Map<Long,Monster> ms = new LinkedHashMap<>();
-		if(monsterIds.isEmpty() || monsterLevel.isEmpty()) {
-			return ms;
-		}
-			if(position == null){
-				position = "";
-			}
-			if(equips.isEmpty()){
-				equips = Arrays.asList("-1,-1,-1,-1".split(","));
-			}
-			long id = 1;
-			int pos = 1;
-			for(int i = 0;i < monsterIds.size();i++){
-				int mid = Integer.parseInt(monsterIds.get(i));	// todo make list int
-				if(MONSTER_DATA.getMonsterTemplate(mid) != null){
-					continue;
-				}
-				Monster value = new Monster(id, mid, monsterLevel.get(i),
-						MyUtil.isNullOrEmpty(position) ? pos : Integer.parseInt(position.split(",")[i])
-						, equips.isEmpty() ? "-1,-1,-1,-1" : (equips.size() >= monsterIds.size() ? equips.get(i) : equips.get(0)));
-
-				MonsterTemplate mt = MONSTER_DATA.getMonsterTemplate(mid);
-				if(mt != null && mt.getSkill() != null){
-					String[] skillConfigStrSplit = mt.getSkill().split(",");
-					int lv;
-					if(i>=skillLv.size()||skillLv.get(i)==null||skillLv.get(i)<=0){
-						lv = 1;
-					}else{
-						lv = skillLv.get(i);
-					}
-					for(String skill : skillConfigStrSplit){
-						value.skillMap.put(Integer.parseInt(skill), lv);
-						value.skillExp.put(Integer.parseInt(skill), 0);
-					}
-					value.atkType = mt.getAtk_type();
-				}
-
-				initSkillString(value);
-				reCalLevelValue(mid,value,true);
-				reCalEquip(mid, value);
-				ms.put(id, value);
-
-				id++;
-				pos = pos%5+1;
-		}
-		return ms;
-	}
-	/**
-	 * 根据配置生成怪物对象
-	 */
-	public Map<Long,Monster> batchCreateMonster(String monsterIds, String monsterLevel, String position, String skillLv, String equips){
-
-		Map<Long,Monster> ms = new LinkedHashMap<>();
-		if(!MyUtil.isNullOrEmpty(monsterIds) && !MyUtil.isNullOrEmpty(monsterLevel)){
-			if(position == null){
-				position = "";
-			}
-			if(equips == null){
-				equips = "-1,-1,-1,-1";
-			}
-			long id = 1;
-			int pos = 1;
-			String[] mms = monsterIds.split(",");
-			String[] lvs = monsterLevel.split(",");
-			String[] ss = position.split(",");
-			String[] skills = skillLv.split(",");
-			String[] equs = equips.split(";");
-			for(int i = 0;i < mms.length;i++){
-				int mid = Integer.parseInt(mms[i]);
-				if(MONSTER_DATA.getMonsterTemplate(mid) != null){
-
-					Monster value = new Monster(id, mid, Integer.parseInt(lvs[i]),
-							MyUtil.isNullOrEmpty(position) ? pos : Integer.parseInt(ss[i])
-							, MyUtil.isNullOrEmpty(equips) ? "" : (equs.length >= mms.length ? equs[i] : equs[0]));
-					MonsterTemplate mt = MONSTER_DATA.getMonsterTemplate(mid);
-					if(mt != null && mt.getSkill() != null){
-						String[] skills1 = mt.getSkill().split(",");
-						if(skills1 != null){
-							int lv;
-							if(i>=skills.length||skills[i]==null||"".equals(skills[i])||Integer.valueOf(skills[i])<=0){
-								lv = 1;
-							}else{
-								lv = Integer.valueOf(skills[i]);
-							}
-							for(String skill : skills1){
-								value.skillMap.put(Integer.parseInt(skill), lv);
-								value.skillExp.put(Integer.parseInt(skill), 0);
-							}
-						}
-						value.atkType = mt.getAtk_type();
-					}
-					initSkillString(value);
-					reCalLevelValue(mid,value,true);
-					reCalEquip(mid, value);
-					ms.put(id, value);
-
-					id++;
-					pos = pos%5+1;
-				}
-			}
-		}
-		return ms;
-	}
-
-	public List<MatchMonsterDto> createMatchMonsterDto(Player player, String monsterIds, String monsterLevel, String site, String skillLv, String equips){
-		List<MatchMonsterDto> lb = new LinkedList<>();
-		Map<Long, Monster> monster = batchCreateMonster(monsterIds, monsterLevel, site,skillLv,equips);
-		monster.forEach((mid, m) -> {
-			int i = mid.intValue();
-			MatchMonsterDto mto = new MatchMonsterDto(m, i);
-			mto.reCalGods(player.currentFightGods(), null);
-			lb.add(mto);
-		});
-		return lb;
-	}
 	/**
 	 * 初始化技能字符串
 	 */
@@ -480,26 +376,6 @@ public class MonsterService implements ISFSModule {
 			rr = rr.substring(0,rr.lastIndexOf(";"));
 		}
 		monster.skill = rr;
-	}
-
-	/**
-	 * 计算怪物的基础和等级属性总值
-	 */
-	public void reCalLevelValue(int monsterId, Monster monster, boolean dbHp){
-		MonsterTemplate mt = MONSTER_DATA.getMonsterTemplate(monsterId);
-		if(mt != null){
-			if(dbHp){
-				monster.hp = mt.getMonster_hp() +(int)( mt.getHp_up() * (monster.level - 1));
-			}
-			monster.hpInit = mt.getMonster_hp()  +(int)( mt.getHp_up() * (monster.level - 1));
-			monster.attack = mt.getMonster_atk() +(int)( mt.getAtk_up() * (monster.level - 1));
-
-			monster.speed = mt.getMonster_speed();
-			monster.ias = mt.getMonster_ias();
-			monster.repel = mt.getMonster_repel();
-			monster.rng =  mt.getMonster_rng();
-			monster.bulletSpeed =  mt.getBulletSpeed();
-		}
 	}
 
 	//重新计算怪物身上的符文增加属性，包含装备同调加成
@@ -630,8 +506,6 @@ public class MonsterService implements ISFSModule {
 		MonsterTemplate mt = MONSTER_DATA.getMonsterTemplate(monsterId);
 		if(mt != null){
 
-			reCalLevelValue(monsterId, monster, dbHp);
-
 			String[] vrl = monster.breaklv.split(",");
 			if(vrl.length != 0){
 				for(String vl : vrl){
@@ -745,5 +619,38 @@ public class MonsterService implements ISFSModule {
 
     public void afterPlayerLogin(Player player) {
         reCalMonsterExtPre(player,true);//计算图鉴增加属性
+    }
+
+    public List<Monster> createMonsterOfAll(int monstersetId) {
+        MonstersetTemplate monstersetTemplate = MONSTERSET_DATA.getMonsterTemplate(monstersetId);
+        String monsterId = monstersetTemplate.getMonsterId();
+        List<Monster> result = new LinkedList<>();
+        for (String mid : monsterId.split("|")) {
+            MonsterTemplate monsterTemplate = MONSTER_DATA.getMonsterTemplate(Integer.parseInt(mid));
+            result.add(mapTemplateToMonster(monsterTemplate));
+        }
+        return result;
+    }
+
+    public List<MatchMonsterDto> createMonsterDtoOfAll(int monstersetId) {
+        MonstersetTemplate monstersetTemplate = MONSTERSET_DATA.getMonsterTemplate(monstersetId);
+        String monsterId = monstersetTemplate.getMonsterId();
+        List<MatchMonsterDto> result = new LinkedList<>();
+        for (String mid : monsterId.split("|")) {
+            MonsterTemplate monsterTemplate = MONSTER_DATA.getMonsterTemplate(Integer.parseInt(mid));
+            result.add(mapTemplateToDto(monsterTemplate));
+        }
+        return result;
+    }
+
+    private Monster mapTemplateToMonster(MonsterTemplate monsterTemplate) {
+        Monster m = new Monster();
+
+        return m;
+    }
+    private MatchMonsterDto mapTemplateToDto(MonsterTemplate monsterTemplate) {
+        MatchMonsterDto dto = new MatchMonsterDto();
+
+        return dto;
     }
 }

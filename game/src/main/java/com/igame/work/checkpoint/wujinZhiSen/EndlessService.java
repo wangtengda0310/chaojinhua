@@ -1,6 +1,7 @@
 package com.igame.work.checkpoint.wujinZhiSen;
 
 import com.google.common.collect.Lists;
+import com.igame.core.di.Inject;
 import com.igame.core.di.LoadXml;
 import com.igame.core.event.RemoveOnLogout;
 import com.igame.core.handler.RetVO;
@@ -12,8 +13,12 @@ import com.igame.work.MessageUtil;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
 import com.igame.work.fight.dto.GodsDto;
 import com.igame.work.fight.dto.MatchMonsterDto;
+import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.dto.WuEffect;
+import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
+import com.igame.work.user.service.RobotService;
+import org.apache.commons.lang.math.RandomUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +30,9 @@ public class EndlessService {
      */
     @LoadXml("endless.xml")public EndlessData endlessData;
     @RemoveOnLogout() public Map<Long, Integer> tempBufferId = new ConcurrentHashMap<>();//临时ID
+    @Inject private MonsterService monsterService;
+    @Inject private RobotService robotService;
+
     /**
      * 无尽之森刷新
      */
@@ -37,7 +45,8 @@ public class EndlessService {
         }
         List<EndlessdataTemplate> ls = Lists.newArrayList();
         for(EndlessdataTemplate et : endlessData.getAll()){
-            if(lv >= Integer.parseInt(et.getLvRange().split(",")[0]) && lv <= Integer.parseInt(et.getLvRange().split(",")[1])){
+            String[] lvRange = et.getLvRange().split(",");
+            if(lv >= Integer.parseInt(lvRange[0]) && lv <= Integer.parseInt(lvRange[1])){
                 ls.add(et);
             }
         }
@@ -49,27 +58,27 @@ public class EndlessService {
             player.setWuGods(new GodsDto());
             player.setWuNai(0);
             player.getWuEffect().clear();
-            throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
-//            for(EndlessdataTemplate et : ls){
-//                String str = String.valueOf(et.getNum());
-//                str+=";"+String.valueOf(et.getDifficulty())+";0";
-//                String[] mons = et.getMonsterset().split("|");
-//                List<String> temp = Lists.newArrayList();
-//                List<Integer> lvs = Lists.newArrayList();
-//                for(int i = 1;i <=5;i++){
-//                    temp.add(mons[GameMath.getRandInt(mons.length)]);
-//                    lvs.add(GameMath.getRandomInt(lv+Integer.parseInt(et.getMonsterLv().split(",")[0]), lv+Integer.parseInt(et.getMonsterLv().split(",")[1])));
-//                }
-//                str += ";"+ MyUtil.toString(temp, ",");
-//                str += ";"+MyUtil.toStringInt(lvs, ",");
-//                str += ";0;0";
-//                player.getWuMap().put(et.getNum(), str);
-//            }
+            // 怪物在同一个位置刷出来
+            //无尽之森保存的关卡情况 关卡ID,是否已过,怪物ID;怪物ID,怪物等级;怪物等级
+            for(EndlessdataTemplate et : ls){
+                String str = String.valueOf(et.getNum());
+                str+=";"+String.valueOf(et.getDifficulty())+";0";
+                String[] mons = et.getMonsterset().split("|");
+                List<String> temp = Lists.newArrayList();
+                List<Integer> lvs = Lists.newArrayList();
+                for (Monster monster : monsterService.createMonsterOfAll(robotService.randomOne(et.getMonsterset(), "|"))) {
+                    lvs.add(monster.getLevel());
+                    temp.add(String.valueOf(monster.getMonsterId()));
+                }
+                str += ";"+ MyUtil.toString(temp, ",");
+                str += ";"+MyUtil.toStringInt(lvs, ",");
+                str += ";0;0";
+                player.getWuMap().put(et.getNum(), str);
+            }
 
         }
         return ret;
     }
-
 
     public void afterPlayerLogin(Player player) {
         if(player.getWuMap().isEmpty()){

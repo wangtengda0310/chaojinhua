@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
+import com.igame.util.GameMath;
 import com.igame.work.ErrorCode;
 import com.igame.work.MProtrol;
 import com.igame.work.checkpoint.guanqia.CheckPointService;
@@ -16,6 +17,7 @@ import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.load.ResourceService;
+import com.igame.work.user.service.RobotService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
 
@@ -34,8 +36,9 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 	@Inject private CheckPointService checkPointService;
 	@Inject private WorldEventService worldEventService;
 	@Inject private MonsterService monsterService;
+    @Inject private RobotService robotService;
 
-	@Override
+    @Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
 
 		RetVO vo = new RetVO();
@@ -82,19 +85,17 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 		checkPointService.setEnterWordEventTime(player);
 		worldEventService.setEnterWordEventId(player,eventType+"_"+level);
 
-		throw new UnsupportedOperationException("怪物这里调用怪物组模块生成怪物");
-////		// todo extract method
-////		List<MatchMonsterDto> lb = monsterService.createMatchMonsterDto(player, wt.getMonsterId(), wt.getMlevel(), wt.getSite(),"","");
-//
-//		vo.addData("m", lb);
-//
-//		Map<String, Object> param = new HashMap<>();
-//		param.put("battleType", 2);
-//		param.put("eventType", eventType);
-//		param.put("level", level);
-//		checkPointService.setLastBattleParam(player.getPlayerId(), param);
-//
-//		return vo;
+		List<MatchMonsterDto> lb = monsterService.createMonsterDtoOfAll(robotService.randomOne(wt.getMonsterset(), "|"));
+
+		vo.addData("m", lb);
+
+		Map<String, Object> param = new HashMap<>();
+		param.put("battleType", 2);
+		param.put("eventType", eventType);
+		param.put("level", level);
+		checkPointService.setLastBattleParam(player.getPlayerId(), param);
+
+		return vo;
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public class ArenaPlayerInfoHandler extends ReconnectedHandler {
 
 		Player opponent = playerDAO.getPlayerByPlayerId(opponentPlayerId);
 		if(opponent != null){	// TODO 监听上下阵事件?
-			Map<Long, Monster> mons = monsterService.getMonsterByPlayer(opponent);
+			Map<Long, Monster> mons = monsterService.getMonsterByPlayerFromDb(opponent);
 			opponent.setMonsters(mons);
 			rto = opponent.robotOfDefence();
 

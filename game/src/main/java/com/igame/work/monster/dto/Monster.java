@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Maps;
 import com.igame.core.db.BasicDto;
 import com.igame.util.MyUtil;
+import com.igame.work.fight.dto.MatchMonsterDto;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.Team;
 import org.mongodb.morphia.annotations.Entity;
@@ -695,9 +696,7 @@ public class Monster extends BasicDto implements Cloneable {
 	}
 
 
-
-
-
-
-
+	public MatchMonsterDto toMatchMonsterDto() {
+		return null;
+	}
 }

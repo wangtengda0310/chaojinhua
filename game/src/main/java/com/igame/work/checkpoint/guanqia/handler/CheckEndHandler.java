@@ -117,9 +117,9 @@ public class CheckEndHandler extends ReconnectedHandler {
 
 			// todo fire event?
 			for(WorldEventTemplate ts : worldEventService.worldEventData.getAll()){//解锁世界事件
-				if(ts.getLevel() == 1 && chapterId ==  ts.getUnlock()){
-					WorldEventDto wet = new WorldEventDto(player.getPlayerId(), ts.getEvent_type(), "", 0,1);
-					player.getWordEvent().put(ts.getEvent_type(), wet);
+				if(ts.getDifficulty() == 1 && chapterId ==  ts.getUnlock()){
+					WorldEventDto wet = new WorldEventDto(player.getPlayerId(), ts.getEventType(), "", 0,1);
+					player.getWordEvent().put(ts.getEventType(), wet);
 				}
 			}
 

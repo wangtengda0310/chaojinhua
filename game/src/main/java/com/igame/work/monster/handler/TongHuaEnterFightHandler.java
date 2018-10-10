@@ -73,9 +73,7 @@ public class TongHuaEnterFightHandler extends ReconnectedHandler {
 					}
 
 					StrengthenmonsterTemplate mt = monsterService.strengthenmonsterData.getTemplate(Integer.parseInt(t[3]));
-
-					lb = monsterService.createMatchMonsterDto(player, String.valueOf(mt.getMonster_id()), String.valueOf(mt.getMonster_lv()), "1","","");
-
+// todo create monster
 				}
 			}
 		}
