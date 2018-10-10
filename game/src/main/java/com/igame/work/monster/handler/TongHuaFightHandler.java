@@ -1,6 +1,7 @@
 package com.igame.work.monster.handler;
 
 
+import com.google.common.collect.Lists;
 import com.igame.core.di.Inject;
 import com.igame.core.handler.ReconnectedHandler;
 import com.igame.core.handler.RetVO;
@@ -13,12 +14,15 @@ import com.igame.work.MessageUtil;
 import com.igame.work.monster.data.StrengthenRouteTemplate;
 import com.igame.work.monster.data.StrengthenlevelTemplate;
 import com.igame.work.monster.data.StrengthenmonsterTemplate;
+import com.igame.work.monster.dto.Monster;
 import com.igame.work.monster.service.MonsterService;
 import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.TongHuaDto;
 import com.igame.work.user.load.ResourceService;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import net.sf.json.JSONObject;
+
+import java.util.List;
 
 /**
  * 
@@ -178,7 +182,7 @@ public class TongHuaFightHandler extends ReconnectedHandler {
 
 
 						MessageUtil.notifyTongHuaAddChange(player);
-						MessageUtil.notifyMonsterChange(player, monsterService.reCalMonsterValue(player));
+						MessageUtil.notifyMonsterChange(player, reCalMonsterValue(player));
 						t[1] = "3";
 					}
 
@@ -217,6 +221,34 @@ public class TongHuaFightHandler extends ReconnectedHandler {
 		vo.addData("unlock", unlocks);
 
 		return vo;
+	}
+
+	private List<Monster> reCalMonsterValue(Player player) {
+		List<Monster> ll = Lists.newArrayList();
+		player.setFightValue(0);
+        /*String[] mms = player.teams[0].split(",");
+        for (String mid : mms) {
+            if (!"-1".equals(mid)) {
+                Monster mm = player.monsters.get(Long.parseLong(mid));
+                if (mm != null) {
+                    mm.reCalculate(player, true);
+                    player.fightValue += mm.getFightValue();
+                    ll.add(mm);
+                }
+            }
+        }*/
+		long[] teamMonster = player.getTeams().get(player.getCurTeam()).getTeamMonster();
+		for (long mid : teamMonster) {
+			if (-1 != mid) {
+				Monster mm = player.getMonsters().get(mid);
+				if (mm != null) {
+					monsterService.reCalculate(player, mm.getMonsterId(), mm, true);
+					player.setFightValue(player.getFightValue() + mm.getFightValue());
+					ll.add(mm);
+				}
+			}
+		}
+		return ll;
 	}
 
 	static String getString(String unlocks, String[] tss, String points) {
