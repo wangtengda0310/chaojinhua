@@ -23,7 +23,7 @@ public class EndlessService {
     /**
      * 无尽之森
      */
-    @LoadXml("endlessdata.xml")public EndlessData endlessData;
+    @LoadXml("endless.xml")public EndlessData endlessData;
     @RemoveOnLogout() public Map<Long, Integer> tempBufferId = new ConcurrentHashMap<>();//临时ID
     /**
      * 无尽之森刷新

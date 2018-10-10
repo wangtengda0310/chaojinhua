@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 道具合成模板
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class ItemGroupTemplate {
 
     @XmlAttribute(name = "item_id", required = true)

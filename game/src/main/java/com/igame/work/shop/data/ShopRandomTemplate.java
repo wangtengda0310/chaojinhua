@@ -13,7 +13,7 @@ import java.util.Arrays;
  *
  * shoptype = 1 时的商品模板
  */
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ShopRandomTemplate {
 

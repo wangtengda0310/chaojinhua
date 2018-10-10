@@ -10,7 +10,7 @@ public class DrawService {
     /**
      * 造物台等级
      */
-    @LoadXml("drawlevel.xml") public DrawLevelData drawLevelData;
+    @LoadXml("draw_level.xml") public DrawLevelData drawLevelData;
     /**
      * 奖励库
      */

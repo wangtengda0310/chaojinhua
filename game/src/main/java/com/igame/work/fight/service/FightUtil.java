@@ -1,5 +1,6 @@
 package com.igame.work.fight.service;
 
+import com.igame.core.di.Inject;
 import com.igame.util.MyUtil;
 import com.igame.work.fight.FightService;
 import com.igame.work.fight.data.SkillTemplate;
@@ -13,7 +14,7 @@ import com.igame.work.monster.dto.Monster;
  */
 public class FightUtil {
 
-	
+	@Inject private FightService fightService;
 	/**
 	 * 普通攻击伤害值
 	 */
@@ -41,7 +42,7 @@ public class FightUtil {
 	/**
 	 * 技能攻击伤害值
 	 */
-	public static int getSkillDamge(Monster attacker,Monster target,SkillTemplate skillTemplate,int skillLevel,int skillExp){
+	public int getSkillDamge(Monster attacker,Monster target,SkillTemplate skillTemplate,int skillLevel,int skillExp){
 		
 		attacker.getFightProp().reCalProp();
 		target.getFightProp().reCalProp();
@@ -55,7 +56,7 @@ public class FightUtil {
 		float skillUpAdd = 0;//技能up加成
 		if(skillTemplate.getSubtype() == 1){//直接触发类型有技能UP加成  
 			skillUpAdd = (1 + (skillLevel-1)*5 +
-					skillLevel>= FightService.skillLvData.getMaxLevel() ? 0 : (int)(skillExp/(FightService.skillLvData.getTemplate(skillTemplate.getSkillId()).getSkillExp()+.0)*5))
+					skillLevel>= fightService.skillLvData.getMaxLevel() ? 0 : (int)(skillExp/(fightService.skillLvData.getTemplate(skillTemplate.getSkillId()).getSkillExp()+.0)*5))
 							* skillTemplate.getHurtUp();
 		}
 		//攻击力 * 技能加成(基本数值+UP值*等级)

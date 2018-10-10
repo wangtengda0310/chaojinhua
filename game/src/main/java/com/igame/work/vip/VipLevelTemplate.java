@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 会员等级
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class VipLevelTemplate {
 
     @XmlAttribute(name = "vip_level", required = true)

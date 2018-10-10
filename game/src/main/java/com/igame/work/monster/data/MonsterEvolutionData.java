@@ -18,11 +18,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "monster_evolution")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class MonsterEvolutionData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<MonsterEvolutionTemplate> its;
 	
 	private Map<Integer,MonsterEvolutionTemplate> maps	= Maps.newHashMap();

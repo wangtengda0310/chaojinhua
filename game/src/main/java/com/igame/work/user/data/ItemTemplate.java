@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class ItemTemplate {
 
 	
@@ -37,7 +37,7 @@ public class ItemTemplate {
 	private int effect;//效果值
 	
 	@XmlAttribute(name = "value")
-	private float value;//数值
+	private Float value;//数值
 
 	public int getItemId() {
 		return itemId;
@@ -87,11 +87,11 @@ public class ItemTemplate {
 		this.effect = effect;
 	}
 
-	public float getValue() {
+	public Float getValue() {
 		return value;
 	}
 
-	public void setValue(float value) {
+	public void setValue(Float value) {
 		this.value = value;
 	}
 	

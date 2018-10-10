@@ -55,6 +55,7 @@ public class ResourceService extends EventService implements ISFSModule {
 	@Inject private VIPService vipService;
 	@Inject private ItemService itemService;
 	@Inject private DrawService drawService;
+	@Inject private FightService fightService;
 
 	
 	//1 - 金币 2-钻石 3-体力 4-扫荡券 5-同化经验 6-同化点 7-星能 8-无尽积分 9-斗技积分 10-起源积分 11-部落积分 12-远征积分 13-悬赏积分 14-充值金额
@@ -195,7 +196,6 @@ public class ResourceService extends EventService implements ISFSModule {
 		}
 		return dto;
     }
-    
     
 
     public RewardDto getTotalRewardDto(RewardDto total,RewardDto add){
@@ -415,8 +415,8 @@ public class ResourceService extends EventService implements ISFSModule {
     		MessageUtil.sendMessageToPlayer(player, MProtrol.PLAYER_INDE_UP, vo);
     	}
     	List<Gods> ll = Lists.newArrayList();
-    	for(Integer type : FightService.godsData.getSets()){
-    		GodsdataTemplate gt = FightService.godsData.getTemplate(type+"_0");
+    	for(Integer type : fightService.godsData.getSets()){
+    		GodsdataTemplate gt = fightService.godsData.getTemplate(type+"_0");
     		if(gt != null && player.getPlayerLevel() >= gt.getUnlockLv() && player.getGods().get(type) == null){   			
     			Gods gods = new Gods(player.getPlayerId(), type, 0, 1);
     			ll.add(gods);
@@ -568,7 +568,7 @@ public class ResourceService extends EventService implements ISFSModule {
     	    	}
     			int left = item.getCount();//总共有的
     			int use = count;//使用的
-    			while(left > 0 && use > 0 && addMonsterExp(player,targetId,CheckPointService.getTotalExp(mm, (int)itemTemplate.getValue()),false) == 0){
+    			while(left > 0 && use > 0 && addMonsterExp(player,targetId,CheckPointService.getTotalExp(mm, itemTemplate.getValue().intValue()),false) == 0){
     				left--;
     				use--;
     			} 

@@ -15,11 +15,11 @@ import java.util.Map;
  *
  * 神秘商店等级数据
  */
-@XmlRootElement(name = "shoprandom")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ShopRandomLvData {
 
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<ShopRandomLvTemplate> its;
 
     private Map<Integer,ShopRandomLvTemplate> maps	= Maps.newHashMap();

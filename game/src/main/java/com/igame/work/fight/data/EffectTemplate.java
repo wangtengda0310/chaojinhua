@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class EffectTemplate {
 	
 
@@ -24,7 +24,7 @@ public class EffectTemplate {
 	
 	//生效类型1,怪物2技能
 	@XmlAttribute(name = "effect_type")
-	private int effectType;
+	private String effectType;
 	
 	
 	//生效条件
@@ -82,11 +82,11 @@ public class EffectTemplate {
 		this.effect = effect;
 	}
 
-	public int getEffectType() {
+	public String getEffectType() {
 		return effectType;
 	}
 
-	public void setEffectType(int effectType) {
+	public void setEffectType(String effectType) {
 		this.effectType = effectType;
 	}
 

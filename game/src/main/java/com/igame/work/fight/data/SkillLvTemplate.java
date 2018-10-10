@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class SkillLvTemplate {
 	
 	@XmlAttribute(name = "skill_id", required = true)

@@ -19,11 +19,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "drawdata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class DrawdataData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<DrawdataTemplate> its;
 	
 	private Map<String,DrawdataTemplate> maps	= Maps.newHashMap();

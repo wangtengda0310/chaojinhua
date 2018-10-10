@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 会员配置
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class VipDataTemplate {
 
     @XmlAttribute(name = "num", required = true)

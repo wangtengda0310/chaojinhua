@@ -17,11 +17,11 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "questteam")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class TansuoData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<TansuoTemplate> its;
 	
 	private Map<Integer, TansuoTemplate> maps	= Maps.newHashMap();

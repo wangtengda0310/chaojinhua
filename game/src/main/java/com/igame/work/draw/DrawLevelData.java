@@ -18,11 +18,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "draw_level")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class DrawLevelData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<DrawLevelTemplate> its;
 	
 	private Map<Integer,DrawLevelTemplate> maps	= Maps.newHashMap();

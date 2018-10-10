@@ -17,11 +17,11 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "pokedex")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class PokedexData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<PokedexdataTemplate> its;
 	
 	private Map<Integer,PokedexdataTemplate> maps	= Maps.newHashMap();

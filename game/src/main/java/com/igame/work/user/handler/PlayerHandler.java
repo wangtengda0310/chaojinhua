@@ -101,7 +101,7 @@ public class PlayerHandler extends ClientDispatcherHandler {
 	@Inject private ArenaService arenaService;
 	@Inject private GateHandler gateService;
 	@Inject private ServerManager serverManager;
-
+	@Inject private FightService fightService;
 	@Override
 	public void handleClientRequest(User user, ISFSObject params) {
 		
@@ -342,8 +342,8 @@ public class PlayerHandler extends ClientDispatcherHandler {
 
 		signService.loadPlayer(player);		// todo event?
 
-        for(Integer type : FightService.godsData.getSets()){
-            GodsdataTemplate gt = FightService.godsData.getTemplate(type+"_0");
+        for(Integer type : fightService.godsData.getSets()){
+            GodsdataTemplate gt = fightService.godsData.getTemplate(type+"_0");
             if(gt != null && player.getPlayerLevel() >= gt.getUnlockLv() && player.getGods().get(type) == null){
                 Gods gods = new Gods(player.getPlayerId(), type, 0, 1);
                 player.getGods().put(gods.getGodsType(), gods);

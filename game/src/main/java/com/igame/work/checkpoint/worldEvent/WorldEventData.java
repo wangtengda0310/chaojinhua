@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "worldevent")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class WorldEventData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<WorldEventTemplate> its;
 	
 	private Map<String,WorldEventTemplate> maps	= Maps.newHashMap();

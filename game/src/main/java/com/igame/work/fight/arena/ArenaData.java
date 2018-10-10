@@ -21,11 +21,11 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "arenadata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ArenaData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<ArenadataTemplate> its;
 	
 	private Map<Integer,ArenadataTemplate> maps	= Maps.newHashMap();

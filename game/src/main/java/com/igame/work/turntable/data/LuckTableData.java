@@ -16,11 +16,11 @@ import java.util.Map;
  *
  * 会员礼包数据
  */
-@XmlRootElement(name = "lucktable")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class LuckTableData {
 
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<LuckTableTemplate> its;
 
     private Map<String,List<LuckTableTemplate>> maps = Maps.newHashMap();

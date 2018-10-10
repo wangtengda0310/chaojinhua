@@ -41,7 +41,7 @@ public class MonsterService implements ISFSModule {
 	/**
 	 * 怪物基因突破
 	 */
-	@LoadXml("monsterbreak.xml" )public MonsterBreakData monsterBreakData;
+	@LoadXml("monster_break.xml" )public MonsterBreakData monsterBreakData;
 	/**
 	 * 怪物模版
 	 */
@@ -49,7 +49,7 @@ public class MonsterService implements ISFSModule {
 	/**
 	 * 怪物进化
 	 */
-	@LoadXml("monsterevolution.xml")public MonsterEvolutionData monsterEvolutionData;
+	@LoadXml("monster_evolution.xml")public MonsterEvolutionData monsterEvolutionData;
 	/**
 	 * 怪兽召唤数据
 	 */
@@ -57,7 +57,7 @@ public class MonsterService implements ISFSModule {
 	/**
 	 * 怪物等级模板
 	 */
-	@LoadXml("monsterlevel.xml")public MonsterLvData monsterLvData;
+	@LoadXml("monsterlv.xml")public MonsterLvData monsterLvData;
 	/**
 	 * 怪物新生
 	 */
@@ -65,7 +65,7 @@ public class MonsterService implements ISFSModule {
 	/**
 	 * 图鉴
 	 */
-	@LoadXml("pokedexdata.xml") public PokedexData pokedexData;
+	@LoadXml("pokedex.xml") public PokedexData pokedexData;
 	/**
 	 * 同化怪物配置
 	 */
@@ -81,7 +81,7 @@ public class MonsterService implements ISFSModule {
 	/**
 	 * 路线配置
 	 */
-	@LoadXml("strengthenroute.xml") public StrengthenRouteData strengthenRouteData;
+	@LoadXml("strengthen_route.xml") public StrengthenRouteData strengthenRouteData;
 	/**
 	 * 同调
 	 */

@@ -20,11 +20,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "strengthenplace")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class StrengthenplaceData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<StrengthenplaceTemplate> its;
 	
 	private Map<String,StrengthenplaceTemplate> maps	= Maps.newHashMap();

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 头像框模板
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class HeadFrameTemplate {
 
     @XmlAttribute(name = "head_frame_id", required = true)

@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "exchange")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ExchangeData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<ExchangedataTemplate> its;
 	
 	private Map<String,ExchangedataTemplate> maps	= Maps.newHashMap();

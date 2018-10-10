@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igame.work.fight.FightService;
 import com.igame.work.fight.data.GodsEffectTemplate;
 import com.igame.work.fight.data.GodsdataTemplate;
+import com.igame.work.fight.service.FightEffectService;
+import com.igame.core.di.Inject;
 import com.igame.util.MyUtil;
 import com.igame.work.monster.dto.Gods;
 import com.igame.work.monster.dto.Monster;
@@ -413,7 +415,7 @@ public class MatchMonsterDto   implements Cloneable  {
 				break;
 		}
 	}
-	
+	@Inject private FightService fightService;
 	/**
 	 * 神灵被动技能效果加成
 	 * @param selfGods 己方神灵，enemyGods 敌方神灵，均可为null
@@ -421,9 +423,9 @@ public class MatchMonsterDto   implements Cloneable  {
 	public void reCalGods(Gods selfGods,Gods enemyGods){
 		
 		if(selfGods != null){//处理己方神灵对自己的加成效果，
-			GodsdataTemplate godsTemplate = FightService.godsData.getTemplate(selfGods.getGodsType()+"_"+ selfGods.getGodsLevel());
+			GodsdataTemplate godsTemplate = fightService.godsData.getTemplate(selfGods.getGodsType()+"_"+ selfGods.getGodsLevel());
 			if(godsTemplate != null){
-				GodsEffectTemplate effectTemplate =  FightService.godsEffectData.getTemplate(godsTemplate.getGodsEffect());
+				GodsEffectTemplate effectTemplate =  fightService.godsEffectData.getTemplate(godsTemplate.getGodsEffect());
 				if(effectTemplate != null && !MyUtil.isNullOrEmpty(effectTemplate.getPassiveEffect()) && effectTemplate.getPassiveTarget() == 0){//有效的增益
 					String[] effects = effectTemplate.getPassiveEffect().split(",");
 					String[] values = effectTemplate.getPassiveValue().split(",");
@@ -435,9 +437,9 @@ public class MatchMonsterDto   implements Cloneable  {
 		}
 		
 		if(enemyGods != null){//处理敌方方神灵对自己的加成效果，
-			GodsdataTemplate enemyTemplate = FightService.godsData.getTemplate(enemyGods.getGodsType()+"_"+ enemyGods.getGodsLevel());
+			GodsdataTemplate enemyTemplate = fightService.godsData.getTemplate(enemyGods.getGodsType()+"_"+ enemyGods.getGodsLevel());
 			if(enemyTemplate != null){
-				GodsEffectTemplate effectTemplateE =  FightService.godsEffectData.getTemplate(enemyTemplate.getGodsEffect());
+				GodsEffectTemplate effectTemplateE =  fightService.godsEffectData.getTemplate(enemyTemplate.getGodsEffect());
 				if(effectTemplateE != null && !MyUtil.isNullOrEmpty(effectTemplateE.getPassiveEffect()) && effectTemplateE.getPassiveTarget() == 1){//有效的减益
 					String[] effectsE = effectTemplateE.getPassiveEffect().split(",");
 					String[] valuesE = effectTemplateE.getPassiveValue().split(",");

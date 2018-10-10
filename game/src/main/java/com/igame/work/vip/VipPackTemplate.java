@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 会员礼包
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "low")
+@XmlRootElement(name = "item")
 public class VipPackTemplate {
 
     @XmlAttribute(name = "vip_lv", required = true)

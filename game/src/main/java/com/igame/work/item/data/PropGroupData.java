@@ -20,11 +20,11 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "propgroup")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class PropGroupData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<PropGroupTemplate> its;
 	
 	private Map<Integer,PropGroupTemplate> maps	= Maps.newHashMap();

@@ -18,11 +18,11 @@ import com.google.common.collect.Maps;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "strengthen_route")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class StrengthenRouteData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<StrengthenRouteTemplate> its;
 	
 	private Map<Integer,StrengthenRouteTemplate> maps	= Maps.newHashMap();

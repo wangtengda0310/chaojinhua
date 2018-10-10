@@ -65,7 +65,7 @@ public class PlayerService extends EventService implements ISFSModule {
 	/**
 	 * 头像数据
 	 */
-	@LoadXml("headdata.xml") public HeadData headData;
+	@LoadXml("head.xml") public HeadData headData;
 	/**
 	 * 头像框数据
 	 */
@@ -73,7 +73,7 @@ public class PlayerService extends EventService implements ISFSModule {
 	/**
 	 * 人物等级模板
 	 */
-	@LoadXml("playerlevel.xml")public PlayerLvData playerLvData;
+	@LoadXml("playerlv.xml")public PlayerLvData playerLvData;
 
 	@Inject private CheckPointService checkPointService;
 	@Inject private ResourceService resourceService;

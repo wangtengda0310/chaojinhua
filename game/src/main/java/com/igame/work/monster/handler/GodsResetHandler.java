@@ -29,6 +29,8 @@ import java.util.Map;
 public class GodsResetHandler extends ReconnectedHandler {
 
 	@Inject private ResourceService resourceService;
+	
+	@Inject private FightService fightService;
 
 	@Override
 	protected RetVO handleClientRequest(Player player, ISFSObject params) {
@@ -44,7 +46,7 @@ public class GodsResetHandler extends ReconnectedHandler {
 		if(gods == null){
 			return error(ErrorCode.ERROR);
 		}else{
-			List<GodsdataTemplate> preList = FightService.godsData.getPreList(gods.getGodsType(), gods.getGodsLevel());
+			List<GodsdataTemplate> preList = fightService.godsData.getPreList(gods.getGodsType(), gods.getGodsLevel());
 			if(preList == null || preList.isEmpty()){
 				return error(ErrorCode.GODS_ZERO);
 			}else{

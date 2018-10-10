@@ -21,11 +21,11 @@ import com.google.common.collect.Sets;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "godsdata")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GodsData
 {
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<GodsdataTemplate> its;
 	
 	private Map<String,GodsdataTemplate> maps	= Maps.newHashMap();

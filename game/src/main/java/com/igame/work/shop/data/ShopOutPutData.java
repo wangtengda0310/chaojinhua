@@ -15,11 +15,11 @@ import java.util.Map;
  *
  * shoptype = 2 时商品数据
  */
-@XmlRootElement(name = "shopoutput")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ShopOutPutData {
 
-    @XmlElement(name="low")
+    @XmlElement(name="item")
     private List<ShopOutPutTemplate> its;
 
     private Map<Integer,ShopOutPutTemplate> maps	= Maps.newHashMap();

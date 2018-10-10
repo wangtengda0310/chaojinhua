@@ -20,13 +20,13 @@ import java.util.Map;
  * @author Marcus.Z
  *
  */
-@XmlRootElement(name = "skillexp")
+@XmlRootElement(name = "info")
 @XmlAccessorType(XmlAccessType.NONE)
 public class SkillLvData
 {	
 	private int maxLevel = 6;
 	
-	@XmlElement(name="low")
+	@XmlElement(name="item")
 	private List<SkillLvTemplate> its;
 	
 	private Map<Integer,SkillLvTemplate> maps	= Maps.newHashMap();

@@ -29,6 +29,7 @@ import java.util.concurrent.ScheduledFuture;
 public class FightEffectService {
 
 	@Inject private FightProcessser fightProcessser;
+	@Inject private FightService fightService;
 	private ScheduledFuture<?> sc = null;
 
     public void init(){
@@ -38,16 +39,17 @@ public class FightEffectService {
     /**
      * 处理技能触发的添加BUFFER效果
      */
-    public static List<Effect> processAddEffect(FightBase fb,FightCmd fc,Monster attacker,SkillTemplate skillTemplate, List<Monster> targets,RetFightCmd rcd,List<RetFightCmd> retCmd){
+    public List<Effect> processAddEffect(FightBase fb,FightCmd fc,Monster attacker,SkillTemplate skillTemplate, List<Monster> targets,RetFightCmd rcd,List<RetFightCmd> retCmd){
     	
     	List<Effect> ls = Lists.newArrayList();
-		EffectTemplate et = FightService.effectData.getTemplate(Integer.parseInt(skillTemplate.getEffect()));
+		EffectTemplate et = fightService.effectData.getTemplate(Integer.parseInt(skillTemplate.getEffect()));
 		if(et != null){
 			
 			String[] efs = et.getEffectId().split(et.getEffectId());
 			int i = 0;
 			for(String ef : efs){
-				Effect eet = new Effect(et.getEffect(),Integer.parseInt(ef),attacker.getPlayerId(), System.currentTimeMillis(), et.getTimes() * 1000, Float.parseFloat(et.getEffectValue().split(";")[i]),et.getCampLimit() ,et.getEffectType(),Integer.parseInt(et.getTouchTime().split(";")[i]),Integer.parseInt(et.getRepeat().split(";")[i]));
+				Effect eet = new Effect(et.getEffect(),Integer.parseInt(ef),attacker.getPlayerId(), System.currentTimeMillis(), et.getTimes() * 1000, Float.parseFloat(et.getEffectValue().split(";")[i]),et.getCampLimit() ,Integer.parseInt(et.getEffectType().split(",")[0])
+						,Integer.parseInt(et.getTouchTime().split(";")[i]),Integer.parseInt(et.getRepeat().split(";")[i]));
 				if(et.getFollow() == 2){//固定在场景的区域BUUFER
 					
 					Effect addEet = eet.clonew();//添加到指令中的EFFECT
