@@ -80,7 +80,8 @@ public class MatchMonsterDto   implements Cloneable  {
 	public float iasInit;//最大攻击速度
 
 	private String equip = "-1,-1,-1,-1";//装备(纹章)
-	
+
+	private int bodySize;
 	public MatchMonsterDto(){
 		
 	}
@@ -451,8 +452,12 @@ public class MatchMonsterDto   implements Cloneable  {
 		}
 	
 	}
-	
-	
-	
 
+	public int getBodySize() {
+		return bodySize;
+	}
+
+	public void setBodySize(int bodySize) {
+		this.bodySize = bodySize;
+	}
 }

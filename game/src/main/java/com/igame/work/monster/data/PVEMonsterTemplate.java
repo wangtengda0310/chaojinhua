@@ -26,7 +26,7 @@ public class PVEMonsterTemplate {
 	private int cardId;
 	
 	@XmlAttribute(name = "lv_show")
-	private String lvShow;
+	private int lvShow;
 	
 	@XmlAttribute(name = "monster_hp")
 	private int monsterHp;
@@ -47,13 +47,16 @@ public class PVEMonsterTemplate {
 	private int monsterRepel;
 	
 	@XmlAttribute(name = "size")
-	private double size;
+	private int size;
 	
 	@XmlAttribute(name = "skill_lv")
 	private String skillLv;
 	
 	@XmlAttribute(name = "fate_skill")
 	private String fateSkill;
+
+	@XmlAttribute(name = "equip")
+	private String equip;
 
 	public int getMonsterId() {
 		return monsterId;
@@ -71,11 +74,11 @@ public class PVEMonsterTemplate {
 		this.cardId = cardId;
 	}
 
-	public String getLvShow() {
+	public int getLvShow() {
 		return lvShow;
 	}
 
-	public void setLvShow(String lvShow) {
+	public void setLvShow(int lvShow) {
 		this.lvShow = lvShow;
 	}
 
@@ -127,11 +130,11 @@ public class PVEMonsterTemplate {
 		this.monsterRepel = monsterRepel;
 	}
 
-	public double getSize() {
+	public int getSize() {
 		return size;
 	}
 
-	public void setSize(double size) {
+	public void setSize(int size) {
 		this.size = size;
 	}
 
@@ -149,5 +152,13 @@ public class PVEMonsterTemplate {
 
 	public void setFateSkill(String fateSkill) {
 		this.fateSkill = fateSkill;
+	}
+
+	public String getEquip() {
+		return equip;
+	}
+
+	public void setEquip(String equip) {
+		this.equip = equip;
 	}
 }

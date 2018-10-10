@@ -142,6 +142,8 @@ public class Monster extends BasicDto implements Cloneable {
 	
 	@Transient
 	public int hpInit;//maxHP
+
+	public int bodySize;
 	
 	public Monster(){}
 	
@@ -326,7 +328,7 @@ public class Monster extends BasicDto implements Cloneable {
 
 
 
-	public double getIas() {
+	public float getIas() {
 		return ias;
 	}
 
@@ -695,8 +697,27 @@ public class Monster extends BasicDto implements Cloneable {
 
 	}
 
+	public int getBodySize() {
+		return bodySize;
+	}
+
+	public void setBodySize(int bodySize) {
+		this.bodySize = bodySize;
+	}
 
 	public MatchMonsterDto toMatchMonsterDto() {
-		return null;
+		MatchMonsterDto dto = new MatchMonsterDto();
+		dto.setHp(getHp());
+		dto.setObjectId(getObjectId());
+		dto.setAttack(getAttack());
+		dto.setBreaklv(getBreaklv());
+		dto.setBulletSpeed(getBulletSpeed());
+		dto.setEquip(getEquip());
+		dto.setHpInit(getHpInit());
+		dto.setIas(getIas());
+		dto.setLevel(getLevel());
+		dto.setMonsterId(getMonsterId());
+		dto.setBodySize(getBodySize());
+		return dto;
 	}
 }
