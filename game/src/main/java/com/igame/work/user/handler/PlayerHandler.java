@@ -236,13 +236,13 @@ public class PlayerHandler extends ClientDispatcherHandler {
 			String[] skills = mt1.getSkill().split(",");
 			if(skills.length != 0){
 				for(String skill : skills){
-					m1.skillMap.put(Integer.parseInt(skill), 1);
-					m1.skillExp.put(Integer.parseInt(skill), 0);
+					m1.putSkill(Integer.parseInt(skill), 1);
+					m1.putSkill(Integer.parseInt(skill), 0);
 				}
 			}
 			m1.atkType = mt1.getAtk_type();
 		}
-		monsterService.initSkillString(m1);
+//		monsterService.initSkillString(m1);
 
 		int monsterId2 = 1002;
 		Monster m2 = new Monster(player, idFactory.getNewIdMonster(serverId), player.getPlayerId(),  monsterService.MONSTER_DATA.getMonsterTemplate(monsterId2).getMonster_hp(), 0, monsterId2);
@@ -251,13 +251,13 @@ public class PlayerHandler extends ClientDispatcherHandler {
 			String[] skills = mt2.getSkill().split(",");
 			if(skills.length != 0){
 				for(String skill : skills){
-					m2.skillMap.put(Integer.parseInt(skill), 1);
-					m2.skillExp.put(Integer.parseInt(skill), 0);
+					m2.putSkill(Integer.parseInt(skill), 1);
+					m2.putSkill(Integer.parseInt(skill), 0);
 				}
 			}
 			m2.atkType = mt2.getAtk_type();
 		}
-		monsterService.initSkillString(m2);
+//		monsterService.initSkillString(m2);
 
 		monsterService.reCalculate(player,monsterId1, m1,true);
 		monsterService.reCalculate(player,monsterId2,m2,true);

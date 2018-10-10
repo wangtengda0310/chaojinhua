@@ -496,13 +496,13 @@ public class ResourceService extends EventService implements ISFSModule {
 					String[] skills = mt1.getSkill().split(",");
 					if(skills.length != 0){
 						for(String skill : skills){
-							m.skillMap.put(Integer.parseInt(skill), 1);
-							m.skillExp.put(Integer.parseInt(skill), 0);
+							m.putSkill(Integer.parseInt(skill), 1);
+							m.putSkill(Integer.parseInt(skill), 0);
 						}
 					}
 					m.atkType = mt1.getAtk_type();
 				}
-				monsterService.initSkillString(m);
+//				monsterService.initSkillString(m);
 
             	player.getMonsters().put(m.getObjectId(), m);
 				monsterService.reCalculate(player, m.getMonsterId(), m, true);
