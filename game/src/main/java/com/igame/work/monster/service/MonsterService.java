@@ -49,11 +49,11 @@ public class MonsterService implements ISFSModule {
 	/**
 	 * 怪物模版
 	 */
-	@LoadXml("monster.xml")public PVEMonsterData PVE_MONSTER;
+	@LoadXml("PVEmonster.xml")public PVEMonsterData PVE_MONSTER;
 	/**
 	 * 怪物模版
 	 */
-	@LoadXml("monstersetdata.xml")public MonstersetData MONSTERSET_DATA;
+	@LoadXml("PVEmonsterset.xml")public MonstersetData MONSTERSET_DATA;
 	/**
 	 * 怪物进化
 	 */
@@ -578,10 +578,11 @@ public class MonsterService implements ISFSModule {
     }
 
     public List<Monster> createMonsterOfAll(int monstersetId) {
+		// TODO 0 null
         MonstersetTemplate monstersetTemplate = MONSTERSET_DATA.getMonsterTemplate(monstersetId);
         String monsterId = monstersetTemplate.getMonsterId();
         List<Monster> result = new LinkedList<>();
-        for (String mid : monsterId.split("|")) {
+        for (String mid : monsterId.split("\\|")) {
             PVEMonsterTemplate monsterTemplate = PVE_MONSTER.getMonsterTemplate(Integer.parseInt(mid));
             result.add(mapTemplateToMonster(monsterTemplate,Integer.parseInt(mid)));
         }

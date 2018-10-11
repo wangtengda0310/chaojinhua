@@ -167,7 +167,7 @@ public class BallisticService extends EventService implements ISFSModule, TimeLi
         if (template == null)
             return Collections.emptyList();
 
-        return monsterService.createMonsterDtoOfAll(robotService.randomOne(template.getMonster(), "|"));
+        return monsterService.createMonsterDtoOfAll(robotService.randomOne(template.getMonster(), "\\|"));
     }
 
     /**

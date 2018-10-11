@@ -35,7 +35,7 @@ public class CheckPointTemplate {
 	 * 关卡名
 	 */
 	@XmlAttribute(name = "city_name")
-	private int cityName;
+	private String cityName;
 
 	/**
 	 * 章节ID
@@ -95,7 +95,7 @@ public class CheckPointTemplate {
 	 * 可能有多个
 	 */
 	@XmlAttribute(name = "random_drop_id")
-	private int randomDropId;
+	private String randomDropId;
 
 	/**
 	 * 周目
@@ -128,11 +128,11 @@ public class CheckPointTemplate {
 		this.chapterType = chapterType;
 	}
 
-	public int getCityName() {
+	public String getCityName() {
 		return cityName;
 	}
 
-	public void setCityName(int cityName) {
+	public void setCityName(String cityName) {
 		this.cityName = cityName;
 	}
 
@@ -208,11 +208,11 @@ public class CheckPointTemplate {
 		this.physical = physical;
 	}
 
-	public int getRandomDropId() {
+	public String getRandomDropId() {
 		return randomDropId;
 	}
 
-	public void setRandomDropId(int randomDropId) {
+	public void setRandomDropId(String randomDropId) {
 		this.randomDropId = randomDropId;
 	}
 

@@ -345,7 +345,8 @@ public class CheckPointService implements ISFSModule, TimeListener {
         if(first){
             drop = ct.getFisrtDropId();
         }else{
-            drop = ct.getRandomDropId();
+//            drop = ct.getRandomDropId();
+            throw new UnsupportedOperationException("配置带权重 功能没实现");
         }
 		DropDataTemplate dt = dropData.getTemplate(drop);
 

@@ -125,18 +125,15 @@ public class JarApplicationContext {
         try {
             Stream<String> classNames;
             File rootFile = new File(rootDir);
-            if (!rootFile.exists()) {
-                return;
-            }
-            if(rootFile.isFile()) {
+            if(rootFile.exists()) {
+                List<String> foundFiles = new LinkedList<>();
+                listFilesRecursively(foundFiles, rootFile);
+                classNames = foundFiles.stream();
+            } else {
                 String fileLoacation = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
                 classNames = new JarFile(fileLoacation)
                         .stream()
                         .map(JarEntry::getName);
-            } else {
-                List<String> foundFiles = new LinkedList<>();
-                listFilesRecursively(foundFiles, rootFile);
-                classNames = foundFiles.stream();
             }
             classNames
                     .filter(name -> name.endsWith(".class"))

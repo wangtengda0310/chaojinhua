@@ -89,7 +89,7 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 		rto.setLevel(level);
 		rto.setType(1);
 
-		List<Monster> monsters = monsterService.createMonsterOfAll(randomOne(config.getMonsterset(),"|"));
+		List<Monster> monsters = monsterService.createMonsterOfAll(randomOne(config.getMonsterset(),"\\|"));
         long fightValue = 0;
 		for( Monster mto:monsters) {
 			computeFightService.computeMonsterFight(mto);   // todo move to somewhere where can auto calc it

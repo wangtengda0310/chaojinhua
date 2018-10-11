@@ -66,7 +66,7 @@ public class EndlessService {
                 String[] mons = et.getMonsterset().split("|");
                 List<String> temp = Lists.newArrayList();
                 List<Integer> lvs = Lists.newArrayList();
-                for (Monster monster : monsterService.createMonsterOfAll(robotService.randomOne(et.getMonsterset(), "|"))) {
+                for (Monster monster : monsterService.createMonsterOfAll(robotService.randomOne(et.getMonsterset(), "\\|"))) {
                     lvs.add(monster.getLevel());
                     temp.add(String.valueOf(monster.getMonsterId()));
                 }

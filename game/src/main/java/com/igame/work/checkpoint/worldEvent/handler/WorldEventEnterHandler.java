@@ -85,7 +85,7 @@ public class WorldEventEnterHandler extends ReconnectedHandler {
 		checkPointService.setEnterWordEventTime(player);
 		worldEventService.setEnterWordEventId(player,eventType+"_"+level);
 
-		List<MatchMonsterDto> lb = monsterService.createMonsterDtoOfAll(robotService.randomOne(wt.getMonsterset(), "|"));
+		List<MatchMonsterDto> lb = monsterService.createMonsterDtoOfAll(robotService.randomOne(wt.getMonsterset(), "\\|"));
 
 		vo.addData("m", lb);
 
