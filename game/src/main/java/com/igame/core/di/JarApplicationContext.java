@@ -139,7 +139,6 @@ public class JarApplicationContext {
                 classNames = foundFiles.stream();
             }
             classNames
-                    .peek(System.out::println)
                     .filter(name -> name.endsWith(".class"))
                     .filter(name -> !name.contains("$"))
                     .map(name -> name.substring(0,name.indexOf(".class")))
