@@ -17,6 +17,7 @@ import com.igame.work.user.dto.Player;
 import com.igame.work.user.dto.RobotDto;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 
@@ -89,15 +90,19 @@ public class RobotService extends EventService implements ISFSModule, TimeListen
 		rto.setLevel(level);
 		rto.setType(1);
 
-		List<Monster> monsters = monsterService.createMonsterOfAll(randomOne(config.getMonsterset(),"\\|"));
-        long fightValue = 0;
-		for( Monster mto:monsters) {
-			computeFightService.computeMonsterFight(mto);   // todo move to somewhere where can auto calc it
-			rto.getMon().add(mto.toMatchMonsterDto());
-            fightValue += mto.getFightValue();
-		}
+        AtomicLong fightValue = new AtomicLong();
+		monsterService.createMonsterOfAll(randomOne(config.getMonsterset(),"\\|"))
+				.forEach( optionalMonster ->{
+					if(optionalMonster.isPresent()) {
 
-        rto.setFightValue(fightValue);
+						Monster mto = optionalMonster.get();
+						computeFightService.computeMonsterFight(mto);   // todo move to somewhere where can auto calc it
+						rto.getMon().add(mto.toMatchMonsterDto());
+						fightValue.addAndGet(mto.getFightValue());
+					}
+				});
+
+        rto.setFightValue(fightValue.get());
     	return rto;
     }
 

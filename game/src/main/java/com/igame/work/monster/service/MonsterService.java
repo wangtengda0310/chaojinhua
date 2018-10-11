@@ -577,26 +577,32 @@ public class MonsterService implements ISFSModule {
         reCalMonsterExtPre(player,true);//计算图鉴增加属性
     }
 
-    public List<Monster> createMonsterOfAll(int monstersetId) {
-		// TODO 0 null
+    public List<Optional<Monster>> createMonsterOfAll(int monstersetId) {
+	    // 这里怪物跟位置相关 用null的话外面空指针和position不好处理
         MonstersetTemplate monstersetTemplate = MONSTERSET_DATA.getMonsterTemplate(monstersetId);
         String monsterId = monstersetTemplate.getMonsterId();
-        List<Monster> result = new LinkedList<>();
+        List<Optional<Monster>> result = new LinkedList<>();
         for (String mid : monsterId.split("\\|")) {
-            PVEMonsterTemplate monsterTemplate = PVE_MONSTER.getMonsterTemplate(Integer.parseInt(mid));
-            result.add(mapTemplateToMonster(monsterTemplate,Integer.parseInt(mid)));
+        	if("".equals(mid) || "0".equals(mid)) {
+        		result.add(Optional.ofNullable(null));
+			} else {
+                PVEMonsterTemplate monsterTemplate = PVE_MONSTER.getMonsterTemplate(Integer.parseInt(mid));
+                result.add(Optional.of(mapTemplateToMonster(monsterTemplate, Integer.parseInt(mid))));
+            }
         }
         return result;
     }
 
     public List<MatchMonsterDto> createMonsterDtoOfAll(int monstersetId) {
-        List<Monster> monsterOfAll = createMonsterOfAll(monstersetId);
+        List<Optional<Monster>> monsterOfAll = createMonsterOfAll(monstersetId);
         List<MatchMonsterDto> result = new LinkedList<>();
         for (int index = 0; index< monsterOfAll.size(); index++) {
-            Monster m = monsterOfAll.get(index);
-            MatchMonsterDto dto = m.toMatchMonsterDto();
-            dto.setLocation(index);
-            result.add(dto);
+            Optional<Monster> m = monsterOfAll.get(index);
+            if(m.isPresent()) {
+                MatchMonsterDto dto = m.get().toMatchMonsterDto();
+                dto.setLocation(index);
+                result.add(dto);
+            }
         }
         return result;
     }

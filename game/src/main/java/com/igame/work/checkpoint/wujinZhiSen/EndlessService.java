@@ -63,13 +63,13 @@ public class EndlessService {
             for(EndlessdataTemplate et : ls){
                 String str = String.valueOf(et.getNum());
                 str+=";"+String.valueOf(et.getDifficulty())+";0";
-                String[] mons = et.getMonsterset().split("|");
                 List<String> temp = Lists.newArrayList();
                 List<Integer> lvs = Lists.newArrayList();
-                for (Monster monster : monsterService.createMonsterOfAll(robotService.randomOne(et.getMonsterset(), "\\|"))) {
+                monsterService.createMonsterOfAll(robotService.randomOne(et.getMonsterset(), "\\|")).forEach (optionalMonster -> {
+                    Monster monster = optionalMonster.get();
                     lvs.add(monster.getLevel());
                     temp.add(String.valueOf(monster.getMonsterId()));
-                }
+                });
                 str += ";"+ MyUtil.toString(temp, ",");
                 str += ";"+MyUtil.toStringInt(lvs, ",");
                 str += ";0;0";

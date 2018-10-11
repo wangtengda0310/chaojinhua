@@ -152,22 +152,27 @@ public class GateService implements ISFSModule, TimeListener {
      */
     public Map<Long,Monster> getNormalFateMonster(int floorNum){
 
-//        FatedataTemplate ft  = fateData.getTemplate(floorNum);
-//        if(ft == null){
-//            return Maps.newHashMap();
-//        }
-//        Map<Long, Monster> result = new HashMap<>();
-//        List<Monster> monsterOfInit = monsterService.createMonsterOfAll(robotService.randomOne(ft.getNormalMonsterset(), "\\|"));// 头两个上场的怪物有位置
-//        for (Monster m : monsterOfInit) {
-//            result.put(m.getObjectId(), m);
-//        }
-//        List<Monster> monsterOfRef = monsterService.createMonsterOfAll(robotService.randomOne(ft.getBossMonsterset(), "\\|"));// 后面上场的怪物都在同一个位置刷出来
-//        for (Monster m : monsterOfRef) {
-//            m.setObjectId(0);
-//            result.put(m.getObjectId(), m);
-//        }
-//        return result;
-        return Collections.emptyMap();
+        FatedataTemplate ft  = fateData.getTemplate(floorNum);
+        if(ft == null){
+            return Maps.newHashMap();
+        }
+        Map<Long, Monster> result = new HashMap<>();
+        List<Optional<Monster>> monsterOfInit = monsterService.createMonsterOfAll(robotService.randomOne(ft.getNormalMonsterset(), "\\|"));// 头两个上场的怪物有位置
+        for (Optional<Monster> m : monsterOfInit) {
+            if(m.isPresent()) {
+                Monster value = m.get();
+                result.put(value.getObjectId(), value);
+            }
+        }
+        List<Optional<Monster>> monsterOfRef = monsterService.createMonsterOfAll(robotService.randomOne(ft.getBossMonsterset(), "\\|"));// 后面上场的怪物都在同一个位置刷出来
+        for (Optional<Monster> m : monsterOfRef) {
+            if(m.isPresent()) {
+                Monster value = m.get();
+                value.setObjectId(0);
+                result.put(value.getObjectId(), value);
+            }
+        }
+        return result;
     }
 
     public List<GateDto> getGateDtos(Player player, List<GateDto> ls) {

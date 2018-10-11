@@ -186,7 +186,7 @@ public class CheckInfoHandler extends ReconnectedHandler {
 		CheckPointTemplate ct = checkPointService.checkPointData.getTemplate(chapterId);
 
 		if(ct != null){
-            String[] split = ct.getMonsterSet().split("|");
+            String[] split = ct.getMonsterSet().split("\\|");
             for (int i = 0; i < split.length; i++) {
                 List<MatchMonsterDto> monsterDtoOfAll = monsterService.createMonsterDtoOfAll(Integer.parseInt(split[i]));
                 for (MatchMonsterDto monsterDto : monsterDtoOfAll) {
