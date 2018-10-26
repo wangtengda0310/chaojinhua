@@ -207,9 +207,6 @@
             "bundle": true
         },
 		{
-			"path": "resources/sfsclient/main.js"
-		},
-		{
 			"path": "resources/sfsclient/sfs2x-api-1.7.11.js"
 		},
 		{"path":"resources/sfsclient/jquery.min.js"},

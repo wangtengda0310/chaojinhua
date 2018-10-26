@@ -2,61 +2,158 @@ Ext.define('web.view.SfsClientController', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.sfsclient',
 
-	connect: function() {
-		// Clear log window
-		document.getElementById("json-target").innerHTML = "";
+	index:0,
+	history: function(msg) {
+		this.lookupReference('history').getStore().insert(0, {type:'log',cmdId: "", content:msg});
+	},
+	jsonParse: function(a,b,c,d,e,f) {
+		console.log(a,b,c,d,e,f);
+	},
+	onConnection: function(event)
+	{
+		if (event.success)
+		{
+			this.history("Connected to SmartFoxServer 2X!<br>SFS2X API version: " + this.sfs.version);
 
-		// Disable interface
-		enableInterface(false);
+			// Show disconnect button
+			this.switchButtons();
+			try
+			{
+				var req = new SFS2X.SFSObject();
+				req.putBool("isRepeat",false);
+				this.sfs.send(new SFS2X.LoginRequest(this.getViewModel().get("uid"), this.getViewModel().get("pwd"), req, "zoom01"));
+			}
+			catch(err)
+			  {
+				this.history(err);
+			}
+		} else
+		{
+			this.history("Connection failed: " + (event.errorMessage ? event.errorMessage + " (" + event.errorCode + ")" : "Is the server running at all?"));
 
+			// Reset
+			this.reset();
+		}
+	},
+	reset: function()
+	{
+		// Remove SFS2X listeners
+		this.sfs.removeEventListener(SFS2X.SFSEvent.CONNECTION, this.onConnection);
+		this.sfs.removeEventListener(SFS2X.SFSEvent.CONNECTION_LOST, this.onConnectionLost);
+		
+		this.sfs.logger.removeEventListener(SFS2X.LoggerEvent.DEBUG, this.onDebugLogged);
+		this.sfs.logger.removeEventListener(SFS2X.LoggerEvent.INFO, this.onInfoLogged);
+		this.sfs.logger.removeEventListener(SFS2X.LoggerEvent.WARNING, this.onWarningLogged);
+		this.sfs.logger.removeEventListener(SFS2X.LoggerEvent.ERROR, this.onErrorLogged);
+		
+		sfs = null;
+	},
+	switchButtons: function()
+	{
+		console.error("not implements switchButtons function");
+	},
+	onConnectionLost: function(event)
+	{
+		console.log(event);
+		this.history(event);
+        this.lookupReference('history').getStore().insert(0, {type:'error',cmdId: "connection lost", content:event.params.getUtfString("infor")});
+
+		// Hide disconnect button
+		this.switchButtons();
+
+		// Reset
+		this.reset();
+	},
+	onExtensionResponse: function(event)
+	{
+		var message = event.params.getUtfString("infor");
+        this.lookupReference('history').getStore().insert(0, {type:'response',cmdId: event.cmd, content:message});
+		this.getViewModel().set("content", new JSONFormat(message,4).toString());
+	},
+	onLoginError: function(evtParams)
+	{
+        this.lookupReference('history').getStore().insert(0, {type:'error',cmdId: event.cmd, content:event.params.getUtfString("infor")});
+	},
+	onDebugLogged: function(event)
+	{
+		this.history(event.message, "DEBUG", true);
+	},
+	onInfoLogged: function(event)
+	{
+		this.history(event.message, "INFO", true);
+	},
+	onWarningLogged: function(event)
+	{
+		this.history(event.message, "WARN", true);
+	},
+	onErrorLogged: function(event)
+	{
+		this.history(event.message, "ERROR", true);
+	},	
+	disconnect: function()
+	{
 		// Log message
-		history("Connecting...");
+		this.history("Disconnecting...");
+
+		// Disconnect
+		this.sfs.disconnect();
+	},
+	onLogin: function(event)
+	{
+	//		var send = new SFS2X.SFSObject();
+	//		send.putUtfString("userId",uid);
+	//		send.putInt("serverId", serverId);
+	//		
+	//		var req = new SFS2X.SFSObject();
+	//		req.putSFSObject("infor", send);
+	//		req.putInt("index", this.index++);
+	//		
+	//		this.sfs.send(new SFS2X.ExtensionRequest("1002",req));
+	},
+	toggleDisabled: function (checkbox, checked) {
+		var config = this.getViewModel().get('config').debug = checked;
+    },
+	connect: function() {
+		// Log message
+		this.history("Connecting...");
 
 		// Create configuration object
-		var config = {};
-		config.host = document.getElementById("addressIn").value;
-		config.port = Number(document.getElementById("portIn").value);
-		config.debug = document.getElementById("debugCb").checked;
+		var config = this.getViewModel().get('config');
 		config.useSSL = false;
 
 		// Create SmartFox client instance
-		sfs = new SFS2X.SmartFox(config);
+		this.sfs = new SFS2X.SmartFox(config);
 
 		// Set logging
-		sfs.logger.level = SFS2X.LogLevel.INFO;
-		sfs.logger.enableConsoleOutput = true;
-		sfs.logger.enableEventDispatching = true;
+		this.sfs.logger.level = SFS2X.LogLevel.INFO;
+		this.sfs.logger.enableConsoleOutput = true;
+		this.sfs.logger.enableEventDispatching = true;
 
-		sfs.logger.addEventListener(SFS2X.LoggerEvent.DEBUG, onDebugLogged, this);
-		sfs.logger.addEventListener(SFS2X.LoggerEvent.INFO, onInfoLogged, this);
-		sfs.logger.addEventListener(SFS2X.LoggerEvent.WARNING, onWarningLogged, this);
-		sfs.logger.addEventListener(SFS2X.LoggerEvent.ERROR, onErrorLogged, this);
+		this.sfs.logger.addEventListener(SFS2X.LoggerEvent.DEBUG, this.onDebugLogged, this);
+		this.sfs.logger.addEventListener(SFS2X.LoggerEvent.INFO, this.onInfoLogged, this);
+		this.sfs.logger.addEventListener(SFS2X.LoggerEvent.WARNING, this.onWarningLogged, this);
+		this.sfs.logger.addEventListener(SFS2X.LoggerEvent.ERROR, this.onErrorLogged, this);
 
 		// Add event listeners
-		sfs.addEventListener(SFS2X.SFSEvent.CONNECTION, onConnection, this);
-		sfs.addEventListener(SFS2X.SFSEvent.CONNECTION_LOST, onConnectionLost, this);
-		sfs.addEventListener(SFS2X.SFSEvent.LOGIN, onLogin, this);
-		sfs.addEventListener(SFS2X.SFSEvent.EXTENSION_RESPONSE, onExtensionResponse, this);
-		sfs.addEventListener(SFS2X.SFSEvent.LOGIN_ERROR, onLoginError, this);
+		this.sfs.addEventListener(SFS2X.SFSEvent.CONNECTION, this.onConnection,this);
+		this.sfs.addEventListener(SFS2X.SFSEvent.CONNECTION_LOST, this.onConnectionLost, this);
+		this.sfs.addEventListener(SFS2X.SFSEvent.LOGIN, this.onLogin, this);
+		this.sfs.addEventListener(SFS2X.SFSEvent.EXTENSION_RESPONSE, this.onExtensionResponse,this);
+		this.sfs.addEventListener(SFS2X.SFSEvent.LOGIN_ERROR, this.onLoginError, this);
 
 		// Attempt connection
-		sfs.connect();
+		this.sfs.connect();
 	},
-	addData: function(){
-		console.log(this.getStore());
-		console.log(this.lookupReference('history'));
-		console.log(this.lookupReference('history').getStore());
-		var cmd = document.getElementById("cmd").value;
-		var txt = document.getElementById("param").value;
+	send: function(){
+		var cmd = this.getViewModel().get("cmd");
+		var txt = this.getViewModel().get("requestContent");
 		
 		var param = new SFS2X.SFSObject();
-		param.putInt("index", index++);
+		param.putInt("index", this.index++);
 		param.putUtfString("infor",txt);
 		
 		var req = new SFS2X.ExtensionRequest(cmd,param);
-		history(cmd+":  "+txt);
-		sfs.send(req);
-        this.lookupReference('history').getStore().insert(0, {cmdId:"123",content:'test'});
+		this.sfs.send(req);
 	},
 	afterRender: function() {
 			$('textarea').numberedtextarea();
@@ -196,24 +293,21 @@ Ext.define('web.view.SfsClientController', {
 					 }
 			   };
 			})(jQuery);
-			$('.save').click(function(){
-				// var content = JSON.stringify(current_json);
-				// $('#txt-content').val(content);
-				//var text = "hell world";
-				var html = $('#json-target').html().replace(/\n/g,'<br/>').replace(/\n/g,'<br>');
-				var text = $('#json-target').innerText().replace('　　', '    ');
-				var blob = new Blob([text], {type: "application/json;charset=utf-8"});
-				var timestamp=new Date().getTime();
-				saveAs(blob, "format."+timestamp+".json");
-			});
-			$('.copy').click(function(){
-				//$.msg("成功复制到粘贴板","color:#00D69C;");
-				// $(this).tooltip('toggle')
-				//       .attr('data-original-title', "复制成功！")
-				//       .tooltip('fixTitle')
-				//       .tooltip('toggle');
-			});
+			$('.save').click();
 			var clipboard = new Clipboard('.copy');
 			$('#json-src').keyup();
+	},
+	copy: function(){
+		//$.msg("成功复制到粘贴板","color:#00D69C;");
+		// $(this).tooltip('toggle')
+		//       .attr('data-original-title', "复制成功！")
+		//       .tooltip('fixTitle')
+		//       .tooltip('toggle');
+	},
+	save: function(){
+		var text = this.getViewModel().get('content').replace('　　', '    ');
+		var blob = new Blob([text], {type: "application/json;charset=utf-8"});
+		var timestamp=new Date().getTime();
+		saveAs(blob, "format."+timestamp+".json");
 	}
 });

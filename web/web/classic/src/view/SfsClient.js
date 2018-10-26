@@ -11,43 +11,58 @@ Ext.define('web.view.SfsClient',{
 	
     controller: 'sfsclient',
     viewModel: 'sfsclient',
+	tbar: {
+		items:[
+			{xtype: 'textfield', label:"host", bind:{value:'{config.host}',editable:'{!connected}'}},
+			{xtype: 'textfield', label:"port", bind:'{config.port}'},
+			{xtype: 'textfield', label:"cmd", bind:'{cmd}'},
+			{xtype: 'textarea', bind:'{requestContent}'},
+			{xtype: 'textfield', listeners:{paste:'jsonParse'}},
+		]
+	},
 
     layout: 'column',
     items: [
-	{columnWidth:0.3,
-		items: [{height:300,html: '<div class="col-md-5" style="padding:0px;height:100%;">'+
-			'<div id="controls">'+
-				'<input type="text" id="addressIn" placeholder="Enter address" value="localhost" />'+
-				'<input type="text" id="portIn" placeholder="Enter port" value="9999" /><br/>'+
-				'<input type="checkbox" id="debugCb" /> Show debug<br/>'+
-				'<input type="button" id="connectBt" value="Connect" onclick="onConnectBtClick()" /><br/>'+
-				'<input type="button" id="disconnectBt" value="Disconnect" onclick="onDisconnectBtClick()" style="display: none;" /><br/>'+
-				'<input type="text" id="cmd" placeholder="cmd" value="1003" />'+
-				'<input type="button" id="sendBt" value="send" onclick="onSendBtClick()" /><br/>'+
-				'<textArea id="param" >{"userId":10001466,"serverId":102}</textArea><br/>'+
-			'</div>'},
+	{
+		columnWidth:0.3,
+
+		items: [{
+				xtype: 'checkbox',
+				boxLabel: 'Show debug',
+				margin: '0 0 0 10',
+				listeners: {
+					change: 'toggleDisabled'
+				}
+			},
 			{xtype:'button',text:'connect',listeners:{click:'connect'}},
-			{xtype:'button',text:'send',listeners:{click:'addData'}},
-		{xtype:'grid', reference: 'history',store:{type:'SfsProtocolLog'},columns:[{text:'cmd',dataIndex:'cmdId'}]}]
+			{xtype:'button',text:'disconnect',listeners:{click:'disconnect'}},
+			{xtype:'button',text:'send',listeners:{click:'send'}},
+			{xtype:'grid', reference: 'history',store:{type:'SfsProtocolLog'},columns:[{text:'type',dataIndex:'type'},{text:'cmd',dataIndex:'cmdId'},{text:'content',dataIndex:'content'}]}
+		]
 	},
-	{columnWidth:0.7,
-        html: '<textarea id="json-src" placeholder="在此输入json字符串或XML字符串..."></textarea>'+
-    '</div>'+
-    '<div>'+
-        '<div  class="tool">'+
-            '<a href="#" class="tip zip" title="压缩"  data-placement="bottom"><i class="fa fa-database"></i></a>'+
-            '<a href="#" class="tip xml" title="转XML"  data-placement="bottom"><i class="fa fa-file-excel-o"></i></a>'+
-            '<a href="#" class="tip shown"  title="显示行号"  data-placement="bottom"><i class="glyphicon glyphicon-sort-by-order"></i></a>'+
-            '<a href="#" class="tip clear" title="清空"  data-placement="bottom"><i class="fa fa-trash"></i></a>'+
-            '<a href="#" class="tip save" title="保存"  data-placement="bottom"><i class="fa fa-download"></i></a>'+
-            '<a href="#" class="tip copy" title="复制" data-clipboard-target="#json-target"  data-placement="bottom"><i class="fa fa-copy"></i></a>'+
-            '<a href="#" class="tip compress" title="折叠"  data-placement="bottom"><i class="fa fa-compress"></i></a>'+
-        '</div>'+
-        '<div id="right-box">'+
-            '<div id="line-num">'+
-                '<div>0</div>'+
-            '</div>'+
-            '<div class="ro" id="json-target" />'+
-        '</div>'+
-    '</div>'}]
+	{
+		columnWidth:0.7,
+		
+		tbar:{items:[
+		{xtype:'button',text:'压缩', listeners:{click:'zip'}},
+		{xtype:'button',text:'转XML', listeners:{click:'xml'}},
+		{xtype:'button',text:'显示行号', listeners:{click:'shown'}},
+		{xtype:'button',text:'清空', listeners:{click:'clear'}},
+		{xtype:'button',text:'保存', listeners:{click:'save'}},
+		{xtype:'button',text:'复制', listeners:{click:'copy'}},
+		{xtype:'button',text:'折叠', listeners:{click:'compress'}}
+		]},
+		
+			html:
+		'<div>'+
+			'<div id="right-box">'+
+				'<div id="line-num">'+
+					'<div>0</div>'+
+				'</div>'+
+				'<div class="ro" id="json-target" />'+
+			'</div>'+
+		'</div>'
+		,
+		items:[{xtype: 'textarea', bind:{html:'{content}'}}]
+	}]
 });
