@@ -89,7 +89,15 @@ function onErrorLogged(event)
 
 function onLogin(event)
 {
-
+//		var send = new SFS2X.SFSObject();
+//		send.putUtfString("userId",uid);
+//		send.putInt("serverId", serverId);
+//		
+//		var req = new SFS2X.SFSObject();
+//		req.putSFSObject("infor", send);
+//		req.putInt("index", index++);
+//		
+//		sfs.send(new SFS2X.ExtensionRequest("1002",req));
 }
 function onLoginError(evtParams)
 {

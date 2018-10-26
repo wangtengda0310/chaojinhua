@@ -15,7 +15,8 @@ Ext.define('web.view.main.Main', {
 
         'web.view.main.MainController',
         'web.view.main.MainModel',
-        'web.view.main.List'
+        'web.view.main.List',
+        'web.view.SfsClient'
     ],
 
     controller: 'main',
@@ -95,6 +96,9 @@ Ext.define('web.view.main.Main', {
         bind: {
             html: '{loremIpsum}'
         }
+    }, {
+      title: 'SfsClient',
+      items: [{xtype: 'SfsClient'}]
     }, {
         title: 'Groups',
         iconCls: 'fa-users',

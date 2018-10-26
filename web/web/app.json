@@ -206,6 +206,23 @@
             "path": "app.js",
             "bundle": true
         },
+		{
+			"path": "resources/sfsclient/main.js"
+		},
+		{
+			"path": "resources/sfsclient/sfs2x-api-1.7.11.js"
+		},
+		{"path":"resources/sfsclient/jquery.min.js"},
+		{"path":"resources/sfsclient/jquery.message.js"},
+		{"path":"resources/sfsclient/jquery.json.js"},
+		{"path":"resources/sfsclient/jquery.xml2json.js"},
+		{"path":"resources/sfsclient/jquery.json2xml.js"},
+		{"path":"resources/sfsclient/json2.js"},
+		{"path":"resources/sfsclient/jsonlint.js"},
+		{"path":"resources/sfsclient/clipboard.min.js"},
+		{"path":"resources/sfsclient/FileSaver.min.js"},
+		{"path":"resources/sfsclient/bootstrap.min.js"},
+		{"path":"resources/sfsclient/jquery.numberedtextarea.js"},
         {
             "path": "https://code.createjs.com/1.0.0/createjs.min.js",
             "remote": true
