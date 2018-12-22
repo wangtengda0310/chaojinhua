@@ -77,6 +77,9 @@ Ext.define('web.view.main.Main', {
     },
 
     items: [{
+      title: 'SfsClient',
+      items: [{xtype: 'SfsClient'}]
+    }, {
         title: 'BattleEmulator',
         iconCls: 'fa-fighter-jet',
         // The following grid shares a store with the classic version's grid as well!
@@ -96,9 +99,6 @@ Ext.define('web.view.main.Main', {
         bind: {
             html: '{loremIpsum}'
         }
-    }, {
-      title: 'SfsClient',
-      items: [{xtype: 'SfsClient'}]
     }, {
         title: 'Groups',
         iconCls: 'fa-users',
